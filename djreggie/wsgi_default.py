@@ -1,5 +1,5 @@
 """
-WSGI config for djregi project.
+WSGI config for djreggie project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -14,7 +14,7 @@ sys.path.append('/data2/django_1.5.1/')
 sys.path.append('/data2/django_projects/')
 sys.path.append('/data2/django_third/')
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djregi.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djreggie.settings")
 os.environ.setdefault("PYTHON_EGG_CACHE", "/var/cache/python/.python-eggs")
 os.environ.setdefault("TZ", "America/Chicago")
 

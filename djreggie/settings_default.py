@@ -1,5 +1,5 @@
 """
-Django settings for djregi project.
+Django settings for djreggie project.
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -29,9 +29,9 @@ FILE_CHARSET = 'utf-8'
 SERVER_URL = ""
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ROOT_DIR = os.path.dirname(__file__)
-ROOT_URL = "/djregi/"
-ROOT_URLCONF = 'djregi.urls'
-WSGI_APPLICATION = 'djregi.wsgi.application'
+ROOT_URL = "/djreggie/"
+ROOT_URLCONF = 'djreggie.urls'
+WSGI_APPLICATION = 'djreggie.wsgi.application'
 MEDIA_ROOT = ''
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATIC_ROOT = ''
@@ -47,7 +47,7 @@ DATABASES = {
     'default': {
         'HOST': '127.0.0.1',
         'PORT': '3306',
-        'NAME': 'djregi',
+        'NAME': 'djreggie',
         'ENGINE': 'django.db.backends.mysql',
         'USER': '',
         'PASSWORD': ''
@@ -63,7 +63,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-    'djregi',
+    'djreggie',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -81,7 +81,7 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 TEMPLATE_DIRS = (
-    "/data2/django_projects/djregi/templates/",
+    "/data2/django_projects/djreggie/templates/",
     "/data2/django_templates/",
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -122,8 +122,8 @@ AUTHENTICATION_BACKENDS = (
     'djauth.ldapBackend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
-LOGIN_URL = '/djregi/accounts/login/'
-LOGIN_REDIRECT_URL = '/djregi/'
+LOGIN_URL = '/djreggie/accounts/login/'
+LOGIN_REDIRECT_URL = '/djreggie/'
 USE_X_FORWARDED_HOST = True
 #SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
