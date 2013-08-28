@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang='en'>
+    <style>
+        .error
+        {
+            color:red;
+        }
+        .good
+        {
+            display:none;
+            color:green;
+        }
+        .bad
+        {
+            display:none;
+            color:red;
+        }
+        div{
+                float:left;
+        }
+    </style>
+<head>
+    <meta charset='utf-8' />
+    <script>
+        function validate_student_id(){
+            var id = document.getElementById('id_student_id');
+            var val = id.value;
+            var patt = new RegExp('^\\d{5,7}$');
+            return patt.test(val);            
+        }
+        function validate_fname(){
+            var id = document.getElementById('id_fname');
+            var val = id.value;
+            var patt = new RegExp('^.+$');
+            return patt.test(val);        
+        }
+        function validate_mname(){
+            var id = document.getElementById('id_mname');
+            var val = id.value;
+            var patt = new RegExp('^.+$)');
+            return patt.test(val);        
+        }
+        function validate_lname(){
+            var id = document.getElementById('id_lname');
+            var val = id.value;
+            var patt = new RegExp('^.+$');
+            return patt.test(val);        
+        }
+        function validate_email(){
+            var id = document.getElementById('id_email');
+            var val = id.value;
+            var patt = new RegExp('^[A-Za-z0-9\.\_\%\+\-]+@[A-Za-z0-9\.\-]+\\.[A-Za-z]{2,4}$');
+            return patt.test(val);
+        }
+        function validate_best_phone(){
+            var id = document.getElementById('id_best_phone');
+            var val = id.value;
+            var patt = new RegExp('^1?-?\\(?\\d{3}\\)?-?\\d{3}-?\\d{4}$');
+            return patt.test(val);
+        }
+        function validate_cell(){
+            var id = document.getElementById('id_cell');
+            var val = id.value;
+            var patt = new RegExp('(^$|^1?-?\\(?\\d{3}\\)?-?\\d{3}-?\\d{4}$)');
+            return patt.test(val);
+        }
+        function validate_state(){
+            var id = document.getElementById('id_state');
+            var val = id.value;
+            var patt = new RegExp('^\\w{2}$');
+            return patt.test(val);
+        }
+        function validate_zipcode(){
+            var id = document.getElementById('id_zipcode');
+            var val = id.value;
+            var patt = new RegExp('^\\d{5}$');
+            return patt.test(val);
+        }
+    </script>
+    <title>Undergraduate Candidacy Form</title>
+    <script type="text/javascript" href="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+</head>
+<body>
+<div>
+{% if submitted %}
+<h2>Thank You</h2>
+{% endif %}
+</div>
+    <form action="" method="post">{% csrf_token %}
+    <h3><center>{{ year_low }}/{{ year_up }} Undergraduate Candidacy Form</center></h3>
+    <center><b>For your diploma: Print your name exactly as you want it to appear on the diploma, which will also be how your name will
+    be read as you cross the stage at graduation ceremony</b></center><br>
+    <div style="width:100%;">
+        <div>
+            {{ form.student_id.errors }}
+            {{ form.student_id.label }}
+            {{ form.student_id }}
+            <text class='good' id='id_yes'>Good</text>
+            <text class='bad' id='id_no'>Invalid</text><br>
+        </div>
+    </div>
+    <div style="width:100%;">
+        <div>
+            {{ form.fname.errors }}
+            {{ form.fname.label }}
+            {{ form.fname }}
+            <text class='good' id='fname_yes'>Good</text>
+            <text class='bad' id='fname_no'>Invalid</text><br>
+        </div>
+    </div>
+    <div style="width:100%;">
+        {{ form.mname.errors }}
+        {{ form.mname.label }}
+        {{ form.mname }}
+        <text class='good' id='mname_yes'>Good</text>
+        <text class='bad' id='mname_no'>Invalid</text><br>
+    </div>
+    <div style="width:100%;">
+        {{ form.lname.errors }}
+        {{ form.lname.label }}
+        {{ form.lname }}
+        <text class='good' id='lname_yes'>Good</text>
+        <text class='bad' id='lname_no'>Invalid</text><br>
+    </div><hr><br>
+    <center><b>List all major(s) and minor(s) that you plan on completing. You will not be certified
+    for graduation until you complete all requirements for all listed majors and minors</b></center><br>
+    <center>{{ form.majors.help_text }}</center>
+    <div style="width:100%;">
+    <center>
+        <div style="width:50%;float:left;">
+            {{ form.majors.label }}
+            <br>
+            {{ form.majors }}
+            <br>
+            {% for error in form.majors.errors %}
+                <text class='error'>*{{ error }}</text>
+            {% endfor %}
+        </div>
+        <div style="width:50%;float:left;">
+            {{ form.minors.label }}
+            <br>
+            {{ form.minors }}
+            <br>
+            {% for error in form.minors.errors %}
+                <text class='error'>*{{ error }}</text>
+            {% endfor %}
+        </div>
+        </center>
+    </div><hr><br>
+    <center><b>Do you intend to participate in the May {{ year_up }} Graduation Ceremony?</b></center><br>
+    <div style="width:100%;">
+        <center>
+        {{ form.participate_in_graduation.errors }}
+        {{ form.participate_in_graduation.label }}
+        {{ form.participate_in_graduation }}</center><br>
+    </div><hr><br>
+    <center><b>Please choose one:</b></center><br>
+    <div style="width:100%;">
+        {% for error in form.finish_requirements_by.errors %}
+                <text class='error'>*{{ error }}</text>
+        {% endfor $%}
+        <br>
+        {% for thing in form.finish_requirements_by %}
+        {{ thing }}<br>
+        {% endfor %}
+        <br>
+        <b>Note: Carthage allows you to participate in the May {{ year_up }} graduation ceremony if you can complete
+        all of your remaining graduation requirements by taking 12 or fewer credits in the Summer of {{ year_up }}. All
+        graduation requirements must be completed before the degree can be conferred</b>
+    </div><hr><br>
+    <center><b>Please indicate when you intend to Student Teach (for student teachers only):</b></center><br>
+    <div style="width:100%;">
+        {% for error in form.when_teach.errors %}
+                <text class='error'>*{{ error }}</text>
+        {% endfor %}
+        <center>
+            {% for thing in form.when_teach %}
+                {{ thing }}<br>
+            {% endfor %}
+        </center><br>
+    </div><hr><br>
+    <center><b>Please list the best phone number where we can reach you:</b></center>
+    <div style="width:100%;">
+        {{ form.best_phone.errors }}
+        {{ form.best_phone.label }}:
+        {{ form.best_phone }}
+        <text class='good' id='best_phone_yes'>Good</text>
+        <text class='bad' id='best_phone_no'>Invalid</text><br>
+        {{ form.cell.errors }}
+        {{ form.cell.label }}:
+        {{ form.cell }}
+        <text class='good' id='cell_yes'>Good</text>
+        <text class='bad' id='cell_no'>Invalid</text><br>
+    </div><hr><br>
+    <center><b>Please give the best email where we can reach you:</b></center>
+    <div style="width:100%;">
+        {{ form.email.errors }}
+        {{ form.email.label }}
+        {{ form.email }}
+        <text class='good' id='email_yes'>Good</text>
+        <text class='bad' id='email_no'>Invalid</text><br>
+    </div><hr><br>
+    <center><b>Where should we send your diploma? Please list an address that will remain
+    current at least three months after you complete your degree:</b></center>
+    <div style="width:100%;">
+        <div>
+            {{ form.address.errors }}
+            {{ form.address.label }}
+            {{ form.address }}<br>
+        </div>
+    </div>
+    <div style="width:100%;">
+        <div>
+            {{ form.city.errors }}
+            {{ form.city.label }}
+            {{ form.city }}
+        </div>
+    </div>
+    <div style="width:100%;">
+        <div>
+            {{ form.state.errors }}
+            {{ form.state.label }}
+            {{ form.state }}
+            <text class='good' id='state_yes'>Good</text>
+            <text class='bad' id='state_no'>Invalid</text>
+        </div>
+    </div>
+    <div style="width:100%;">
+        <div>
+            {{ form.zipcode.errors }}
+            {{ form.zipcode.label }}
+            {{ form.zipcode }}
+            <text class='good' id='zipcode_yes'>Good</text>
+            <text class='bad' id='zipcode_no'>Invalid</text>
+        </div>
+    </div><br>
+    <center><b>I certify that the information that I have provided above is accurate. If any changes
+    are necessary I will notify the Registrar's Office immediately.</b></center>
+        <center><input type="submit" value="Submit"></center>
+    </form>
+</body>
+<script>
+    var element = document.getElementById('id_fname');
+    element.oninput = function(){
+        var n=document.getElementById('fname_no');
+        var y=document.getElementById('fname_yes');
+        if (!validate_fname())
+        {
+            n.style.display='inline';
+            y.style.display='none';
+        }
+        else
+        {
+            n.style.display='none';
+            y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_mname');
+    element.oninput = function(){
+        var n=document.getElementById('mname_no');
+        var y=document.getElementById('mname_yes');
+        if (!validate_mname())
+        {
+            n.style.display='inline';
+            y.style.display='none';
+        }
+        else
+        {
+            n.style.display='none';
+            y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_lname');
+    element.oninput = function(){
+        var n=document.getElementById('lname_no');
+        var y=document.getElementById('lname_yes');
+        if (!validate_lname())
+        {
+            n.style.display='inline';
+            y.style.display='none';
+        }
+        else
+        {
+            n.style.display='none';
+            y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_student_id');
+    element.oninput = function(){
+        var n=document.getElementById('id_no');
+        var y=document.getElementById('id_yes');
+        if (!validate_student_id())
+        {
+            n.style.display='inline';
+            y.style.display='none';
+        }
+        else
+        {
+            n.style.display='none';
+            y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_email');
+    element.oninput = function(){
+        var n=document.getElementById('email_no');
+        var y=document.getElementById('email_yes');
+        if(!validate_email()){
+            n.style.display='inline'; y.style.display='none';
+        }
+        else {
+            n.style.display='none'; y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_best_phone');
+    element.oninput = function(){
+        var n=document.getElementById('best_phone_no');
+        var y=document.getElementById('best_phone_yes');
+        if(!validate_best_phone()){
+            n.style.display='inline'; y.style.display='none';
+        }
+        else {
+            n.style.display='none'; y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_cell');
+    element.oninput = function(){
+        var n=document.getElementById('cell_no');
+        var y=document.getElementById('cell_yes');
+        if(!validate_cell()){
+            n.style.display='inline'; y.style.display='none';
+        }
+        else {
+            n.style.display='none'; y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_state');
+    element.oninput = function(){
+        var n=document.getElementById('state_no');
+        var y=document.getElementById('state_yes');
+        if(!validate_state()){
+            n.style.display='inline'; y.style.display='none';
+        }
+        else {
+            n.style.display='none'; y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_zipcode');
+    element.oninput = function(){
+        var n=document.getElementById('zipcode_no');
+        var y=document.getElementById('zipcode_yes');
+        if(!validate_zipcode()){
+            n.style.display='inline'; y.style.display='none';
+        }
+        else {
+            n.style.display='none'; y.style.display='inline';
+        }
+    };
+</script>
+</html>

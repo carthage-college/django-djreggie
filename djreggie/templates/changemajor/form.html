@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset="utf-8" />
+    <title>Change Major/Minor Form</title>
+    <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    <script type='text/javascript'>
+        function validate_student_id(){
+            var id = document.getElementById('id_student_id');
+            var val = id.value;
+            var patt = new RegExp('^\\d{5,7}$');
+            return patt.test(val);            
+        }
+        function validate_name(){
+            var id = document.getElementById('id_name');
+            var val = id.value;
+            var patt = new RegExp('^[a-zA-Z\']+[a-zA-Z\\-\\s\']+$');
+            return patt.test(val);        
+        }
+        function validate_advisor(){
+            var id = document.getElementById('id_advisor');
+            var val = id.value;
+            var patt = new RegExp('^[a-zA-Z\']+[a-zA-Z\\-\\s\']+$');
+            return patt.test(val);        
+        }
+    </script>
+</head>
+<body>
+<div>
+{% if submitted %}
+        <h2>Thank You</h2>
+{% endif %}
+</div>
+    <div>
+        <div class='sidebar'>
+            <img src='http://imageshack.us/a/img651/7008/carthage1.png'></img>
+        </div>
+        <div class='mainbar'>
+            <div class='header'>
+                <text class='headertext'>Change Major / Minor Form</text>
+            </div><br>
+            {{ form.non_field_errors }}
+            <form action='' method='post'>{% csrf_token %}
+                <text class='separator'>Student information</text><hr>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.student_id.label }}</text></td>
+                        <td>{{ form.student_id }}</td>
+                        <td>
+                            <img class='hidden' id='student_id_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='student_id_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.student_id.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.name.label }}</text></td>
+                        <td>{{ form.name }}</td>
+                        <td>
+                            <img class='hidden' id='name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.name.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.year.label }}</text></td>
+                        <td>{{ form.year }}</td>
+                        <td>
+                            {% for e in form.year.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text class='separator'>Major / Minor information</text><hr>
+               <div style='width:100%;'><text>{{ form.majors.help_text }}</text></div>
+                <div style='width:100%;'><text>I would like my majors/minors listed as..</text></div>
+                <table>
+                
+                    <tr>
+                     
+                        <td><text class='fieldlabel'>{{ form.majors.label }}</td>
+                        <td>{{ form.majors }}</td>
+                        <td>
+                            {% for e in form.majors.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.minors.label }}</td>
+                        <td>{{ form.minors }}</td>
+                        <td>
+                            {% for e in form.minors.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text class='separator'>Advisor information</text><hr>
+                <text>I would like to change my advisor to.. (leave blank for no change)</text>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.advisor.label }}</td>
+                        <td>{{ form.advisor }}</td>
+                        <td>
+                            <img class='hidden' id='advisor_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='advisor_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.advisor.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br><br>
+                <input type="submit" name="submit" value="Submit form">
+            </form>
+        </div>
+    </div>
+</body>
+    <script type='text/javascript'>
+ 
+        var element = document.getElementById('id_student_id');
+        element.onblur = function(){
+            var n=document.getElementById('student_id_no');
+            var y=document.getElementById('student_id_yes');
+            if(!validate_student_id()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        var element = document.getElementById('id_name');
+        element.onblur = function(){
+            var n=document.getElementById('name_no');
+            var y=document.getElementById('name_yes');
+            if(!validate_name()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        var element2 = document.getElementById('id_advisor');
+        element2.onblur = function(){
+            var n=document.getElementById('advisor_no');
+            var y=document.getElementById('advisor_yes');
+            if(!validate_advisor()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };        
+    </script>
+</html>

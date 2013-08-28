@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv='Content-Type' content='Type=text/html; charset=utf-8'>
+    <title>Consent Fam Form</title>
+    <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    <script type='text/javascript'>
+        function validate_name(){
+            var id = document.getElementById('id_Full_Name_of_Student');
+            var val = id.value;
+            var patt = new RegExp('^[a-zA-Z\']+[a-zA-Z\\-\\s\']+$');
+            return patt.test(val);        
+        }
+        function validate_student_id(){
+            var id = document.getElementById('id_Carthage_ID_Number');
+            var val = id.value;
+            var patt = new RegExp('^\\d{5,7}$');
+            return patt.test(val);            
+        }
+    </script>
+</head>
+<body>
+<div>
+{% if submitted %}
+        <h2>Thank You</h2>
+{% endif %}
+</div>
+    <div>
+        <div class='sidebar'>
+            <img src='http://imageshack.us/a/img651/7008/carthage1.png'></img>
+        </div>
+        <div class='mainbar'>
+            <div class='header'>
+                <text class='headertext'>Authorization to Release Non-Directory Information Form</text>
+            </div><br>
+            {{ form.non_field_errors }}
+            <form action='' method='post'>{% csrf_token %}
+                {{ Parent_formset.management_form }}
+                <text class='separator'>General information</text><hr>
+                <p>
+                    Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not<br>
+                    release student academic records to third parties involving non-directory information unless a valid Authorization to<br>
+                    Release Non-Directory Information form is on file. This form lists the record (s) to be released and to whom.<br><br>
+                    By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified<br>
+                    records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the<br>
+                    student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not<br>
+                    affect disclosures previously made by the College prior to the receipt of said written revocation<br><br>
+                    I authorize the full verbal and written disclosure of my student record to the parent(s) or third parties listed below in the following areas.<br>
+                    <ul>
+                        <li>
+                            <b>Academic Records</b> including such items, but not limited to, Attendance, Academic Standing, Homework, Tests,
+                            Mid-Term Grades, Final Grades, Grade Point Averages, Progression Towards Graduation/Program Audit.
+                        </li>
+                        <li>
+                            <b>Student Financial Records</b> including such items, but not limited to, Business Office Account, Outstanding Balances,
+                            Financial Aid Packages, FASFA Information, Scholarships.
+                        </li>
+                    </ul>
+                    <p>
+                        {{ form.Which_information_would_you_like_to_share.label }}
+                        {{ form.Which_information_would_you_like_to_share }}
+                        {% if form.Which_information_would_you_like_to_share.errors %}
+                            {% for e in form.Which_information_would_you_like_to_share.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        {% endif %}
+                    </p>
+                </p><br>
+                <text class='separator'>Student information</text><hr>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.Carthage_ID_Number.label }}</text></td>
+                        <td>{{ form.Carthage_ID_Number }}</td>
+                        <td>
+                            <img class='hidden' id='id_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='id_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.Carthage_ID_Number.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.Full_Name_of_Student.label }}</text></td>
+                        <td>{{ form.Full_Name_of_Student }}</td>
+                        <td>
+                            <img class='hidden' id='name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.Full_Name_of_Student.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text class='separator'>Disclosure of information</text><hr>
+                <text>Below, please indicate the names of the people who you will disclose information with, and their relation to you</text>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>Name</text></td>
+                        <td><text class='fieldlabel'>Relation</text></td>
+                    </tr>
+                    {% for form in Parent_formset %}
+                    <tr>
+                        {% for field in form %}
+                        <td>
+                            {{ field }}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for field in form %}
+                        <td>
+                            {% for e in field.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table><br>
+                <input type="submit" value="Add Another Parent or Third Party" id="add" name="add"><br><br>
+                <input type="submit" name="submit" value="Submit form">
+            </form>
+        </div>
+    </div>
+</body>
+    {% if bool %}
+        <script type='text/javascript'>
+            //windows.scrollTo(0,document.body.scrollHeight);
+        </script>
+    {% endif %}
+    <script type='text/javascript'>
+        var element = document.getElementById('id_Full_Name_of_Student');
+        element.onblur = function(){
+            var n=document.getElementById('name_no');
+            var y=document.getElementById('name_yes');
+            if (!validate_name())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_Carthage_ID_Number');
+        element.onblur = function(){
+            var n=document.getElementById('id_no');
+            var y=document.getElementById('id_yes');
+            if (!validate_student_id())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+    </script>
+</html>

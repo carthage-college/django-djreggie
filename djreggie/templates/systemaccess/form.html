@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8' />
+    <title>System Access Form</title>
+    <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    <script type='text/javascript'>
+        function validate_carthage_id(){
+            var id = document.getElementById('id_carthage_id');
+            var val = id.value;
+            var patt = new RegExp('^\\d{5,7}$');
+            return patt.test(val);
+        }
+        function validate_full_name(){
+            var id = document.getElementById('id_full_name');
+            var val = id.value;
+            var patt = new RegExp('^.+$');
+            return patt.test(val);
+        }
+        function validate_department(){
+            var id = document.getElementById('id_department');
+            var val = id.value;
+            var patt = new RegExp('^.+$');
+            return patt.test(val);
+        }
+        function validate_position(){
+            var id = document.getElementById('id_position');
+            var val = id.value;
+            var patt = new RegExp('^.+$');
+            return patt.test(val);
+        }
+        function validate_work_phone(){
+            var id = document.getElementById('id_work_phone');
+            var val = id.value;
+            var patt = new RegExp('^[\\d]{3}[\\s\-\.]?[\\d]{3}[\\s\-\.]?[\\d]{4}$');
+            return patt.test(val);
+        }
+                
+    </script>
+</head>
+<body>
+    <div>
+    {% if submitted %}
+        <h2>Thank You</h2>
+        {% endif %}
+    </div>
+    <div>
+        <div class='sidebar'>
+            <img src='http://imageshack.us/a/img651/7008/carthage1.png'></img>
+        </div>
+        <div class='mainbar'>
+            <div class='header'>
+                <text class='headertext'>System Access Form</text>
+            </div><br>
+            {{ form.non_field_errors }}
+            <form action='' method='post'>{% csrf_token %}
+                <text class='separator'>Personal information</text><hr>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.carthage_id.label }}</text></td>
+                        <td>{{ form.carthage_id }}</td>
+                        <td>
+                            {% for e in form.carthage_id.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.full_name.label }}</text></td>
+                        <td>{{ form.full_name }}</td>
+                        <td>
+                            {% for e in form.full_name.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.department.label }}</text></td>
+                        <td>{{ form.department }}</td>
+                        <td>
+                            {% for e in form.department.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.position.label }}</text></td>
+                        <td>{{ form.position }}</td>
+                        <td>
+                            {% for e in form.position.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.work_phone.label }}</text></td>
+                        <td>{{ form.work_phone }}</td>
+                        <td>
+                            {% for e in form.work_phone.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text class='separator'>Permissions</text><hr>
+                <table border='1'>
+                    <tr>
+                        <th>General</th>
+                        <th></th>
+                        <th>Special</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <td>{{ form.email }}</td>
+                        <td>{{ form.email.label }}</td>
+                        <td>{{ form.control }}</td>
+                        <td>{{ form.control.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.novell_file_and_print_access }}</td>
+                        <td>{{ form.novell_file_and_print_access.label }}</td>
+                        <td>{{ form.programming }}</td>
+                        <td>{{ form.programming.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.eracer }}</td>
+                        <td>{{ form.eracer.label }}</td>
+                        <td>{{ form.admissions }}</td>
+                        <td>{{ form.admissions.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.common }}</td>
+                        <td>{{ form.common.label }}</td>
+                        <td>{{ form.recruiting }}</td>
+                        <td>{{ form.recruiting.label }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <th>Special</th>
+                        <td>{{ form.student_billing }}</td>
+                        <td>{{ form.student_billing.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.financial }}</td>
+                        <td>{{ form.financial.label }}</td>
+                        <td>{{ form.student }}</td>
+                        <td>{{ form.student.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.student_services }}</td>
+                        <td>{{ form.student_services.label }}</td>
+                        <td>{{ form.management }}</td>
+                        <td>{{ form.management.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.financial_aid }}</td>
+                        <td>{{ form.financial_aid.label }}</td>
+                        <td>{{ form.registrar }}</td>
+                        <td>{{ form.registrar.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.display_registration }}</td>
+                        <td>{{ form.display_registration.label }}</td>
+                        <td>{{ form.development }}</td>
+                        <td>{{ form.development.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.donor_accounting }}</td>
+                        <td>{{ form.donor_accounting.label }}</td>
+                        <td>{{ form.planned_giving }}</td>
+                        <td>{{ form.planned_giving.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.institutional_advancement_grants }}</td>
+                        <td>{{ form.institutional_advancement_grants.label }}</td>
+                        <td>{{ form.alumni }}</td>
+                        <td>{{ form.alumni.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.phonathon }}</td>
+                        <td>{{ form.phonathon.label }}</td>
+                        <td>{{ form.health }}</td>
+                        <td>{{ form.health.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.add_id_records }}</td>
+                        <td>{{ form.add_id_records.label }}</td>
+                        <td>{{ form.registrar_administration }}</td>
+                        <td>{{ form.registrar_administration.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.financial_administration }}</td>
+                        <td>{{ form.financial_administration.label }}</td>
+                        <td>{{ form.admissions_administration }}</td>
+                        <td>{{ form.admissions_administration.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.training }}</td>
+                        <td>{{ form.training.label }}</td>
+                        <td>{{ form.cisco_vpn_remote_access_to_network }}</td>
+                        <td>{{ form.cisco_vpn_remote_access_to_network.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.administrative_access_to_user_machines }}</td>
+                        <td>{{ form.administrative_access_to_user_machines.label }}</td>
+                        <td>{{ form.network_security_administration }}</td>
+                        <td>{{ form.network_security_administration.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.system_administration }}</td>
+                        <td>{{ form.system_administration.label }}</td>
+                        <td>{{ form.cognos }}</td>
+                        <td>{{ form.cognos.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.author }}</td>
+                        <td>{{ form.author.label }}</td>
+                        <td>{{ form.consumer }}</td>
+                        <td>{{ form.consumer.label }}</td>
+                    </tr>
+                </table><br>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.reason_for_change.label }}</text></td>
+                        <td>{{ form.reason_for_change }}</td>
+                        <td>
+                            {% for e in form.reason_for_change.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr id='othertable'>
+                        <td><text class='fieldlabel'>{{ form.other_textbox.label }}</text></td>
+                        <td>{{ form.other_textbox }}</td>
+                        <td>
+                        </td>
+                    </tr>
+                </table><br><br>
+                <input type="Submit" value="Submit form"></submit>
+            </form>
+        </div>
+    </div>
+    <script type='text/javascript'>
+        document.getElementById('othertable').style.display = 'none';
+        
+        if( document.getElementsByName('reason_for_change').value == 'OTH' ){
+            document.getElementById('othertable').style.display = 'table-row';
+        }
+    </script>
+</body>
+    <script type='text/javascript'>
+        var element = document.getElementById('id_carthage_id');
+        element.oninput = function(){
+            var n=document.getElementById('carthage_id_no');
+            var y=document.getElementById('carthage_id_yes');
+            if(!validate_carthage_id()){
+                n.style.display='inline'; y.style.display='none';
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_full_name');
+        element.oninput = function(){
+            var n=document.getElementById('full_name_no');
+            var y=document.getElementById('full_name_yes');
+            if(!validate_full_name()){
+                n.style.display='inline'; y.style.display='none';
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_department');
+        element.oninput = function(){
+            var n=document.getElementById('department_no');
+            var y=document.getElementById('department_yes');
+            if(!validate_department()){
+                n.style.display='inline'; y.style.display='none';
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_position');
+        element.oninput = function(){
+            var n=document.getElementById('position_no');
+            var y=document.getElementById('position_yes');
+            if(!validate_position()){
+                n.style.display='inline'; y.style.display='none';
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_work_phone');
+        element.oninput = function(){
+            var n=document.getElementById('work_phone_no');
+            var y=document.getElementById('work_phone_yes');
+            if(!validate_work_phone()){
+                n.style.display='inline'; y.style.display='none';
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        element = document.getElementsByName('reason_for_change');
+        for (var i = 0; i < element.length; i++)
+        {
+            element[i].onclick = function() {
+            var value = this.value;
+            var othervar = document.getElementById('othertable'); 
+            if (value != "OTH"){
+                othervar.style.display = 'none';
+                }
+            else{
+                othervar.style.display = 'table-row';
+                }
+            };
+        }
+    </script>
+</html>

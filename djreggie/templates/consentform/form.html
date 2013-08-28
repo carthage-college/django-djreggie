@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8' />
+    <title>Consent Form</title>
+    <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    <script type='text/javascript'>
+        function validate_name(){
+            var id = document.getElementById('id_name');
+            var val = id.value;
+            var patt = new RegExp('^[a-zA-Z\']+[a-zA-Z\\-\\s\']+$');
+            return patt.test(val);        
+        }
+        function validate_student_id(){
+            var id = document.getElementById('id_student_ID');
+            var val = id.value;
+            var patt = new RegExp('^\\d{5,7}$');
+            return patt.test(val);            
+        }
+    </script>
+</head>
+<body>
+<div>
+{% if submitted %}
+        <h2>Thank You</h2>
+{% endif %}
+</div>
+    <div>
+        <div class='sidebar'>
+            <img src='http://imageshack.us/a/img651/7008/carthage1.png'></img>
+        </div>
+        <div class='mainbar'>
+            <div class='header'>
+                <text class='headertext'>Request and Consent for the Release of Directory Information Form</text>
+            </div><br>
+            <form action='' method='post'>{% csrf_token %}
+                {{ form.non_field_errors }}
+                <text class='separator'>General information</text><hr>
+                <p>
+                    The Family Educational Rights and Privacy Act("FERPA" - 20 U.S.C.  1232g; 34 CFR Part 99) is a
+                    Federal law that protects the privacy of student education records. The following form is intended to
+                    authorize the disclosure of directory information that is limited and generally found not to be harmful or invasive.
+                    Carthage College considers the following types on information as directory information:
+                </p>
+                <ul>
+                    <li>Student's name</li>
+                    <li>Mailing and email address</li>
+                    <li>Telephone Listing</li>
+                    <li>Date and place of birth</li>
+                    <li>Photographs</li>
+                    <li>Dates of enrollment</li>
+                    <li>Major field of study</li>
+                    <li>Enrollment status (e.g., full-time or part-time)</li>
+                    <li>Classification(e.g., Freshman, Sophomore, Junior, Senior)</li>
+                    <li>Degrees earned and dates of graduation including anticipated graduation dates</li>
+                    <li>Awards and honors received</li>
+                    <li>Participation in officially recognized activities and sports</li>
+                    <li>Weight and height of members of athletic teams</li>
+                    <li>The most recent previous educational agency or institution attended</li>
+                </ul>
+                <p>
+                    At its discretion, the College may provide directory information to the public in accordance with the provisions of FERPA
+                </p><br>
+                <text class='separator'>Personal information</text><hr>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.student_ID.label }}</text></td>
+                        <td>{{ form.student_ID }}</td>
+                        <td>
+                            <img class='hidden' id='student_ID_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='student_ID_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.student_ID.errors %}
+                                <text class ='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.name.label }}</text></td>
+                        <td>{{ form.name }}</td>
+                        <td>
+                            <img class='hidden' id='name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.name.errors %}
+                                <text class ='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.consent.label }}</text></td>
+                        <td>{{ form.consent }}</td>
+                        <td>
+                            {% for e in form.consent.errors %}
+                                <text class ='error'>*{{ e }}</text>
+                            {% endfor %}
+                            
+                        </td>
+                    </tr>
+                </table>
+                <text id='hidden' style='display:none;'>
+                    *I understand the implications of this decision to withold such directory information. Any requests for such information will be refused.
+                </text><br><br>
+                <input type="submit" name="submit" value="Submit form">
+            </form>
+        <div>
+        </div>
+    </div>    
+</body>
+<script>
+var element = document.getElementById('id_name');
+    element.onblur = function(){
+        var n=document.getElementById('name_no');
+        var y=document.getElementById('name_yes');
+        if (!validate_name())
+        {
+            n.style.display='inline';
+            y.style.display='none';
+        }
+        else
+        {
+            n.style.display='none';
+            y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_student_ID');
+    element.onblur = function(){
+        var n=document.getElementById('student_ID_no');
+        var y=document.getElementById('student_ID_yes');
+        if (!validate_student_id())
+        {
+            n.style.display='inline';
+            y.style.display='none';
+        }
+        else
+        {
+            n.style.display='none';
+            y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_consent');
+    element.onchange = function(){
+        var hidden = document.getElementById('hidden');
+        var val = element.value;
+        if(val == 'NOCONSENT'){
+            hidden.style.display='inline';
+        }
+        else {
+            hidden.style.display='none';
+        }
+    };
+</script>
+</html>

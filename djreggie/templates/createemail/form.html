@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8' />
+    <title>Create Email Form</title>
+    <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    <script type='text/javascript'>
+        function validate_unique_id(){
+            var id = document.getElementById('id_unique_id');
+            var val = id.value;
+            var patt = new RegExp('^\\d{5,7}$');
+            return patt.test(val);
+        }
+        function validate_requested_by(){
+             var id = document.getElementById('id_requested_by');
+            var val = id.value;
+            var patt = new RegExp('^.+$');
+            return patt.test(val);       
+        }
+        function validate_name_of_account_requested(){
+             var id = document.getElementById('id_name_of_account_requested');
+            var val = id.value;
+            var patt = new RegExp('^[A-Za-z0-9\.\_\%\+\-]+@[A-Za-z0-9\.\-]+\\.[a-zA-Z]{2,4}$');
+            return patt.test(val);       
+        }
+        function validate_purpose_of_account(){
+             var id = document.getElementById('id_purpose_of_account');
+            var val = id.value;
+            var patt = new RegExp('.+');
+            return patt.test(val);       
+        }
+        function validate_names_of_all_users(){
+             var id = document.getElementById('id_names_of_all_users');
+            var val = id.value;
+            var patt = new RegExp('.+');
+            return patt.test(val);       
+        }
+        function validate_needed_until(){
+            var id = document.getElementById('id_needed_until');
+            var val = id.value;
+            var newdate = new Date();
+            var value = val.split("-");
+            var inputdate = new Date(value[0],value[1]-1,value[2]);
+            if (inputdate.getTime() < newdate.getTime()){
+                return false;
+                }
+            else{
+                return true;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div>
+    {% if submitted %}
+            <h2>Thank You</h2>
+    {% endif %}
+    </div>
+    <div>
+        <div class='sidebar'>
+        </div>
+        <div class='mainbar'>
+        </div>
+    </div>
+    
+    
+    
+    
+    
+    
+    <form action='' method='post'>{% csrf_token %}
+        <table>
+            <tr>
+                <td>
+                    {{ form.unique_id.label }}
+                    <text id='unique_id_no' style='display:none;color:red;'>N</text>
+                    <text id='unique_id_yes' style='display:none;color:green;'>Y</text>
+                </td>
+                <td>
+                    {{ form.requested_by.label }}
+                    <text id='requested_by_no' style='display:none;color:red;'>N</text>
+                    <text id='requested_by_yes' style='display:none;color:green;'>Y</text>
+                </td>
+                <td>
+                    {{ form.name_of_account_requested.label }}
+                    {{ form.name_of_account_requested.errors }}
+                    <text id='name_of_account_requested_no' style='display:none;color:red;'>N</text>
+                    <text id='name_of_account_requested_yes' style='display:none;color:green;'>Y</text>
+                </td>
+                <!--<td>{{ form.date.label }}</td>-->
+                <td>
+                    {{ form.needed_until.label }}
+                    <text id='needed_until_no' style='display:none;color:red;'>N</text>
+                    <text id='needed_until_yes' style='display:none;color:green;'>Y</text>
+                </td>
+            </tr>
+            <tr>
+                <td>{{ form.unique_id }}</td>
+                <td>{{ form.requested_by }}</td>
+                <td>{{ form.name_of_account_requested }}</td>
+                <!--<td>{{ form.date }}</td>-->
+                <td>{{ form.needed_until }}</td>
+            </tr>
+            <tr>
+                <td>{% for e in form.unique_id.errors %}<text class='error'>{{ e }}</text>{% endfor %}</td>
+                <td>{% for e in form.requested_by.errors %}<text class='error'>{{ e }}</text>{% endfor %}</td>
+                <td>{% for e in form.name_of_account_requested.errors %}<text class='error'>{{ e }}</text>{% endfor %}</td>
+                <!--<td>{% for e in form.date.errors %}<text class='error'>{{ e }}</text>{% endfor %}</td>-->
+                <td>{% for e in form.needed_until.errors %}<text class='error'>{{ e }}</text>{% endfor %}</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>
+                    {{ form.purpose_of_account.label }} {% for e in form.purpose_of_account.errors %}<text class='error'>{{ e }}</text>{% endfor %}
+                </td>
+                <td>
+                    {{ form.names_of_all_users.label }} {% for e in form.names_of_all_users.errors %}<text class='error'>{{ e }}</text>{% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ form.purpose_of_account }}</td>
+                <td>{{ form.names_of_all_users }}</td>
+            </tr>
+            <tr>
+                <td>
+                    <text id='purpose_of_account_no' style='display:none;color:red;'>N</text>
+                    <text id='purpose_of_account_yes' style='display:none;color:green;'>Y</text>
+                </td>
+                <td>
+                    <text id='names_of_all_users_no' style='display:none;color:red;'>N</text>
+                    <text id='names_of_all_users_yes' style='display:none;color:green;'>Y</text>
+                </td>
+            </tr>
+        </table>
+    <input type="submit" value="Submit">
+    </form>
+</body>
+    <script type='text/javascript'>
+        var element = document.getElementById('id_unique_id');
+        element.onblur = function() {
+            var n=document.getElementById('unique_id_no');
+            var y=document.getElementById('unique_id_yes');
+            if(!validate_unique_id()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_requested_by')
+        element.onblur = function() {
+            var n=document.getElementById('requested_by_no');
+            var y=document.getElementById('requested_by_yes');
+            if(!validate_requested_by()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_name_of_account_requested')
+        element.onblur = function() {
+            var n=document.getElementById('name_of_account_requested_no');
+            var y=document.getElementById('name_of_account_requested_yes');
+            if(!validate_name_of_account_requested()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_needed_until')
+        element.onblur = function() {                               
+            var n=document.getElementById('needed_until_no');
+            var y=document.getElementById('needed_until_yes');
+            if(!validate_needed_until()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_purpose_of_account')
+        element.oninput = function() {                               
+            var n=document.getElementById('purpose_of_account_no');
+            var y=document.getElementById('purpose_of_account_yes');
+            if(!validate_purpose_of_account()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_names_of_all_users')
+        element.oninput = function() {                               
+            var n=document.getElementById('names_of_all_users_no');
+            var y=document.getElementById('names_of_all_users_yes');
+            if(!validate_names_of_all_users()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };        
+    </script>
+</html>

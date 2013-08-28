@@ -1,0 +1,276 @@
+<!doctype html>
+    <style type='text/css'>
+        .errorlist, .error {
+            color: red;
+        }
+        td {
+            text-align:center;
+        }
+        #attached {
+            padding-left:5em;
+        }
+    </style>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>jQuery UI Accordion - Default functionality</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $( "#accordion" ).accordion({
+                autoHeight: false,
+                heightStyle: "content",
+                collapsible: true,
+                navigation: true,
+                active: false
+            });
+        });
+    </script>
+</head>
+<body>
+    <div>
+    {% if submitted %}
+        <h2>Thank You</h2>
+    {% endif %}
+    </div>
+    {% block content %}
+        <h1>{{ year }}-{{ year2 }} Verification Worksheet Dependent Student</h1>
+        <div id="accordion">
+            <h3>What is this form?</h3>
+            <div>
+                <p>Your {{ year }}-{{ year2 }} Free Application for Federal Student Aid (FAFSA) was selected for review in a process called verification. The law says<br>
+                that before awarding Federal Student Aid, we may ask you to confirm the information you and your parents reported on your FAFSA. To<br>
+                verify that you provided correct information the financial aid administrator at your school will compare your FAFSA with the information<br> 
+                on this worksheet and with any other required documents. If there are differences, your FAFSA information may need to be corrected.<br>
+                You and at least one parent must complete and sign this worksheet, attach any required documents, and submit the form and other required<br>
+                documents to the financial aid administrator at your school. Your school may ask for additional information. If you have questions about<br>
+                verification, contact your financial aid administrator as soon as possible so that your financial aid will not be delayed.</p>
+            </div>
+            <h3>Dependent Student's Information</h3>
+            <div>
+                <form action="" method="post" enctype="multipart/form-data"> {% csrf_token %}    
+                    {{formdepend.fname.errors}}
+                    {{formdepend.fname.label}}
+                    {{formdepend.fname}}
+                    {{formdepend.mname.errors}}
+                    {{formdepend.mname.label}}
+                    {{formdepend.mname}}
+                    {{formdepend.lname.errors}}
+                    {{formdepend.lname.label}}
+                    {{formdepend.lname}}<br>
+                    {{formdepend.ssn.errors}}
+                    {{formdepend.ssn.label}}
+                    {{formdepend.ssn}}
+                    {{formdepend.address.errors}}
+                    {{formdepend.address.label}}
+                    {{formdepend.address}}
+                    {{formdepend.dob.errors}}
+                    {{formdepend.dob.label}}
+                    {{formdepend.dob}}<br>
+                    {{formdepend.city.errors}}
+                    {{formdepend.city.label}}
+                    {{formdepend.city}}        
+                    {{formdepend.state.errors}}
+                    {{formdepend.state.label}}
+                    {{formdepend.state}}
+                    {{formdepend.zip.errors}}
+                    {{formdepend.zip.label}}
+                    {{formdepend.zip}}<br>
+                    {{formdepend.email.errors}}
+                    {{formdepend.email.label}}
+                    {{formdepend.email}}
+                    {{formdepend.hphone.errors}}
+                    {{formdepend.hphone.label}}
+                    {{formdepend.hphone}}
+                    {{formdepend.cphone.errors}}
+                    {{formdepend.cphone.label}}
+                    {{formdepend.cphone}}<br><br>
+                    {{formdepend.file.errors}}	
+                    {{formdepend.file}}		
+            </div>
+            <h3>Dependent Student's Family Information</h3>
+            <div>
+                <p>List below the people in your parent(s)' household. Include:<br>
+                <ul>
+                    <li>Yourself and your parent(s) (including a stepparent) even if you don't live with your parent(s).</li>
+                    <li>Your parent(s)' other children if your parent(s) will provide more than half of their support from July 1, {{ year }}, through
+                    June 30, {{ year2 }}, or if the other children would be required to provide parental information if they were completing a FAFSA<br>
+                    for {{ year }}-{{ year2 }}. Include children who meet either of these standards, even if they do not live with your parent(s).</li>
+                    <li> Other people if they now live with your parent(s) and your parent(s) provide more than half of their support and will <br>
+                    continue to provide more than half of their support through June 30, {{ year2 }}.</li>
+                </ul>
+                Include the name of the college for any household member, excluding your parent(s), who will be enrolled, at least half time in<br> 
+                a degree, diploma, or certificate program at a postsecondary educational institution any time between July 1, {{ year }}, and June <br>
+                30, {{ year2 }}.</p>
+
+                {{ formsetfam.management_form }}
+                <table border="1">
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Age</th>
+                        <th>Relationship</th>
+                        <th>College</th>
+                        <th>Will be Enrolled at Least Half Time</th>
+                    </tr>
+                    {% for form in formsetfam %}
+                        <tr>
+                            {% for field in form %}
+                            <td>
+                                {{ field.errors }}
+                                {{ field }}
+                            </td>    
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>                
+            </div>
+            <h3>Dependent Student's Income Information to Be Verified</h3>
+            <div>
+                <p>
+                    1. TAX RETURN FILERS-<b>Important Note</b>: If the student filed, or will file, an amended {{ year0 }} IRS tax return, the student must 
+                    contact the financial aid administrator before completing this section.<br><br>
+                    <b>Instructions:</b> Complete this section if the student, filed or will file a {{ year0 }} income tax return with the IRS. The best way to 
+                    verify income is by using the IRS Data Retrieval Tool that is part of FAFSA on the Web. If the student has not already used the 
+                    tool, go to FAFSA.gov, log in to the student's FAFSA record, select "Make FAFSA Corrections," and navigate to the 
+                    Financial Information section of the form. From there, follow the instructions to determine if the student is eligible to use the 
+                    IRS Data Retrieval Tool to transfer {{ year0 }} IRS income tax information into the student's FAFSA. It takes up to two weeks for 
+                    IRS income information to be available for the IRS Data Retrieval Tool for electronic IRS tax return filers, and up to eight
+                    weeks for paper IRS tax return filers. If you need more information about when, or how to use the IRS Data Retrieval Tool see 
+                    your financial aid administrator.<br><br>
+                    <b>For the first set of radio buttons, please choose whether :</b>
+                </p>
+                {{formsincome.useddata.errors}}
+                {{formsincome.useddata}}
+                <div id="attached">
+                    {{formsincome.attached.errors}}
+                    {{formsincome.attached}}
+                </div>
+                <p>
+                    2. TAX RETURN NONFILERS-complete this section if the student will not file and is not required to file a {{ year0 }} income tax 
+                    return with the IRS.<br><br><b>Check the box that applies:</b>
+                </p>
+                {{formsincome.employed.errors}}
+                {{formsincome.employed}}
+                {{ formsetstud.management_form }}
+                <table border="1">
+                    <tr>
+                        <th>Employer's Name</th>
+                        <th>{{ year0 }} Amount Earned</th>
+                        <th>IRS W-2 Attached?</th>
+                    </tr>
+                    {% for form in formsetstud %}
+                        <tr>
+                            {% for field in form %}
+                            <td>
+                                {{ field.errors }}
+                                {{ field }}
+                            </td>    
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>                
+            </div>
+            <h3>Parent's Income Information to Be Verified</h3>
+            <div>
+                <p>
+                    NOTE:If two parents were reported in Section B of this worksheet, the 
+                    instructions and certifications below refer and apply to both parents.<br><br>
+                    1.TAX RETURN FILERS-Important Note: If the student's parent(s), filed or will file, an amended {{ year0 }} IRS tax return the 
+                    student's financial aid administrator must be contacted before completing this section.<br><br>
+                    <b>Instructions:</b> Complete this section if the student's parent(s) filed or will file a {{ year0 }} income tax return with the IRS. The best 
+                    way to verify income is by using the IRS Data Retrieval Tool that is part of FAFSA on the Web. If the student's parent(s) has
+                    not already used the tool, the parent and the student should go to FAFSA.gov, log in to the student's FAFSA record, select 
+                    "Make FAFSA Corrections," and navigate to the Financial Information section of the form. From there, follow the instructions 
+                    to determine if the parent(s) is eligible to use the IRS Data Retrieval Tool to transfer {{ year0 }} IRS income tax information into the 
+                    student's FAFSA. It takes up to two weeks for IRS income information to be available for the IRS Data Retrieval Tool for 
+                    electronic IRS tax return filers, and up to eight weeks for paper IRS tax return filers. If you need more information about
+                    whether or how to use the IRS Data Retrieval Tool see the student's financial aid administrator.
+                    Check the box that applies:
+                </p>
+                {{formparincome.useddata2.errors}}
+                {{formparincome.useddata2}}
+                <div id="attached">
+                    {{formparincome.attached2.errors}}
+                    {{formparincome.attached2}}
+                </div>
+                <p>
+                    2. TAX RETURN NONFILERS-complete this section if the student will not file and is not required to file a {{ year0 }} income tax 
+                    return with the IRS.<br><br><b>Check the box that applies:</b>
+                </p>
+                {{formparincome.employed2.errors}}
+                {{formparincome.employed2}}
+                {{ formsetpar.management_form }}
+                <table border="1">
+                    <tr>
+                        <th>Employer's Name</th>
+                        <th>{{ year0 }} Amount Earned</th>
+                        <th>IRS W-2 Attached?</th>
+                    </tr>
+                    {% for form in formsetpar %}
+                    <tr>
+                        {% for field in form %}
+                        <td>
+                            {{ field.errors }}
+                            {{ field }}
+                        </td>    
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>                
+            </div>
+            <h3>Parent's Other Information to Be Verified</h3>
+            <div>
+                <p>
+                    1. Complete this section if someone in the student's parent's household (listed in Section B) received benefits from the<br>
+                    Supplemental Nutrition Assistance Program or SNAP (formerly known as food stamps) any time during the {{ year00 }} or {{ year0 }} calendar years.<br><br>
+                </p>
+                {{ formotherinformation.snapbenefits }}
+                {{ formotherinformation.snapbenefits.label }}
+                <p>
+                    2.Complete this section if one of the student's parents paid child support in {{ year0 }}<br>
+                </p>
+                {{ formotherinformation.childsupport }}
+                {{ formotherinformation.childsupport.label }}
+                {{ formsetpar.management_form }}
+                <table border="1">
+                    <tr>
+                        <th>Name of Person Who Paid <br>Child Support</th>
+                        <th>Name of Person to Whom Child<br>Support was Paid</th>
+                        <th>Name of Child for Whom<br>Support Was Paid</th>
+                        <th>Amount of Child<br>Support Paid in<br>{{ year0 }}</th>
+                    </tr>
+                    {% for form in formsetcs %}
+                        <tr>
+                            {% for field in form %}
+                            <td>
+                                {{ field.errors }}
+                                {{ field }}
+                            </td>    
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <h3>Submit form</h3>
+            <div>
+                <p>
+                    <b>If you purposely give false or misleading
+                    information on this worksheet, you may be fined, be<br>
+                    sentenced to jail, or both.</b>
+                </p>
+                I confirm on behalf of student and parent that this form contains correct information filled out to the best of our ability and knowledge.
+                <input type="submit" name="submit" value="Submit">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+</body>
+    <script type='text/javascript'>
+        {% if formdepend.fname.errors %}
+            //$("#accordion").accordion( "option", "active", 1 );
+            $("#accordion").accordion().active(3);
+        {% endif %}
+    </script>
+</html>

@@ -1,0 +1,210 @@
+<!doctype html>
+{% load staticfiles %}
+    <style>
+        .errorlist, .error {
+            color: red;
+        }
+        td {
+            text-align:center;
+        }
+        #attached {
+            padding-left:5em;
+        }
+    </style>
+ 
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>jQuery UI Accordion - Default functionality</title>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <link rel="stylesheet" type="text/css" href={% static "css/woot.css" %}>
+   <script>
+  $(function() {
+    $( "#accordion" ).accordion({
+        heightStyle: "content",
+        collapsible: true,
+        active: false,
+    });
+  });
+  </script>
+</head>
+<div>
+{% if submitted %}
+<h2>Thank You</h2>
+{% endif %}
+</div>
+{% block content %}
+<h1>2013-2014 Verification Worksheet Independent Student</h1>
+<div id="accordion">
+    <h3>What is this form?</h3>
+    <div>
+        <p>Your 2013-2014 Free Application for Federal Student Aid (FAFSA) was selected for review in a process called verification. The law says<br>
+that before awarding Federal Student Aid, we may ask you to confirm the information you reported on your FAFSA. To verify that you<br>
+provided correct information the financial aid administrator at your school will compare your FAFSA with the information on this<br>
+worksheet and with any other required documents. If there are differences, your FAFSA information may need to be corrected. You must<br>
+complete and sign this worksheet, attach any required documents, and submit the form and other required documents to the financial aid<br>
+administrator at your school. Your school may ask for additional information. If you have questions about verification, contact your<br>
+financial aid administrator as soon as possible so that your financial aid will not be delayed.</p>
+    </div>
+    <h3>Independent Student's Information</h3>
+    <div>
+        <form action="" method="post"> {% csrf_token %}    
+        {{formdepend.fname.errors}}
+        {{formdepend.fname.label}}
+        {{formdepend.fname}}
+        {{formdepend.mname.errors}}
+        {{formdepend.mname.label}}
+        {{formdepend.mname}}
+        {{formdepend.lname.errors}}
+        {{formdepend.lname.label}}
+        {{formdepend.lname}}<br>
+        {{formdepend.ssn.errors}}
+        {{formdepend.ssn.label}}
+        {{formdepend.ssn}}
+        {{formdepend.address.errors}}
+        {{formdepend.address.label}}
+        {{formdepend.address}}
+        {{formdepend.dob.errors}}
+        {{formdepend.dob.label}}
+        {{formdepend.dob}}<br>
+        {{formdepend.city.errors}}
+        {{formdepend.city.label}}
+        {{formdepend.city}}        
+        {{formdepend.state.errors}}
+        {{formdepend.state.label}}
+        {{formdepend.state}}
+        {{formdepend.zip.errors}}
+        {{formdepend.zip.label}}
+        {{formdepend.zip}}<br>
+        {{formdepend.email.errors}}
+        {{formdepend.email.label}}
+        {{formdepend.email}}
+        {{formdepend.hphone.errors}}
+        {{formdepend.hphone.label}}
+        {{formdepend.hphone}}
+        {{formdepend.cphone.errors}}
+        {{formdepend.cphone.label}}
+        {{formdepend.cphone}}
+    </div>
+    <h3>Independent Student's Family Information</h3>
+    <div>
+    <p>List below the people in your parent(s)' household. Include:<br>
+    <ul>
+        <li>Yourself.</li>
+        <li>Your spouse if you are married</li>
+        <li> Your children, if any, if you will provide more than half of their support from July 1, 2013, through June 30, 2014, or if<br>
+        the child would be required to provide your information if they were completing a FAFSA for 2013-2014. Include<br>
+        children who meet either of these standards, even if they do not live with you.</li>
+        <li>Other people if they now live with you and you provide more than half of their support and will continue to provide more<br>
+        than half of their support through June 30, 2014.</li>
+    </ul>
+        Include the name of the college for any household member who will be enrolled at least half time, in a degree, diploma, or<br>
+        certificate program at a postsecondary educational institution any time between July 1, 2013, and June 30, 2014.</p>
+
+        {{ formsetfam.management_form }}
+        <table border="1">
+        <tr>
+        <th>Full Name</th>
+        <th>Age</th>
+        <th>Relationship</th>
+        <th>College</th>
+        <th>Will be Enrolled at Least Half Time</th>
+        </tr>
+        {% for form in formsetfam %}
+        <tr>
+        {% for field in form %}
+        <td>
+        {{ field.errors }}
+        {{ field }}
+        </td>    
+        {% endfor %}
+        </tr>
+        {% endfor %}
+        </table>                
+    </div>
+    <h3>Independent Student's Income Information to Be Verified</h3>
+    <div>
+    <p>1.TAX RETURN FILERS-<b>Important Note:</b> If you (or your spouse, if married) filed, or will file, an amended 2012 IRS tax<br>
+return, you must contact your financial aid administrator before completing this section.<br><br>
+<b>Instructions:</b> Complete this section if you, the student, filed or will file a 2012 income tax return with the IRS. The best way to<br>
+verify income is by using the IRS Data Retrieval Tool that is part of FAFSA on the Web. If you have not already used the tool,<br>
+go to FAFSA.gov, log in to your FAFSA record, select "Make FAFSA Corrections," and navigate to the Financial Information<br>
+section of the form. From there, follow the instructions to determine if you are eligible to use the IRS Data Retrieval Tool to<br>
+transfer 2012 IRS income tax information into your FAFSA. It takes up to two weeks for IRS income information to be<br>
+available for the IRS Data Retrieval Tool for electronic IRS tax return filers, and up to eight weeks for paper IRS tax return<br>
+filers. If you need more information about when, or how to use the IRS Data Retrieval Tool see your financial aid<br>
+administrator.<br><br>
+    <b>For the first set of radio buttons, please choose whether :</b></p>
+    {{formsincome.useddata.errors}}
+    {{formsincome.useddata}}
+    <div id="attached">{{formsincome.attached.errors}}
+    {{formsincome.attached}}</div>
+    <p>2. TAX RETURN NONFILERS-complete this section if the student will not file and is not required to file a 2012 income tax 
+return with the IRS.<br><br><b>Check the box that applies:</b></p>
+    {{formsincome.employed.errors}}
+    {{formsincome.employed}}
+    {{ formsetstud.management_form }}
+        <table border="1">
+        <tr>
+        <th>Employer's Name</th>
+        <th>2012 Amount Earned</th>
+        <th>IRS W-2 Attached?</th>
+        </tr>
+        {% for form in formsetstud %}
+        <tr>
+        {% for field in form %}
+        <td>
+        {{ field.errors }}
+        {{ field }}
+        </td>    
+        {% endfor %}
+        </tr>
+        {% endfor %}
+        </table>                
+    </div>
+
+    <h3>Independent Student's Other Information to Be Verified</h3>
+    <div>
+    <p>1.Complete this section if someone in the student\'s household (listed in Section B) received benefits from the Supplemental<br>
+    Nutrition Assistance Program or SNAP (formerly known as food stamps) any time during the 2011 or 2012 calendar years<br><br></p>
+    {{ formotherinformation.snapbenefits }}
+    {{ formotherinformation.snapbenefits.label }}
+    <p>2.Complete this section if you or your spouse, if married, paid child support in 2012.<br></p>
+    {{ formotherinformation.childsupport }}
+    {{ formotherinformation.childsupport.label }}
+    {{ formsetpar.management_form }}
+        <table border="1">
+        <tr>
+        <th>Name of Person Who Paid <br>Child Support</th>
+        <th>Name of Person to Whom Child<br>Support was Paid</th>
+        <th>Name of Child for Whom<br>Support Was Paid</th>
+        <th>Amount of Child<br>Support Paid in<br>2012</th>
+        </tr>
+        {% for form in formsetcs %}
+        <tr>
+        {% for field in form %}
+        <td>
+        {{ field.errors }}
+        {{ field }}
+        </td>    
+        {% endfor %}
+        </tr>
+        {% endfor %}
+        </table>    
+    </div>
+    <h3>WARNING</h3>
+    <p><b>If you purposely give false or misleading
+    information on this worksheet, you may be fined, be<br>
+    sentenced to jail, or both.</b></p>
+    <h3>Submit form</h3>
+    <div>
+    {{formcertification.confirm.errors}}
+    {{formcertification.confirm}}
+    {{formcertification.confirm.label}}<br>
+    <input type="submit" name="submit" value="Submit Form">
+    </div>
+    </form>
+
+{% endblock %}
