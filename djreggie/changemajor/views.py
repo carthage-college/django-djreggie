@@ -11,20 +11,25 @@ from djreggie.changemajor.forms import StudentForm, MajorMinorForm
 def set_major_choices(form, selected):
         selected_choices = []
         majors_list = list(form.fields['majors_list'].widget.choices)
-        for major in majors_list:
-                if major[0] in selected:
-                        selected_choices.append(major)
-                        majors_list.remove(major)
+        i = 0
+        while i < len(majors_list):
+                if majors_list[i][0] in selected:
+                        selected_choices.append(majors_list[i])
+                        majors_list.remove(majors_list[i])
+                        i=i-1
+                i=i+1
         form.fields['majors_list'].widget.choices = tuple(majors_list)
         form.fields['majors'].widget.choices = tuple(selected_choices)
-        
 def set_minor_choices(form, selected):
         selected_choices = []
         minors_list = list(form.fields['minors_list'].widget.choices)
-        for minor in minors_list:
-                if minor[0] in selected:
-                        selected_choices.append(minor)
-                        minors_list.remove(minor)
+        i = 0
+        while i < len(minors_list):
+                if minors_list[i][0] in selected:
+                        selected_choices.append(minors_list[i])
+                        minors_list.remove(minors_list[i])
+                        i=i-1
+                i=i+1
         form.fields['minors_list'].widget.choices = tuple(minors_list)
         form.fields['minors'].widget.choices = tuple(selected_choices)
         
@@ -33,6 +38,7 @@ def index(request):
     if request.POST: #If we do a POST
         form = StudentForm(request.POST) #Scrape the data from the form and save it in a variable
         mm_form = MajorMinorForm(request.POST)
+#return HttpResponse(mm_form.fields['majors_list'].widget.choices)
         major_list = request.POST.getlist('majors')
         minor_list = request.POST.getlist('minors')
         set_major_choices(mm_form, major_list)
