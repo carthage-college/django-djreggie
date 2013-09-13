@@ -1,7 +1,20 @@
 from django.db import models
 from datetime import date
+from djzbar.settings import INFORMIX_EARL_TEST
+from sqlalchemy import create_engine
 # Create your models here.
 # Each class will exist in a separate table in the database
+#SQL Alchemy
+engine = create_engine(INFORMIX_EARL_TEST)
+connection = engine.connect()
+
+
+sql1 = "select * from st_table"
+state = connection.execute(sql1)
+array1 = []
+for row in state:
+    array1.append((row['st'],row['txt']))   
+CHOICES1 = tuple(array1)
 class Major(models.Model):
     
     txt = models.CharField(db_column='txt')
@@ -55,7 +68,7 @@ class UndergradForm(models.Model):
     email = models.EmailField()
     address = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
-    state = models.CharField(max_length=2)
+    state = models.CharField(max_length=2, choices=CHOICES1)
     zipcode = models.PositiveIntegerField(max_length=5)
     date = models.DateField(auto_now_add=True) #'auto_now_add' sets the date to the current date and makes this field invisible in the form
     

@@ -48,5 +48,5 @@ class ParentForm(models.Model):
     ("STEP", 'Stepparent'),
     )
     Relation = models.CharField(choices=CHOICES3, max_length=200)
-    def __unicode__(self):
-        return self.form
+    #def __unicode__(self):
+    #    return self.form

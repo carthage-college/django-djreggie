@@ -2,9 +2,28 @@ from django.db import models
 from django import forms
 from django.forms.models import modelformset_factory
 from django.utils.safestring import mark_safe
+from djzbar.settings import INFORMIX_EARL_TEST
+from sqlalchemy import create_engine
+# Create your models here.
+# Each class will exist in a separate table in the database
+#SQL Alchemy
+engine = create_engine(INFORMIX_EARL_TEST)
+connection = engine.connect()
 
+
+sql1 = "select * from st_table"
+state = connection.execute(sql1)
+array1 = []
+for row in state:
+    array1.append((row['st'],row['txt']))   
+CHOICES1 = tuple(array1)
 class Independ(models.Model):
 
+    PHONES= (
+            ("CELL", "Cell Phone"),
+            ("HOME", "Home Phone"),
+            ("WORK", "Work Phone"),
+    )
     fname = models.CharField(max_length=100)
     mname = models.CharField(max_length=1)
     lname = models.CharField(max_length=100)
@@ -12,20 +31,14 @@ class Independ(models.Model):
     address = models.CharField(max_length=500)
     dob = models.DateField()
     city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
+    state = models.CharField(max_length=2, choices=CHOICES1)
     zip = models.CharField(max_length=5)
     email = models.EmailField()
-    hphone = models.CharField()
-    cphone = models.CharField()
-    
-class FamInfo(models.Model):
-    name = models.CharField(max_length=100)
-    age = models.IntegerField(max_length=3)
-    relationship = models.CharField(max_length=100)
-    college = models.CharField(max_length=200)
-    halftimeenroll = models.BooleanField()
-    
-class Sincome(models.Model):    
+    hphone = models.CharField(max_length=16)
+    phonetype = models.CharField(max_length= 100, choices=PHONES)
+    cphone = models.CharField(max_length=16, blank=True, null=True)
+    phonetype2 = models.CharField(max_length= 100, choices=PHONES, blank=True, null=True)
+    file = models.FileField(upload_to='files')
     IRSDRT= (
         ("HAS", mark_safe("I, the student, have used the IRS Data Retrieval Tool in FAFSA on the Web to transfer my (and, if married, my spouse\'s) 2012 IRS income information into my FAFSA, either on the initial FAFSA or when making a correction to the FAFSA. Your school will use the IRS information that was transferred in the verification process.<br><br>")),
         ("HASN", mark_safe("I, the student, have not yet used the IRS Data Retrieval Tool, but I will use the tool to transfer my (and, if married, my spouse\'s) 2012 IRS income information into my FAFSA once I have filed my 2012 IRS tax return. See instructions above for information on how to use the IRS Data Retrieval Tool. Your school cannot complete the verification process until your(and, if married, your spouse\'s) IRS information has been transferred into your FAFSA.<br><br>")),
@@ -45,22 +58,30 @@ class Sincome(models.Model):
     useddata = models.CharField(choices=IRSDRT, max_length=500, default="HAS")
     attached = models.CharField(choices=TACHED, max_length=500, default="IS")
     employed = models.CharField(choices=PLOY, max_length=500, default="WAS")
+    snapbenefits = models.BooleanField()
+    childsupport = models.BooleanField()
+    confirm = models.BooleanField()
+    date = models.DateField(auto_now=True)
+    
+class FamInfo(models.Model):
+    name = models.CharField(max_length=100)
+    age = models.IntegerField(max_length=3)
+    relationship = models.CharField(max_length=100)
+    college = models.CharField(max_length=200)
+    halftimeenroll = models.BooleanField()
+    student = models.ForeignKey(Independ)
 
 class Studwork(models.Model):
     empname = models.CharField(max_length=250)
     money = models.IntegerField(max_length=10)
     w2attach = models.BooleanField()
-    
-class Otherinfo(models.Model):
-    snapbenefits = models.BooleanField()
-    childsupport = models.BooleanField()
-    
+    student = models.ForeignKey(Independ)
+
 class CS(models.Model):
     namepaid = models.CharField(max_length=200)
     namepaidto = models.CharField(max_length=200)
     namechild = models.CharField(max_length=200)
     amntpaid = models.IntegerField(max_length=10)
+    student = models.ForeignKey(Independ)
     
-class certification(models.Model):
-    confirm = models.BooleanField()
-    date = models.DateField(auto_now=True)
+

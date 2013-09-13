@@ -3,9 +3,9 @@ from django import forms
 from django.core import validators #Used for custom validation
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ValidationError
-
+from django.forms.formsets import BaseFormSet
 #Need to import all the models here
-from models import Depend, FamInfo, Sincome, Studwork, Parwork, Parincome , Otherinfo, CS, certification
+from models import Depend, FamInfo, Studwork, Parwork, CS
 
 # Create your forms here.
 class DependForm(forms.ModelForm):
@@ -25,9 +25,12 @@ class DependForm(forms.ModelForm):
         self.fields['state'].label = "State"
         self.fields['zip'].label = "Zip Code"
         self.fields['email'].label = "Email Address"
-        self.fields['hphone'].label = "Home Phone"
-        self.fields['cphone'].label = "Cell or Alternate Phone"
-        self.fields['file'].label = "Upload a file"
+        self.fields['hphone'].label = "Primary Phone Number"
+        self.fields['phonetype'].label = "Type of Phone"
+        self.fields['cphone'].label = "Alternate Phone Number"
+        self.fields['phonetype2'].label = "Type of Phone"
+        self.fields['file'].label = "Upload a file"        
+        self.fields['file2'].label = "Upload a file"
         
         #Custom regex validation
         self.fields['fname'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in first name', code='bad_fname')]
@@ -38,7 +41,7 @@ class DependForm(forms.ModelForm):
         self.fields['address'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in address', code='bad_address')]
         self.fields['city'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid city', code='bad_city')]
         self.fields['state'].validators = [validators.RegexValidator(regex='^[a-zA-Z]{2}$', message='Invalid state', code='bad_state')]
-        self.fields['zip'].validators = [validators.RegexValidator(regex='^[\d]{5}$', message='Invalid zip', code='bad_zip')]
+        self.fields['zip'].validators = [validators.RegexValidator(regex='^\d{5}$', message='Invalid zip', code='bad_zip')]
         self.fields['email'].validators = [validators.RegexValidator(regex='^[A-Za-z0-9\.\_\%\+\-]+@[A-Za-z0-9\.\-]+\.[A-Za-z]{2,4}$', message='Invalid email address', code='bad_email')]
         self.fields['hphone'].validators = [validators.RegexValidator(regex='^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4})$', message='Invalid home phone', code='bad_phone')]
         self.fields['cphone'].validators = [validators.RegexValidator(regex='^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4})$', message='Invalid cell phone', code='bad_phone')]
@@ -49,14 +52,40 @@ class DependForm(forms.ModelForm):
         self.fields['lname'].error_messages = {'required': 'Please fill in a last name.', 'invalid':'Invalid characters in last name'}
         self.fields['ssn'].error_messages = {'required': 'Please fill in a social security number', 'invalid':'Invalid ssn'}
         self.fields['address'].error_messages = {'required': 'Please fill in an address.', 'invalid':'Invalid characters in address'}
-        self.fields['dob'].error_messages = {'required': 'Please fill in your date of birth.', 'invalid':'Invalid date of birth'}
+        self.fields['dob'].error_messages = {'required':'A date is required', 'invalid':'Date cannot be in the past'}
         self.fields['city'].error_messages = {'required': 'Please fill in a city.', 'invalid':'Invalid characters in city'}
         self.fields['state'].error_messages = {'required': 'Please fill in a state.', 'invalid':'Invalid characters in state'}
         self.fields['zip'].error_messages = {'required': 'Please fill in a zip code.', 'invalid':'Invalid zip code'}
         self.fields['email'].error_messages = {'required': 'Please fill in an email address.', 'invalid':'Invalid characters in address'}
-        self.fields['hphone'].error_messages = {'required': 'Please fill in a home phone number. If you dont have a home phone enter your cell number', 'invalid':'Invalid phone number'}        
-        self.fields['cphone'].error_messages = {'required': 'Please fill in a cell phone number. If you dont have a cell phone enter your home number', 'invalid':'Invalid phone number'}
-
+        self.fields['hphone'].error_messages = {'required': 'Please fill in a phone number.', 'invalid':'Invalid phone number'}
+    
+        def clean_dob(self):
+            test = self.cleaned_data['dob']
+            
+            if test == None or test == "":
+                raise ValidationError(message = "Invalid or past date")
+            else:  
+                if test < datetime.date.today():
+                   raise ValidationError(message = "This birthdate is too recent!") #Adds the error message to the field
+            del cleaned_data["dob"]
+            
+            return cleaned_data
+        
+        def clean(self):                                                                                                                                      
+            cleaned_data = super(DependForm, self).clean() #Grabs the clean data
+    
+            cphone = cleaned_data.get("cphone")
+            phonetype2 = cleaned_data.get("phonetype2")
+            
+            if cphone == "" and phonetype2 == "":
+                msg = u"You must fill out what type of phone your alternate phone is" #Adds the error message to the field
+                self._errors["phonetype2"] = self.error_class([msg])
+    
+                del cleaned_data["cphone"] #Django told me to do this?
+                del cleaned_data["phonetype2"]
+                
+            return cleaned_data
+            
     #Global options for the form
     class Meta:
         model = Depend #Fields come from the fields found in 'Depend' model
@@ -72,7 +101,7 @@ class FamInfoForm(forms.ModelForm):
         
         #Regex validation
         self.fields['name'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in name', code='bad_name')]
-        self.fields['age'].validators = [validators.RegexValidator(regex='^[\d]{3}$', message='Invalid age', code='bad_age')]
+        self.fields['age'].validators = [validators.RegexValidator(regex='^\d{1,3}$', message='Invalid age', code='bad_age')]
         self.fields['relationship'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in relationship', code='bad_relationship')]
         self.fields['college'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in college', code='bad_college')]
         
@@ -92,6 +121,7 @@ class FamInfoForm(forms.ModelForm):
     #Global options for the class    
     class Meta:
         model = FamInfo #Fields come from the fields found in 'FamInfo' model
+        exclude = ['student']
         
 class SincomeForm(forms.ModelForm):
     
@@ -103,10 +133,26 @@ class SincomeForm(forms.ModelForm):
         self.fields['useddata'].label = ""
         self.fields['attached'].label = ""
         self.fields['employed'].label = ""
+    
+    def clean(self):
+        cleaned_data = super(SincomeForm, self).clean() #Grabs the clean data
+
+        attached = cleaned_data.get("attached")
+        file = cleaned_data.get("file")
+        
+        if attached == "IS" and file == "" or None:
+            msg = u"Please upload a file" #Adds the error message to the field
+            self._errors["file"] = self.error_class([msg])
+
+            del cleaned_data["attached"] #Django told me to do this?
+            del cleaned_data["file"]
+        
+        return cleaned_data #Return the data back to the form
         
     #Global options for the class    
     class Meta:
-        model = Sincome #Fields come from the fields found in 'Sincome' model
+        model = Depend #Fields come from the fields found in 'Sincome' model
+        fields = ['useddata','attached', 'employed']
         widgets = {
             'useddata': forms.RadioSelect(),
             'attached': forms.RadioSelect(),
@@ -134,6 +180,7 @@ class StudworkForm(forms.ModelForm):
     #Global options for the class    
     class Meta:
         model = Studwork #Fields come from the fields found in 'Studwork' model
+        exclude = ['student']
         
 class ParincomeForm(forms.ModelForm):
     
@@ -143,10 +190,25 @@ class ParincomeForm(forms.ModelForm):
         self.fields['useddata2'].label = ""
         self.fields['attached2'].label = ""
         self.fields['employed2'].label = ""
+    
+    def clean(self):
+        cleaned_data = super(ParincomeForm, self).clean() #Grabs the clean data
         
+        attached = cleaned_data.get("attached2")
+        file = cleaned_data.get("file2")
+        
+        if attached == "IS" and file == "" or None:
+            msg = u"Please upload a file" #Adds the error message to the field
+            self._errors["file2"] = self.error_class([msg])
+            
+            del cleaned_data["attached2"] #Django told me to do this?
+            del cleaned_data["file2"]
+        
+        return cleaned_data #Return the data back to the form    
     #Global options for the class    
     class Meta:
-        model = Parincome #Fields come from the fields found in 'Parincome' model
+        model = Depend #Fields come from the fields found in 'Parincome' model
+        fields = ['useddata2', 'attached2', 'employed2']
         widgets = {
             'useddata2': forms.RadioSelect(),
             'attached2': forms.RadioSelect(),
@@ -175,6 +237,7 @@ class ParworkForm(forms.ModelForm):
     #Global options for the class    
     class Meta:
         model = Parwork #Fields come from the fields found in 'Parwork' model
+        exclude = ['student']
         
 class OtherinfoForm(forms.ModelForm):
     
@@ -186,7 +249,8 @@ class OtherinfoForm(forms.ModelForm):
     
     #Global options for the class
     class Meta:
-        model = Otherinfo #Fields come from the fields found in 'Otherinfo' model
+        model = Depend #Fields come from the fields found in 'Otherinfo' model
+        fields = ['snapbenefits', 'childsupport']
 
 class CSForm(forms.ModelForm):
     
@@ -206,14 +270,11 @@ class CSForm(forms.ModelForm):
         self.fields['namechild'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid name', code='bad_name')]
         self.fields['amntpaid'].validators = [validators.RegexValidator(regex='^\d{1,10}$', message='Invalid amount', code='bad_amt')]
         
-        #Custom error messages
-        self.fields['namepaid'].error_messages = {'required':'Name is required','invalid':'Name has invalid characters'}
-        self.fields['namepaidto'].error_messages = {'required':'Name is required', 'invalid':'Name has invalid characters'}
-        self.fields['namechild'].error_messages = {'required':'Name is required', 'invalid':'Name has invalid characters'}
     
     #Global options for the class
     class Meta:
         model = CS #Fields come from the fields found in 'CS' model
+        exclude = ['student']
         
 class CertificationForm(forms.ModelForm):
     
@@ -225,4 +286,7 @@ class CertificationForm(forms.ModelForm):
     
     #Global options for the class
     class Meta:
-        model = certification #Fields come from the fields found in 'certification' model
+        model = Depend #Fields come from the fields found in 'certification' model
+        fields = ['confirm']
+        
+

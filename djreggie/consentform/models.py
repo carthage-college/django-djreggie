@@ -13,5 +13,9 @@ class Form(models.Model):
         ("NOCONSENT", 'I hereby request that Carthage College not release my directory information.'),
     )
     consent = models.CharField(choices=CHOICES, max_length=200) #This renders as a select box
-    Date = models.DateField(auto_now_add=True) #'auto_now_add' automatically adds the current date as well as sets this field invisible on the form
+    date = models.DateField(auto_now_add=True) #'auto_now_add' automatically adds the current date as well as sets this field invisible on the form
+
     
+    class Meta:
+        verbose_name = 'Directory information form'
+        verbose_name_plural = 'Directory information forms'

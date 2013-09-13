@@ -14,7 +14,7 @@ def index(request):
         form = EmailForm(request.POST) #Scrape the data from the form and save it in a variable
         if form.is_valid(): #If the form is valid
             #syntax: 'subject'      'data to send', 'sender address', 'addresses to send to'
-            send_mail("email form",form.as_string(),"this", ['zwenta@carthage.edu'])
+            send_mail("A new email request form is ready to view!",form.as_string(),"Django_Admin", ['zwenta@carthage.edu'])
             form.save()
             form = EmailForm()
             submitted = True

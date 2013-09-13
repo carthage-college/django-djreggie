@@ -65,9 +65,21 @@ def push_to_production(modeladmin, request, queryset):
     #           messages.error(request, 'Object did not have an address')
     #       obj.save()
     #       messages.success(request, 'Object was moved to production!')
+    
 
 class Admin(admin.ModelAdmin):
-    list_display = ('name', 'student_ID') #We will only see the following fields as columns in the admin page
+    
+    search_fields = ['name'] #We can search by 'name'
+    list_display = ('student_ID','name','date') #We will only see the following fields as columns in the admin page
+    readonly_fields = ('date',)
+    fieldsets = (
+        ('Student information', {
+            'fields': ('student_ID','name') 
+        }),
+        ('Consent information', {
+            'fields': ('consent','date')
+        })
+    )
     actions = [push_to_production] #Includes the action we defined earlier in this page
 
 admin.site.register(Form, Admin) #Always be sure to add the model before adding the admin class
