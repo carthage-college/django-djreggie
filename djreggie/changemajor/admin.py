@@ -6,14 +6,20 @@
 #'messages' - necessary to change success/fail messages when performing an action to an 'changemajor' object
 from django.contrib import admin, messages
 from djreggie.changemajor.models import Student, Major, Minor, ProxyStudent
-
+from djzbar.settings import INFORMIX_EARL_TEST
+from sqlalchemy import create_engine
 #from Production.models import AaRec, AcadRec, IdRec, ProgramEnrollRec
 
 #This is an 'action' a user can perform to a 'changemajor' object
 def push_to_production(modeladmin, request, queryset):
     push_to_production.short_description = 'Push to production server' #What the user sees
-
-    
+    #SQL Alchemy
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    for row in queryset:
+            adv = row.advisor.split(' ')
+            sql = "UPDATE prog_enr_rec SET major1 = '%s', major2 = '%s', major3 = '%s', minor1 = '%s', minor2 = '%s', minor3 = '%s', adv_id = {SELECT id FROM id_rec WHERE firstname = '%s' AND lastname = '%s'} WHERE id = %d" % (row.majors[0].txt, row.majors[1].txt, row.majors[2].txt, row.minors[0].txt, row.minors[1].txt, row.minors[2].txt, row.student_id, adv[0], adv[1])
+            connection.execute(sql)
     # This is the bulk of moving data from the development to production databases
     #
     # *Understand this first - The data that exists in the form will be moved to separate

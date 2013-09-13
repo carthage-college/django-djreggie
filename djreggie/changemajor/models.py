@@ -1,52 +1,28 @@
 #Need this
 from django.db import models
-from djzbar.settings import INFORMIX_EARL_TEST
-from sqlalchemy import create_engine
 
-#SQL Alchemy
-engine = create_engine(INFORMIX_EARL_TEST)
-connection = engine.connect()
-
-#Majors
-sql1 = "select * from major_table ORDER BY txt ASC"
-major = connection.execute(sql1)
-array1 = []
-for row in major:
-    array1.append((row['major'],row['txt']))   
-CHOICES1 = tuple(array1)
-
-#Minors
-sql2 = "select * from minor_table ORDER BY txt ASC"
-minor = connection.execute(sql2)
-array2 = []
-for row in minor:
-    array2.append((row['minor'],row['txt']))   
-CHOICES2 = tuple(array2)
 
 
 # Create your models here.
-'''
+
 class Major(models.Model):
-    unique_id = models.AutoField(primary_key=True)
-    txt = models.CharField(max_length=100, choices=CHOICES1)
+    txt = models.CharField(db_column = 'txt')
+    major = models.CharField(db_column = 'major')
     class Meta:
-        #db_table = 'changemajor_student_majors'
-        ordering = ['txt']
+        db_table = 'major_table'
     #How we see this model displayed
     def __unicode__(self):
         return self.txt
-'''    
-'''    
+
+
 class Minor(models.Model):
-    unique_id = models.AutoField(primary_key=True)
-    txt = models.CharField(max_length=100, choices=CHOICES2)
+    txt = models.CharField(db_column = 'txt')
     class Meta:
-        #db_table = 'changemajor_student_minors'
-        ordering = ['txt']
+        db_table = 'minor_table'
     #How we see this model displayed
     def __unicode__(self):
         return self.txt
-'''
+
     
 class Student(models.Model):
     
@@ -65,16 +41,13 @@ class Student(models.Model):
     year = models.CharField("Year in school",max_length=2,blank=False,choices=YEAR_IN_SCHOOL) #Renders as a select field
     advisor = models.CharField(max_length=200, null=True, blank=True) #'null=True' means this value can display as null in the database table
     
-    majors = models.CharField(max_length=100, choices=CHOICES1) #Defines a many to many (m2m) relationship with the model 'Major'
-    minors = models.CharField(max_length=100, choices=CHOICES2, blank=True, null=True) #Defines a many to many (m2m) relationship with the model 'Minor'
+    majors = models.ManyToManyField(Major) #Defines a many to many (m2m) relationship with the model 'Major'
+    minors = models.ManyToManyField(Minor, blank=True, null=True) #Defines a many to many (m2m) relationship with the model 'Minor'
     
     #How we see this model displayed
     def __unicode__(self):
         return self.name
         
-    #Global options
-    class Meta:
-        ordering = ['majors', 'minors']
 
 #Proxy class    
 class ProxyStudent(Student):
