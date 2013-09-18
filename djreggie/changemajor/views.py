@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
-from models import Major, Student
-
+from models import Major, Minor, Student
+from django import forms
 #SQL Alchemy
 
 #Need to import the form
@@ -36,7 +36,12 @@ def set_minor_choices(form, selected):
 # Create your views here.    
 def index(request):
     if request.POST: #If we do a POST
-        form = StudentForm(request.POST) #Scrape the data from the form and save it in a variable
+        (a, created) = Student.objects.get_or_create(pk=request.POST['student_id'])
+        form = StudentForm(request.POST, instance=a) #Scrape the data from the form and save it in a variable
+        class_year = dict(form.fields['year'].widget.choices)[form.data['year']]
+        form.fields['student_id'].widget = forms.HiddenInput()
+        form.fields['name'].widget = forms.HiddenInput()
+        form.fields['year'].widget = forms.HiddenInput()
         mm_form = MajorMinorForm(request.POST)
 #return HttpResponse(mm_form.fields['majors_list'].widget.choices)
         major_list = request.POST.getlist('majors')
@@ -48,6 +53,8 @@ def index(request):
             major_list = request.POST.getlist('majors')
             minor_list = request.POST.getlist('minors')
             instance.save()
+            instance.majors.clear()
+            instance.minors.clear()
             engine = create_engine(INFORMIX_EARL_TEST)
             connection = engine.connect()
             for m in major_list:
@@ -87,8 +94,12 @@ def index(request):
                         set_major_choices(mm_form, [thing['major1'], thing['major2'], thing['major3']])
                         set_minor_choices(mm_form, [thing['minor1'], thing['minor2'], thing['minor3']])
                 connection.close()
-                
+        class_year = dict(form.fields['year'].widget.choices)[form.fields['year'].initial]
+        form.fields['student_id'].widget = forms.HiddenInput()
+        form.fields['name'].widget = forms.HiddenInput()
+        form.fields['year'].widget = forms.HiddenInput()
     return render(request, 'changemajor/form.html', {
         'form': form,
         'mm_form': mm_form,
+        'class_year': class_year,
     })

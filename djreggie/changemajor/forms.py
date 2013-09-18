@@ -12,7 +12,7 @@ engine = create_engine(INFORMIX_EARL_TEST)
 connection = engine.connect()
 
 #Majors
-sql1 = "select txt, major from major_table WHERE sysdate BETWEEN active_date AND NVL(inactive_date, sysdate) AND LENGTH(txt) > 0 ORDER BY txt ASC"
+sql1 = "select txt, major from major_table WHERE sysdate BETWEEN active_date AND NVL(inactive_date, sysdate) AND LENGTH(txt) > 0 AND web_display = 'Y' ORDER BY txt ASC"
 major = connection.execute(sql1)
 array1 = []
 for row in major:
@@ -20,7 +20,7 @@ for row in major:
 CHOICES1 = tuple(array1)
 
 #Minors
-sql2 = "select txt, minor from minor_table WHERE sysdate BETWEEN active_date AND NVL(inactive_date, sysdate) AND LENGTH(txt) > 0 ORDER BY txt ASC"
+sql2 = "select txt, minor from minor_table WHERE sysdate BETWEEN active_date AND NVL(inactive_date, sysdate) AND LENGTH(txt) > 0 AND web_display = 'Y' ORDER BY txt ASC"
 minor = connection.execute(sql2)
 array2 = []
 for row in minor:
@@ -39,6 +39,7 @@ class StudentForm(forms.ModelForm):
         self.fields['name'].validators = [validators.RegexValidator(regex=('^[a-zA-Z\']+[a-zA-Z\-\s\']+$'),message='Please enter a valid name',code='a')]
         self.fields['advisor'].validators = [validators.RegexValidator(regex=('^[a-zA-Z\']+[a-zA-Z\-\s\']+$'),message='Please enter a valid advisor name',code='a')]
         self.fields['student_id'].label = 'Student ID'
+        
         #Error messages
         self.fields['student_id'].error_messages = {'required':'Enter a student id'}
         self.fields['name'].error_messages = {'required':'Enter a valid name'}
@@ -53,8 +54,13 @@ class StudentForm(forms.ModelForm):
 
 
 class MajorMinorForm(forms.Form):
-        majors_list = forms.CharField(widget=forms.SelectMultiple(choices=CHOICES1, attrs={'size': 5}), required=False)
-        minors_list = forms.CharField(widget=forms.SelectMultiple(choices=CHOICES2, attrs={'size': 5}), required=False)
-        majors = forms.CharField(widget=forms.SelectMultiple(attrs={'size':5}))
-        minors = forms.CharField(widget=forms.SelectMultiple(attrs={'size':5}), required=False)
+    
+    def __init__(self, *args, **kwargs):
+        super(MajorMinorForm, self).__init__(*args, **kwargs)
+        
+    majors_list = forms.CharField(widget=forms.SelectMultiple(choices=CHOICES1, attrs={'size': 5}), required=False)
+    minors_list = forms.CharField(widget=forms.SelectMultiple(choices=CHOICES2, attrs={'size': 5}), required=False)
+    majors = forms.CharField(widget=forms.SelectMultiple(attrs={'size':5}))
+    minors = forms.CharField(widget=forms.SelectMultiple(attrs={'size':5}), required=False)
+    
 #test comment
