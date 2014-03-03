@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/dev/howto/deployment/wsgi/
 import os, sys
 
 sys.path.append('/usr/lib/python2.7/')
-sys.path.append('/data2/django_1.5.1/')
+sys.path.append('/data2/django_current')
 sys.path.append('/data2/django_projects/')
 sys.path.append('/data2/django_third/')
 

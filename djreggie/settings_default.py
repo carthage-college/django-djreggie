@@ -47,7 +47,7 @@ DATABASES = {
     'default': {
         'HOST': '127.0.0.1',
         'PORT': '3306',
-        'NAME': 'djreggie',
+        'NAME': 'django_djreggie',
         'ENGINE': 'django.db.backends.mysql',
         'USER': '',
         'PASSWORD': ''
