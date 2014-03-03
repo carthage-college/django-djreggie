@@ -13,25 +13,22 @@ sql1 = "select * from st_table"
 state = connection.execute(sql1)
 array1 = []
 for row in state:
-    array1.append((row['st'],row['txt']))   
+    array1.append((row['st'],row['txt']))
 CHOICES1 = tuple(array1)
 class Major(models.Model):
-    
-    txt = models.CharField(db_column='txt')
-    class Meta:
-        db_table = 'major_table'
+
+    txt = models.CharField(db_column='txt', max_length=128)
+
     #How the class is displayed in the admin page
     def __unicode__(self):
         return self.txt
-    
+
 class Minor(models.Model):
-    txt = models.CharField(db_column='txt')
-    class Meta:
-        db_table = 'minor_table'
+    txt = models.CharField(db_column='txt', max_length=128)
+
     #How the class is displayed in the admin page
     def __unicode__(self):
         return self.txt
-    
 
 #The main fields in the form are in this class listed below
 class UndergradForm(models.Model):
@@ -46,7 +43,7 @@ class UndergradForm(models.Model):
     majors = models.ManyToManyField(Major)
     minors = models.ManyToManyField(Minor, null=True, blank=True) #'blank=True' means the field is not required
     participate_in_graduation = models.BooleanField() #Renders as a checkbox
-    
+
     FINISH_REQUIREMENTS_LIST = (
         ('RA', 'I will be finished with all required courses & degree requirements by the end of the %d/%d Fall Term (December)' % (year, year+1)),
         ('RB', 'I will be finished with all required courses & degree requirements by the end of the %d/%d J-Term (January)' % (year, year+1)),
@@ -54,7 +51,7 @@ class UndergradForm(models.Model):
         ('RE', 'I will be finished with all required courses & degree requirements by the end of the %d/%d Summer Term (August)' % (year, year+1)),
     )
     finish_requirements_by = models.CharField(max_length=200, choices=FINISH_REQUIREMENTS_LIST) #Renders as a select box
-    
+
     WHEN_TEACH_LIST = (
         ('fall1', 'Fall Term %d' % (year)),
         ('spring', 'Spring Term %d' % (year+1)),
@@ -71,10 +68,7 @@ class UndergradForm(models.Model):
     state = models.CharField(max_length=2, choices=CHOICES1)
     zipcode = models.PositiveIntegerField(max_length=5)
     date = models.DateField(auto_now_add=True) #'auto_now_add' sets the date to the current date and makes this field invisible in the form
-    
+
     #How the class is displayed in the admin page
     def __unicode__(self):
         return '%s, %s %d' % (self.lname, self.fname, self.student_id)
-        
-
-    
