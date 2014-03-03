@@ -2,7 +2,7 @@
 <html lang='en'>
 <head>
     <meta charset='utf-8' />
-    <title>Consent Form</title>
+    <title>Request and Consent for the Release of Directory Information</title>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
     <script type='text/javascript'>
         function validate_name(){
@@ -22,7 +22,7 @@
 <body>
 <div>
 {% if submitted %}
-        <h2>Thank You</h2>
+        <h2>Your form has been submitted, thank you</h2>
 {% endif %}
 </div>
     <div>
@@ -31,16 +31,20 @@
         </div>
         <div class='mainbar'>
             <div class='header'>
-                <text class='headertext'>Request and Consent for the Release of Directory Information Form</text>
+                <text class='headertext'>Request and Consent for the Release of Directory Information</text>
             </div><br>
             <form action='' method='post'>{% csrf_token %}
                 {{ form.non_field_errors }}
+                {% for field in form.hidden_fields %}
+                    {{ field }}
+                    {{ field.errors }}
+                {% endfor %}
                 <text class='separator'>General information</text><hr>
                 <p>
-                    The Family Educational Rights and Privacy Act("FERPA" - 20 U.S.C.  1232g; 34 CFR Part 99) is a
+                    The Family Educational Rights and Privacy Act ("FERPA" - 20 U.S.C.  1232g; 34 CFR Part 99) is a
                     Federal law that protects the privacy of student education records. The following form is intended to
                     authorize the disclosure of directory information that is limited and generally found not to be harmful or invasive.
-                    Carthage College considers the following types on information as directory information:
+                    Carthage College considers the following types of information as directory information:
                 </p>
                 <ul>
                     <li>Student's name</li>
@@ -51,7 +55,7 @@
                     <li>Dates of enrollment</li>
                     <li>Major field of study</li>
                     <li>Enrollment status (e.g., full-time or part-time)</li>
-                    <li>Classification(e.g., Freshman, Sophomore, Junior, Senior)</li>
+                    <li>Classification (e.g., Freshman, Sophomore, Junior, Senior)</li>
                     <li>Degrees earned and dates of graduation including anticipated graduation dates</li>
                     <li>Awards and honors received</li>
                     <li>Participation in officially recognized activities and sports</li>
@@ -59,33 +63,9 @@
                     <li>The most recent previous educational agency or institution attended</li>
                 </ul>
                 <p>
-                    At its discretion, the College may provide directory information to the public in accordance with the provisions of FERPA
+                    At its discretion, the College may provide directory information to the public in accordance with the provisions of FERPA.
                 </p><br>
                 <text class='separator'>Personal information</text><hr>
-                <table>
-                    <tr>
-                        <td><text class='fieldlabel'>{{ form.student_ID.label }}</text></td>
-                        <td>{{ form.student_ID }}</td>
-                        <td>
-                            <img class='hidden' id='student_ID_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='student_ID_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.student_ID.errors %}
-                                <text class ='error'>*{{ e }}</text>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><text class='fieldlabel'>{{ form.name.label }}</text></td>
-                        <td>{{ form.name }}</td>
-                        <td>
-                            <img class='hidden' id='name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.name.errors %}
-                                <text class ='error'>*{{ e }}</text>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </table>
                 <table>
                     <tr>
                         <td><text class='fieldlabel'>{{ form.consent.label }}</text></td>

@@ -1,26 +1,14 @@
 <!doctype html>
-<html lang='en'>
     <style>
-        .error
-        {
-            color:red;
-        }
-        .good
-        {
-            display:none;
-            color:green;
-        }
-        .bad
-        {
-            display:none;
-            color:red;
-        }
-        div{
-                float:left;
+        fieldset.inlineLabels, li {
+            list-style:none;
         }
     </style>
+<html lang='en'>
 <head>
     <meta charset='utf-8' />
+    <title>Undergraduate Candidacy Form</title>
+    <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
     <script>
         function validate_student_id(){
             var id = document.getElementById('id_student_id');
@@ -55,13 +43,13 @@
         function validate_best_phone(){
             var id = document.getElementById('id_best_phone');
             var val = id.value;
-            var patt = new RegExp('^1?-?\\(?\\d{3}\\)?-?\\d{3}-?\\d{4}$');
+            var patt = new RegExp('^(\\d{4}|\\d{3}[\\s\\-\\.]?\\d{4}|1?[\\s\\-\\.]?\\(?\\d{3}\\)?[\\s\\-\\.]?\\d{3}[\\s\\-\\.]?\\d{4})$');
             return patt.test(val);
         }
         function validate_cell(){
             var id = document.getElementById('id_cell');
             var val = id.value;
-            var patt = new RegExp('(^$|^1?-?\\(?\\d{3}\\)?-?\\d{3}-?\\d{4}$)');
+            var patt = new RegExp('^(\\d{4}|\\d{3}[\\s\\-\\.]?\\d{4}|1?[\\s\\-\\.]?\\(?\\d{3}\\)?[\\s\\-\\.]?\\d{3}[\\s\\-\\.]?\\d{4})$');
             return patt.test(val);
         }
         function validate_state(){
@@ -76,170 +64,231 @@
             var patt = new RegExp('^\\d{5}$');
             return patt.test(val);
         }
-    </script>
-    <title>Undergraduate Candidacy Form</title>
+    </script>  
     <script type="text/javascript" href="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 </head>
 <body>
-<div>
-{% if submitted %}
-<h2>Thank You</h2>
-{% endif %}
-</div>
-    <form action="" method="post">{% csrf_token %}
-    <h3><center>{{ year_low }}/{{ year_up }} Undergraduate Candidacy Form</center></h3>
-    <center><b>For your diploma: Print your name exactly as you want it to appear on the diploma, which will also be how your name will
-    be read as you cross the stage at graduation ceremony</b></center><br>
-    <div style="width:100%;">
-        <div>
-            {{ form.student_id.errors }}
-            {{ form.student_id.label }}
-            {{ form.student_id }}
-            <text class='good' id='id_yes'>Good</text>
-            <text class='bad' id='id_no'>Invalid</text><br>
+    <div>
+        {% if submitted %}
+            <h2>Your form has been submitted, thank you</h2>
+        {% endif %}
+    </div>
+    <div>
+        <div class='sidebar'>
+            <img src='http://imageshack.us/a/img651/7008/carthage1.png'></img>
+        </div>
+        <div class='mainbar'>
+            <div class='header'>
+                <text class='headertext'>{{ year_low }}/{{ year_up }} Undergraduate Candidacy Form</text>
+            </div><br>
+            {{ form.non_field_errors }}
+            <form action='' method='post'>{% csrf_token %}
+                <text class='separator'>Personal information</text><hr>
+                <text>Your name here will be on your diploma and read as you cross the stage</text>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.student_id.label }}</text></td>
+                        <td>{{ form.student_id }}</td>
+                        <td>
+                            {% for e in form.student_id.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.fname.label }}</text></td>
+                        <td>{{ form.fname }}</td>
+                        <td>
+                            {% for e in form.fname.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.mname.label }}</text></td>
+                        <td>{{ form.mname }}</td>
+                        <td>
+                            {% for e in form.mname.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.lname.label }}</text></td>
+                        <td>{{ form.lname }}</td>
+                        <td>
+                            {% for e in form.lname.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text class='separator'>Contact information</text><hr>
+                <text>Please list where we can contact you</text>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.best_phone.label }}</text></td>
+                        <td>{{ form.best_phone }}</td>
+                        <td>
+                            {% for e in form.best_phone.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.cell.label }}</text></td>
+                        <td>{{ form.cell }}</td>
+                        <td>
+                            {% for e in form.cell.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.email.label }}</text></td>
+                        <td>{{ form.email }}</td>
+                        <td>
+                            {% for e in form.email.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text class='separator'>Location information</text><hr>
+                <text>
+                    Where should we send your diploma?<br> 
+                    Please list an address that will remain
+                    current at least three months after you complete your degree:
+                </text>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.address.label }}</text></td>
+                        <td>{{ form.address }}</td>
+                        <td>
+                            <img class='hidden' id='address_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='address_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.address.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.city.label }}</text></td>
+                        <td>{{ form.city }}</td>
+                        <td>
+                            <img class='hidden' id='city_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='city_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.city.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.state.label }}</text></td>
+                        <td>{{ form.state }}</td>
+                        <td>
+                            <img class='hidden' id='state_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='state_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.state.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.zip.label }}</text></td>
+                        <td>{{ form.zip }}</td>
+                        <td>
+                            <img class='hidden' id='zip_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='zip_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.zip.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text class='separator'>Coursework information</text><hr>
+                <text>
+                    List all major(s) and minor(s) that you plan on completing. You will not be certified
+                    for graduation until you complete all requirements for all listed majors and minors
+                </text>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.majors.label }}</text></td>
+                        <td>{{ form.majors }}</td>
+                        <td>
+                            {% for e in form.majors.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.minors.label }}</text></td>
+                        <td>{{ form.minors }}</td>
+                        <td>
+                            {% for e in form.minors.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text>
+                    Please indicate when you intend to Student Teach (for student teachers only)
+                </text>
+                <table>
+                    <tr>
+                        <td>{{ form.when_teach }}</td>
+                        <td>
+                            {% for e in form.when_teach.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text>
+                    Do you intend to participate in the May {{ year_up }} Graduation Ceremony?
+                </text>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.participate_in_graduation.label }}</text></td>
+                        <td>{{ form.participate_in_graduation }}</td>
+                        <td>
+                            {% for e in form.participate_in_graduation.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text>
+                    Please choose one
+                </text>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.finish_requirements_by.label }}</text></td>
+                        <td>{{ form.finish_requirements_by }}</td>
+                        <td>
+                            {% for e in form.finish_requirements_by.errors %}
+                                <text class='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text>
+                    Note: Carthage allows you to participate in the May {{ year_up }} graduation ceremony if you can complete
+                    all of your remaining graduation requirements by taking 12 or fewer credits in the Summer of {{ year_up }}. All
+                    graduation requirements must be completed before the degree can be conferred
+                </text><br>
+                <text>
+                    I certify that the information that I have provided above is accurate. If any changes
+                    are necessary I will notify the Registrar's Office immediately.
+                </text><br><br>
+                <input type="submit" value="Submit form">
+            </form>
         </div>
     </div>
-    <div style="width:100%;">
-        <div>
-            {{ form.fname.errors }}
-            {{ form.fname.label }}
-            {{ form.fname }}
-            <text class='good' id='fname_yes'>Good</text>
-            <text class='bad' id='fname_no'>Invalid</text><br>
-        </div>
-    </div>
-    <div style="width:100%;">
-        {{ form.mname.errors }}
-        {{ form.mname.label }}
-        {{ form.mname }}
-        <text class='good' id='mname_yes'>Good</text>
-        <text class='bad' id='mname_no'>Invalid</text><br>
-    </div>
-    <div style="width:100%;">
-        {{ form.lname.errors }}
-        {{ form.lname.label }}
-        {{ form.lname }}
-        <text class='good' id='lname_yes'>Good</text>
-        <text class='bad' id='lname_no'>Invalid</text><br>
-    </div><hr><br>
-    <center><b>List all major(s) and minor(s) that you plan on completing. You will not be certified
-    for graduation until you complete all requirements for all listed majors and minors</b></center><br>
-    <center>{{ form.majors.help_text }}</center>
-    <div style="width:100%;">
-    <center>
-        <div style="width:50%;float:left;">
-            {{ form.majors.label }}
-            <br>
-            {{ form.majors }}
-            <br>
-            {% for error in form.majors.errors %}
-                <text class='error'>*{{ error }}</text>
-            {% endfor %}
-        </div>
-        <div style="width:50%;float:left;">
-            {{ form.minors.label }}
-            <br>
-            {{ form.minors }}
-            <br>
-            {% for error in form.minors.errors %}
-                <text class='error'>*{{ error }}</text>
-            {% endfor %}
-        </div>
-        </center>
-    </div><hr><br>
-    <center><b>Do you intend to participate in the May {{ year_up }} Graduation Ceremony?</b></center><br>
-    <div style="width:100%;">
-        <center>
-        {{ form.participate_in_graduation.errors }}
-        {{ form.participate_in_graduation.label }}
-        {{ form.participate_in_graduation }}</center><br>
-    </div><hr><br>
-    <center><b>Please choose one:</b></center><br>
-    <div style="width:100%;">
-        {% for error in form.finish_requirements_by.errors %}
-                <text class='error'>*{{ error }}</text>
-        {% endfor $%}
-        <br>
-        {% for thing in form.finish_requirements_by %}
-        {{ thing }}<br>
-        {% endfor %}
-        <br>
-        <b>Note: Carthage allows you to participate in the May {{ year_up }} graduation ceremony if you can complete
-        all of your remaining graduation requirements by taking 12 or fewer credits in the Summer of {{ year_up }}. All
-        graduation requirements must be completed before the degree can be conferred</b>
-    </div><hr><br>
-    <center><b>Please indicate when you intend to Student Teach (for student teachers only):</b></center><br>
-    <div style="width:100%;">
-        {% for error in form.when_teach.errors %}
-                <text class='error'>*{{ error }}</text>
-        {% endfor %}
-        <center>
-            {% for thing in form.when_teach %}
-                {{ thing }}<br>
-            {% endfor %}
-        </center><br>
-    </div><hr><br>
-    <center><b>Please list the best phone number where we can reach you:</b></center>
-    <div style="width:100%;">
-        {{ form.best_phone.errors }}
-        {{ form.best_phone.label }}:
-        {{ form.best_phone }}
-        <text class='good' id='best_phone_yes'>Good</text>
-        <text class='bad' id='best_phone_no'>Invalid</text><br>
-        {{ form.cell.errors }}
-        {{ form.cell.label }}:
-        {{ form.cell }}
-        <text class='good' id='cell_yes'>Good</text>
-        <text class='bad' id='cell_no'>Invalid</text><br>
-    </div><hr><br>
-    <center><b>Please give the best email where we can reach you:</b></center>
-    <div style="width:100%;">
-        {{ form.email.errors }}
-        {{ form.email.label }}
-        {{ form.email }}
-        <text class='good' id='email_yes'>Good</text>
-        <text class='bad' id='email_no'>Invalid</text><br>
-    </div><hr><br>
-    <center><b>Where should we send your diploma? Please list an address that will remain
-    current at least three months after you complete your degree:</b></center>
-    <div style="width:100%;">
-        <div>
-            {{ form.address.errors }}
-            {{ form.address.label }}
-            {{ form.address }}<br>
-        </div>
-    </div>
-    <div style="width:100%;">
-        <div>
-            {{ form.city.errors }}
-            {{ form.city.label }}
-            {{ form.city }}
-        </div>
-    </div>
-    <div style="width:100%;">
-        <div>
-            {{ form.state.errors }}
-            {{ form.state.label }}
-            {{ form.state }}
-            <text class='good' id='state_yes'>Good</text>
-            <text class='bad' id='state_no'>Invalid</text>
-        </div>
-    </div>
-    <div style="width:100%;">
-        <div>
-            {{ form.zipcode.errors }}
-            {{ form.zipcode.label }}
-            {{ form.zipcode }}
-            <text class='good' id='zipcode_yes'>Good</text>
-            <text class='bad' id='zipcode_no'>Invalid</text>
-        </div>
-    </div><br>
-    <center><b>I certify that the information that I have provided above is accurate. If any changes
-    are necessary I will notify the Registrar's Office immediately.</b></center>
-        <center><input type="submit" value="Submit"></center>
-    </form>
 </body>
-<script>
+<script type='text/javascript'>
     var element = document.getElementById('id_fname');
     element.oninput = function(){
         var n=document.getElementById('fname_no');

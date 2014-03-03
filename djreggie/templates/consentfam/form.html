@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv='Content-Type' content='Type=text/html; charset=utf-8'>
-    <title>Consent Fam Form</title>
+    <title>Authorization to Release Non-Directory Information</title>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
     <script type='text/javascript'>
         function validate_name(){
@@ -22,7 +22,7 @@
 <body>
 <div>
 {% if submitted %}
-        <h2>Thank You</h2>
+        <h2>Your form has been submitted, thank you</h2>
 {% endif %}
 </div>
     <div>
@@ -31,11 +31,15 @@
         </div>
         <div class='mainbar'>
             <div class='header'>
-                <text class='headertext'>Authorization to Release Non-Directory Information Form</text>
+                <text class='headertext'>Authorization to Release Non-Directory Information</text>
             </div><br>
             {{ form.non_field_errors }}
             <form action='' method='post'>{% csrf_token %}
                 {{ Parent_formset.management_form }}
+                {% for field in form.hidden_fields %}
+                    {{ field }}
+                    {{ field.errors }}
+                {% endfor %}
                 <text class='separator'>General information</text><hr>
                 <p>
                     Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not<br>
@@ -44,7 +48,7 @@
                     By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified<br>
                     records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the<br>
                     student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not<br>
-                    affect disclosures previously made by the College prior to the receipt of said written revocation<br><br>
+                    affect disclosures previously made by the College prior to the receipt of said written revocation.<br><br>
                     I authorize the full verbal and written disclosure of my student record to the parent(s) or third parties listed below in the following areas.<br>
                     <ul>
                         <li>
@@ -53,7 +57,7 @@
                         </li>
                         <li>
                             <b>Student Financial Records</b> including such items, but not limited to, Business Office Account, Outstanding Balances,
-                            Financial Aid Packages, FASFA Information, Scholarships.
+                            Financial Aid Packages, FAFSA Information, Scholarships.
                         </li>
                     </ul>
                     <p>
@@ -66,31 +70,6 @@
                         {% endif %}
                     </p>
                 </p><br>
-                <text class='separator'>Student information</text><hr>
-                <table>
-                    <tr>
-                        <td><text class='fieldlabel'>{{ form.Carthage_ID_Number.label }}</text></td>
-                        <td>{{ form.Carthage_ID_Number }}</td>
-                        <td>
-                            <img class='hidden' id='id_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='id_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.Carthage_ID_Number.errors %}
-                                <text class='error'>*{{ e }}</text>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><text class='fieldlabel'>{{ form.Full_Name_of_Student.label }}</text></td>
-                        <td>{{ form.Full_Name_of_Student }}</td>
-                        <td>
-                            <img class='hidden' id='name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.Full_Name_of_Student.errors %}
-                                <text class='error'>*{{ e }}</text>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </table><br>
                 <text class='separator'>Disclosure of information</text><hr>
                 <text>Below, please indicate the names of the people who you will disclose information with, and their relation to you</text>
                 <table>

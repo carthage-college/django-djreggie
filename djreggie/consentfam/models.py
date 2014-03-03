@@ -8,7 +8,7 @@ class Contact(models.Model):
     def __unicode__(self):
         return self.name
     
-class Form(models.Model):
+class ConsentModel(models.Model):
     #CHOICES1 = (
     #    ("ACCEPT", 'I agree with the previous statement.'),
     #)
@@ -31,7 +31,7 @@ class Form(models.Model):
         return self.Full_Name_of_Student
     
 class ParentForm(models.Model):
-    form = models.ForeignKey(Form, primary_key=True)
+    form = models.ForeignKey(ConsentModel, primary_key=True)
     contact = models.ForeignKey(Contact, primary_key=True)
     
     CHOICES3 = (

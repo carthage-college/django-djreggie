@@ -17,6 +17,7 @@ class Major(models.Model):
 
 class Minor(models.Model):
     txt = models.CharField(db_column = 'txt')
+    minor = models.CharField(db_column = 'minor')
     class Meta:
         db_table = 'minor_table'
     #How we see this model displayed

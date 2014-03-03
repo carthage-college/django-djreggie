@@ -48,9 +48,9 @@ class StudentForm(forms.ModelForm):
     class Meta:
         model = Student  
         exclude = ['majors', 'minors']
-    widgets = {
-        'student_id': forms.TextInput(attrs={'maxlength':7}),
-    }
+        widgets = {
+            'student_id': forms.TextInput(attrs={'maxlength':7}),
+        }
 
 
 class MajorMinorForm(forms.Form):

@@ -14,7 +14,7 @@
         function validate_requested_by(){
              var id = document.getElementById('id_requested_by');
             var val = id.value;
-            var patt = new RegExp('^.+$');
+            var patt = new RegExp('^[a-zA-Z\']+[a-zA-Z\\-\\s\']+$');
             return patt.test(val);       
         }
         function validate_name_of_account_requested(){
@@ -41,6 +41,7 @@
             var newdate = new Date();
             var value = val.split("-");
             var inputdate = new Date(value[0],value[1]-1,value[2]);
+            alert(newdate);
             if (inputdate.getTime() < newdate.getTime()){
                 return false;
                 }
@@ -53,88 +54,99 @@
 <body>
     <div>
     {% if submitted %}
-            <h2>Thank You</h2>
+            <h2>Your form has been submitted, thank you</h2>
     {% endif %}
     </div>
     <div>
         <div class='sidebar'>
+            <img src='http://imageshack.us/a/img651/7008/carthage1.png'></img>
         </div>
         <div class='mainbar'>
+            <div class='header'>
+                <text class='headertext'>Email Form</text>
+            </div><br>
+            <form action='' method='post'>{% csrf_token %}
+                {{ form.non_field_errors }}
+                <text class='separator'>Personal information</text><hr>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.unique_id.label }}</text></td>
+                        <td>{{ form.unique_id }}</td>
+                        <td>
+                            <img class='hidden' id='unique_id_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='unique_id_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.unique_id.errors %}
+                                <text class ='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.requested_by.label }}</text></td>
+                        <td>{{ form.requested_by }}</td>
+                        <td>
+                            <img class='hidden' id='requested_by_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='requested_by_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.requested_by.errors %}
+                                <text class ='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br>
+                <text class='separator'>Account information</text><hr>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.name_of_account_requested.label }}</text></td>
+                        <td>{{ form.name_of_account_requested }}</td>
+                        <td>
+                            <img class='hidden' id='name_of_account_requested_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='name_of_account_requested_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.name_of_account_requested.errors %}
+                                <text class ='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.purpose_of_account.label }}</text></td>
+                        <td>{{ form.purpose_of_account }}</td>
+                        <td>
+                            <img class='hidden' id='purpose_of_account_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='purpose_of_account_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.purpose_of_account.errors %}
+                                <text class ='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.names_of_all_users.label }}</text></td>
+                        <td>{{ form.names_of_all_users }}</td>
+                        <td>
+                            <img class='hidden' id='names_of_all_users_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='names_of_all_users_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.names_of_all_users.errors %}
+                                <text class ='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td><text class='fieldlabel'>{{ form.needed_until.label }}</text></td>
+                        <td>{{ form.needed_until }}</td>
+                        <td>
+                            <img class='hidden' id='needed_until_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                            <img class='hidden' id='needed_until_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                            {% for e in form.needed_until.errors %}
+                                <text class ='error'>*{{ e }}</text>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table><br><br>
+                <input type="submit" value="Submit form">
+            </form>
         </div>
     </div>
-    
-    
-    
-    
-    
-    
-    <form action='' method='post'>{% csrf_token %}
-        <table>
-            <tr>
-                <td>
-                    {{ form.unique_id.label }}
-                    <text id='unique_id_no' style='display:none;color:red;'>N</text>
-                    <text id='unique_id_yes' style='display:none;color:green;'>Y</text>
-                </td>
-                <td>
-                    {{ form.requested_by.label }}
-                    <text id='requested_by_no' style='display:none;color:red;'>N</text>
-                    <text id='requested_by_yes' style='display:none;color:green;'>Y</text>
-                </td>
-                <td>
-                    {{ form.name_of_account_requested.label }}
-                    {{ form.name_of_account_requested.errors }}
-                    <text id='name_of_account_requested_no' style='display:none;color:red;'>N</text>
-                    <text id='name_of_account_requested_yes' style='display:none;color:green;'>Y</text>
-                </td>
-                <!--<td>{{ form.date.label }}</td>-->
-                <td>
-                    {{ form.needed_until.label }}
-                    <text id='needed_until_no' style='display:none;color:red;'>N</text>
-                    <text id='needed_until_yes' style='display:none;color:green;'>Y</text>
-                </td>
-            </tr>
-            <tr>
-                <td>{{ form.unique_id }}</td>
-                <td>{{ form.requested_by }}</td>
-                <td>{{ form.name_of_account_requested }}</td>
-                <!--<td>{{ form.date }}</td>-->
-                <td>{{ form.needed_until }}</td>
-            </tr>
-            <tr>
-                <td>{% for e in form.unique_id.errors %}<text class='error'>{{ e }}</text>{% endfor %}</td>
-                <td>{% for e in form.requested_by.errors %}<text class='error'>{{ e }}</text>{% endfor %}</td>
-                <td>{% for e in form.name_of_account_requested.errors %}<text class='error'>{{ e }}</text>{% endfor %}</td>
-                <!--<td>{% for e in form.date.errors %}<text class='error'>{{ e }}</text>{% endfor %}</td>-->
-                <td>{% for e in form.needed_until.errors %}<text class='error'>{{ e }}</text>{% endfor %}</td>
-            </tr>
-        </table>
-        <table>
-            <tr>
-                <td>
-                    {{ form.purpose_of_account.label }} {% for e in form.purpose_of_account.errors %}<text class='error'>{{ e }}</text>{% endfor %}
-                </td>
-                <td>
-                    {{ form.names_of_all_users.label }} {% for e in form.names_of_all_users.errors %}<text class='error'>{{ e }}</text>{% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <td>{{ form.purpose_of_account }}</td>
-                <td>{{ form.names_of_all_users }}</td>
-            </tr>
-            <tr>
-                <td>
-                    <text id='purpose_of_account_no' style='display:none;color:red;'>N</text>
-                    <text id='purpose_of_account_yes' style='display:none;color:green;'>Y</text>
-                </td>
-                <td>
-                    <text id='names_of_all_users_no' style='display:none;color:red;'>N</text>
-                    <text id='names_of_all_users_yes' style='display:none;color:green;'>Y</text>
-                </td>
-            </tr>
-        </table>
-    <input type="submit" value="Submit">
-    </form>
 </body>
     <script type='text/javascript'>
         var element = document.getElementById('id_unique_id');

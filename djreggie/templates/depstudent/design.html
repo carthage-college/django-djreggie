@@ -6,8 +6,15 @@
         td {
             text-align:center;
         }
-        #attached {
+        #attachedcss, #filediv, #filediv2 {
             padding-left:5em;
+        }
+
+        .line{
+                width:100%;
+        }
+        .hidden{
+                display:none;
         }
     </style>
 <html lang="en">
@@ -27,12 +34,86 @@
                 active: false
             });
         });
+            function validate_dob(){
+            var id = document.getElementById('id_dob');
+            var val = id.value;
+            var newdate = new Date();
+            newdate.setFullYear(newdate.getFullYear()-10)
+            var value = val.split("-");
+            var inputdate = new Date(value[0],value[1]-1,value[2]);
+            if (inputdate.getTime() > newdate.getTime()){
+                return false;
+                }
+            else{
+                return true;
+            }
+        }
+        function validate_fname(){
+            var id = document.getElementById('id_fname');
+            var val = id.value;
+            var patt = new RegExp('^[a-zA-Z\']+[a-zA-Z\\-\\s\']+$');
+            return patt.test(val);        
+        }
+        function validate_mname(){
+            var id = document.getElementById('id_mname');
+            var val = id.value;
+            var patt = new RegExp('^.+$');
+            return patt.test(val);        
+        }
+        function validate_lname(){
+            var id = document.getElementById('id_lname');
+            var val = id.value;
+            var patt = new RegExp('^[a-zA-Z\']+[a-zA-Z\\-\\s\']+$');
+            return patt.test(val);        
+        }
+        function validate_ssn(){
+            var id = document.getElementById('id_ssn');
+            var val = id.value;
+            var patt = new RegExp('^[\\d]{3}[\\s\\-]?[\\d]{2}[\\s\\-]?[\\d]{4}$');
+            return patt.test(val);        
+        }
+        function validate_address(){
+            var id = document.getElementById('id_address');
+            var val = id.value;
+            var patt = new RegExp('^.+$');
+            return patt.test(val);        
+        }
+        function validate_city(){
+            var id = document.getElementById('id_city');
+            var val = id.value;
+            var patt = new RegExp('^.+$');
+            return patt.test(val);        
+        }
+        function validate_state(){
+            var id = document.getElementById('id_state');
+            var val = id.value;
+            var patt = new RegExp('^[a-zA-Z]{2}$');
+            return patt.test(val);
+        }
+        function validate_zip(){
+            var id = document.getElementById('id_zip');
+            var val = id.value;
+            var patt = new RegExp('^\\d{5}$');
+            return patt.test(val);        
+        }       
+        function validate_hphone(){
+            var id = document.getElementById('id_hphone');
+            var val = id.value;
+            var patt = new RegExp('^(\\d{4}|\\d{3}[\\s\\-\\.]?\d{4}|1?[\\s\\-\\.]?\\(?\\d{3}\\)?[\\s\\-\\.]?\\d{3}[\\s\\-\\.]?\\d{4})$');
+            return patt.test(val);            
+        }
+        function validate_cphone(){
+            var id = document.getElementById('id_cphone');
+            var val = id.value;
+            var patt = new RegExp('^(\\d{4}|\\d{3}[\\s\\-\\.]?\d{4}|1?[\\s\\-\\.]?\\(?\\d{3}\\)?[\\s\\-\\.]?\\d{3}[\\s\\-\\.]?\\d{4})$');
+            return patt.test(val);            
+        }
     </script>
 </head>
 <body>
     <div>
     {% if submitted %}
-        <h2>Thank You</h2>
+        <h2>Thank you for submitting the form!</h2>
     {% endif %}
     </div>
     {% block content %}
@@ -48,49 +129,81 @@
                 documents to the financial aid administrator at your school. Your school may ask for additional information. If you have questions about<br>
                 verification, contact your financial aid administrator as soon as possible so that your financial aid will not be delayed.</p>
             </div>
-            <h3>Dependent Student's Information</h3>
+            <h3>Dependent Student's Information{% if formdepend.fname.errors or formdepend.mname.errors or formdepend.lname.errors or formdepend.ssn.errors or formdepend.address.errors or formdepend.dob.errors or formdepend.city.errors or formdepend.state.errors or formdepend.zip.errors or formdepend.email.errors or formdepend.hphone.errors or formdepend.phonetype.errors or formdepend.cphone.errors or formdepend.phonetype2.errors %}<text class="error">  *</text> {% endif %}</h3>
             <div>
-                <form action="" method="post" enctype="multipart/form-data"> {% csrf_token %}    
+                <form action="" method="post" enctype="multipart/form-data"> {% csrf_token %}   
+                    {{formsetfam.management_form}}
+                    {{formsetstud.management_form}}
+                    {{formsetpar.management_form}}
+                    {{formsetcs.management_form}}
                     {{formdepend.fname.errors}}
                     {{formdepend.fname.label}}
                     {{formdepend.fname}}
+                    <img class='hidden' id='fname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='fname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                     {{formdepend.mname.errors}}
                     {{formdepend.mname.label}}
                     {{formdepend.mname}}
+                    <img class='hidden' id='mname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='mname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                     {{formdepend.lname.errors}}
                     {{formdepend.lname.label}}
-                    {{formdepend.lname}}<br>
+                    {{formdepend.lname}}
+                    <img class='hidden' id='lname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='lname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img><br>
                     {{formdepend.ssn.errors}}
                     {{formdepend.ssn.label}}
                     {{formdepend.ssn}}
+                    <img class='hidden' id='ssn_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='ssn_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                     {{formdepend.address.errors}}
                     {{formdepend.address.label}}
                     {{formdepend.address}}
-                    {{formdepend.dob.errors}}
-                    {{formdepend.dob.label}}
-                    {{formdepend.dob}}<br>
+                    <img class='hidden' id='address_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='address_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <text class='fieldlabel'>{{ formdepend.dob.label }}</text>
+                    {{ formdepend.dob }}
+                    <img class='hidden' id='dob_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='dob_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    {% for e in formdepend.dob.errors %}
+                    <text class ='error'>*{{ e }}</text>
+                    {% endfor %}<br>
                     {{formdepend.city.errors}}
                     {{formdepend.city.label}}
-                    {{formdepend.city}}        
+                    {{formdepend.city}}
+                    <img class='hidden' id='city_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='city_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>        
                     {{formdepend.state.errors}}
                     {{formdepend.state.label}}
                     {{formdepend.state}}
+                    <img class='hidden' id='state_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='state_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                     {{formdepend.zip.errors}}
                     {{formdepend.zip.label}}
-                    {{formdepend.zip}}<br>
+                    {{formdepend.zip}}
+                    <img class='hidden' id='zip_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='zip_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img> <br>
                     {{formdepend.email.errors}}
                     {{formdepend.email.label}}
                     {{formdepend.email}}
                     {{formdepend.hphone.errors}}
                     {{formdepend.hphone.label}}
                     {{formdepend.hphone}}
+                    <img class='hidden' id='hphone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='hphone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    {{formdepend.phonetype.errors}}
+                    {{formdepend.phonetype.label}}
+                    {{formdepend.phonetype}}<br>
                     {{formdepend.cphone.errors}}
                     {{formdepend.cphone.label}}
-                    {{formdepend.cphone}}<br><br>
-                    {{formdepend.file.errors}}	
-                    {{formdepend.file}}		
+                    {{formdepend.cphone}}
+                    <img class='hidden' id='cphone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='cphone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    {{formdepend.phonetype2.errors}}
+                    {{formdepend.phonetype2.label}}
+                    {{formdepend.phonetype2}}
             </div>
-            <h3>Dependent Student's Family Information</h3>
+            <h3>Dependent Student's Family Information{% if formsetfam.errors %}<text class="error">  *</text> {% endif %}</h3>
             <div>
                 <p>List below the people in your parent(s)' household. Include:<br>
                 <ul>
@@ -105,7 +218,6 @@
                 a degree, diploma, or certificate program at a postsecondary educational institution any time between July 1, {{ year }}, and June <br>
                 30, {{ year2 }}.</p>
 
-                {{ formsetfam.management_form }}
                 <table border="1">
                     <tr>
                         <th>Full Name</th>
@@ -124,9 +236,10 @@
                             {% endfor %}
                         </tr>
                     {% endfor %}
-                </table>                
+                </table>         
+                <input type='submit' name='add_fam' id='add_fam' value='Add'>
             </div>
-            <h3>Dependent Student's Income Information to Be Verified</h3>
+            <h3>Dependent Student's Income Information to Be Verified{% if formdepend.file.errors or formsetstud.errors %}<text class="error">  *</text> {% endif %}</h3>
             <div>
                 <p>
                     1. TAX RETURN FILERS-<b>Important Note</b>: If the student filed, or will file, an amended {{ year0 }} IRS tax return, the student must 
@@ -139,21 +252,31 @@
                     IRS income information to be available for the IRS Data Retrieval Tool for electronic IRS tax return filers, and up to eight
                     weeks for paper IRS tax return filers. If you need more information about when, or how to use the IRS Data Retrieval Tool see 
                     your financial aid administrator.<br><br>
-                    <b>For the first set of radio buttons, please choose whether :</b>
+                    <b>For the first set of radio buttons, please choose whether:</b>
                 </p>
                 {{formsincome.useddata.errors}}
-                {{formsincome.useddata}}
-                <div id="attached">
+                {% for item in formsincome.useddata %}
+                        <div>
+                        <div>
+                        {{item}}
+                        </div>
+                        </div>
+                {% endfor %}
+                   
+                <div id="attachedcss">
                     {{formsincome.attached.errors}}
                     {{formsincome.attached}}
                 </div>
+                    <br>
+                <div id=filediv>{{formdepend.file.errors}}
+                {{formdepend.file.label}}
+                {{formdepend.file}}		</div>
                 <p>
                     2. TAX RETURN NONFILERS-complete this section if the student will not file and is not required to file a {{ year0 }} income tax 
                     return with the IRS.<br><br><b>Check the box that applies:</b>
                 </p>
                 {{formsincome.employed.errors}}
                 {{formsincome.employed}}
-                {{ formsetstud.management_form }}
                 <table border="1">
                     <tr>
                         <th>Employer's Name</th>
@@ -170,9 +293,10 @@
                             {% endfor %}
                         </tr>
                     {% endfor %}
-                </table>                
+                </table>      
+                <input type='submit' name='add_stud' id='stud_id' value='Add'>
             </div>
-            <h3>Parent's Income Information to Be Verified</h3>
+            <h3>Parent's Income Information to Be Verified{% if formdepend.file.errors or formsetpar.errors %}<text class="error">  *</text> {% endif %}</h3>
             <div>
                 <p>
                     NOTE:If two parents were reported in Section B of this worksheet, the 
@@ -191,17 +315,20 @@
                 </p>
                 {{formparincome.useddata2.errors}}
                 {{formparincome.useddata2}}
-                <div id="attached">
+                <div id="attachedcss">
                     {{formparincome.attached2.errors}}
                     {{formparincome.attached2}}
                 </div>
+                <br>
+                <div id=filediv2>{{formdepend.file2.errors}}
+                {{formdepend.file2.label}}
+                {{formdepend.file2}}		</div>
                 <p>
                     2. TAX RETURN NONFILERS-complete this section if the student will not file and is not required to file a {{ year0 }} income tax 
                     return with the IRS.<br><br><b>Check the box that applies:</b>
                 </p>
                 {{formparincome.employed2.errors}}
                 {{formparincome.employed2}}
-                {{ formsetpar.management_form }}
                 <table border="1">
                     <tr>
                         <th>Employer's Name</th>
@@ -218,9 +345,10 @@
                         {% endfor %}
                     </tr>
                     {% endfor %}
-                </table>                
+                </table>   
+                <input type='submit' name='add_par' id='add_par' value='Add'>
             </div>
-            <h3>Parent's Other Information to Be Verified</h3>
+            <h3>Parent's Other Information to Be Verified{% if formsetcs.errors %}<text class="error">  *</text> {% endif %}</h3>
             <div>
                 <p>
                     1. Complete this section if someone in the student's parent's household (listed in Section B) received benefits from the<br>
@@ -233,7 +361,6 @@
                 </p>
                 {{ formotherinformation.childsupport }}
                 {{ formotherinformation.childsupport.label }}
-                {{ formsetpar.management_form }}
                 <table border="1">
                     <tr>
                         <th>Name of Person Who Paid <br>Child Support</th>
@@ -252,12 +379,13 @@
                         </tr>
                     {% endfor %}
                 </table>
+                <input type='submit' name='add_cs' id='add_cs' value='Add'>
             </div>
             <h3>Submit form</h3>
             <div>
                 <p>
                     <b>If you purposely give false or misleading
-                    information on this worksheet, you may be fined, be<br>
+                    information on this form, you may be fined, be<br>
                     sentenced to jail, or both.</b>
                 </p>
                 I confirm on behalf of student and parent that this form contains correct information filled out to the best of our ability and knowledge.
@@ -268,9 +396,224 @@
 {% endblock %}
 </body>
     <script type='text/javascript'>
+    var element = document.getElementsByName('useddata');
+    for (var i = 0; i < element.length; i++)
+       {
+            element[i].onclick = function() {
+            var value = this.value;
+            var useddata = document.getElementsByName('useddata');
+            if (value == "HAS") {
+                useddata[0].parentNode.parentNode.style.background = "gray";
+                useddata[1].parentNode.parentNode.style.background = "white";
+                useddata[2].parentNode.parentNode.style.background = "white";
+                }
+            else if (value == "HASN") {
+                useddata[0].parentNode.parentNode.style.background = "white";
+                useddata[1].parentNode.parentNode.style.background = "gray";
+                useddata[2].parentNode.parentNode.style.background = "white";
+                }
+            else if (value == "WONT") {
+                useddata[0].parentNode.parentNode.style.background = "white";
+                useddata[1].parentNode.parentNode.style.background = "white";
+                useddata[2].parentNode.parentNode.style.background = "gray";
+                }
+            };
+        }
+    
+        element = document.getElementById('id_dob');
+        element.onblur = function() {                               
+            var n=document.getElementById('dob_no');
+            var y=document.getElementById('dob_yes');
+            if(!validate_dob()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
         {% if formdepend.fname.errors %}
             //$("#accordion").accordion( "option", "active", 1 );
             $("#accordion").accordion().active(3);
         {% endif %}
+        var element = document.getElementsByName('attached');
+        for (var i = 0; i < element.length; i++)
+           {
+                element[i].onclick = function() {
+                var value = this.value;
+                var othervar = document.getElementById('filediv'); 
+                if (value != "IS"){
+                    othervar.style.display = 'none';
+                    }
+                else{
+                    othervar.style.display = 'inline';
+                    }
+                };
+            }
+        var element2 = document.getElementsByName('attached2');
+        for (var i = 0; i < element2.length; i++)
+           {
+                element2[i].onclick = function() {
+                var value2 = this.value;
+                var othervar2 = document.getElementById('filediv2'); 
+                if (value2 != "IS"){
+                    othervar2.style.display = 'none';
+                    }
+                else{
+                    othervar2.style.display = 'inline';
+                    }
+                };
+            }
+        element = document.getElementById('id_fname');
+        element.onblur = function(){
+            var n=document.getElementById('fname_no');
+            var y=document.getElementById('fname_yes');
+            if (!validate_fname())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_mname');
+        element.onblur = function(){
+            var n=document.getElementById('mname_no');
+            var y=document.getElementById('mname_yes');
+            if (!validate_mname())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_lname');
+        element.onblur = function(){
+            var n=document.getElementById('lname_no');
+            var y=document.getElementById('lname_yes');
+            if (!validate_lname())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_ssn');
+        element.onblur = function(){
+            var n=document.getElementById('ssn_no');
+            var y=document.getElementById('ssn_yes');
+            if (!validate_ssn())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_address');
+        element.onblur = function(){
+            var n=document.getElementById('address_no');
+            var y=document.getElementById('address_yes');
+            if (!validate_address())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_city');
+        element.onblur = function(){
+            var n=document.getElementById('city_no');
+            var y=document.getElementById('city_yes');
+            if (!validate_city())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_state');
+        element.onblur = function(){
+            var n=document.getElementById('state_no');
+            var y=document.getElementById('state_yes');
+            if (!validate_state())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_zip');
+        element.onblur = function(){
+            var n=document.getElementById('zip_no');
+            var y=document.getElementById('zip_yes');
+            if (!validate_zip())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_hphone');
+        element.onblur = function(){
+            var n=document.getElementById('hphone_no');
+            var y=document.getElementById('hphone_yes');
+            if (!validate_hphone())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
+        element = document.getElementById('id_cphone');
+        element.onblur = function(){
+            var n=document.getElementById('cphone_no');
+            var y=document.getElementById('cphone_yes');
+            if (!validate_cphone())
+            {
+                n.style.display='inline';
+                y.style.display='none';
+            }
+            else
+            {
+                n.style.display='none';
+                y.style.display='inline';
+            }
+        };
     </script>
 </html>
+
+
