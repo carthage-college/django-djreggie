@@ -47,7 +47,7 @@ DATABASES = {
     'default': {
         'HOST': '127.0.0.1',
         'PORT': '3306',
-        'NAME': 'djreggie',
+        'NAME': 'django_djreggie',
         'ENGINE': 'django.db.backends.mysql',
         'USER': '',
         'PASSWORD': ''
@@ -150,6 +150,11 @@ LOGGING = {
             'format': '%(levelname)s %(message)s'
         },
     },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
     'handlers': {
         'null': {
             'level':'DEBUG',
@@ -170,16 +175,13 @@ LOGGING = {
         },
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'include_html': True,
             'class': 'django.utils.log.AdminEmailHandler'
         }
     },
     'loggers': {
-        'mugshots.upload': {
-            'handlers':['logfile'],
-            'propagate': True,
-            'level':'DEBUG',
-        },
-        'core': {
+        'djreggie': {
             'handlers':['logfile'],
             'propagate': True,
             'level':'DEBUG',

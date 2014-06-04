@@ -1,0 +1,86 @@
+<!doctype html>
+
+	<style>
+		.errorlist, .error {
+			color: red;
+		}
+	</style>
+ 
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>jQuery UI Accordion - Default functionality</title>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css" />
+u  $(function() {
+    $( "#accordion" ).accordion({
+		heightStyle: "content",
+		collapsible: true,
+		navigation: true,
+		active: false,
+	});
+  });
+  </script>
+</head>
+{% block content %}
+<h1>Authorization to Release Non-Directory Information</h1>
+<form action="" method="post"> {% csrf_token %}
+<div id="accordion">
+	<h3>Information and sharing settings{% if form.Please_accept.errors or form.Which_information_would_you_like_to_share.errors %}<text class="error">  *</text> {% endif %}</h3>	
+	<div>
+		<p>Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. §1232g; 34 CFR Part 99), Carthage College will not<br>
+		release student academic records to third parties involving non-directory information unless a valid Authorization to<br>
+		Release Non-Directory Information form is on file. This form lists the record (s) to be released and to whom.<br><br>
+		By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified<br>
+		records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the<br>
+		student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not<br>
+		affect disclosures previously made by the College prior to the receipt of said written revocation<br><br>
+		I authorize the full verbal and written disclosure of my student record to the parent(s) or third parties listed below in the following areas.<br>
+		<ul>
+			<li><b>Academic Records</b> including such items, but not limited to, Attendance, Academic Standing, Homework, Tests,<br>
+				Mid-Term Grades, Final Grades, Grade Point Averages, Progression Towards Graduation/Program Audit.</li>
+			<li><b>Student Financial Records</b> including such items, but not limited to, Business Office Account, Outstanding Balances,<br>
+				Financial Aid Packages, FASFA Information, Scholarships.</p>
+		{{form.Please_accept.errors}}
+		{{form.Please_accept.label}}
+		{{form.Please_accept}}<br><br>
+		{{form.Which_information_would_you_like_to_share.errors}}
+		{{form.Which_information_would_you_like_to_share.label}}
+		{{form.Which_information_would_you_like_to_share}}
+	</div>
+	<h3>Personal info {% if form.Full_Name_of_Student.errors or form.Carthage_ID_Number.errors or form.I_agree_the_above_information_is_correct_and_valid.errors %}<text class="error">  *</text> {% endif %}</h3>
+	<div>
+		{{form.Full_Name_of_Student.errors}}
+		{{form.Full_Name_of_Student.label}}
+		{{form.Full_Name_of_Student}}<br><br>
+		{{form.Carthage_ID_Number.errors}}
+		{{form.Carthage_ID_Number.label}}
+		{{form.Carthage_ID_Number}}<br><br>
+		{{form.I_agree_the_above_information_is_correct_and_valid.errors}}
+		{{form.I_agree_the_above_information_is_correct_and_valid.label}}
+		{{form.I_agree_the_above_information_is_correct_and_valid}}
+	</div>
+	<h3><a href="#PTP">Parent or Third Party Entry {% if Parent_formset.errors %}<text class="error">  *</text> {% endif %}</a></h3>
+	<div>
+		<p>Please add as many fields as needed before entering text, as anything typed will be lost upon clicking the button</p>
+		<input type="submit" value="Add Another Parent or Third Party" id="add" name="add">
+		<p>Below, please indicate the names of the people who you will disclose information with, and their relation to you</p>
+		{{Parent_formset.as_p}}
+	</div>
+	<h3>Submit</h3>
+	<div>
+		<input type="submit" name="submit" value="Submit Form">
+	</div>
+</div>
+</form>
+{%if boolean%}
+	<script>
+		windows.scrollTo(0,document.body.scrollHeight);
+	</script>
+{%endif%}
+
+{% endblock %}
+
+
