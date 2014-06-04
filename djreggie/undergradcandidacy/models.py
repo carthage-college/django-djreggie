@@ -10,11 +10,8 @@ connection = engine.connect()
 
 
 sql1 = "select * from st_table"
-state = connection.execute(sql1)
-array1 = []
-for row in state:
-    array1.append((row['st'],row['txt']))   
-CHOICES1 = tuple(array1)
+state = connection.execute(sql1)  
+CHOICES1 = tuple((row['st'], row['txt']) for row in state)
 class Major(models.Model):
     
     txt = models.CharField(db_column='txt')
@@ -39,9 +36,12 @@ class UndergradForm(models.Model):
     if date.today().month <= 5:
             year = year - 1
     #All the fields in the form are below
-    fname = models.CharField(max_length=200) #'max_length' is required in (most) all fields
-    mname = models.CharField(max_length=200, null=True, blank=True) #'null=True' means this data member can be represented as null in the database
-    lname = models.CharField(max_length=200)
+    fname = models.CharField(max_length=200, verbose_name='First Name') #'max_length' is required in (most) all fields
+    mname = models.CharField(max_length=200,
+                             null=True,
+                             blank=True,
+                             verbose_name='Middle Name') #'null=True' means this data member can be represented as null in the database
+    lname = models.CharField(max_length=200, verbose_name='Last Name')
     student_id = models.PositiveIntegerField() #Only positive numbers are valid
     majors = models.ManyToManyField(Major)
     minors = models.ManyToManyField(Minor, null=True, blank=True) #'blank=True' means the field is not required
@@ -60,16 +60,22 @@ class UndergradForm(models.Model):
         ('spring', 'Spring Term %d' % (year+1)),
         ('fall2', 'Fall Term %d' % (year+1)),
     )
-    when_teach = models.CharField(max_length=200, null=True, blank=True, choices=WHEN_TEACH_LIST)
+    when_teach = models.CharField(max_length=200,
+                                  null=True,
+                                  blank=True,
+                                  choices=WHEN_TEACH_LIST)
 
-    best_phone = models.CharField(max_length=16)
-    cell = models.CharField(max_length=16, null=True, blank=True)
-    carthage_email = models.BooleanField()
-    email = models.EmailField()
+    best_phone = models.CharField(max_length=16, verbose_name='Best phone')
+    cell = models.CharField(max_length=16,
+                            null=True,
+                            blank=True,
+                            verbose_name='Cell')
+    carthage_email = models.BooleanField(verbose_name='Check if carthage email')
+    email = models.EmailField(verbose_name='Email')
     address = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
     state = models.CharField(max_length=2, choices=CHOICES1)
-    zipcode = models.PositiveIntegerField(max_length=5)
+    zipcode = models.PositiveIntegerField(max_length=5, verbose_name='Zip')
     date = models.DateField(auto_now_add=True) #'auto_now_add' sets the date to the current date and makes this field invisible in the form
     
     #How the class is displayed in the admin page

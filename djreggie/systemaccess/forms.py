@@ -2,6 +2,7 @@
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
+import re
 
 from djreggie.systemaccess.models import AccessFormModel #Include the model that goes with this form
 
@@ -13,12 +14,24 @@ class AccessFormForm(forms.ModelForm):
         super(AccessFormForm, self).__init__(*args,**kwargs)
         
         #Validate all form fields here
-        self.fields['full_name'].validators = [validators.RegexValidator(regex=('^.+$'),message='Not a valid name',code='a')]
-        self.fields['carthage_id'].validators = [validators.RegexValidator(regex=('^[\d]{5,7}$'),message='Not a valid 5-7 digit Carthage id',code='a')]
-        self.fields['department'].validators = [validators.RegexValidator(regex=('^.+$'),message='Is not a department',code='a')]
-        self.fields['position'].validators = [validators.RegexValidator(regex=('^.+$'),message='Not a position',code='a')]
-        self.fields['work_phone'].validators = [validators.RegexValidator(regex=('^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4}|NEW)$'),message='Not a valid phone number',code='a')]
+        #self.fields['full_name'].validators = [validators.RegexValidator(regex=('^.+$'),message='Not a valid name',code='a')]
+        #self.fields['carthage_id'].validators = [validators.RegexValidator(regex=('^[\d]{5,7}$'),message='Not a valid 5-7 digit Carthage id',code='a')]
+        #self.fields['department'].validators = [validators.RegexValidator(regex=('^.+$'),message='Is not a department',code='a')]
+        #self.fields['position'].validators = [validators.RegexValidator(regex=('^.+$'),message='Not a position',code='a')]
+        #self.fields['work_phone'].validators = [validators.RegexValidator(regex=('^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4}|NEW)$'),message='Not a valid phone number',code='a')]
         #self.fields['supervisor_name'].validators = [validators.RegexValidator(regex=('^[a-zA-Z]+[a-zA-Z\s-]*$'),message='Not a valid name',code='a')]
+    
+    def clean_carthage_id(self):
+        data = self.cleaned_data['carthage_id']
+        if not re.match(r'^[\d]{5,7}$', data):
+            raise forms.ValidationError('Not a valid 5-7 digit Carthage id')
+        return data
+    
+    def clean_work_phone(self):
+        data = self.cleaned_data['work_phone']
+        if not re.match(r'^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4}|NEW)$', data):
+            raise forms.ValidationError('Not a valid phone number')
+        return data
     
     #Another option to include validation    
     def clean(self):

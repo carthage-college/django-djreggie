@@ -22,8 +22,8 @@ class ConsentModel(models.Model):
         
     #Please_accept = models.CharField(choices=CHOICES1, max_length=200)
     Which_information_would_you_like_to_share = models.CharField(choices=CHOICES2, max_length=2000)
-    Full_Name_of_Student = models.CharField(max_length=100)
-    Carthage_ID_Number = models.IntegerField(max_length=7)
+    Full_Name_of_Student = models.CharField(max_length=100, verbose_name='Name')
+    Carthage_ID_Number = models.IntegerField(max_length=7, verbose_name='Student ID')
     Date = models.DateField(auto_now_add=True)
     name = models.ManyToManyField(Contact, through="ParentForm")
     

@@ -25,22 +25,34 @@ class Depend(models.Model):
             ("WORK", "Work Phone"),
     )
 
-    fname = models.CharField(max_length=100)
-    mname = models.CharField(max_length=100)
-    lname = models.CharField(max_length=100)
-    ssn = models.CharField(max_length=11)
-    address = models.CharField(max_length=500)
-    dob = models.DateField()
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=2)
-    zip = models.CharField(max_length=5)
-    email = models.EmailField()
-    hphone = models.CharField(max_length=16)
-    phonetype = models.CharField(max_length= 100, choices=PHONES)
-    cphone = models.CharField(max_length=16, blank=True)
-    phonetype2 = models.CharField(max_length= 100, choices=PHONES, blank=True)
-    file = models.FileField(upload_to='files', blank=True)
-    file2 = models.FileField(upload_to='files', blank=True)
+    fname = models.CharField(max_length=100, verbose_name="First Name")
+    mname = models.CharField(max_length=100, verbose_name="Middle Name")
+    lname = models.CharField(max_length=100, verbose_name="Last Name")
+    ssn = models.CharField(max_length=11, verbose_name="Social Security Number")
+    address = models.CharField(max_length=500, verbose_name="Street Address")
+    dob = models.DateField(verbose_name="Date of Birth")
+    city = models.CharField(max_length=100, verbose_name="City")
+    state = models.CharField(max_length=2, verbose_name="State")
+    zip = models.CharField(max_length=5, verbose_name="Zip Code")
+    email = models.EmailField(verbose_name="Email Address")
+    hphone = models.CharField(max_length=16,
+                              verbose_name="Primary Phone Number")
+    phonetype = models.CharField(max_length= 100,
+                                 choices=PHONES,
+                                 verbose_name="Type of Phone")
+    cphone = models.CharField(max_length=16,
+                              blank=True,
+                              verbose_name="Alternate Phone Number")
+    phonetype2 = models.CharField(max_length= 100,
+                                  choices=PHONES,
+                                  blank=True,
+                                  verbse_name="Type of Phone")
+    file = models.FileField(upload_to='files',
+                            blank=True,
+                            verbose_name="Upload a file" )
+    file2 = models.FileField(upload_to='files',
+                             blank=True,
+                             verbose_name="Upload a file" )
     IRSDRT= (
         ("HAS", mark_safe("The student has used the IRS Data Retrieval Tool in FAFSA on the Web to retrieve and transfer 2012 IRS income information into the student's FAFSA, either on the initial FAFSA or when making a correction to the FAFSA. (The student's school will use the IRS information that was transferred in the verification process.)<br><br>")),
         ("HASN", mark_safe("The student has not yet used the IRS Data Retrieval Tool in FAFSA on the Web, but will use the tool to retrieve and transfer 2012 IRS income information into the student's FAFSA once the student has filed a 2012 IRS tax return. See instructions above for information on how to use the IRS Data Retrieval Tool. (The student's school cannot complete the verification process until the IRS information has been transferred into the FAFSA.)<br><br>")),
@@ -78,36 +90,57 @@ class Depend(models.Model):
     useddata2 = models.CharField(choices=IRSDRT2, max_length=500, default="HAS")
     attached2 = models.CharField(choices=TACHED2, max_length=500, default="IS")
     employed2 = models.CharField(choices=PLOY2, max_length=500, default="WAS")
-    snapbenefits = models.BooleanField()
-    childsupport = models.BooleanField()
-    confirm = models.BooleanField()
+    snapbenefits = models.BooleanField(verbose_name="One of the persons listed in Section B of this\
+                                       worksheet received SNAP benefits in 2011 or 2012. If asked by\
+                                       the student\'s school, I will provide documentation of the receipt\
+                                       of SNAP benefits during 2011 and/or 2012.")
+    childsupport = models.BooleanField(verbose_name="One (or both) of the student's parents listed\
+                                       in Section B of this worksheet paid child support in 2012.\
+                                       \nThe parent has indicated below the name of the person who\
+                                       paid the child support, the name of the person to whom the\
+                                       child support was\npaid, the names of the children for whom\
+                                       child support was paid, and the total annual amount of child\
+                                       support that was\npaid in 2012 for each child. If asked by the\
+                                       school, I will provide documentation of the payment of child support.\n\n")
+    confirm = models.BooleanField(verbose_name="I confirm on behalf of student\
+                                  and parent that this form contains correct\
+                                  information filled out to the best of our\
+                                  ability and knowledge.")
     date = models.DateField(auto_now_add=True)
     
 class FamInfo(models.Model):
-    name = models.CharField(max_length=100)
-    age = models.IntegerField(max_length=3)
-    relationship = models.CharField(max_length=100)
-    college = models.CharField(max_length=200)
-    halftimeenroll = models.BooleanField()
+    name = models.CharField(max_length=100, verbose_name="Full Name")
+    age = models.IntegerField(max_length=3, verbose_name="Age")
+    relationship = models.CharField(max_length=100, verbose_name="Relationship")
+    college = models.CharField(max_length=200, verbose_name="College")
+    halftimeenroll = models.BooleanField(verbose_name="Will be Enrolled at Least Half Time")
     student = models.ForeignKey(Depend)
     
 class Studwork(models.Model):
-    empname = models.CharField(max_length=250)
-    money = models.IntegerField(max_length=10)
-    w2attach = models.BooleanField()
+    empname = models.CharField(max_length=250, verbose_name="Employer's Name")
+    money = models.IntegerField(max_length=10, verbose_name="2012 Amount Earned")
+    w2attach = models.BooleanField(verbose_name="IRS W-2 Attached?")
     student = models.ForeignKey(Depend)
 
 
 class Parwork(models.Model):
-    empname = models.CharField(max_length=250)
-    money = models.IntegerField(max_length=10)
-    w2attach = models.BooleanField()
+    empname = models.CharField(max_length=250, verbose_name="Employer's Name")
+    money = models.IntegerField(max_length=10, verbose_name="2012 Amount Earned")
+    w2attach = models.BooleanField(verbose_name="IRS W-2 Attached?")
     student = models.ForeignKey(Depend)
     
 class CS(models.Model):
-    namepaid = models.CharField(max_length=200, blank=True)
-    namepaidto = models.CharField(max_length=200, blank=True)
-    namechild = models.CharField(max_length=200, blank=True)
-    amntpaid = models.IntegerField(max_length=10, blank=True)
+    namepaid = models.CharField(max_length=200,
+                                blank=True,
+                                verbose_name="Name of Person who Paid Child Support")
+    namepaidto = models.CharField(max_length=200,
+                                  blank=True,
+                                  verbose_name="Name of Person to Whom Child Support was Paid")
+    namechild = models.CharField(max_length=200,
+                                 blank=True,
+                                 verbose_name="Name of Child for Whom Support Was Paid")
+    amntpaid = models.IntegerField(max_length=10,
+                                   blank=True,
+                                   verbose_name="Amount of Child Support Paid in 2012")
     student = models.ForeignKey(Depend)
 

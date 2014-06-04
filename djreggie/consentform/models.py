@@ -4,8 +4,8 @@ from django.db import models
 class Form(models.Model):
     
     #All my fields in the form are below
-    name = models.CharField(max_length=100) #'max_length' is required in (most) all fields
-    student_ID = models.PositiveIntegerField(max_length=7)
+    name = models.CharField(max_length=100, verbose_name='Name') #'max_length' is required in (most) all fields
+    student_ID = models.PositiveIntegerField(max_length=7, verbose_name='Student ID')
     
     #First string is value, second string is what users sees
     CHOICES = (

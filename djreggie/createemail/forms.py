@@ -3,6 +3,7 @@ from django import forms
 from django.core import validators #Need this for custom validation
 import datetime
 from djreggie.createemail.models import EmailModel
+import re
 
 #The fields in this class represent the fields in the form
 class EmailForm(forms.ModelForm):
@@ -12,22 +13,22 @@ class EmailForm(forms.ModelForm):
         super(EmailForm, self).__init__(*args,**kwargs)
         
         #Custom validation
-        self.fields['unique_id'].validators = [validators.RegexValidator(regex=('^\d{5,7}$'),message='Invalid carthage id',code='a')]
-        self.fields['requested_by'].validators = [validators.RegexValidator(regex=('^[a-zA-Z\']+[a-zA-Z\-\s\']+$'),message='Invalid name',code='a')]
-        self.fields['name_of_account_requested'].validators = [validators.RegexValidator(regex=('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-zA-Z]{2,4}$'), message='Invalid email', code='a')]
-        self.fields['purpose_of_account'].validators = [validators.RegexValidator(regex=('^.+$'), message='Enter the purpose of the account', code='a')]
-        self.fields['names_of_all_users'].validators = [validators.RegexValidator(regex=('^.+$'), message='Enter users', code='a')]
+        #self.fields['unique_id'].validators = [validators.RegexValidator(regex=('^\d{5,7}$'),message='Invalid carthage id',code='a')]
+        #self.fields['requested_by'].validators = [validators.RegexValidator(regex=('^[a-zA-Z\']+[a-zA-Z\-\s\']+$'),message='Invalid name',code='a')]
+        #self.fields['name_of_account_requested'].validators = [validators.RegexValidator(regex=('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-zA-Z]{2,4}$'), message='Invalid email', code='a')]
+        #self.fields['purpose_of_account'].validators = [validators.RegexValidator(regex=('^.+$'), message='Enter the purpose of the account', code='a')]
+        #self.fields['names_of_all_users'].validators = [validators.RegexValidator(regex=('^.+$'), message='Enter users', code='a')]
         
-        self.fields['name_of_account_requested'].label = "Email address you are requesting"
+        #self.fields['name_of_account_requested'].label = "Email address you are requesting"
         
         #Custom error messages
-        self.fields['unique_id'].error_messages = {'required':'An id is required'}
+        #self.fields['unique_id'].error_messages = {'required':'An id is required'}
         #self.fields['date'].error_messages = {'required':'A date is required'}
-        self.fields['requested_by'].error_messages = {'required':'A name is required'}
-        self.fields['name_of_account_requested'].error_messages = {'required':'An account email is required'}
-        self.fields['purpose_of_account'].error_messages = {'required':'A purpose is required'}
-        self.fields['names_of_all_users'].error_messages = {'required':'Users are required'}
-        self.fields['needed_until'].error_messages = {'required':'A date is required', 'invalid':'Date cannot be in the past'}
+        #self.fields['requested_by'].error_messages = {'required':'A name is required'}
+        #self.fields['name_of_account_requested'].error_messages = {'required':'An account email is required'}
+        #self.fields['purpose_of_account'].error_messages = {'required':'A purpose is required'}
+        #self.fields['names_of_all_users'].error_messages = {'required':'Users are required'}
+        #self.fields['needed_until'].error_messages = {'required':'A date is required', 'invalid':'Date cannot be in the past'}
         
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -61,6 +62,19 @@ class EmailForm(forms.ModelForm):
                                             self.cleaned_data['purpose_of_account'],
                                             self.cleaned_data['names_of_all_users'],
                                             self.cleaned_data['needed_until'])    
+    
+    def clean_unique_id(self):
+        data = self.cleaned_data['unique_id']
+        if not re.match(r'^\d{5,7}$', data):
+            raise forms.ValidationError('Invalid carthage id')
+        return data
+    
+    def clean_requested_by(self):
+        data = self.cleaned_data['requested_by']
+        if not re.match(r'^[a-zA-Z\']+[a-zA-Z\-\s\']+$', data):
+            raise forms.ValidationError('Invalid name')
+        return data
+    
     
     #Global options    
     class Meta:

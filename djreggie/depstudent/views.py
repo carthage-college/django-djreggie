@@ -118,14 +118,12 @@ def create(request):
             formcertification._errors = {}
             
         elif 'add_cs' in request.POST:
-            list=[]
-            for i in range(0,int(formsetcs.data['cs-TOTAL_FORMS'])):
-                    list.append({
+            list=[({
                        'namepaid': formsetcs.data['cs-%s-namepaid' % (i)],
                        'namepaidto': formsetcs.data['cs-%s-namepaidto' % (i)],
                        'namechild': formsetcs.data['cs-%s-namechild' % (i)],
                        'amntpaid': formsetcs.data['cs-%s-amntpaid' % (i)]
-                    })
+                    }) for i in range(0,int(formsetcs.data['cs-TOTAL_FORMS']))]
             formsetcs = CSFormset(prefix='cs', initial= list)
             for f in formsetfam:
                     f._errors = {}
