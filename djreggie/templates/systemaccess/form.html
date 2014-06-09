@@ -15,25 +15,25 @@
         function validate_full_name(){
             var id = document.getElementById('id_full_name');
             var val = id.value;
-            var patt = new RegExp('^.+$');
+            var patt = new RegExp('^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$');
             return patt.test(val);
         }
         function validate_department(){
             var id = document.getElementById('id_department');
             var val = id.value;
-            var patt = new RegExp('^.+$');
+            var patt = new RegExp(' ^([a-zA-Z\\s?]+[a-zA-Z]+)$ ');
             return patt.test(val);
         }
         function validate_position(){
             var id = document.getElementById('id_position');
             var val = id.value;
-            var patt = new RegExp('^.+$');
+            var patt = new RegExp(' ^([a-zA-Z\\s?]+[a-zA-Z]+)$ ');
             return patt.test(val);
         }
         function validate_work_phone(){
             var id = document.getElementById('id_work_phone');
             var val = id.value;
-            var patt = new RegExp('^[\\d]{3}[\\s\-\.]?[\\d]{3}[\\s\-\.]?[\\d]{4}$');
+            var patt = new RegExp('^1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4}$');
             return patt.test(val);
         }
                 

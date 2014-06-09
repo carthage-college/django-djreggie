@@ -15,7 +15,7 @@
         function validate_requested_by(){
              var id = document.getElementById('id_requested_by');
             var val = id.value;
-            var patt = new RegExp('^[a-zA-Z\']+[a-zA-Z\\-\\s\']+$');
+            var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
             return patt.test(val);       
         }
         function validate_name_of_account_requested(){

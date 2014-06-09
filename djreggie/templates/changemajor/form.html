@@ -20,13 +20,13 @@
         function validate_name(){
             var id = document.getElementById('id_name');
             var val = id.value;
-            var patt = new RegExp('^[a-zA-Z\']+[a-zA-Z\\-\\s\']+$');
+            var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
             return patt.test(val);        
         }
         function validate_advisor(){
             var id = document.getElementById('id_advisor');
             var val = id.value;
-            var patt = new RegExp('^[a-zA-Z\']+[a-zA-Z\\-\\s\']+$');
+            var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
             return patt.test(val);        
         }
         function add_major(){
