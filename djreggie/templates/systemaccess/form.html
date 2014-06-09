@@ -5,6 +5,7 @@
     <meta charset='utf-8' />
     <title>System Access Form</title>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    {% block javascript %}
     <script type='text/javascript'>
         function validate_carthage_id(){
             var id = document.getElementById('id_carthage_id');
@@ -38,7 +39,9 @@
         }
                 
     </script>
+    {% endblock %}
 </head>
+{% block content %}
 <body>
     <div>
     {% if submitted %}
@@ -331,4 +334,5 @@
             };
         }
     </script>
+    {% endblock %}
 </html>

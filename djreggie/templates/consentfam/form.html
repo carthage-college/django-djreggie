@@ -5,6 +5,7 @@
     <meta http-equiv='Content-Type' content='Type=text/html; charset=utf-8'>
     <title>Authorization to Release Non-Directory Information</title>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    {% block javascript %}
     <script type='text/javascript'>
         function validate_name(){
             var id = document.getElementById('id_Full_Name_of_Student');
@@ -19,7 +20,9 @@
             return patt.test(val);            
         }
     </script>
+    {% endblock %}
 </head>
+{% block content %}
 <body>
 <div>
 {% if submitted %}
@@ -140,4 +143,5 @@
             }
         };
     </script>
+    {% endblock %}
 </html>

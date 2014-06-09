@@ -10,6 +10,7 @@
     <meta charset="utf-8" />
     <title>Change Major/Minor Form</title>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    {% block javascript %}
     <script type='text/javascript'>
         function validate_student_id(){
             var id = document.getElementById('id_student_id');
@@ -113,7 +114,9 @@
                 return true;
         }
     </script>
+    {% endblock %}
 </head>
+{% block content %}
 <body>
 <div style='width:100%'>
 {% if submitted %}
@@ -269,4 +272,5 @@
             }
         };
     </script>
+    {% endblock %}
 </html>

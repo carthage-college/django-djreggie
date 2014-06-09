@@ -5,6 +5,7 @@
     <meta charset='utf-8' />
     <title>Request and Consent for the Release of Directory Information</title>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    {% block javascript %}
     <script type='text/javascript'>
         function validate_name(){
             var id = document.getElementById('id_name');
@@ -19,7 +20,9 @@
             return patt.test(val);            
         }
     </script>
+    {% endblock %}
 </head>
+{% block content %}
 <body>
 <div>
 {% if submitted %}
@@ -131,4 +134,5 @@ var element = document.getElementById('id_name');
         }
     };
 </script>
+{% endblock %}
 </html>
