@@ -143,31 +143,42 @@ financial aid administrator as soon as possible so that your financial aid will 
                 {{formsetstud.management_form}}
                 {{formsetpar.management_form}}
                 {{formsetcs.management_form}}
+                <div>
                 {{formdepend.fname.errors}}
                 {{formdepend.fname.label}}
                 {{formdepend.fname}}
                 <img class='hidden' id='fname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                 <img class='hidden' id='fname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+                <div>
                 {{formdepend.mname.errors}}
                 {{formdepend.mname.label}}
                 {{formdepend.mname}}
                 <img class='hidden' id='mname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                 <img class='hidden' id='mname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+                <div>
                 {{formdepend.lname.errors}}
                 {{formdepend.lname.label}}
                 {{formdepend.lname}}
                 <img class='hidden' id='lname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                 <img class='hidden' id='lname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img><br>
+                </div>
+                <div>
                 {{formdepend.ssn.errors}}
                 {{formdepend.ssn.label}}
                 {{formdepend.ssn}}
                 <img class='hidden' id='ssn_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                 <img class='hidden' id='ssn_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+                <div>
                 {{formdepend.address.errors}}
                 {{formdepend.address.label}}
                 {{formdepend.address}}
                 <img class='hidden' id='address_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                 <img class='hidden' id='address_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+                <div>
                 <span class='fieldlabel'>{{ formdepend.dob.label }}</span>
                 {{ formdepend.dob }}
                 <img class='hidden' id='dob_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
@@ -175,38 +186,55 @@ financial aid administrator as soon as possible so that your financial aid will 
                 {% for e in formdepend.dob.errors %}
                 <span class ='error'>*{{ e }}</span>
                 {% endfor %}<br>
+                </div>
+                <div>
                 {{formdepend.city.errors}}
                 {{formdepend.city.label}}
                 {{formdepend.city}}
                 <img class='hidden' id='city_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                <img class='hidden' id='city_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>        
+                <img class='hidden' id='city_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+                <div>
                 {{formdepend.state.errors}}
                 {{formdepend.state.label}}
                 {{formdepend.state}}
+                </div>
+                <div>
                 {{formdepend.zip.errors}}
                 {{formdepend.zip.label}}
                 {{formdepend.zip}}
                 <img class='hidden' id='zip_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                 <img class='hidden' id='zip_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img> <br>
+                </div>
+                <div>
                 {{formdepend.email.errors}}
                 {{formdepend.email.label}}
                 {{formdepend.email}}
+                </div>
+                <div>
                 {{formdepend.hphone.errors}}
                 {{formdepend.hphone.label}}
                 {{formdepend.hphone}}
                 <img class='hidden' id='hphone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                 <img class='hidden' id='hphone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+                <div>
                 {{formdepend.phonetype.errors}}
                 {{formdepend.phonetype.label}}
                 {{formdepend.phonetype}}<br>
+                </div>
+                <div>
                 {{formdepend.cphone.errors}}
                 {{formdepend.cphone.label}}
                 {{formdepend.cphone}}
                 <img class='hidden' id='cphone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                 <img class='hidden' id='cphone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+                <div>
                 {{formdepend.phonetype2.errors}}
                 {{formdepend.phonetype2.label}}
                 {{formdepend.phonetype2}}
+                </div>
         </div>
     <h3>Independent Student's Family Information</h3>
     <div>
