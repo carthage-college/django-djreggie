@@ -5,6 +5,10 @@
     <meta charset='utf-8' />
     <title>Request and Consent for the Release of Directory Information</title>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
+    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
+    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
     {% block javascript %}
     <script type='text/javascript'>
         function validate_name(){
@@ -35,7 +39,7 @@
         </div>
         <div class='mainbar'>
             <div class='header'>
-                <text class='headertext'>Request and Consent for the Release of Directory Information</text>
+                <span class='headertext'>Request and Consent for the Release of Directory Information</span>
             </div><br>
             <form action='' method='post'>{% csrf_token %}
                 {{ form.non_field_errors }}
@@ -43,7 +47,7 @@
                     {{ field }}
                     {{ field.errors }}
                 {% endfor %}
-                <text class='separator'>General information</text><hr>
+                <span class='separator'>General information</span><hr>
                 <p>
                     The Family Educational Rights and Privacy Act ("FERPA" - 20 U.S.C.  1232g; 34 CFR Part 99) is a
                     Federal law that protects the privacy of student education records. The following form is intended to
@@ -69,22 +73,22 @@
                 <p>
                     At its discretion, the College may provide directory information to the public in accordance with the provisions of FERPA.
                 </p><br>
-                <text class='separator'>Personal information</text><hr>
+                <span class='separator'>Personal information</span><hr>
                 <table>
                     <tr>
-                        <td><text class='fieldlabel'>{{ form.consent.label }}</text></td>
+                        <td><span class='fieldlabel'>{{ form.consent.label }}</span></td>
                         <td>{{ form.consent }}</td>
                         <td>
                             {% for e in form.consent.errors %}
-                                <text class ='error'>*{{ e }}</text>
+                                <span class ='error'>*{{ e }}</span>
                             {% endfor %}
                             
                         </td>
                     </tr>
                 </table>
-                <text id='hidden' style='display:none;'>
+                <span id='hidden' style='display:none;'>
                     *I understand the implications of this decision to withold such directory information. Any requests for such information will be refused.
-                </text><br><br>
+                </span><br><br>
                 <input type="submit" name="submit" value="Submit form">
             </form>
         <div>

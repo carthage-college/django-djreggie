@@ -46,7 +46,7 @@ class Depend(models.Model):
     phonetype2 = models.CharField(max_length= 100,
                                   choices=PHONES,
                                   blank=True,
-                                  verbse_name="Type of Phone")
+                                  verbose_name="Type of Phone")
     file = models.FileField(upload_to='files',
                             blank=True,
                             verbose_name="Upload a file" )

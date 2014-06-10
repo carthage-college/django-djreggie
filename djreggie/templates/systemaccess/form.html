@@ -5,6 +5,10 @@
     <meta charset='utf-8' />
     <title>System Access Form</title>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
+    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
+    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
     {% block javascript %}
     <script type='text/javascript'>
         function validate_carthage_id(){
@@ -54,69 +58,69 @@
         </div>
         <div class='mainbar'>
             <div class='header'>
-                <text class='headertext'>System Access Form</text>
+                <span class='headertext'>System Access Form</span>
             </div><br>
             {{ form.non_field_errors }}
             <form action='' method='post'>{% csrf_token %}
-                <text class='separator'>Personal information</text><hr>
+                <span class='separator'>Personal information</span><hr>
                 <table>
                     <tr>
-                        <td><text class='fieldlabel'>{{ form.carthage_id.label }}</text></td>
+                        <td><span class='fieldlabel'>{{ form.carthage_id.label }}</span></td>
                         <td>{{ form.carthage_id }}</td>
                         <td>
                             <img class='hidden' id='carthage_id_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                             <img class='hidden' id='carthage_id_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                             {% for e in form.carthage_id.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                     </tr>
                     <tr>
-                        <td><text class='fieldlabel'>{{ form.full_name.label }}</text></td>
+                        <td><span class='fieldlabel'>{{ form.full_name.label }}</span></td>
                         <td>{{ form.full_name }}</td>
                         <td>
                             <img class='hidden' id='full_name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                             <img class='hidden' id='full_name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                             {% for e in form.full_name.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                     </tr>
                     <tr>
-                        <td><text class='fieldlabel'>{{ form.department.label }}</text></td>
+                        <td><span class='fieldlabel'>{{ form.department.label }}</span></td>
                         <td>{{ form.department }}</td>
                         <td>
                             <img class='hidden' id='department_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                             <img class='hidden' id='department_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                             {% for e in form.department.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                     </tr>
                     <tr>
-                        <td><text class='fieldlabel'>{{ form.position.label }}</text></td>
+                        <td><span class='fieldlabel'>{{ form.position.label }}</span></td>
                         <td>{{ form.position }}</td>
                         <td>
                             <img class='hidden' id='position_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                             <img class='hidden' id='position_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                             {% for e in form.position.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                     </tr>
                     <tr>
-                        <td><text class='fieldlabel'>{{ form.work_phone.label }}</text></td>
+                        <td><span class='fieldlabel'>{{ form.work_phone.label }}</span></td>
                         <td>{{ form.work_phone }}</td>
                         <td>
                             <img class='hidden' id='work_phone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                             <img class='hidden' id='work_phone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                             {% for e in form.work_phone.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                     </tr>
                 </table><br>
-                <text class='separator'>Permissions</text><hr>
+                <span class='separator'>Permissions</span><hr>
                 <table border='1'>
                     <tr>
                         <th>General</th>
@@ -235,16 +239,16 @@
                 </table><br>
                 <table>
                     <tr>
-                        <td><text class='fieldlabel'>{{ form.reason_for_change.label }}</text></td>
+                        <td><span class='fieldlabel'>{{ form.reason_for_change.label }}</span></td>
                         <td>{{ form.reason_for_change }}</td>
                         <td>
                             {% for e in form.reason_for_change.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                     </tr>
                     <tr id='othertable'>
-                        <td><text class='fieldlabel'>{{ form.other_textbox.label }}</text></td>
+                        <td><span class='fieldlabel'>{{ form.other_textbox.label }}</span></td>
                         <td>{{ form.other_textbox }}</td>
                         <td>
                         </td>
@@ -264,6 +268,16 @@
     </script>
 </body>
     <script type='text/javascript'>
+        document.getElementById('carthage_id_no').style.display='none';
+        document.getElementById('carthage_id_yes').style.display='none';
+        document.getElementById('full_name_no').style.display='none';
+        document.getElementById('full_name_yes').style.display='none';
+        document.getElementById('department_no').style.display='none';
+        document.getElementById('department_yes').style.display='none';
+        document.getElementById('position_no').style.display='none';
+        document.getElementById('position_yes').style.display='none';
+        document.getElementById('work_phone_no').style.display='none';
+        document.getElementById('work_phone_yes').style.display='none';
         var element = document.getElementById('id_carthage_id');
         element.oninput = function(){
             var n=document.getElementById('carthage_id_no');

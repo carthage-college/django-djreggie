@@ -5,6 +5,10 @@
     <meta http-equiv='Content-Type' content='Type=text/html; charset=utf-8'>
     <title>Authorization to Release Non-Directory Information</title>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
+    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
+    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
     {% block javascript %}
     <script type='text/javascript'>
         function validate_name(){
@@ -35,7 +39,7 @@
         </div>
         <div class='mainbar'>
             <div class='header'>
-                <text class='headertext'>Authorization to Release Non-Directory Information</text>
+                <span class='headertext'>Authorization to Release Non-Directory Information</span>
             </div><br>
             {{ form.non_field_errors }}
             <form action='' method='post'>{% csrf_token %}
@@ -44,7 +48,7 @@
                     {{ field }}
                     {{ field.errors }}
                 {% endfor %}
-                <text class='separator'>General information</text><hr>
+                <span class='separator'>General information</span><hr>
                 <p>
                     Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not<br>
                     release student academic records to third parties involving non-directory information unless a valid Authorization to<br>
@@ -69,17 +73,17 @@
                         {{ form.Which_information_would_you_like_to_share }}
                         {% if form.Which_information_would_you_like_to_share.errors %}
                             {% for e in form.Which_information_would_you_like_to_share.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         {% endif %}
                     </p>
                 </p><br>
-                <text class='separator'>Disclosure of information</text><hr>
-                <text>Below, please indicate the names of the people who you will disclose information with, and their relation to you</text>
+                <span class='separator'>Disclosure of information</span><hr>
+                <span>Below, please indicate the names of the people who you will disclose information with, and their relation to you</span>
                 <table>
                     <tr>
-                        <td><text class='fieldlabel'>Name</text></td>
-                        <td><text class='fieldlabel'>Relation</text></td>
+                        <td><span class='fieldlabel'>Name</span></td>
+                        <td><span class='fieldlabel'>Relation</span></td>
                     </tr>
                     {% for form in Parent_formset %}
                     <tr>
@@ -93,7 +97,7 @@
                         {% for field in form %}
                         <td>
                             {% for e in field.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                         {% endfor %}

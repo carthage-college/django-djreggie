@@ -10,6 +10,10 @@
     <meta charset="utf-8" />
     <title>Change Major/Minor Form</title>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
+    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
+    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
+    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
     {% block javascript %}
     <script type='text/javascript'>
         function validate_student_id(){
@@ -129,11 +133,11 @@
         </div>
         <div class='mainbar'>
             <div class='header'>
-                <text class='headertext'>Change Major / Minor Form</text>
+                <span class='headertext'>Change Major / Minor Form</span>
             </div><br>
             {{ form.non_field_errors }}
             <form action='' method='post' onsubmit='setSelected()'>{% csrf_token %}
-                <text class='separator'>Student information</text><hr>
+                <span class='separator'>Student information</span><hr>
                 {% for field in form.hidden_fields %}
                         {{ field }}
                         {{ field.errors }}
@@ -162,71 +166,71 @@
                         </td>
                     </tr>-->
                     <tr>
-                        <td><text class='fieldlabel'>{{ form.year.label }}</text></td>
+                        <td><span class='fieldlabel'>{{ form.year.label }}</span></td>
                         <td>{{ class_year }}</td>
                         <td>
                             {% for e in form.year.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                     </tr>
                 </table><br>
-                <text class='separator'>Major / Minor information</text><hr>
-               <div style='width:100%;'><text>{{ mm_form.majors.help_text }}</text></div>
-                <div style='width:100%;'><text>I would like my majors/minors listed as...</text></div>
+                <span class='separator'>Major / Minor information</span><hr>
+               <div style='width:100%;'><span>{{ mm_form.majors.help_text }}</span></div>
+                <div style='width:100%;'><span>I would like my majors/minors listed as...</span></div>
                 <table>
                 
                     <tr>
                      
-                        <td><text class='fieldlabel'>{{ mm_form.majors_list.label }}</td>
+                        <td><span class='fieldlabel'>{{ mm_form.majors_list.label }}</span></td>
                         <td>{{ mm_form.majors_list }}</td>
                         <td>
                             {% for e in mm_form.majors_list.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                         <td><button type='button' onclick='add_major()'>Add</button>
                         <br>
                         <button type='button' onclick='remove_major()'>Remove</button></td>
-                        <td><text class='fieldlabel'>{{ mm_form.majors.label }}</td>
+                        <td><span class='fieldlabel'>{{ mm_form.majors.label }}</span></td>
                         <td style='width:100px;'>{{ mm_form.majors }}</td>
                         <td>
                             {% for e in mm_form.majors.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                     </tr>
                     <tr>
-                        <td><text class='fieldlabel'>{{ mm_form.minors_list.label }}</td>
+                        <td><span class='fieldlabel'>{{ mm_form.minors_list.label }}</span></td>
                         <td>{{ mm_form.minors_list }}</td>
                         <td>
                             {% for e in mm_form.minors_list.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                         <td><button type='button' onclick='add_minor()'>Add</button>
                         <br>
                         <button type='button' onclick='remove_minor()'>Remove</button></td>
-                        <td><text class='fieldlabel'>{{ mm_form.minors.label }}</td>
+                        <td><span class='fieldlabel'>{{ mm_form.minors.label }}</span></td>
                         <td style='width:100px;'>{{ mm_form.minors }}</td>
                         <td>
                             {% for e in mm_form.minors.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                     </tr>
                 </table><br>
-                <text class='separator'>Advisor information</text><hr>
-                <text>I would like to change my advisor to... (leave blank for no change)</text>
+                <span class='separator'>Advisor information</span><hr>
+                <span>I would like to change my advisor to... (leave blank for no change)</span>
                 <table>
                     <tr>
-                        <td><text class='fieldlabel'>{{ form.advisor.label }}</td>
+                        <td><span class='fieldlabel'>{{ form.advisor.label }}</span></td>
                         <td>{{ form.advisor }}</td>
                         <td>
                             <img class='hidden' id='advisor_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                             <img class='hidden' id='advisor_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                             {% for e in form.advisor.errors %}
-                                <text class='error'>*{{ e }}</text>
+                                <span class='error'>*{{ e }}</span>
                             {% endfor %}
                         </td>
                     </tr>
@@ -238,6 +242,8 @@
 </body>
     <script type='text/javascript'>
  
+        document.getElementById('advisor_no').style.display='none';
+        document.getElementById('advisor_yes').style.display='none';
        /* var element = document.getElementById('id_student_id');
         element.onblur = function(){
             var n=document.getElementById('student_id_no');
