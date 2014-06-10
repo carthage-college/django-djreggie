@@ -92,47 +92,47 @@ class AccessFormModel(models.Model):
     #Returns the data as a string for easy emailing
     def as_string(self):
         return """
-            Full name: %s
-            Carthage ID: %s
-            Department: %s
-            Date submitted: %s
-            Position: %s
-            Work phone: %s
+            Full name: %(full_name)s
+            Carthage ID: %(carthage_id)s
+            Department: %(department)s
+            Date submitted: %(date_submitted)s
+            Position: %(position)s
+            Work phone: %(work_phone)s
             
             PERMISSIONS-->
-                Email: %s
-                Novell: %s
-                eRacer: %s
-                Common: %s
-                Control: %s
-                Programming: %s
-                Admissions: %s
-                Recruiting: %s
-                Student: %s
-                Financial: %s
-                Student billing: %s
-                Management: %s
-                Student services: %s
-                Financial aid: %s
-                Registrar: %s
-                Display registration: %s
-                Development: %s
-                Donor accounting: %s
-                Planned giving: %s
-                Institutional advancement grants: %s
-                Alumni: %s
-                Phonathon: %s
-                Health: %s
-                Add id records: %s
-                Registrar administration: %s
-                Financial administration: %s
-                Admissions administration: %s
-                Training: %s
-                Cisco vpn: %s
-                Administrative access to user machines: %s
-                Network security administration: %s
-                System administration: %s
-                Cognos: %s
-                Author: %s
-                Consumer: %s
-        """ % (full_name,carthage_id,department,date_submitted,position,work_phone,email,novell_file_and_print_access,eracer,common,control,programming,admissions,recruiting,student,financial,student_billing,management,student_services,financial_aid,registrar.display_registration,development,donor_accounting,planned_giving,institutional_advancement_grants,alumni,phonathon,health,add_id_records,registrar_administration,financial_administration,admissions_administration,training,cisco_vpn_remote_access_to_network,administrative_access_to_user_machines,network_security_administration,system_administration,cognos,author,consumer)
+                Email: %(email)s
+                Novell: %(novell_file_and_print_access)s
+                eRacer: %(eracer)s
+                Common: %(common)s
+                Control: %(control)s
+                Programming: %(programming)s
+                Admissions: %(admissions)s
+                Recruiting: %(recruiting)s
+                Student: %(student)s
+                Financial: %(financial)s
+                Student billing: %(student_billing)s
+                Management: %(management)s
+                Student services: %(student_services)s
+                Financial aid: %(financial_aid)s
+                Registrar: %(registrar)s
+                Display registration: %(display_registration)s
+                Development: %(development)s
+                Donor accounting: %(donor_accounting)s
+                Planned giving: %(planned_giving)s
+                Institutional advancement grants: %(institutional_advancement_grants)s
+                Alumni: %(alumni)s
+                Phonathon: %(phonathon)s
+                Health: %(health)s
+                Add id records: %(add_id_records)s
+                Registrar administration: %(registrar_administration)s
+                Financial administration: %(financial_administration)s
+                Admissions administration: %(admissions_administration)s
+                Training: %(training)s
+                Cisco vpn: %(cisco_vpn_remote_access_to_network)s
+                Administrative access to user machines: %(administrative_access_to_user_machines)s
+                Network security administration: %(network_security_administration)s
+                System administration: %(system_administration)s
+                Cognos: %(cognos)s
+                Author: %(author)s
+                Consumer: %(consumer)s
+        """ % self.__dict__
