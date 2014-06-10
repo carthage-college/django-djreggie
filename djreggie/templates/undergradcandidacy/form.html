@@ -9,11 +9,26 @@
 <head>
     <meta charset='utf-8' />
     <title>Undergraduate Candidacy Form</title>
+    {% block extra_style %}
+    <style>
+        fieldset.inlineLabels, li {
+            list-style:none;
+        }
+        input[type=checkbox]
+        {
+          -webkit-appearance:checkbox;
+        }
+        input[type=radio]
+        {
+          -webkit-appearance:radio;
+        }
+    </style>
     <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
     <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
     <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
     <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
+    {% endblock %}
     {% block javascript %}
     <script>
         function validate_student_id(){
