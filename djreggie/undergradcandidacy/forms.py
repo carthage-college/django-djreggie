@@ -44,6 +44,22 @@ class UndergradFormForm(forms.ModelForm):
         #self.fields['carthage_email'].label = 'Check if carthage email'
         #self.fields['email'].label = 'Email'
         #self.fields['zipcode'].label = 'Zip'
+        
+    def clean_fname(self):
+        data = self.cleaned_data['fname']
+        if not re.match(r'^([a-zA-Z]+)$', data):
+            raise forms.ValidationError('Please enter just a first name.')
+        return data    
+    def clean_mname(self):
+        data = self.cleaned_data['mname']
+        if not re.match(r'^([a-zA-Z]+)$', data):
+            raise forms.ValidationError('Please enter just a middle name.')
+        return data    
+    def clean_lname(self):
+        data = self.cleaned_data['lname']
+        if not re.match(r'^([a-zA-Z]+)$', data):
+            raise forms.ValidationError('Please enter just a last name.')
+        return data
     
     def clean_best_phone(self):
         data = self.cleaned_data['best_phone']
@@ -59,19 +75,19 @@ class UndergradFormForm(forms.ModelForm):
     
     def clean_state(self):
         data = self.cleaned_data['state']
-        if not re.match(r'^\w{2}$', data):
+        if not re.match(r'^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$', data):
             raise forms.ValidationError('Invalid state')
         return data
     
     def clean_zipcode(self):
         data = self.cleaned_data['zipcode']
-        if not re.match(r'^\d{5}$', data):
+        if not re.match(r'^([\d]{5}|\d{5}-?\d{4})$', data):
             raise forms.ValidationError('Enter a valid zipcode')
         return data
     
     def clean_student_id(self):
         data = self.cleaned_data['student_id']
-        if not re.match(r'^[\d]{5,7}$', data):
+        if not re.match(r'^(\d{5,7})$', data):
             raise forms.ValidationError('Not a valid 5-7 digit Carthage id')
         return data
     
@@ -84,9 +100,3 @@ class UndergradFormForm(forms.ModelForm):
             'when_teach': forms.RadioSelect(),
             'carthage_email': forms.HiddenInput(), #Is not visible
         }
-        #Already defined a label above?
-        #labels = {
-        #    'fname': 'first name',
-        #}
-        
-    #agree_valid = forms.BooleanField(label='I agree that the above information is correct', validators=[must_be_true])

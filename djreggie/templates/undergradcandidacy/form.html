@@ -34,49 +34,49 @@
         function validate_student_id(){
             var id = document.getElementById('id_student_id');
             var val = id.value;
-            var patt = new RegExp('^\\d{5,7}$');
+            var patt = new RegExp('^(\\d{5,7})$');
             return patt.test(val);            
         }
         function validate_fname(){
             var id = document.getElementById('id_fname');
             var val = id.value;
-            var patt = new RegExp('^[a-zA-Z]$');
+            var patt = new RegExp('^([a-zA-Z]+)$');
             return patt.test(val);        
         }
         function validate_mname(){
             var id = document.getElementById('id_mname');
             var val = id.value;
-            var patt = new RegExp('^[a-zA-Z]$');
+            var patt = new RegExp('^([a-zA-Z]+)$');
             return patt.test(val);        
         }
         function validate_lname(){
             var id = document.getElementById('id_lname');
             var val = id.value;
-            var patt = new RegExp('^[a-zA-Z]$');
+            var patt = new RegExp('^([a-zA-Z]+)$');
             return patt.test(val);        
         }
         function validate_email(){
             var id = document.getElementById('id_email');
             var val = id.value;
-            var patt = new RegExp('^[A-Za-z0-9\.\_\%\+\-]+@[A-Za-z0-9\.\-]+\\.[A-Za-z]{2,4}$');
+            var patt = new RegExp('^(?:[A-Za-z0-9\\.\\_\\%\\+\\-]+)@(?:[A-Za-z0-9\\.\\-]+)\\.(?:[A-Za-z]{2,4})$');
             return patt.test(val);
         }
         function validate_best_phone(){
             var id = document.getElementById('id_best_phone');
             var val = id.value;
-            var patt = new RegExp('^1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4}$');
+            var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
             return patt.test(val);
         }
         function validate_cell(){
             var id = document.getElementById('id_cell');
             var val = id.value;
-            var patt = new RegExp('^1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4}$');
+            var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
             return patt.test(val);
         }
         function validate_state(){
             var id = document.getElementById('id_state');
             var val = id.value;
-            var patt = new RegExp('^\\w{2}$');
+            var patt = new RegExp('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
             return patt.test(val);
         }
         function validate_zipcode(){

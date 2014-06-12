@@ -12,14 +12,12 @@ class AccessFormForm(forms.ModelForm):
     #This is needed if you want to add error messages, labels or additional validation for fields
     def __init__(self, *args, **kwargs):
         super(AccessFormForm, self).__init__(*args,**kwargs)
-        
-        #Validate all form fields here
-        #self.fields['full_name'].validators = [validators.RegexValidator(regex=('^.+$'),message='Not a valid name',code='a')]
-        #self.fields['carthage_id'].validators = [validators.RegexValidator(regex=('^[\d]{5,7}$'),message='Not a valid 5-7 digit Carthage id',code='a')]
-        #self.fields['department'].validators = [validators.RegexValidator(regex=('^.+$'),message='Is not a department',code='a')]
-        #self.fields['position'].validators = [validators.RegexValidator(regex=('^.+$'),message='Not a position',code='a')]
-        #self.fields['work_phone'].validators = [validators.RegexValidator(regex=('^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4}|NEW)$'),message='Not a valid phone number',code='a')]
-        #self.fields['supervisor_name'].validators = [validators.RegexValidator(regex=('^[a-zA-Z]+[a-zA-Z\s-]*$'),message='Not a valid name',code='a')]
+  
+    def clean_full_name(self):
+        data = self.cleaned_data['full_name']
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
+            raise forms.ValidationError('Invalid name. Letters and spaces only, please.')
+        return data
     
     def clean_carthage_id(self):
         data = self.cleaned_data['carthage_id']
@@ -27,12 +25,30 @@ class AccessFormForm(forms.ModelForm):
             raise forms.ValidationError('Not a valid 5-7 digit Carthage id')
         return data
     
+    def clean_department(self):
+        data = self.cleaned_data['department']
+        if not re.match(r'^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$', data):
+            raise forms.ValidationError('Please enter a department with just letters and spaces.')
+        return data
+    
+    def clean_position(self):
+        data = self.cleaned_data['position']
+        if not re.match(r'^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$', data):
+            raise forms.ValidationError('Please enter a position with just letters and spaces.')
+        return data
+    
     def clean_work_phone(self):
         data = self.cleaned_data['work_phone']
-        if not re.match(r'^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4}|NEW)$', data):
+        if not re.match(r'^((?:1?[\s\-\.\/]?\(?(?:\d{3})\)?)?[\s\-\.\/]?\d{3}[\s\-\.\/]?\d{4}(?:\s?(?:x|ext|\.)?\s?\d{4})?)$', data):
             raise forms.ValidationError('Not a valid phone number')
         return data
     
+    def clean_supervisor_name(self):
+        data = self.cleaned_data['supervisor_name']
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
+            raise forms.ValidationError('Invalid name. Letters and spaces only, please.')
+        return data
+
     #Another option to include validation    
     def clean(self):
         cleaned_data = super(AccessFormForm, self).clean() #Grabs the clean data
@@ -40,7 +56,6 @@ class AccessFormForm(forms.ModelForm):
         reason = cleaned_data.get("reason_for_change")
         other = cleaned_data.get("other_textbox")
         
-        #Doesn't work now?
         if reason == "OTH" and other == "":
             msg = u"Please fill in the 'other' textbox"
             self._errors['reason_for_change'] = self.error_class([msg]) #Adds the error message to the field
