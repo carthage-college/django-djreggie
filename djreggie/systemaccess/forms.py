@@ -54,65 +54,65 @@ class AccessFormForm(forms.ModelForm):
     def as_string(self):
         return """
 INFO-->
-    Full name: %s
-    Carthage ID: %s
-    Department: %s
-    Date submitted: %s
-    Position: %s
-    Work phone: %s
+    Full name: %(full_name)s
+    Carthage ID: %(carthage_id)s
+    Department: %(department)s
+    Date submitted: %(date_submitted)s
+    Position: %(position)s
+    Work phone: %(work_phone)s
 
 PERMISSIONS-->
-    Email: %s
-    Novell: %s
-    eRacer: %s
-    Common: %s
-    Control: %s
-    Programming: %s
-    Admissions: %s
-    Recruiting: %s
-    Student: %s
-    Financial: %s
-    Student billing: %s
-    Management: %s
-    Student services: %s
-    Financial aid: %s
-    Registrar: %s
-    Display registration: %s
-    Development: %s
-    Donor accounting: %s
-    Planned giving: %s
-    Institutional advancement grants: %s
-    Alumni: %s
-    Phonathon: %s
-    Health: %s
-    Add id records: %s
-    Registrar administration: %s
-    Financial administration: %s
-    Admissions administration: %s
-    Training: %s
-    Cisco vpn: %s
-    Administrative access to user machines: %s
-    Network security administration: %s
-    System administration: %s
-    Cognos: %s
-    Author: %s
-    Consumer: %s
+    Email: %(email)s
+    Novell: %(novell_file_and_print_access)s
+    eRacer: %(eracer)s
+    Common: %(common)s
+    Control: %(control)s
+    Programming: %(programming)s
+    Admissions: %(admissions)s
+    Recruiting: %(recruiting)s
+    Student: %(student)s
+    Financial: %(financial)s
+    Student billing: %(student_billing)s
+    Management: %(management)s
+    Student services: %(student_services)s
+    Financial aid: %(financial_aid)s
+    Registrar: (registrar)s
+    Display registration: %(display_registration)s
+    Development: %(development)s
+    Donor accounting: %(donor_accounting)s
+    Planned giving: %(planned_giving)s
+    Institutional advancement grants: %(institutional_advancement_grants)s
+    Alumni: %(alumni)s
+    Phonathon: %(phonathon)s
+    Health: %(health)s
+    Add id records: %(add_id_records)s
+    Registrar administration: %(registrar_administration)s
+    Financial administration: %(financial_administration)s
+    Admissions administration: %(admissions_administration)s
+    Training: %(training)s
+    Cisco vpn: %(cisco_vpn_remote_access_to_network)s
+    Administrative access to user machines: %(administrative_access_to_user_machines)s
+    Network security administration: %(network_security_administration)s
+    System administration: %(system_administration)s
+    Cognos: %(cognos)s
+    Author: %(author)s
+    Consumer: %(consumer)s
     
-    Reason for change: %s
-    Other: %s
+    Reason for change: %(reason_for_change)s
+    Other: %(other_textbox)s
 
 ADMINISTRATION-->
-    Supervisor name: %s
-    Supervisor signature: %s
-    Employee entered payroll: %s
-    Employee entered payroll date: %s
-    Registrar created web access: %s
-    Registrar created web access date: %s
-    Administrative system approval: %s
-    Administrative system approval date: %s
-    Administrative system created or changed: %s
-    Administrative system created or changed date: %s
-        """ % (self.cleaned_data['full_name'],self.cleaned_data['carthage_id'],self.cleaned_data['department'],self.cleaned_data['date_submitted'],self.cleaned_data['position'],self.cleaned_data['work_phone'],self.cleaned_data['email'],self.cleaned_data['novell_file_and_print_access'],self.cleaned_data['eracer'],self.cleaned_data['common'],self.cleaned_data['control'],self.cleaned_data['programming'],self.cleaned_data['admissions'],self.cleaned_data['recruiting'],self.cleaned_data['student'],self.cleaned_data['financial'],self.cleaned_data['student_billing'],self.cleaned_data['management'],self.cleaned_data['student_services'],self.cleaned_data['financial_aid'],self.cleaned_data['registrar'],self.cleaned_data['display_registration'],self.cleaned_data['development'],self.cleaned_data['donor_accounting'],self.cleaned_data['planned_giving'],self.cleaned_data['institutional_advancement_grants'],self.cleaned_data['alumni'],self.cleaned_data['phonathon'],self.cleaned_data['health'],self.cleaned_data['add_id_records'],self.cleaned_data['registrar_administration'],self.cleaned_data['financial_administration'],self.cleaned_data['admissions_administration'],self.cleaned_data['training'],self.cleaned_data['cisco_vpn_remote_access_to_network'],self.cleaned_data['administrative_access_to_user_machines'],self.cleaned_data['network_security_administration'],self.cleaned_data['system_administration'],self.cleaned_data['cognos'],self.cleaned_data['author'],self.cleaned_data['consumer'],self.cleaned_data['reason_for_change'],self.cleaned_data['other_textbox'],self.cleaned_data['supervisor_name'],self.cleaned_data['supervisor_signature'],self.cleaned_data['employee_entered_payroll_system'],self.cleaned_data['employee_entered_payroll_system_by'],self.cleaned_data['registrar_created_web_access'],self.cleaned_data['registrar_created_web_access_by'],self.cleaned_data['administrative_system_approval'],self.cleaned_data['administrative_system_approval_date'],self.cleaned_data['administrative_system_created_or_changed_date'],self.cleaned_data['administrative_system_created_or_changed_date_by'])
+    Supervisor name: %(supervisor_name)s
+    Supervisor signature: %(supervisor_signature)s
+    Employee entered payroll: %(employee_entered_payroll_system)s
+    Employee entered payroll date: %(employee_entered_payroll_system_by)s
+    Registrar created web access: %(registrar_created_web_access)s
+    Registrar created web access date: %(registrar_created_web_access_by)s
+    Administrative system approval: %(administrative_system_approval)s
+    Administrative system approval date: %(administrative_system_approval_date)s
+    Administrative system created or changed: %(administrative_system_created_or_changed_date)s
+    Administrative system created or changed date: %(administrative_system_created_or_changed_date_by)s
+        """ % self.cleaned_data
         
     class Meta:
         model = AccessFormModel
