@@ -19,7 +19,7 @@
         function validate_student_id(){
             var id = document.getElementById('id_student_id');
             var val = id.value;
-            var patt = new RegExp('^\\d{5,7}$');
+            var patt = new RegExp('^(\\d{5,7})$');
             return patt.test(val);            
         }
         function validate_name(){
@@ -143,28 +143,7 @@
                         {{ field.errors }}
                 {% endfor %}
                 <table>
-                    <!--<tr>
-                        <td><text class='fieldlabel'>{{ form.student_id.label }}</text></td>
-                        <td>{{ form.student_id }}</td>
-                        <td>
-                            <img class='hidden' id='student_id_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='student_id_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.student_id.errors %}
-                                <text class='error'>*{{ e }}</text>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><text class='fieldlabel'>{{ form.name.label }}</text></td>
-                        <td>{{ form.name }}</td>
-                        <td>
-                            <img class='hidden' id='name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.name.errors %}
-                                <text class='error'>*{{ e }}</text>
-                            {% endfor %}
-                        </td>
-                    </tr>-->
+
                     <tr>
                         <td><span class='fieldlabel'>{{ form.year.label }}</span></td>
                         <td>{{ class_year }}</td>
@@ -178,10 +157,8 @@
                 <span class='separator'>Major / Minor information</span><hr>
                <div style='width:100%;'><span>{{ mm_form.majors.help_text }}</span></div>
                 <div style='width:100%;'><span>I would like my majors/minors listed as...</span></div>
-                <table>
-                
-                    <tr>
-                     
+                <table>                
+                    <tr>                     
                         <td><span class='fieldlabel'>{{ mm_form.majors_list.label }}</span></td>
                         <td>{{ mm_form.majors_list }}</td>
                         <td>

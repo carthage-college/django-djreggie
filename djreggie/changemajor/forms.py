@@ -36,32 +36,22 @@ class StudentForm(forms.ModelForm):
     #Overrides this function so I can add custom validation
     def __init__(self, *args, **kwargs):
         super(StudentForm, self).__init__(*args,**kwargs)
-        
-        #I add validators for fields
-        #self.fields['student_id'].validators = [validators.RegexValidator(regex=(r'^\d{5,7}$'),message='Must be 5-7 digits long',code='a')]
-        #self.fields['name'].validators = [validators.RegexValidator(regex=('^[a-zA-Z\']+[a-zA-Z\-\s\']+$'),message='Please enter a valid name',code='a')]
-        #self.fields['advisor'].validators = [validators.RegexValidator(regex=('^[a-zA-Z\']+[a-zA-Z\-\s\']+$'),message='Please enter a valid advisor name',code='a')]
-        #self.fields['student_id'].label = 'Student ID'
-        
-        #Error messages
-        #self.fields['student_id'].error_messages = {'required':'Enter a student id'}
-        #self.fields['name'].error_messages = {'required':'Enter a valid name'}
-        
+    
     def clean_student_id(self):
         data = self.cleaned_data['student_id']
-        if not re.match(r'^\d{5,7}$', data):
+        if not re.match(r'^(\d{5,7})$', data):
             raise forms.ValidationError('Must be 5-7 digits long')
         return data
     
     def clean_name(self):
         data = self.cleaned_data['name']
-        if not re.match(r'^[a-zA-Z\']+[a-zA-Z\-\s\']+$', data):
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
             raise forms.ValidationError('Please enter a valid name')
         return data
     
     def clean_advisor(self):
         data = self.cleaned_data['advisor']
-        if not re.match(r'^[a-zA-Z\']+[a-zA-Z\-\s\']+$', data):
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
             raise forms.ValidationError('Please enter a valid advisor name')
         return data
 

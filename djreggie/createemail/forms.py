@@ -12,37 +12,13 @@ class EmailForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EmailForm, self).__init__(*args,**kwargs)
         
-        #Custom validation
-        #self.fields['unique_id'].validators = [validators.RegexValidator(regex=('^\d{5,7}$'),message='Invalid carthage id',code='a')]
-        #self.fields['requested_by'].validators = [validators.RegexValidator(regex=('^[a-zA-Z\']+[a-zA-Z\-\s\']+$'),message='Invalid name',code='a')]
-        #self.fields['name_of_account_requested'].validators = [validators.RegexValidator(regex=('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-zA-Z]{2,4}$'), message='Invalid email', code='a')]
-        #self.fields['purpose_of_account'].validators = [validators.RegexValidator(regex=('^.+$'), message='Enter the purpose of the account', code='a')]
-        #self.fields['names_of_all_users'].validators = [validators.RegexValidator(regex=('^.+$'), message='Enter users', code='a')]
-        
-        #self.fields['name_of_account_requested'].label = "Email address you are requesting"
-        
-        #Custom error messages
-        #self.fields['unique_id'].error_messages = {'required':'An id is required'}
-        #self.fields['date'].error_messages = {'required':'A date is required'}
-        #self.fields['requested_by'].error_messages = {'required':'A name is required'}
-        #self.fields['name_of_account_requested'].error_messages = {'required':'An account email is required'}
-        #self.fields['purpose_of_account'].error_messages = {'required':'A purpose is required'}
-        #self.fields['names_of_all_users'].error_messages = {'required':'Users are required'}
-        #self.fields['needed_until'].error_messages = {'required':'A date is required', 'invalid':'Date cannot be in the past'}
-        
     def clean(self):
         cleaned_data = self.cleaned_data
         test = cleaned_data.get('needed_until')
         
-        if test == None or test == "":
-            msg = u"Invalid or past date"
-            self._errors['needed_until'] = self.error_class([msg])
-        else:  
-            if test < datetime.date.today():
-                msg2 = u"The date cannot be in the past!"
-                self._errors["needed_until"] = self.error_class([msg2]) #Adds the error message to the field
-                del cleaned_data["needed_until"]
-        
+        if test < datetime.date.today():
+            raise forms.ValidationError("The date cannot be in the past!")
+            del cleaned_data["needed_until"]        
         return cleaned_data
             
     #A function that will print values in a format, when we email the form
@@ -65,13 +41,13 @@ class EmailForm(forms.ModelForm):
     
     def clean_unique_id(self):
         data = self.cleaned_data['unique_id']
-        if not re.match(r'^\d{5,7}$', data):
+        if not re.match(r'^(\d{5,7})$', data):
             raise forms.ValidationError('Invalid carthage id')
         return data
     
     def clean_requested_by(self):
         data = self.cleaned_data['requested_by']
-        if not re.match(r'^[a-zA-Z\']+[a-zA-Z\-\s\']+$', data):
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
             raise forms.ValidationError('Invalid name')
         return data
     

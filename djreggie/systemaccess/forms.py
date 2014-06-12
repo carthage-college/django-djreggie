@@ -23,7 +23,7 @@ class AccessFormForm(forms.ModelForm):
     
     def clean_carthage_id(self):
         data = self.cleaned_data['carthage_id']
-        if not re.match(r'^[\d]{5,7}$', data):
+        if not re.match(r'^(\d{5,7})$', data):
             raise forms.ValidationError('Not a valid 5-7 digit Carthage id')
         return data
     

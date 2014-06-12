@@ -21,22 +21,15 @@ class ModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ModelForm, self).__init__(*args, **kwargs)
         
-        #self.fields['Carthage_ID_Number'].label = 'Student ID'
-        #self.fields['Full_Name_of_Student'].label = 'Name'
-        
-        #self.fields['Full_Name_of_Student'].validators = [validators.RegexValidator(regex=('^[a-zA-Z\']+[a-zA-Z\-\s\']+$'), message='Invalid name', code='bad_name')]
-        #self.fields['Carthage_ID_Number'].validators = [validators.RegexValidator(regex=('^\d{5,7}$'), message='Must be 5-7 digits long', code='bad_id')]
-        #self.fields['Which_information_would_you_like_to_share'].validators = [notnull]
-        
     def clean_Full_Name_of_Student(self):
         data = self.cleaned_data['Full_Name_of_Student']
-        if not re.match(r'^[a-zA-Z\']+[a-zA-Z\-\s\']+$', data):
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
             raise forms.ValidationError('Invalid name')
         return data
     
     def clean_Carthage_ID_Number(self):
         data = self.cleaned_data['Carthage_ID_Number']
-        if not re.match(r'^\d{5,7}$', data):
+        if not re.match(r'^(\d{5,7})$', data):
             raise forms.ValidationError('Must be 5-7 digits long')
         return data
     

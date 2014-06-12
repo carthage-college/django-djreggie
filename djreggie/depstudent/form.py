@@ -14,90 +14,69 @@ class DependForm(forms.ModelForm):
     #We need to override this if we want to add custom validation/labels to our class
     def __init__(self, *args, **kwargs):
         super(DependForm, self).__init__(*args, **kwargs)
-        
-        #Custom labels
-        #self.fields['fname'].label = "First Name"
-        #self.fields['mname'].label = "Middle Name"
-        #self.fields['lname'].label = "Last Name"
-        #self.fields['ssn'].label = "Social Security Number"
-        #self.fields['address'].label = "Street Address"
-        #self.fields['dob'].label = "Date of Birth"
-        #self.fields['city'].label = "City"
-        #self.fields['state'].label = "State"
-        #self.fields['zip'].label = "Zip Code"
-        #self.fields['email'].label = "Email Address"
-        #self.fields['hphone'].label = "Primary Phone Number"
-        #self.fields['phonetype'].label = "Type of Phone"
-        #self.fields['cphone'].label = "Alternate Phone Number"
-        #self.fields['phonetype2'].label = "Type of Phone"
-        #self.fields['file'].label = "Upload a file"        
-        #self.fields['file2'].label = "Upload a file"
-        
-        #Custom regex validation
-        #self.fields['fname'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in first name', code='bad_fname')]
-        #self.fields['mname'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in middle name', code='bad_mname')]
-        #self.fields['lname'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in last name', code='bad_lname')]
-        #self.fields['ssn'].validators = [validators.RegexValidator(regex='^(?!000)([0-6]\d{2}|7([0-6]\d|7[012]))([ -]?)(?!00)\d\d\3(?!0000)\d{4}$', message='Invalid SSN', code='bad_ssn')]
-        #self.fields['ssn'].validators = [validators.RegexValidator(regex='^[\d]{3}[\s\-]?[\d]{2}[\s\-]?[\d]{4}$', message='Invalid SSN', code='bad_ssn')]
-        #self.fields['address'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in address', code='bad_address')]
-        #self.fields['city'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid city', code='bad_city')]
-        #self.fields['state'].validators = [validators.RegexValidator(regex='^[a-zA-Z]{2}$', message='Invalid state', code='bad_state')]
-        #self.fields['zip'].validators = [validators.RegexValidator(regex='^\d{5}$', message='Invalid zip', code='bad_zip')]
-        #self.fields['email'].validators = [validators.RegexValidator(regex='^[A-Za-z0-9\.\_\%\+\-]+@[A-Za-z0-9\.\-]+\.[A-Za-z]{2,4}$', message='Invalid email address', code='bad_email')]
-        #self.fields['hphone'].validators = [validators.RegexValidator(regex='^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4})$', message='Invalid home phone', code='bad_phone')]
-        #self.fields['cphone'].validators = [validators.RegexValidator(regex='^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4})$', message='Invalid cell phone', code='bad_phone')]
-        
-        #Custom error messages
-        #self.fields['fname'].error_messages = {'required': 'Please fill in a first name.', 'invalid':'Invalid characters in first name'}
-        #self.fields['mname'].error_messages = {'required': 'Please fill in a middle name.', 'invalid':'Invalid characters in middle name'}
-        #self.fields['lname'].error_messages = {'required': 'Please fill in a last name.', 'invalid':'Invalid characters in last name'}
-        #self.fields['ssn'].error_messages = {'required': 'Please fill in a social security number', 'invalid':'Invalid ssn'}
-        #self.fields['address'].error_messages = {'required': 'Please fill in an address.', 'invalid':'Invalid characters in address'}
-        #self.fields['dob'].error_messages = {'required':'A date is required', 'invalid':'Date cannot be in the past'}
-        #self.fields['city'].error_messages = {'required': 'Please fill in a city.', 'invalid':'Invalid characters in city'}
-        #self.fields['state'].error_messages = {'required': 'Please fill in a state.', 'invalid':'Invalid characters in state'}
-        #self.fields['zip'].error_messages = {'required': 'Please fill in a zip code.', 'invalid':'Invalid zip code'}
-        #self.fields['email'].error_messages = {'required': 'Please fill in an email address.', 'invalid':'Invalid characters in address'}
-        #self.fields['hphone'].error_messages = {'required': 'Please fill in a phone number.', 'invalid':'Invalid phone number'}
+    
+    def clean_fname(self):
+        data = self.cleaned_data['fname']
+        if not re.match(r'^([a-zA-Z]+)$', data):
+            raise forms.ValidationError('Please just enter a first name.')
+        return data    
+    def clean_mname(self):
+        data = self.cleaned_data['mname']
+        if not re.match(r'^([a-zA-Z]+)$', data):
+            raise forms.ValidationError('Please just enter a middle name.')
+        return data    
+    def clean_lname(self):
+        data = self.cleaned_data['lname']
+        if not re.match(r'^([a-zA-Z]+)$', data):
+            raise forms.ValidationError('Please just enter a last name.')
+        return data
     
     def clean_ssn(self):
         data = self.cleaned_data['ssn']
-        if not re.match(r'^(?!000)([0-6]\d{2}|7([0-6]\d|7[012]))([ -]?)(?!00)\d\d\3(?!0000)\d{4}$', data):
+        if not re.match(r'^(\d{3}[\-|\.\s]?\d{2}[\-|\.\s]??\d{4})$', data):
             raise forms.ValidationError('Invalid SSN')
+        return data
+    
+    def clean_address(self):
+        data = self.cleaned_data['address']
+        if not re.match(r'^((?:[\w]+\s?)+[\w]+)$', data):
+            raise forms.ValidationError('Invalid address. Alphanumerics and spaces only please.')
         return data
     
     def clean_state(self):
         data = self.cleaned_data['state']
-        if not re.match(r'^[a-zA-Z]{2}$', data):
-            raise forms.ValidationError('Invalid state')
+        if not re.match(r'^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$', data):
+            raise forms.ValidationError('Invalid state. Just letters and spaces.')
+        return data
+    
+    def clean_city(self):
+        data = self.cleaned_data['city']
+        if not re.match(r'^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$', data):
+            raise forms.ValidationError('Invalid city. Just letters and spaces.')
         return data
     
     def clean_zip(self):
         data = self.cleaned_data['zip']
-        if not re.match(r'^\d{5}$', data):
+        if not re.match(r'^([\d]{5}|\d{5}-?\d{4})$', data):
             raise forms.ValidationError('Invalid zip')
         return data
     
     def clean_hphone(self):
         data = self.cleaned_data['hphone']
-        if not re.match(r'^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4})$', data):
+        if not re.match(r'^((?:1?[\s\-\.\/]?\(?(?:\d{3})\)?)?[\s\-\.\/]?\d{3}[\s\-\.\/]?\d{4}(?:\s?(?:x|ext|\.)?\s?\d{4})?)$', data):
             raise forms.ValidationError('Invalid home phone')
         return data
     
     def clean_cphone(self):
         data = self.cleaned_data['cphone']
-        if not re.match(r'^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4})$', data):
+        if not re.match(r'^((?:1?[\s\-\.\/]?\(?(?:\d{3})\)?)?[\s\-\.\/]?\d{3}[\s\-\.\/]?\d{4}(?:\s?(?:x|ext|\.)?\s?\d{4})?)$', data):
             raise forms.ValidationError('Invalid cell phone')
         return data
     
     def clean_dob(self):
         test = self.cleaned_data['dob']
-        
-        if test == None or test == "":
-            raise ValidationError(message = "Invalid or past date")
-        else:  
-            if test < datetime.date.today():
-               raise ValidationError(message = "This birthdate is too recent!") #Adds the error message to the field
+        if test > datetime.date.today():
+            raise ValidationError(message = "This birthdate is in the future!")
         del cleaned_data["dob"]
         
         return cleaned_data
@@ -129,25 +108,12 @@ class FamInfoForm(forms.ModelForm):
     #We need to override this if we want to add custom validation/labels to our class
     def __init__(self, *args, **kwargs):
         super(FamInfoForm, self).__init__(*args, **kwargs)
-        
-        #Regex validation
-        #self.fields['name'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in name', code='bad_name')]
-        #self.fields['age'].validators = [validators.RegexValidator(regex='^\d{1,3}$', message='Invalid age', code='bad_age')]
-        #self.fields['relationship'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in relationship', code='bad_relationship')]
-        #self.fields['college'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in college', code='bad_college')]
-        
-        #Custom labels
-        #self.fields['name'].label = "Full Name"
-        #self.fields['age'].label = "Age"
-        #self.fields['relationship'].label = "Relationship"
-        #self.fields['college'].label = "College"
-        #self.fields['halftimeenroll'].label = "Will be Enrolled at Least Half Time"
-        
-        #Error messages
-        #self.fields['name'].error_messages = {'required':'Name is required', 'invalid':'Invalid characters in name'}
-        #self.fields['age'].error_messages = {'required':'Age is required', 'invalid':'Invalid age'}
-        #self.fields['relationship'].error_messages = {'required':'Relationship is required','invalid':'Invalid characters in relationship'}
-        #self.fields['college'].error_messages = {'required':'College is required', 'invalid':'Invalid characters in college'}
+   
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
+            raise forms.ValidationError('Invalid name. No special characters please.')
+        return data
     
     #Global options for the class    
     class Meta:
@@ -195,22 +161,14 @@ class StudworkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(StudworkForm, self).__init__(*args, **kwargs)
         
-        #Validation
-        #self.fields['empname'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in employee name', code='bad_emplname')]
-        #self.fields['money'].validators = [validators.RegexValidator(regex='^\d{10}$', message='Invalid amount earned', code='bad_amt')]
-        
-        #Custom labels
-        #self.fields['empname'].label = "Employer's Name"
-        #self.fields['money'].label = "2012 Amount Earned"
-        #self.fields['w2attach'].label = "IRS W-2 Attached?"
-        
-        #Error messages
-        #self.fields['empname'].error_messages = {'required':'Employee name is required','invalid':'Invalid characters in employee name'}
-        #self.fields['money'].error_messages = {'required':'Amount earned is required','invalid':'Invalid amount earned'}
-        
+    def clean_empname(self):
+        data = self.cleaned_data['empname']
+        if not re.match(r'^((?:[\w]+\s?)+[\w]+)$', data):
+            raise forms.ValidationError('Invalid company name. Alphanumerics and spaces only, please.')
+    
     def clean_money(self):
         data = self.cleaned_data['money']
-        if not re.match(r'^\d{10}$', data):
+        if not re.match(r'^(\$?\d{1,3}(?:,?\d{3})*(?:\.\d{2})?|\.\d{2})?$', data):
             raise forms.ValidationError('Invalid amount earned')
         return data
     
@@ -257,25 +215,18 @@ class ParworkForm(forms.ModelForm):
     #We need to override this if we want to add custom validation/labels to our class
     def __init__(self, *args, **kwargs):
         super(ParworkForm, self).__init__(*args, **kwargs)
-        
-        #Custom labels
-        #self.fields['empname'].label = "Employer's Name"
-        #self.fields['money'].label = "2012 Amount Earned"
-        #self.fields['w2attach'].label = "IRS W-2 Attached?"
-        
-        #Validation
-        #self.fields['empname'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid characters in employee name', code='bad_emplname')]
-        #self.fields['money'].validators = [validators.RegexValidator(regex='^\d{1,10}$', message='Invalid amount earned', code='bad_amt')]
-        
-        #Error messages
-        #self.fields['empname'].error_messages = {'required':'Employee name is required','invalid':'Invalid characters in employee name'}
-        #self.fields['money'].error_messages = {'required':'Amount earned is required','invalid':'Invalid amount earned'}
+  
+    def clean_empname(self):
+        data = self.cleaned_data['empname']
+        if not re.match(r'^((?:[\w]+\s?)+[\w]+)$', data):
+            raise forms.ValidationError('Invalid company name. Alphanumerics and spaces only, please.')
     
     def clean_money(self):
         data = self.cleaned_data['money']
-        if not re.match(r'^\d{1,10}$', data):
+        if not re.match(r'^(\$?\d{1,3}(?:,?\d{3})*(?:\.\d{2})?|\.\d{2})?$', data):
             raise forms.ValidationError('Invalid amount earned')
         return data
+ 
     
     
     #Global options for the class    
@@ -297,29 +248,29 @@ class OtherinfoForm(forms.ModelForm):
         fields = ['snapbenefits', 'childsupport']
 
 class CSForm(forms.ModelForm):
-    
-    #We need to override this if we want to add custom validation/labels to our class
     def __init__(self, *args, **kwargs):
         super(CSForm, self).__init__(*args, **kwargs)
-                
-        #Custom labels
-        #self.fields['namepaid'].label = "Name of Person who Paid Child Support"
-        #self.fields['namepaidto'].label = "Name of Person to Whom Child Support was Paid"
-        #self.fields['namechild'].label = "Name of Child for Whom Support Was Paid"
-        #self.fields['amntpaid'].label = "Amount of Child Support Paid in 2012"
-        
-        #Custom validation
-        #self.fields['namepaid'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid name', code='bad_name')]
-        #self.fields['namepaidto'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid name', code='bad_name')]
-        #self.fields['namechild'].validators = [validators.RegexValidator(regex='^.+$', message='Invalid name', code='bad_name')]
-        #self.fields['amntpaid'].validators = [validators.RegexValidator(regex='^\d{1,10}$', message='Invalid amount', code='bad_amt')]
-        
+   
+    def clean_namepaid(self):
+        data = self.cleaned_data['namepaid']
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
+            raise forms.ValidationError('That name is invalid. Letters and spaces only, please.')
+        return data
+    def clean_namepaidto(self):
+        data = self.cleaned_data['namepaidto']
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
+            raise forms.ValidationError('That name is invalid. Letters and spaces only, please.')
+        return data
+    def clean_namechild(self):
+        data = self.cleaned_data['namechild']
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
+            raise forms.ValidationError('That name is invalid. Letters and spaces only, please.')
+        return data
     def clean_amntpaid(self):
         data = self.cleaned_data['amntpaid']
-        if not re.match(r'^\d{1,10}$', data):
+        if not re.match(r'^(\$?\d{1,3}(?:,?\d{3})*(?:\.\d{2})?|\.\d{2})?$', data):
             raise forms.ValidationError('Invalid amount')
         return data
-    
     
     #Global options for the class
     class Meta:
@@ -331,12 +282,9 @@ class CertificationForm(forms.ModelForm):
     #We need to override this if we want to add custom validation/labels to our class
     def __init__(self, *args, **kwargs):
         super(CertificationForm, self).__init__(*args, **kwargs)
-        
-        #self.fields['confirm'].label = "I confirm on behalf of student and parent that this form contains correct information filled out to the best of our ability and knowledge."
-    
+  
     #Global options for the class
     class Meta:
         model = Depend #Fields come from the fields found in 'certification' model
         fields = ['confirm']
-        
 

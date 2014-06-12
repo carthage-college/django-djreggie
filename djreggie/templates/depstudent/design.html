@@ -68,43 +68,43 @@
         function validate_fname(){
             var id = document.getElementById('id_fname');
             var val = id.value;
-            var patt = new RegExp('^[a-zA-Z]$');
+            var patt = new RegExp('^([a-zA-Z]+)$');
             return patt.test(val);        
         }
         function validate_mname(){
             var id = document.getElementById('id_mname');
             var val = id.value;
-            var patt = new RegExp('^[a-zA-Z]$');
+            var patt = new RegExp('^([a-zA-Z]+)$');
             return patt.test(val);        
         }
         function validate_lname(){
             var id = document.getElementById('id_lname');
             var val = id.value;
-            var patt = new RegExp('^[a-zA-Z]$');
+            var patt = new RegExp('^([a-zA-Z]+)$');
             return patt.test(val);        
         }
         function validate_ssn(){
             var id = document.getElementById('id_ssn');
             var val = id.value;
-            var patt = new RegExp('^(\\d{3}[\\-|\\.]?\\d{2}[\\-|\\.]??\\d{4})$');
-            return patt.test(val);        
+            var patt = new RegExp('^(\\d{3}[\\-|\\.\\s]?\d{2}[\\-|\\.\\s]??\\d{4})$');
+            return patt.test(val);    
         }
         function validate_address(){
             var id = document.getElementById('id_address');
             var val = id.value;
-            var patt = new RegExp('^((?:[\w]+\s?)+[\w]+)$');
+            var patt = new RegExp('?:[\\w]+\\s?)+[\\w]+)$');
             return patt.test(val);        
         }
         function validate_city(){
             var id = document.getElementById('id_city');
             var val = id.value;
-            var patt = new RegExp('^([a-zA-Z\\s?]+[a-zA-Z]+)$');
+            var patt = new RegExp('^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$');
             return patt.test(val);        
         }
         function validate_state(){
             var id = document.getElementById('id_state');
             var val = id.value;
-            var patt = new RegExp('^[a-zA-Z]{2}$');
+            var patt = new RegExp('^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$');
             return patt.test(val);
         }
         function validate_zip(){
@@ -116,13 +116,13 @@
         function validate_hphone(){
             var id = document.getElementById('id_hphone');
             var val = id.value;
-            var patt = new RegExp('^1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4}$');
+            var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
             return patt.test(val);            
         }
         function validate_cphone(){
             var id = document.getElementById('id_cphone');
             var val = id.value;
-            var patt = new RegExp('^1?[\\s-]?\\(?(\\d{3})\\)?[\\s-]?\\d{3}[\\s-]?\\d{4}$');
+            var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
             return patt.test(val);            
         }
     </script>

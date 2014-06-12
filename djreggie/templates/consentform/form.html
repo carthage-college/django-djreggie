@@ -20,7 +20,7 @@
         function validate_student_id(){
             var id = document.getElementById('id_student_ID');
             var val = id.value;
-            var patt = new RegExp('^\\d{5,7}$');
+            var patt = new RegExp('^(\\d{5,7})$');
             return patt.test(val);            
         }
     </script>
