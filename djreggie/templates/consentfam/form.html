@@ -23,6 +23,31 @@
             var patt = new RegExp('^(\\d{5,7})$');
             return patt.test(val);            
         }
+        function add_row(){
+            var val = $('#id_Parent_or_Third_Party_Name-TOTAL_FORMS').val();
+            $('#formset_table tbody').append('<tr>\
+                                             <td>\
+                                             <input id="id_Parent_or_Third_Party_Name-' + val + '-name" name="Parent_or_Third_Party_Name-' + val + '-name" type="text">\
+                                            </td>\
+                                            <td>\
+                                            <select id="id_Parent_or_Third_Party_Name-' + val + '-Relation" name="Parent_or_Third_Party_Name-' + val + '-Relation">\
+                                            <option value="wrong">-------</option>\
+                                            <option value="MOM">Mother</option>\
+                                            <option value="DAD">Father</option>\
+                                            <option value="GRAN">Grandparent</option>\
+                                            <option value="BRO">Brother</option>\
+                                            <option value="SIS">Sister</option>\
+                                            <option value="AUNT">Aunt</option>\
+                                            <option value="UNC">Uncle</option>\
+                                            <option value="HUSB">Husband</option>\
+                                            <option value="FRIE">Friend</option>\
+                                            <option value="OTHE">Other</option>\
+                                            <option value="STEP">Stepparent</option>\
+                                            </select>\
+                                            </td>\
+                                            </tr>');
+            $('#id_Parent_or_Third_Party_Name-TOTAL_FORMS').val(String(parseInt($('#id_Parent_or_Third_Party_Name-TOTAL_FORMS').val()) + 1));
+        }
     </script>
     {% endblock %}
 </head>
@@ -80,7 +105,7 @@
                 </p><br>
                 <span class='separator'>Disclosure of information</span><hr>
                 <span>Below, please indicate the names of the people who you will disclose information with, and their relation to you</span>
-                <table>
+                <table id='formset_table'>
                     <tr>
                         <td><span class='fieldlabel'>Name</span></td>
                         <td><span class='fieldlabel'>Relation</span></td>
@@ -104,7 +129,7 @@
                     </tr>
                     {% endfor %}
                 </table><br>
-                <input type="submit" value="Add Another Parent or Third Party" id="add" name="add"><br><br>
+                <input type="button" value="Add Another Parent or Third Party" id="add" name="add" onclick='add_row()'><br><br>
                 <input type="submit" name="submit" value="Submit form">
             </form>
         </div>
