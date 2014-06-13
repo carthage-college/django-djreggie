@@ -64,25 +64,10 @@ class AccessFormModel(models.Model):
     
     reason_for_change = models.CharField(max_length=4,choices=CHOICES2)
     other_textbox = models.CharField(max_length=100,blank=True,null=True)
-    
-    #These fields are commented out because we no longer need them
-    
+        
     supervisor_name = models.CharField(max_length=64,blank=True, null=True)
     supervisor_date = models.DateField(blank=True, null=True)
-    #supervisor_signature = models.CharField(max_length=64)
-    #employee_entered_payroll_system = models.DateField()
-    #employee_entered_payroll_system_by = models.CharField(max_length=64)
-    #registrar_created_web_access = models.DateField()
-    #registrar_created_web_access_by = models.CharField(max_length=64)
-    #administrative_system_approval = models.CharField(max_length=64)
-    #administrative_system_approval_date = models.DateField()
-    #administrative_system_created_or_changed_date = models.DateField()
-    #administrative_system_created_or_changed_date_by = models.CharField(max_length=64)
-    
-    #employee_name = models.CharField(max_length=64)
-    #employee_department = models.CharField(max_length=64)
-    #signature = models.CharField(max_length=64)
-    #date = models.DateField()
+
     
     #Global options for the model
     class Meta:

@@ -131,7 +131,7 @@ class SincomeForm(forms.ModelForm):
         
     #Global options for the class    
     class Meta:
-        model = Depend #Fields come from the fields found in 'Sincome' model
+        model = Independ #Fields come from the fields found in 'Sincome' model
         fields = ['useddata','attached', 'employed']
         widgets = {
             'useddata': forms.RadioSelect(),
