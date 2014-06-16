@@ -11,43 +11,80 @@
     <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
     {% block javascript %}
     <script type='text/javascript'>
-        function validate_name(){
-            var id = document.getElementById('id_Full_Name_of_Student');
-            var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
-            return patt.test(val);        
+    $(document).ready(function () {
+        // Code adapted from http://djangosnippets.org/snippets/1389/  
+        function updateElementIndex(el, prefix, ndx) {
+            var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+            var replacement = prefix + '-' + ndx + '-';
+            if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
+            replacement));
+            if (el.id) el.id = el.id.replace(id_regex, replacement);
+            if (el.name) el.name = el.name.replace(id_regex, replacement);
         }
-        function validate_student_id(){
-            var id = document.getElementById('id_Carthage_ID_Number');
-            var val = id.value;
-            var patt = new RegExp('^(\\d{5,7})$');
-            return patt.test(val);            
+    
+        function deleteForm(btn, prefix) {
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (formCount > 1) {
+                // Delete the item/form
+                $(btn).parents('.fam').remove();
+                var forms = $('.fam'); // Get all the forms  
+                // Update the total number of forms (1 less than before)
+                $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                var i = 0;
+                // Go through the forms and set their indices, names and IDs
+                for (formCount = forms.length; i < formCount; i++) {
+                    $(forms.get(i)).children().children().each(function () {
+                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                    });
+                }
+            } // End if
+            else {
+                alert("You have to enter at least one todo item!");
+            }
+            return false;
         }
-        function add_row(){
-            var val = $('#id_Parent_or_Third_Party_Name-TOTAL_FORMS').val();
-            $('#formset_table tbody').append('<tr>\
-                                             <td>\
-                                             <input id="id_Parent_or_Third_Party_Name-' + val + '-name" name="Parent_or_Third_Party_Name-' + val + '-name" type="text">\
-                                            </td>\
-                                            <td>\
-                                            <select id="id_Parent_or_Third_Party_Name-' + val + '-Relation" name="Parent_or_Third_Party_Name-' + val + '-Relation">\
-                                            <option value="wrong">-------</option>\
-                                            <option value="MOM">Mother</option>\
-                                            <option value="DAD">Father</option>\
-                                            <option value="GRAN">Grandparent</option>\
-                                            <option value="BRO">Brother</option>\
-                                            <option value="SIS">Sister</option>\
-                                            <option value="AUNT">Aunt</option>\
-                                            <option value="UNC">Uncle</option>\
-                                            <option value="HUSB">Husband</option>\
-                                            <option value="FRIE">Friend</option>\
-                                            <option value="OTHE">Other</option>\
-                                            <option value="STEP">Stepparent</option>\
-                                            </select>\
-                                            </td>\
-                                            </tr>');
-            $('#id_Parent_or_Third_Party_Name-TOTAL_FORMS').val(String(parseInt($('#id_Parent_or_Third_Party_Name-TOTAL_FORMS').val()) + 1));
+    
+        function addForm(btn, prefix) {
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            // You can only submit a maximum of 10 todo items 
+            if (formCount < 10) {
+                // Clone a form (without event handlers) from the first form
+                var row = $(".fam:first").clone(false).get(0);
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".fam:last").slideDown(300);
+    
+                // Remove the bits we don't want in the new row/form
+                // e.g. error messages
+                $(".errorlist", row).remove();
+                $(row).children().removeClass("error");
+    
+                // Relabel or rename all the relevant bits
+                $(row).children().children().each(function () {
+                    updateElementIndex(this, prefix, formCount);
+                    $(this).val("");
+                });
+    
+                // Add an event handler for the delete item/form link 
+                $(row).find(".delete").click(function () {
+                    return deleteForm(this, prefix);
+                });
+                // Update the total form count
+                $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+            } // End if
+            else {
+                alert("Sorry, you can only enter a maximum of ten items.");
+            }
+            return false;
         }
+        // Register the click event handlers
+        $("#add").click(function () {
+            return addForm(this, "Parent_or_Third_Party_Name");
+        });
+    
+        $(".delete").click(function () {
+            return deleteForm(this, "Parent_or_Third_Party_Name");
+        });
+    });
     </script>
     {% endblock %}
 </head>
@@ -59,118 +96,61 @@
 {% endif %}
 </div>
     <div>
-        <div class='sidebar'>
-            <img src='http://imageshack.us/a/img651/7008/carthage1.png'></img>
-        </div>
-        <div class='mainbar'>
-            <div class='header'>
-                <span class='headertext'>Authorization to Release Non-Directory Information</span>
-            </div><br>
-            {{ form.non_field_errors }}
-            <form action='' method='post'>{% csrf_token %}
-                {{ Parent_formset.management_form }}
-                {% for field in form.hidden_fields %}
-                    {{ field }}
-                    {{ field.errors }}
-                {% endfor %}
-                <span class='separator'>General information</span><hr>
+        <div class='header'>
+            <span class='headertext'>Authorization to Release Non-Directory Information</span>
+        </div><br>
+        {{ form.non_field_errors }}
+        <form action='' method='post'>{% csrf_token %}
+            {{ Parent_formset.management_form }}
+            {% for field in form.hidden_fields %}
+                {{ field }}
+                {{ field.errors }}
+            {% endfor %}
+            <span class='separator'>General information</span><hr>
+            <p>
+                Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not<br>
+                release student academic records to third parties involving non-directory information unless a valid Authorization to<br>
+                Release Non-Directory Information form is on file. This form lists the record (s) to be released and to whom.<br><br>
+                By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified<br>
+                records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the<br>
+                student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not<br>
+                affect disclosures previously made by the College prior to the receipt of said written revocation.<br><br>
+                I authorize the full verbal and written disclosure of my student record to the parent(s) or third parties listed below in the following areas.<br>
+                <ul>
+                    <li>
+                        <b>Academic Records</b> including such items, but not limited to, Attendance, Academic Standing, Homework, Tests,
+                        Mid-Term Grades, Final Grades, Grade Point Averages, Progression Towards Graduation/Program Audit.
+                    </li>
+                    <li>
+                        <b>Student Financial Records</b> including such items, but not limited to, Business Office Account, Outstanding Balances,
+                        Financial Aid Packages, FAFSA Information, Scholarships.
+                    </li>
+                </ul>
                 <p>
-                    Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not<br>
-                    release student academic records to third parties involving non-directory information unless a valid Authorization to<br>
-                    Release Non-Directory Information form is on file. This form lists the record (s) to be released and to whom.<br><br>
-                    By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified<br>
-                    records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the<br>
-                    student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not<br>
-                    affect disclosures previously made by the College prior to the receipt of said written revocation.<br><br>
-                    I authorize the full verbal and written disclosure of my student record to the parent(s) or third parties listed below in the following areas.<br>
-                    <ul>
-                        <li>
-                            <b>Academic Records</b> including such items, but not limited to, Attendance, Academic Standing, Homework, Tests,
-                            Mid-Term Grades, Final Grades, Grade Point Averages, Progression Towards Graduation/Program Audit.
-                        </li>
-                        <li>
-                            <b>Student Financial Records</b> including such items, but not limited to, Business Office Account, Outstanding Balances,
-                            Financial Aid Packages, FAFSA Information, Scholarships.
-                        </li>
-                    </ul>
-                    <p>
-                        {{ form.Which_information_would_you_like_to_share.label }}
-                        {{ form.Which_information_would_you_like_to_share }}
-                        {% if form.Which_information_would_you_like_to_share.errors %}
-                            {% for e in form.Which_information_would_you_like_to_share.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        {% endif %}
-                    </p>
-                </p><br>
-                <span class='separator'>Disclosure of information</span><hr>
-                <span>Below, please indicate the names of the people who you will disclose information with, and their relation to you</span>
-                <table id='formset_table'>
-                    <tr>
-                        <td><span class='fieldlabel'>Name</span></td>
-                        <td><span class='fieldlabel'>Relation</span></td>
-                    </tr>
-                    {% for form in Parent_formset %}
-                    <tr>
-                        {% for field in form %}
-                        <td>
-                            {{ field }}
-                        </td>
+                    {{ form.Which_information_would_you_like_to_share.label }}
+                    {{ form.Which_information_would_you_like_to_share }}
+                    {% if form.Which_information_would_you_like_to_share.errors %}
+                        {% for e in form.Which_information_would_you_like_to_share.errors %}
+                            <span class='error'>*{{ e }}</span>
                         {% endfor %}
-                    </tr>
-                    <tr>
-                        {% for field in form %}
-                        <td>
-                            {% for e in field.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </table><br>
-                <input type="button" value="Add Another Parent or Third Party" id="add" name="add" onclick='add_row()'><br><br>
-                <input type="submit" name="submit" value="Submit form">
-            </form>
-        </div>
+                    {% endif %}
+                </p>
+            </p><br>
+            <span class='separator'>Disclosure of information</span><hr>
+            <span>Below, please indicate the names of the people who you will disclose information with, and their relation to you</span>
+            
+                {{ Parent_formset.management_form }}
+                {% for form in Parent_formset.forms %}
+                    <div class = fam>
+                        {{ form.as_p }}
+                        <p style=""><a class="delete" href="#">Delete</a></p>
+                    </div>
+                <p><a id="add" href="#">Add Another Parent or Third Party</a></p>
+                {% endfor %}
+                <br>
+            <input type="submit" name="submit" value="Submit form">
+        </form>
     </div>
 </body>
-    {% if bool %}
-        <script type='text/javascript'>
-            //windows.scrollTo(0,document.body.scrollHeight);
-        </script>
-    {% endif %}
-    <script type='text/javascript'>
-        var element = document.getElementById('id_Full_Name_of_Student');
-        element.onblur = function(){
-            var n=document.getElementById('name_no');
-            var y=document.getElementById('name_yes');
-            if (!validate_name())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-        element = document.getElementById('id_Carthage_ID_Number');
-        element.onblur = function(){
-            var n=document.getElementById('id_no');
-            var y=document.getElementById('id_yes');
-            if (!validate_student_id())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-    </script>
     {% endblock %}
 </html>

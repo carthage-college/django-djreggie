@@ -6,34 +6,39 @@ from djreggie.consentfam.form import ModelForm, Parent
 from djreggie.consentfam.models import ConsentModel, ParentForm, Contact
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
-#Import this if you'll be using formsets
-from django.forms.formsets import formset_factory
+from django.forms.formsets import formset_factory, BaseFormSet #For formsets
+from django.core.context_processors import csrf
+from django.template import RequestContext  # For CSRF
 
 def create(request):
-    ParentFormSet = formset_factory(Parent, extra=1)
+    #For info on setting up formsets, see this link: http://goo.gl/Oz53K2
+    ParentFormSet = formset_factory(Parent)
     boolean = False
-    if request.POST:    #If we do a POST
-        
+    if request.POST:    #If we do a POST        
         (a, created) = ConsentModel.objects.get_or_create(Carthage_ID_Number=request.POST['Carthage_ID_Number'])    
         form = ModelForm(request.POST, instance=a)#Scrape the data from the form and save it in a variable
         form.fields['Carthage_ID_Number'].widget = forms.HiddenInput()
         form.fields['Full_Name_of_Student'].widget = forms.HiddenInput()
         
-        Parent_formset = ParentFormSet(request.POST, prefix='Parent_or_Third_Party_Name')#Scrape the data from the form and save it in a variable
-        if 'add' in request.POST: #This is the algorithm for dynamically adding to our formset.
+        #Scrape the data from the form and save it in a variable
+        Parent_formset = ParentFormSet(request.POST, prefix='Parent_or_Third_Party_Name')
+        '''if 'add' in request.POST: #This is the algorithm for dynamically adding to our formset.
             boolean = True
             array=[]
             for i in range(0,int(Parent_formset.data['Parent_or_Third_Party_Name-TOTAL_FORMS'])):
                 array.append({'name': Parent_formset.data['Parent_or_Third_Party_Name-%s-name' % (i)], 'Relation': Parent_formset.data['Parent_or_Third_Party_Name-%s-Relation' % (i)]})
-            Parent_formset = ParentFormSet(prefix='Parent_or_Third_Party_Name', initial=array)
+            Parent_formset = ParentFormSet(prefix='Parent_or_Third_Party_Name', initial=array)'''
             
         if form.is_valid() and Parent_formset.is_valid(): #If the forms are valid
             form_instance = form.save()        #Save the form data to the datbase table            
             
             for f in Parent_formset:#This is how we save formset data, since there are multiple forms in a formset
-                if f.clean():
-                    (contobj, created) = Contact.objects.get_or_create(name=f.cleaned_data['name'])
-                    (obj, created) = ParentForm.objects.get_or_create(form=form_instance, contact=contobj, Relation=f.cleaned_data['Relation'])
+               share_with = form.save(commit=False)
+               share_with.list = form_instance
+               share_with.save()
+               #if f.clean():
+                    #(contobj, created) = Contact.objects.get_or_create(name=f.cleaned_data['name'])
+                    #(obj, created) = ParentForm.objects.get_or_create(form=form_instance, contact=contobj, Relation=f.cleaned_data['Relation'])
             form = ModelForm()
             Parent_formset = ParentFormSet(prefix='Parent_or_Third_Party_Name')
             submitted = True
@@ -57,6 +62,13 @@ def create(request):
             connection.close()
         form.fields['Carthage_ID_Number'].widget = forms.HiddenInput()
         form.fields['Full_Name_of_Student'].widget = forms.HiddenInput()
+
+    # For CSRF protection
+    # See http://docs.djangoproject.com/en/dev/ref/contrib/csrf/ 
+    c = {'form': form,
+         'Parent_formset': Parent_formset,
+        }
+    c.update(csrf(request))
 
     return render(request, 'consentfam/form.html', {
         'form': form, 
