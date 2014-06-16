@@ -39,7 +39,7 @@
                 }
             } // End if
             else {
-                alert("You have to enter at least one todo item!");
+                alert("You have to enter at least one person!");
             }
             return false;
         }
@@ -72,7 +72,7 @@
                 $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
             } // End if
             else {
-                alert("Sorry, you can only enter a maximum of ten items.");
+                alert("Sorry, you can only enter a maximum of ten people.");
             }
             return false;
         }
@@ -108,15 +108,14 @@
             {% endfor %}
             <span class='separator'>General information</span><hr>
             <p>
-                Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not<br>
-                release student academic records to third parties involving non-directory information unless a valid Authorization to<br>
+                Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not
+                release student academic records to third parties involving non-directory information unless a valid Authorization to
                 Release Non-Directory Information form is on file. This form lists the record (s) to be released and to whom.<br><br>
-                By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified<br>
-                records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the<br>
-                student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not<br>
+                By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified
+                records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the
+                student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not
                 affect disclosures previously made by the College prior to the receipt of said written revocation.<br><br>
-                I authorize the full verbal and written disclosure of my student record to the parent(s) or third parties listed below in the following areas.<br>
-                <ul>
+                I authorize the full verbal and written disclosure of my student record to the parent(s) or third parties listed below in the following areas.
                     <li>
                         <b>Academic Records</b> including such items, but not limited to, Attendance, Academic Standing, Homework, Tests,
                         Mid-Term Grades, Final Grades, Grade Point Averages, Progression Towards Graduation/Program Audit.
@@ -125,8 +124,7 @@
                         <b>Student Financial Records</b> including such items, but not limited to, Business Office Account, Outstanding Balances,
                         Financial Aid Packages, FAFSA Information, Scholarships.
                     </li>
-                </ul>
-                <p>
+                <p><br><br>
                     {{ form.Which_information_would_you_like_to_share.label }}
                     {{ form.Which_information_would_you_like_to_share }}
                     {% if form.Which_information_would_you_like_to_share.errors %}
