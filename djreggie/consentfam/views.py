@@ -13,7 +13,6 @@ from django.template import RequestContext  # For CSRF
 def create(request):
     #For info on setting up formsets, see this link: http://goo.gl/Oz53K2
     ParentFormSet = formset_factory(Parent)
-    boolean = False
     if request.POST:    #If we do a POST        
         (a, created) = ConsentModel.objects.get_or_create(Carthage_ID_Number=request.POST['Carthage_ID_Number'])    
         form = ModelForm(request.POST, instance=a)#Scrape the data from the form and save it in a variable
@@ -22,30 +21,20 @@ def create(request):
         
         #Scrape the data from the form and save it in a variable
         Parent_formset = ParentFormSet(request.POST, prefix='Parent_or_Third_Party_Name')
-        '''if 'add' in request.POST: #This is the algorithm for dynamically adding to our formset.
-            boolean = True
-            array=[]
-            for i in range(0,int(Parent_formset.data['Parent_or_Third_Party_Name-TOTAL_FORMS'])):
-                array.append({'name': Parent_formset.data['Parent_or_Third_Party_Name-%s-name' % (i)], 'Relation': Parent_formset.data['Parent_or_Third_Party_Name-%s-Relation' % (i)]})
-            Parent_formset = ParentFormSet(prefix='Parent_or_Third_Party_Name', initial=array)'''
-            
+           
         if form.is_valid() and Parent_formset.is_valid(): #If the forms are valid
             form_instance = form.save()        #Save the form data to the datbase table            
             
             for f in Parent_formset:#This is how we save formset data, since there are multiple forms in a formset
-               share_with = form.save(commit=False)
+               share_with = f.save(commit=False)
                share_with.list = form_instance
                share_with.save()
-               #if f.clean():
-                    #(contobj, created) = Contact.objects.get_or_create(name=f.cleaned_data['name'])
-                    #(obj, created) = ParentForm.objects.get_or_create(form=form_instance, contact=contobj, Relation=f.cleaned_data['Relation'])
             form = ModelForm()
             Parent_formset = ParentFormSet(prefix='Parent_or_Third_Party_Name')
             submitted = True
             return render(request, 'consentfam/form.html', {
                 'form': form, 
                 'Parent_formset': Parent_formset,
-                'bool': boolean,
                 'submitted': submitted
             })#This is the URL where users are redirected after submitting the form
     else: #This is for the first time you go to the page. It sets it all up
@@ -73,7 +62,6 @@ def create(request):
     return render(request, 'consentfam/form.html', {
         'form': form, 
         'Parent_formset': Parent_formset,
-        'bool': boolean,
     })
     
 def submitted(request):

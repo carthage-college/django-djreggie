@@ -105,7 +105,7 @@
                 <span class='headertext'>{{ year_low }}/{{ year_up }} Undergraduate Candidacy Form</span>
             </div><br>
             {{ form.non_field_errors }}
-            <form action='' method='post'>{% csrf_token %}
+            <form action='' method='post' class = "form">{% csrf_token %}
                 <span class='separator'>Personal information</span><hr>
                 <span>Your name here will be on your diploma and read as you cross the stage</span>
                 <table>

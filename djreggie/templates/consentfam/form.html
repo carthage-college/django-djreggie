@@ -1,12 +1,13 @@
 {% extends "djkorra/base.html" %}
 <!doctype html>
 <html lang="en">
+    {% block content_head %}
+        <h1 id="page-title">FERPA Authorization for Family</h1>
+    {% endblock %}
 <head>
     <meta http-equiv='Content-Type' content='Type=text/html; charset=utf-8'>
-    <title>Authorization to Release Non-Directory Information</title>
-    <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
     <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
-    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
     <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
     <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
     {% block javascript %}
@@ -90,32 +91,26 @@
 </head>
 {% block content %}
 <body>
-<div>
-{% if submitted %}
-        <h2>Your form has been submitted, thank you</h2>
-{% endif %}
-</div>
-    <div>
-        <div class='header'>
-            <span class='headertext'>Authorization to Release Non-Directory Information</span>
-        </div><br>
-        {{ form.non_field_errors }}
-        <form action='' method='post'>{% csrf_token %}
-            {{ Parent_formset.management_form }}
-            {% for field in form.hidden_fields %}
-                {{ field }}
-                {{ field.errors }}
-            {% endfor %}
-            <span class='separator'>General information</span><hr>
-            <p>
-                Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not
-                release student academic records to third parties involving non-directory information unless a valid Authorization to
-                Release Non-Directory Information form is on file. This form lists the record (s) to be released and to whom.<br><br>
-                By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified
-                records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the
-                student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not
-                affect disclosures previously made by the College prior to the receipt of said written revocation.<br><br>
-                I authorize the full verbal and written disclosure of my student record to the parent(s) or third parties listed below in the following areas.
+    <form action='' method='post' class = "form">{% csrf_token %}        
+        {{ Parent_formset.management_form }}
+        {% for field in form.hidden_fields %}
+            {{ field }}
+            {{ field.errors }}
+        {% endfor %}
+        <fieldset class="blockLabels">
+            <legend>General Information</legend>
+            <ol>
+                <li class="ctrlHolder">
+                    Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not
+                    release student academic records to third parties involving non-directory information unless a valid Authorization to
+                    Release Non-Directory Information form is on file. This form lists the record(s) to be released and to whom.<br><br>
+                    By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified
+                    records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the
+                    student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not
+                    affect disclosures previously made by the College prior to the receipt of said written revocation.<br><br>
+                    I authorize the full verbal and written disclosure of my student record to the parent(s)
+                    or third parties listed below in the following areas.<br><br>
+                <ul class="bullets">
                     <li>
                         <b>Academic Records</b> including such items, but not limited to, Attendance, Academic Standing, Homework, Tests,
                         Mid-Term Grades, Final Grades, Grade Point Averages, Progression Towards Graduation/Program Audit.
@@ -124,31 +119,36 @@
                         <b>Student Financial Records</b> including such items, but not limited to, Business Office Account, Outstanding Balances,
                         Financial Aid Packages, FAFSA Information, Scholarships.
                     </li>
-                <p><br><br>
-                    {{ form.Which_information_would_you_like_to_share.label }}
-                    {{ form.Which_information_would_you_like_to_share }}
-                    {% if form.Which_information_would_you_like_to_share.errors %}
-                        {% for e in form.Which_information_would_you_like_to_share.errors %}
-                            <span class='error'>*{{ e }}</span>
-                        {% endfor %}
-                    {% endif %}
-                </p>
-            </p><br>
-            <span class='separator'>Disclosure of information</span><hr>
-            <span>Below, please indicate the names of the people who you will disclose information with, and their relation to you</span>
-            
-                {{ Parent_formset.management_form }}
-                {% for form in Parent_formset.forms %}
-                    <div class = fam>
-                        {{ form.as_p }}
-                        <p style=""><a class="delete" href="#">Delete</a></p>
+                </ul>
+                </li>
+                <li class="ctrlHolder"><h3><label for="Which_information_would_you_like_to_share">
+                    Which information would you like to share?</label></h3>
+                    <div class='required'>
+                        {{ form.Which_information_would_you_like_to_share }}
                     </div>
-                <p><a id="add" href="#">Add Another Parent or Third Party</a></p>
-                {% endfor %}
-                <br>
-            <input type="submit" name="submit" value="Submit form">
-        </form>
-    </div>
-</body>
+                </li>
+            </ol>
+        </fieldset>
+        <fieldset class="blockLabels">
+            <legend>Disclosure of Information</legend>
+            <ol>
+                <li class="ctrlHolder">
+                   Below, please indicate the names of the people who you will disclose information with, and their relation to you </li>      
+                   {{ Parent_formset.management_form }}
+                    {% for form in Parent_formset.forms %}
+                    <div class = fam>
+                        <li class="ctrlHolder"><h3>{{form}}</h3></li>
+                        <li style=""><a class="delete" href="#">Delete</a></li>
+                    </div>
+                    <li><a id="add" href="#">Add Another Parent or Third Pary</a></li>
+                    {% endfor %}
+                <li class="btnHolder">
+                    <label for="submit">&nbsp;&nbsp;</label>
+                    <input type="Submit" name="submit" value="Submit" class="button"/>
+                </li>
+            </ol>
+        </fieldset>
+    </form>
     {% endblock %}
+</body>
 </html>

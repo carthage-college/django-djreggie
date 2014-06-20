@@ -29,7 +29,4 @@ class ModelForm(forms.ModelForm):
     #Global options    
     class Meta:
         model = Form #The fields from the model 'Form' will be the same fields in this form
-        widgets = { #If we want to change the display of fields
-            'student_ID': forms.TextInput(attrs={'maxlength':7})
-        }
         

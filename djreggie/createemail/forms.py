@@ -16,9 +16,15 @@ class EmailForm(forms.ModelForm):
         cleaned_data = self.cleaned_data
         test = cleaned_data.get('needed_until')
         
-        if test < datetime.date.today():
-            raise forms.ValidationError("The date cannot be in the past!")
-            del cleaned_data["needed_until"]        
+        if not test:
+            msg = u"Invalid date"
+            self._errors['needed_until'] = self.error_class([msg])
+        else:
+            if test < datetime.date.today():
+                msg2 = u"The date cannot be in the past!"
+                self._errors["needed_until"] = self.error_class([msg2]) #Adds the error message to the field
+                del cleaned_data["needed_until"]
+            
         return cleaned_data
             
     #A function that will print values in a format, when we email the form

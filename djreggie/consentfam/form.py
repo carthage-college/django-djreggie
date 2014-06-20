@@ -43,10 +43,6 @@ class ModelForm(forms.ModelForm):
     class Meta:
         model = ConsentModel
         exclude = ('name', 'Relation',)
-        #widgets = {
-        #    'Carthage_ID_Number': forms.HiddenInput(),
-        #    'Full_Name_of_Student': forms.HiddenInput(),
-        #}
 
 
 class Parent(forms.Form):

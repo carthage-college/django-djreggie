@@ -136,7 +136,7 @@
                 <span class='headertext'>Change Major / Minor Form</span>
             </div><br>
             {{ form.non_field_errors }}
-            <form action='' method='post' onsubmit='setSelected()'>{% csrf_token %}
+            <form action='' method='post' class = "form" onsubmit='setSelected()'>{% csrf_token %}
                 <span class='separator'>Student information</span><hr>
                 {% for field in form.hidden_fields %}
                         {{ field }}

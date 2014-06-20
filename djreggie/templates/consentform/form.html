@@ -1,131 +1,75 @@
 {% extends "djkorra/base.html" %}
 <!doctype html>
 <html lang='en'>
+    {% block content_head %}
+        <h1 id="page-title">FERPA Authorization</h1>
+    {% endblock %}
 <head>
     <meta charset='utf-8' />
-    <title>Request and Consent for the Release of Directory Information</title>
-    <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
     <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
     <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
     <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
-    {% block javascript %}
-    <script type='text/javascript'>
-        function validate_name(){
-            var id = document.getElementById('id_name');
-            var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
-            return patt.test(val);        
-        }
-        function validate_student_id(){
-            var id = document.getElementById('id_student_ID');
-            var val = id.value;
-            var patt = new RegExp('^(\\d{5,7})$');
-            return patt.test(val);            
-        }
-    </script>
-    {% endblock %}
 </head>
 {% block content %}
 <body>
-<div>
-{% if submitted %}
-        <h2>Your form has been submitted, thank you</h2>
-{% endif %}
-</div>
-    <div>
-        <div class='sidebar'>
-            <img src='http://imageshack.us/a/img651/7008/carthage1.png'></img>
-        </div>
-        <div class='mainbar'>
-            <div class='header'>
-                <span class='headertext'>Request and Consent for the Release of Directory Information</span>
-            </div><br>
-            <form action='' method='post'>{% csrf_token %}
-                {{ form.non_field_errors }}
-                {% for field in form.hidden_fields %}
-                    {{ field }}
-                    {{ field.errors }}
-                {% endfor %}
-                <span class='separator'>General information</span><hr>
-                <p>
-                    The Family Educational Rights and Privacy Act ("FERPA" - 20 U.S.C.  1232g; 34 CFR Part 99) is a
+    <form action='' method='post' class = "form">{% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form.hidden_fields %}
+            {{ field }}
+            {{ field.errors }}
+        {% endfor %}
+        <fieldset class="blockLabels">
+            <legend>General Information</legend>
+            <ol>
+                <li class="ctrlHolder">The Family Educational Rights and Privacy Act ("FERPA" - 20 U.S.C.  1232g; 34 CFR Part 99) is a
                     Federal law that protects the privacy of student education records. The following form is intended to
                     authorize the disclosure of directory information that is limited and generally found not to be harmful or invasive.
                     Carthage College considers the following types of information as directory information:
-                </p>
-                <ul>
-                    <li>Student's name</li>
-                    <li>Mailing and email address</li>
-                    <li>Telephone Listing</li>
-                    <li>Date and place of birth</li>
-                    <li>Photographs</li>
-                    <li>Dates of enrollment</li>
-                    <li>Major field of study</li>
-                    <li>Enrollment status (e.g., full-time or part-time)</li>
-                    <li>Classification (e.g., Freshman, Sophomore, Junior, Senior)</li>
-                    <li>Degrees earned and dates of graduation including anticipated graduation dates</li>
-                    <li>Awards and honors received</li>
-                    <li>Participation in officially recognized activities and sports</li>
-                    <li>Weight and height of members of athletic teams</li>
-                    <li>The most recent previous educational agency or institution attended</li>
-                </ul>
-                <p>
-                    At its discretion, the College may provide directory information to the public in accordance with the provisions of FERPA.
-                </p><br>
-                <span class='separator'>Personal information</span><hr>
-                <table>
-                    <tr>
-                        <td><span class='fieldlabel'>{{ form.consent.label }}</span></td>
-                        <td>{{ form.consent }}</td>
-                        <td>
-                            {% for e in form.consent.errors %}
-                                <span class ='error'>*{{ e }}</span>
-                            {% endfor %}
-                            
-                        </td>
-                    </tr>
-                </table>
-                <span id='hidden' style='display:none;'>
+                    <li>                    
+                        <ul class="bullets">
+                                <li>Student's name</li>
+                                <li>Mailing and email address</li>
+                                <li>Telephone Listing</li>
+                                <li>Date and place of birth</li>
+                                <li>Photographs</li>
+                                <li>Dates of enrollment</li>
+                                <li>Major field of study</li>
+                                <li>Enrollment status (e.g., full-time or part-time)</li>
+                                <li>Classification (e.g., Freshman, Sophomore, Junior, Senior)</li>
+                                <li>Degrees earned and dates of graduation including anticipated graduation dates</li>
+                                <li>Awards and honors received</li>
+                                <li>Participation in officially recognized activities and sports</li>
+                                <li>Weight and height of members of athletic teams</li>
+                                <li>The most recent previous educational agency or institution attended</li>
+                        </ul>
+                    </li>
+                </li>
+                <li class="ctrlHolder">At its discretion, the College may provide directory
+                information to the public in accordance with the provisions of FERPA.
+                </li>
+            </ol>
+        </fieldset>
+        <fieldset class="blockLabels">
+            <legend>Choose and Submit</legend>
+            <ol>
+                <li class="ctrlHolder"><h3><label for="id_consent">Consent</label></h3>
+                    <div class='required'>
+                        {{ form.consent }}
+                    </div>
+                </li>
+                <li id='hidden' style='display:none;'>
                     *I understand the implications of this decision to withold such directory information. Any requests for such information will be refused.
-                </span><br><br>
-                <input type="submit" name="submit" value="Submit form">
-            </form>
-        <div>
-        </div>
-    </div>    
+                </li>
+                <li class="btnHolder">
+                    <label for="submit">&nbsp;&nbsp;</label>
+                    <input type="Submit" name="submit" value="Submit" class="button"/>
+                </li>
+            </ol>
+        </fieldset>
+    </form>
 </body>
 <script>
-var element = document.getElementById('id_name');
-    element.onblur = function(){
-        var n=document.getElementById('name_no');
-        var y=document.getElementById('name_yes');
-        if (!validate_name())
-        {
-            n.style.display='inline';
-            y.style.display='none';
-        }
-        else
-        {
-            n.style.display='none';
-            y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_student_ID');
-    element.onblur = function(){
-        var n=document.getElementById('student_ID_no');
-        var y=document.getElementById('student_ID_yes');
-        if (!validate_student_id())
-        {
-            n.style.display='inline';
-            y.style.display='none';
-        }
-        else
-        {
-            n.style.display='none';
-            y.style.display='inline';
-        }
-    };
     element = document.getElementById('id_consent');
     element.onchange = function(){
         var hidden = document.getElementById('hidden');

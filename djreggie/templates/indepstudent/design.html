@@ -144,7 +144,7 @@ financial aid administrator as soon as possible so that your financial aid will 
     </div>
     <h3>Independent Student's Information{% if formdepend.fname.errors or formdepend.mname.errors or formdepend.lname.errors or formdepend.ssn.errors or formdepend.address.errors or formdepend.dob.errors or formdepend.city.errors or formdepend.state.errors or formdepend.zip.errors or formdepend.email.errors or formdepend.hphone.errors or formdepend.phonetype.errors or formdepend.cphone.errors or formdepend.phonetype2.errors or formdepend.file.errors%}<span class="error">  *</span> {% endif %}</h3>
     <div>
-        <form action="" method="post" enctype="multipart/form-data"> {% csrf_token %}   
+        <form action="" method="post" class = "form" enctype="multipart/form-data"> {% csrf_token %}   
                 {{formsetfam.management_form}}
                 {{formsetstud.management_form}}
                 {{formsetpar.management_form}}

@@ -1,10 +1,11 @@
 {% extends "djkorra/base.html" %}
 <!doctype html>
 <html lang='en'>
+    {% block content_head %}
+        <h1 id="page-title">System Access Form</h1>
+    {% endblock %}
 <head>
     <meta charset='utf-8' />
-    <title>System Access Form</title>
-    <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
     <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
     <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
@@ -47,227 +48,193 @@
 </head>
 {% block content %}
 <body>
-    <div>
-    {% if submitted %}
-        <h2>Your form has been submitted, thank you</h2>
-        {% endif %}
-    </div>
-    <div>
-        <div class='sidebar'>
-            <img src='http://imageshack.us/a/img651/7008/carthage1.png'></img>
-        </div>
-        <div class='mainbar'>
-            <div class='header'>
-                <span class='headertext'>System Access Form</span>
-            </div><br>
-            {{ form.non_field_errors }}
-            <form action='' method='post'>{% csrf_token %}
-                <span class='separator'>Personal information</span><hr>
-                <table>
-                    <tr>
-                        <td><span class='fieldlabel'>{{ form.carthage_id.label }}</span></td>
-                        <td>{{ form.carthage_id }}</td>
-                        <td>
-                            <img class='hidden' id='carthage_id_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='carthage_id_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.carthage_id.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class='fieldlabel'>{{ form.full_name.label }}</span></td>
-                        <td>{{ form.full_name }}</td>
-                        <td>
-                            <img class='hidden' id='full_name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='full_name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.full_name.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class='fieldlabel'>{{ form.department.label }}</span></td>
-                        <td>{{ form.department }}</td>
-                        <td>
-                            <img class='hidden' id='department_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='department_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.department.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class='fieldlabel'>{{ form.position.label }}</span></td>
-                        <td>{{ form.position }}</td>
-                        <td>
-                            <img class='hidden' id='position_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='position_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.position.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class='fieldlabel'>{{ form.work_phone.label }}</span></td>
-                        <td>{{ form.work_phone }}</td>
-                        <td>
-                            <img class='hidden' id='work_phone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='work_phone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.work_phone.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </table><br>
-                <span class='separator'>Permissions</span><hr>
-                <table border='1'>
-                    <tr>
-                        <th>General</th>
-                        <th></th>
-                        <th>Special</th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <td>{{ form.email }}</td>
-                        <td>{{ form.email.label }}</td>
-                        <td>{{ form.control }}</td>
-                        <td>{{ form.control.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.novell_file_and_print_access }}</td>
-                        <td>{{ form.novell_file_and_print_access.label }}</td>
-                        <td>{{ form.programming }}</td>
-                        <td>{{ form.programming.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.eracer }}</td>
-                        <td>{{ form.eracer.label }}</td>
-                        <td>{{ form.admissions }}</td>
-                        <td>{{ form.admissions.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.common }}</td>
-                        <td>{{ form.common.label }}</td>
-                        <td>{{ form.recruiting }}</td>
-                        <td>{{ form.recruiting.label }}</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <th>Special</th>
-                        <td>{{ form.student_billing }}</td>
-                        <td>{{ form.student_billing.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.financial }}</td>
-                        <td>{{ form.financial.label }}</td>
-                        <td>{{ form.student }}</td>
-                        <td>{{ form.student.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.student_services }}</td>
-                        <td>{{ form.student_services.label }}</td>
-                        <td>{{ form.management }}</td>
-                        <td>{{ form.management.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.financial_aid }}</td>
-                        <td>{{ form.financial_aid.label }}</td>
-                        <td>{{ form.registrar }}</td>
-                        <td>{{ form.registrar.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.display_registration }}</td>
-                        <td>{{ form.display_registration.label }}</td>
-                        <td>{{ form.development }}</td>
-                        <td>{{ form.development.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.donor_accounting }}</td>
-                        <td>{{ form.donor_accounting.label }}</td>
-                        <td>{{ form.planned_giving }}</td>
-                        <td>{{ form.planned_giving.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.institutional_advancement_grants }}</td>
-                        <td>{{ form.institutional_advancement_grants.label }}</td>
-                        <td>{{ form.alumni }}</td>
-                        <td>{{ form.alumni.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.phonathon }}</td>
-                        <td>{{ form.phonathon.label }}</td>
-                        <td>{{ form.health }}</td>
-                        <td>{{ form.health.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.add_id_records }}</td>
-                        <td>{{ form.add_id_records.label }}</td>
-                        <td>{{ form.registrar_administration }}</td>
-                        <td>{{ form.registrar_administration.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.financial_administration }}</td>
-                        <td>{{ form.financial_administration.label }}</td>
-                        <td>{{ form.admissions_administration }}</td>
-                        <td>{{ form.admissions_administration.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.training }}</td>
-                        <td>{{ form.training.label }}</td>
-                        <td>{{ form.cisco_vpn_remote_access_to_network }}</td>
-                        <td>{{ form.cisco_vpn_remote_access_to_network.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.administrative_access_to_user_machines }}</td>
-                        <td>{{ form.administrative_access_to_user_machines.label }}</td>
-                        <td>{{ form.network_security_administration }}</td>
-                        <td>{{ form.network_security_administration.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.system_administration }}</td>
-                        <td>{{ form.system_administration.label }}</td>
-                        <td>{{ form.cognos }}</td>
-                        <td>{{ form.cognos.label }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.author }}</td>
-                        <td>{{ form.author.label }}</td>
-                        <td>{{ form.consumer }}</td>
-                        <td>{{ form.consumer.label }}</td>
-                    </tr>
-                </table><br>
-                <table>
-                    <tr>
-                        <td><span class='fieldlabel'>{{ form.reason_for_change.label }}</span></td>
-                        <td>{{ form.reason_for_change }}</td>
-                        <td>
-                            {% for e in form.reason_for_change.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr id='othertable'>
-                        <td><span class='fieldlabel'>{{ form.other_textbox.label }}</span></td>
-                        <td>{{ form.other_textbox }}</td>
-                        <td>
-                        </td>
-                    </tr>
-                </table><br><br>
-                <input type="Submit" value="Submit form"></submit>
-            </form>
-        </div>
-    </div>
-    <script type='text/javascript'>
+    <form action='' method='post' class = "form">{% csrf_token %}
+        <fieldset class="blockLabels">
+            <legend>Personal Information</legend>
+            <ol>
+                <li class="ctrlHolder"><h3><label for="id_carthage_id">Carthage ID</label></h3>
+                    <div class='required'>
+                        <input type='text' name='ID' id='id_carthage_id' maxlength=7/>
+                        <img class='hidden' id='carthage_id_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                        <img class='hidden' id='carthage_id_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    </div>
+                </li>
+                <li class="ctrlHolder"><h3><label for="id_full_name">Full Name</label></h3>
+                    <div class='required'>
+                        <input type='text' name='name' id='id_full_name' maxlength=100/>
+                        <img class='hidden' id='full_name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                        <img class='hidden' id='full_name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    </div>
+                </li>
+                <li class="ctrlHolder"><h3><label for="id_department">Department</label></h3>
+                    <div class='required'>
+                        <input type='text' name='department' id='id_department' maxlength=100/>
+                        <img class='hidden' id='department_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                        <img class='hidden' id='department_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    </div>
+                </li>
+                <li class="ctrlHolder"><h3><label for="id_position">Position</label></h3>
+                    <div class='required'>
+                        <input type='text' name='position' id='id_position' maxlength=100/>
+                        <img class='hidden' id='position_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                        <img class='hidden' id='position_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    </div>
+                </li>
+                <li class="ctrlHolder"><h3><label for="id_work_phone">Work Phone:</label></h3>
+                    <div class='required'>
+                        <input type='text' name='phone' id='id_work_phone' maxlength=100/>
+                        <img class='hidden' id='work_phone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                        <img class='hidden' id='work_phone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    </div>
+                </li>        
+            </ol>
+        </fieldset>
+        <fieldset class="blockLabels">
+            <legend>Permissions</legend>
+            <ol>
+                <li class="ctrlHolder">
+                    <table border='1'>
+                        <tr>
+                            <th>General</th>
+                            <th></th>
+                            <th>Special</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <td>{{ form.email }}</td>
+                            <td>{{ form.email.label }}</td>
+                            <td>{{ form.control }}</td>
+                            <td>{{ form.control.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.novell_file_and_print_access }}</td>
+                            <td>{{ form.novell_file_and_print_access.label }}</td>
+                            <td>{{ form.programming }}</td>
+                            <td>{{ form.programming.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.eracer }}</td>
+                            <td>{{ form.eracer.label }}</td>
+                            <td>{{ form.admissions }}</td>
+                            <td>{{ form.admissions.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.common }}</td>
+                            <td>{{ form.common.label }}</td>
+                            <td>{{ form.recruiting }}</td>
+                            <td>{{ form.recruiting.label }}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <th>Special</th>
+                            <td>{{ form.student_billing }}</td>
+                            <td>{{ form.student_billing.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.financial }}</td>
+                            <td>{{ form.financial.label }}</td>
+                            <td>{{ form.student }}</td>
+                            <td>{{ form.student.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.student_services }}</td>
+                            <td>{{ form.student_services.label }}</td>
+                            <td>{{ form.management }}</td>
+                            <td>{{ form.management.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.financial_aid }}</td>
+                            <td>{{ form.financial_aid.label }}</td>
+                            <td>{{ form.registrar }}</td>
+                            <td>{{ form.registrar.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.display_registration }}</td>
+                            <td>{{ form.display_registration.label }}</td>
+                            <td>{{ form.development }}</td>
+                            <td>{{ form.development.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.donor_accounting }}</td>
+                            <td>{{ form.donor_accounting.label }}</td>
+                            <td>{{ form.planned_giving }}</td>
+                            <td>{{ form.planned_giving.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.institutional_advancement_grants }}</td>
+                            <td>{{ form.institutional_advancement_grants.label }}</td>
+                            <td>{{ form.alumni }}</td>
+                            <td>{{ form.alumni.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.phonathon }}</td>
+                            <td>{{ form.phonathon.label }}</td>
+                            <td>{{ form.health }}</td>
+                            <td>{{ form.health.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.add_id_records }}</td>
+                            <td>{{ form.add_id_records.label }}</td>
+                            <td>{{ form.registrar_administration }}</td>
+                            <td>{{ form.registrar_administration.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.financial_administration }}</td>
+                            <td>{{ form.financial_administration.label }}</td>
+                            <td>{{ form.admissions_administration }}</td>
+                            <td>{{ form.admissions_administration.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.training }}</td>
+                            <td>{{ form.training.label }}</td>
+                            <td>{{ form.cisco_vpn_remote_access_to_network }}</td>
+                            <td>{{ form.cisco_vpn_remote_access_to_network.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.administrative_access_to_user_machines }}</td>
+                            <td>{{ form.administrative_access_to_user_machines.label }}</td>
+                            <td>{{ form.network_security_administration }}</td>
+                            <td>{{ form.network_security_administration.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.system_administration }}</td>
+                            <td>{{ form.system_administration.label }}</td>
+                            <td>{{ form.cognos }}</td>
+                            <td>{{ form.cognos.label }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.author }}</td>
+                            <td>{{ form.author.label }}</td>
+                            <td>{{ form.consumer }}</td>
+                            <td>{{ form.consumer.label }}</td>
+                        </tr>
+                    </table>
+                </li>
+                <li class="ctrlHolder"><h3><label for="id_reason_for_change">Reason for Change:</label></h3>
+                    <div class='required'>
+                        {{ form.reason_for_change }}
+                    </div>
+                </li>
+                <li class ="ctrlHolder" id='otherli'><h3><label for="id_other_textbox">Other:</label></h3>
+                    <div class='required'>
+                        <input type='text' name='other' id='id_other_textbox' maxlength=100/>
+                    </div>
+                </li>
+                <li class="btnHolder">
+                    <label for="submit">&nbsp;&nbsp;</label>
+                    <input type="Submit" name="submit" value="Submit" class="button"/>
+                </li>    
+            </ol>
+        </fieldset>
+    </form>
+</body>
+    <script type='text/javascript'>        
         if( document.getElementsByName('reason_for_change').value == 'OTH' ){
-            document.getElementById('othertable').style.display = 'table-row';
+            document.getElementById('otherli').style.display = 'table-row';
         }
         else {
-            document.getElementById('othertable').style.display = 'none';
+            document.getElementById('otherli').style.display = 'none';
         }
-    </script>
-</body>
-    <script type='text/javascript'>
         document.getElementById('carthage_id_no').style.display='none';
         document.getElementById('carthage_id_yes').style.display='none';
         document.getElementById('full_name_no').style.display='none';
@@ -338,12 +305,12 @@
         {
             element[i].onclick = function() {
             var value = this.value;
-            var othervar = document.getElementById('othertable'); 
+            var othervar = document.getElementById('otherli'); 
             if (value != "OTH"){
                 othervar.style.display = 'none';
                 }
             else{
-                othervar.style.display = 'table-row';
+                othervar.style.display = 'list-item';
                 }
             };
         }
