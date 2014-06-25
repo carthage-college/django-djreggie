@@ -65,8 +65,8 @@ class Depend(models.Model):
     )
     
     PLOY= (
-        ("WAS", mark_safe('The student was not employed and had no income earned from work in 2012.<br><br>')),
-        ("WSNT", 'The student was employed in 2012 and has listed below the names of all the student\'s employers, the amount earned from each employer in 2012, and whether an IRS W-2 form is attached. Attach copies of all 2012 IRS W-2 forms issued to the student by employers. List every employer even if they did not issue an IRS W-2 form.'),    
+        ("WASNT", mark_safe('The student was not employed and had no income earned from work in 2012.<br><br>')),
+        ("WAS", 'The student was employed in 2012 and has listed below the names of all the student\'s employers, the amount earned from each employer in 2012, and whether an IRS W-2 form is attached. Attach copies of all 2012 IRS W-2 forms issued to the student by employers. List every employer even if they did not issue an IRS W-2 form.'),    
     )
     
     useddata = models.CharField(choices=IRSDRT, max_length=500, default="HAS")
@@ -90,18 +90,8 @@ class Depend(models.Model):
     useddata2 = models.CharField(choices=IRSDRT2, max_length=500, default="HAS")
     attached2 = models.CharField(choices=TACHED2, max_length=500, default="IS")
     employed2 = models.CharField(choices=PLOY2, max_length=500, default="WAS")
-    snapbenefits = models.BooleanField(verbose_name="One of the persons listed in Section B of this\
-                                       worksheet received SNAP benefits in 2011 or 2012. If asked by\
-                                       the student\'s school, I will provide documentation of the receipt\
-                                       of SNAP benefits during 2011 and/or 2012.")
-    childsupport = models.BooleanField(verbose_name="One (or both) of the student's parents listed\
-                                       in Section B of this worksheet paid child support in 2012.\
-                                       \nThe parent has indicated below the name of the person who\
-                                       paid the child support, the name of the person to whom the\
-                                       child support was\npaid, the names of the children for whom\
-                                       child support was paid, and the total annual amount of child\
-                                       support that was\npaid in 2012 for each child. If asked by the\
-                                       school, I will provide documentation of the payment of child support.\n\n")
+    snapbenefits = models.BooleanField()
+    childsupport = models.BooleanField()
     confirm = models.BooleanField(verbose_name="I confirm on behalf of student\
                                   and parent that this form contains correct\
                                   information filled out to the best of our\
@@ -113,7 +103,7 @@ class FamInfo(models.Model):
     age = models.IntegerField(max_length=3, verbose_name="Age")
     relationship = models.CharField(max_length=100, verbose_name="Relationship")
     college = models.CharField(max_length=200, verbose_name="College")
-    halftimeenroll = models.BooleanField(verbose_name="Will be Enrolled at Least Half Time")
+    halftimeenroll = models.BooleanField(verbose_name="Enrolled half time")
     student = models.ForeignKey(Depend)
     
 class Studwork(models.Model):

@@ -2,13 +2,29 @@
 <!doctype html>
     
 <html lang="en">
+    {% block content_head %}
+        <h1 id="page-title">Dependent Student Information</h1>
+    {% endblock %}
 <head>
     <meta charset="utf-8" />
     <title>jQuery UI Accordion - Default functionality</title>
     {% block extra_style %}
     <style type='text/css'>
+        li.highlightradio input[type=radio]:checked + label {
+            display: inline;
+            padding: .5%;
+            background-color: darkgrey;
+        }
+        li.highlightradio label.radiostyle {
+            display: inline;
+            padding: .5%;
+            background-color: lightgrey;
+        }
         .errorlist, .error {
             color: red;
+        }
+        .highlight {
+            background: yellow;
         }
         td {
             text-align:center;
@@ -41,46 +57,296 @@
     {% block javascript %}    
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <script>
-/*        $(function() {
-            $( "#accordion" ).accordion({
-                autoHeight: false,
-                heightStyle: "content",
-                collapsible: true,
-                navigation: true,
-                active: false
-            });
-        });*/
-            function validate_dob(){
-            var id = document.getElementById('id_dob');
-            var val = id.value;
-            var newdate = new Date();
-            newdate.setFullYear(newdate.getFullYear()-10)
-            var value = val.split("-");
-            var inputdate = new Date(value[0],value[1]-1,value[2]);
-            if (inputdate.getTime() > newdate.getTime()){
-                return false;
-                }
-            else{
-                return true;
+    <script type='text/javascript'>
+        $(document).ready(function () {
+            // Code adapted from http://djangosnippets.org/snippets/1389/  
+            function updateElementIndex(el, prefix, ndx) {
+                var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+                var replacement = prefix + '-' + ndx + '-';
+                if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
+                replacement));
+                if (el.id) el.id = el.id.replace(id_regex, replacement);
+                if (el.name) el.name = el.name.replace(id_regex, replacement);
             }
-        }
+        
+            function deleteStud(btn, prefix) {
+                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+                if (formCount > 1) {
+                    // Delete the item/form
+                    $(btn).parents('.student').remove();
+                    var forms = $('.student'); // Get all the forms  
+                    // Update the total number of forms (1 less than before)
+                    $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                    var i = 0;
+                    // Go through the forms and set their indices, names and IDs
+                    for (formCount = forms.length; i < formCount; i++) {
+                        $(forms.get(i)).children().children().each(function () {
+                            if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                        });
+                    }
+                } // End if
+                else {
+                    alert("If you have no previous employment, please check the other box.");
+                }
+                return false;
+            }
+        
+            function addStud(btn, prefix) {
+                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+                if (formCount < 5) {
+                    // Clone a form (without event handlers) from the first form
+                    var row = $(".student:first").clone(false).get(0);
+                    // Insert it after the last form
+                    $(row).removeAttr('id').hide().insertAfter(".student:last").slideDown(300);
+        
+                    // Remove the bits we don't want in the new row/form
+                    // e.g. error messages
+                    $(".errorlist", row).remove();
+                    $(row).children().removeClass("error");
+        
+                    // Relabel or rename all the relevant bits
+                    $(row).children().children().each(function () {
+                        updateElementIndex(this, prefix, formCount);
+                        $(this).val("");
+                    });
+        
+                    // Add an event handler for the delete item/form link 
+                    $(row).find("#deletestud").click(function () {
+                        return deleteStud(this, prefix);
+                    });
+                    // Update the total form count
+                    $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+                } // End if
+                else {
+                    alert("You can only add a maximum of 5 previous employers.");
+                }
+                return false;
+            }
+            // Register the click event handlers
+            $("#addstud").click(function () {
+                return addStud(this, "stud");
+            });
+        
+            $("#deletestud").click(function () {
+                return deleteStud(this, "stud");
+            });
+            
+            function deletePar(btn, prefix) {
+                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+                if (formCount > 1) {
+                    // Delete the item/form
+                    $(btn).parents('.parent').remove();
+                    var forms = $('.parent'); // Get all the forms  
+                    // Update the total number of forms (1 less than before)
+                    $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                    var i = 0;
+                    // Go through the forms and set their indices, names and IDs
+                    for (formCount = forms.length; i < formCount; i++) {
+                        $(forms.get(i)).children().children().each(function () {
+                            if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                        });
+                    }
+                } // End if
+                else {
+                    alert("If you have no previous employment, please check the other box.");
+                }
+                return false;
+            }
+        
+            function addPar(btn, prefix) {
+                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+                if (formCount < 5) {
+                    // Clone a form (without event handlers) from the first form
+                    var row = $(".parent:first").clone(false).get(0);
+                    // Insert it after the last form
+                    $(row).removeAttr('id').hide().insertAfter(".parent:last").slideDown(300);
+        
+                    // Remove the bits we don't want in the new row/form
+                    // e.g. error messages
+                    $(".errorlist", row).remove();
+                    $(row).children().removeClass("error");
+        
+                    // Relabel or rename all the relevant bits
+                    $(row).children().children().each(function () {
+                        updateElementIndex(this, prefix, formCount);
+                        $(this).val("");
+                    });
+        
+                    // Add an event handler for the delete item/form link 
+                    $(row).find("#deletepar").click(function () {
+                        return deletePar(this, prefix);
+                    });
+                    // Update the total form count
+                    $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+                } // End if
+                else {
+                    alert("You can only add a maximum of 5 previous employers.");
+                }
+                return false;
+            }
+            // Register the click event handlers
+            $("#addpar").click(function () {
+                return addPar(this, "fam");
+            });
+        
+            $("#deletepar").click(function () {
+                return deletePar(this, "fam");
+            });
+            
+            function deleteCS(btn, prefix) {
+                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+                if (formCount > 1) {
+                    // Delete the item/form
+                    $(btn).parents('.child').remove();
+                    var forms = $('.child'); // Get all the forms  
+                    // Update the total number of forms (1 less than before)
+                    $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                    var i = 0;
+                    // Go through the forms and set their indices, names and IDs
+                    for (formCount = forms.length; i < formCount; i++) {
+                        $(forms.get(i)).children().children().each(function () {
+                            if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                        });
+                    }
+                } // End if
+                else {
+                    alert("If you have no child support to list, please uncheck the box above.");
+                }
+                return false;
+            }
+        
+            function addCS(btn, prefix) {
+                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+                if (formCount < 5) {
+                    // Clone a form (without event handlers) from the first form
+                    var row = $(".child:first").clone(false).get(0);
+                    // Insert it after the last form
+                    $(row).removeAttr('id').hide().insertAfter(".child:last").slideDown(300);
+        
+                    // Remove the bits we don't want in the new row/form
+                    // e.g. error messages
+                    $(".errorlist", row).remove();
+                    $(row).children().removeClass("error");
+        
+                    // Relabel or rename all the relevant bits
+                    $(row).children().children().each(function () {
+                        updateElementIndex(this, prefix, formCount);
+                        $(this).val("");
+                    });
+        
+                    // Add an event handler for the delete item/form link 
+                    $(row).find("#deletecs").click(function () {
+                        return deleteCS(this, prefix);
+                    });
+                    // Update the total form count
+                    $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+                } // End if
+                else {
+                    alert("Sorry, you can only add a maximum of five child support situations.");
+                }
+                return false;
+            }
+            // Register the click event handlers
+            $("#addcs").click(function () {
+                return addCS(this, "fam");
+            });
+        
+            $("#deletecs").click(function () {
+                return deleteCS(this, "fam");
+            });
+            
+            function deleteFam(btn, prefix) {
+                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+                if (formCount > 1) {
+                    // Delete the item/form
+                    $(btn).parents('.family').remove();
+                    var forms = $('.family'); // Get all the forms  
+                    // Update the total number of forms (1 less than before)
+                    $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                    var i = 0;
+                    // Go through the forms and set their indices, names and IDs
+                    for (formCount = forms.length; i < formCount; i++) {
+                        $(forms.get(i)).children().children().each(function () {
+                            if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                        });
+                    }
+                } // End if
+                else {
+                    alert("Unless you're an independent student, you must enter at least one family member!");
+                }
+                return false;
+            }
+        
+            function addFam(btn, prefix) {
+                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+                if (formCount < 5) {
+                    // Clone a form (without event handlers) from the first form
+                    var row = $(".family:first").clone(false).get(0);
+                    // Insert it after the last form
+                    $(row).removeAttr('id').hide().insertAfter(".family:last").slideDown(300);
+        
+                    // Remove the bits we don't want in the new row/form
+                    // e.g. error messages
+                    $(".errorlist", row).remove();
+                    $(row).children().removeClass("error");
+        
+                    // Relabel or rename all the relevant bits
+                    $(row).children().children().each(function () {
+                        updateElementIndex(this, prefix, formCount);
+                        $(this).val("");
+                    });
+        
+                    // Add an event handler for the delete item/form link 
+                    $(row).find("#deletefam").click(function () {
+                        return deleteFam(this, prefix);
+                    });
+                    // Update the total form count
+                    $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+                } // End if
+                else {
+                    alert("Sorry, you can only request a maximum of five family members.");
+                }
+                return false;
+            }
+            // Register the click event handlers
+            $("#addfam").click(function () {
+                return addFam(this, "fam");
+            });
+        
+            $("#deletefam").click(function () {
+                return deleteFam(this, "fam");
+            });
+                function validate_dob(){
+                var id = document.getElementById('id_dob');
+                var val = id.value;
+                var newdate = new Date();
+                newdate.setFullYear(newdate.getFullYear()-10)
+                var value = val.split("-");
+                var inputdate = new Date(value[0],value[1]-1,value[2]);
+                if (inputdate.getTime() > newdate.getTime()){
+                    return false;
+                    }
+                else{
+                    return true;
+                }
+            }
+        });    
         function validate_fname(){
             var id = document.getElementById('id_fname');
             var val = id.value;
-            var patt = new RegExp('^([a-zA-Z]+)$');
+            var patt = new RegExp('^([a-zA-Z\\-]+)$');
             return patt.test(val);        
         }
         function validate_mname(){
             var id = document.getElementById('id_mname');
             var val = id.value;
-            var patt = new RegExp('^([a-zA-Z]+)$');
+            var patt = new RegExp('^([a-zA-Z\\-]+)$');
             return patt.test(val);        
         }
         function validate_lname(){
             var id = document.getElementById('id_lname');
             var val = id.value;
-            var patt = new RegExp('^([a-zA-Z]+)$');
+            var patt = new RegExp('^([a-zA-Z\\-]+)$');
             return patt.test(val);        
         }
         function validate_ssn(){
@@ -98,13 +364,13 @@
         function validate_city(){
             var id = document.getElementById('id_city');
             var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$');
+            var patt = new RegExp('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
             return patt.test(val);        
         }
         function validate_state(){
             var id = document.getElementById('id_state');
             var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$');
+            var patt = new RegExp('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
             return patt.test(val);
         }
         function validate_zip(){
@@ -130,349 +396,386 @@
 </head>
 {% block content %}
 <body>
-    <div>
-    {% if submitted %}
-        <h2>Thank you for submitting the form!</h2>
-    {% endif %}
-    </div>
-        <h1>{{ year }}-{{ year2 }} Verification Worksheet Dependent Student</h1>
-        <div id="accordion">
-            <h3>What is this form?</h3>
-            <div>
-                <p>Your {{ year }}-{{ year2 }} Free Application for Federal Student Aid (FAFSA) was selected for review in a process called verification. The law says<br>
-                that before awarding Federal Student Aid, we may ask you to confirm the information you and your parents reported on your FAFSA. To<br>
-                verify that you provided correct information the financial aid administrator at your school will compare your FAFSA with the information<br> 
-                on this worksheet and with any other required documents. If there are differences, your FAFSA information may need to be corrected.<br>
-                You and at least one parent must complete and sign this worksheet, attach any required documents, and submit the form and other required<br>
-                documents to the financial aid administrator at your school. Your school may ask for additional information. If you have questions about<br>
-                verification, contact your financial aid administrator as soon as possible so that your financial aid will not be delayed.</p>
-            </div>
-            <h3>Dependent Student's Information{% if formdepend.fname.errors or formdepend.mname.errors or formdepend.lname.errors or formdepend.ssn.errors or formdepend.address.errors or formdepend.dob.errors or formdepend.city.errors or formdepend.state.errors or formdepend.zip.errors or formdepend.email.errors or formdepend.hphone.errors or formdepend.phonetype.errors or formdepend.cphone.errors or formdepend.phonetype2.errors %}<span class="error">  *</span> {% endif %}</h3>
-            <div>
-                <form action="" method="post" class = "form" enctype="multipart/form-data"> {% csrf_token %}   
-                    {{formsetfam.management_form}}
-                    {{formsetstud.management_form}}
-                    {{formsetpar.management_form}}
-                    {{formsetcs.management_form}}
-                    <div>
-                    {{formdepend.fname.errors}}
-                    {{formdepend.fname.label}}
-                    {{formdepend.fname}}
+    {{formsetfam.management_form}}
+    {{formsetstud.management_form}}
+    {{formsetpar.management_form}}
+    {{formsetcs.management_form}}
+    <form action="" method="post" class = "form" enctype="multipart/form-data"> {% csrf_token %}   
+    <fieldset class="blockLabels">
+        <legend>{{ year }}-{{ year2 }} Verification Worksheet Dependent Student</legend>
+        <ol>
+            <li>Your {{ year }}-{{ year2 }} Free Application for Federal Student Aid (FAFSA) was
+            selected for review in a process called verification. The law says
+            that before awarding Federal Student Aid, we may ask you to confirm the information
+            you and your parents reported on your FAFSA. To verify that you provided correct
+            information the financial aid administrator at your school will compare your FAFSA
+            with the information on this worksheet and with any other required documents.
+            If there are differences, your FAFSA information may need to be corrected. You and at
+            least one parent must complete and sign this worksheet, attach any required documents,
+            and submit the form and other required documents to the financial aid administrator
+            at your school. Your school may ask for additional information. If you have questions about
+            verification, contact your financial aid administrator as soon as possible so that your
+            financial aid will not be delayed.
+            </li>          
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <legend>Dependent Student's Information</legend>
+        <ol>
+            <li class="ctrlHolder"><h3><label for="id_fname">First Name</label></h3>
+                <div class='required'>
+                    <input type='text' name='fname' id='id_fname' maxlength=100/>
                     <img class='hidden' id='fname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='fname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                    <div>
-                    {{formdepend.mname.errors}}
-                    {{formdepend.mname.label}}
-                    {{formdepend.mname}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_mname">Middle Name</label></h3>
+                <div class='required'>
+                    <input type='text' name='mname' id='id_mname' maxlength=100/>
                     <img class='hidden' id='mname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='mname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                    <div>
-                    {{formdepend.lname.errors}}
-                    {{formdepend.lname.label}}
-                    {{formdepend.lname}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_lname">Last Name</label></h3>
+                <div class='required'>
+                    <input type='text' name='lname' id='id_lname' maxlength=100/>
                     <img class='hidden' id='lname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='lname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img><br>
-                    </div>
-                    <div>
-                    {{formdepend.ssn.errors}}
-                    {{formdepend.ssn.label}}
-                    {{formdepend.ssn}}
+                    <img class='hidden' id='lname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_ssn">Social Security Number</label></h3>
+                <div class='required'>
+                    <input type='text' name='ssn' id='id_ssn' maxlength=100/>
                     <img class='hidden' id='ssn_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='ssn_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                    <div>
-                    {{formdepend.address.errors}}
-                    {{formdepend.address.label}}
-                    {{formdepend.address}}
-                    <img class='hidden' id='address_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='address_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                    <div>
-                    <span class='fieldlabel'>{{ formdepend.dob.label }}</span>
-                    {{ formdepend.dob }}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_dob">Date of Birth</label></h3>
+                <div class='required'>
+                    <input type='date' name='date' id='id_dob'/>
                     <img class='hidden' id='dob_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='dob_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    {% for e in formdepend.dob.errors %}
-                    <span class ='error'>*{{ e }}</span>
-                    {% endfor %}<br>
-                    </div>
-                    <div>
-                    {{formdepend.city.errors}}
-                    {{formdepend.city.label}}
-                    {{formdepend.city}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_address">Street Address</label></h3>
+                <div class='required'>
+                    <input type='text' name='address' id='id_address' maxlength=150/>
+                    <img class='hidden' id='address_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='address_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_city">City</label></h3>
+                <div class='required'>
+                    <input type='text' name='city' id='id_city' maxlength=100/>
                     <img class='hidden' id='city_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='city_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                    <div>
-                    {{formdepend.state.errors}}
-                    {{formdepend.state.label}}
-                    {{formdepend.state}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_state">State</label></h3>
+                <div class='required'>
+                    <input type='text' name='state' id='id_state' maxlength=100/>
                     <img class='hidden' id='state_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='state_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                    <div>
-                    {{formdepend.zip.errors}}
-                    {{formdepend.zip.label}}
-                    {{formdepend.zip}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_zip">Zip Code</label></h3>
+                <div class='required'>
+                    <input type='text' name='zip' id='id_zip' maxlength=15/>
                     <img class='hidden' id='zip_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='zip_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img> <br>
-                    </div>
-                    <div>
-                    {{formdepend.email.errors}}
-                    {{formdepend.email.label}}
-                    {{formdepend.email}}
-                    </div>
-                    <div>
-                    {{formdepend.hphone.errors}}
-                    {{formdepend.hphone.label}}
-                    {{formdepend.hphone}}
+                    <img class='hidden' id='zip_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_email">Email</label></h3>
+                <div class='required'>
+                    <input type='text' name='email' id='id_email' maxlength=100/>
+                    <img class='hidden' id='email_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='email_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_hphone">Primary Phone</label></h3>
+                <div class='required'>
+                    <input type='text' name='hphone' id='id_hphone' maxlength=20/>
                     <img class='hidden' id='hphone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='hphone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                    <div>
-                    {{formdepend.phonetype.errors}}
-                    {{formdepend.phonetype.label}}
-                    {{formdepend.phonetype}}<br>
-                    </div>
-                    <div>
-                    {{formdepend.cphone.errors}}
-                    {{formdepend.cphone.label}}
-                    {{formdepend.cphone}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_phonetype">Primary Phone Type</label></h3>
+                <div class='required'>
+                    <input type='text' name='phonetype' id='id_phonetype' maxlength=20/>
+                    <img class='hidden' id='phonetype_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='phonetype_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_cphone">Alternate Phone</label></h3>
+                <div class='required'>
+                    <input type='text' name='cphone' id='id_cphone' maxlength=20/>
                     <img class='hidden' id='cphone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='cphone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                    <div>
-                    {{formdepend.phonetype2.errors}}
-                    {{formdepend.phonetype2.label}}
-                    {{formdepend.phonetype2}}
-                    </div>
-            </div>
-            <h3>Dependent Student's Family Information{% if formsetfam.errors %}<span class="error">  *</span> {% endif %}</h3>
-            <div>
-                <p>List below the people in your parent(s)' household. Include:<br>
-                <ul>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_phonetype2">Alternate Phone Type</label></h3>
+                <div class='required'>
+                    <input type='text' name='phonetype2' id='id_phonetype2' maxlength=20/>
+                    <img class='hidden' id='phonetype2_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='phonetype2_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>        
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <legend>Dependent Student's Family Information</legend>
+        <ol>
+            <li>List below the people in your parent(s)' household. Include:
+                <ul class="bullets">
                     <li>Yourself and your parent(s) (including a stepparent) even if you don't live with your parent(s).</li>
                     <li>Your parent(s)' other children if your parent(s) will provide more than half of their support from July 1, {{ year }}, through
-                    June 30, {{ year2 }}, or if the other children would be required to provide parental information if they were completing a FAFSA<br>
+                    June 30, {{ year2 }}, or if the other children would be required to provide parental information if they were completing a FAFSA
                     for {{ year }}-{{ year2 }}. Include children who meet either of these standards, even if they do not live with your parent(s).</li>
-                    <li> Other people if they now live with your parent(s) and your parent(s) provide more than half of their support and will <br>
+                    <li>Other people if they now live with your parent(s) and your parent(s) provide more than half of their support and will
                     continue to provide more than half of their support through June 30, {{ year2 }}.</li>
                 </ul>
-                Include the name of the college for any household member, excluding your parent(s), who will be enrolled, at least half time in<br> 
-                a degree, diploma, or certificate program at a postsecondary educational institution any time between July 1, {{ year }}, and June <br>
-                30, {{ year2 }}.</p>
-
-                <table border="1">
-                    <tr>
-                        <th>Full Name</th>
-                        <th>Age</th>
-                        <th>Relationship</th>
-                        <th>College</th>
-                        <th>Will be Enrolled at Least Half Time</th>
-                    </tr>
-                    {% for form in formsetfam %}
-                        <tr>
-                            {% for field in form %}
-                            <td>
-                                {{ field.errors }}
-                                {{ field }}
-                            </td>    
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>         
-                <input type='submit' name='add_fam' id='add_fam' value='Add'>
-            </div>
-            <h3>Dependent Student's Income Information to Be Verified{% if formdepend.file.errors or formsetstud.errors %}<span class="error">  *</span> {% endif %}</h3>
-            <div>
-                <p>
-                    1. TAX RETURN FILERS-<b>Important Note</b>: If the student filed, or will file, an amended {{ year0 }} IRS tax return, the student must 
-                    contact the financial aid administrator before completing this section.<br><br>
-                    <b>Instructions:</b> Complete this section if the student, filed or will file a {{ year0 }} income tax return with the IRS. The best way to 
-                    verify income is by using the IRS Data Retrieval Tool that is part of FAFSA on the Web. If the student has not already used the 
-                    tool, go to FAFSA.gov, log in to the student's FAFSA record, select "Make FAFSA Corrections," and navigate to the 
-                    Financial Information section of the form. From there, follow the instructions to determine if the student is eligible to use the 
-                    IRS Data Retrieval Tool to transfer {{ year0 }} IRS income tax information into the student's FAFSA. It takes up to two weeks for 
-                    IRS income information to be available for the IRS Data Retrieval Tool for electronic IRS tax return filers, and up to eight
-                    weeks for paper IRS tax return filers. If you need more information about when, or how to use the IRS Data Retrieval Tool see 
-                    your financial aid administrator.<br><br>
-                    <b>For the first set of radio buttons, please choose whether:</b>
-                </p>
-                {{formsincome.useddata.errors}}
-                {% for item in formsincome.useddata %}
-                        <div>
-                        <div>
-                        {{item}}
-                        </div>
-                        </div>
+                Include the name of the college for any household member, excluding your parent(s), who will be enrolled, at least half time in 
+                a degree, diploma, or certificate program at a postsecondary educational institution any time between July 1, {{ year }}, and June
+                30, {{ year2 }}.
+            </li>                
+            {{ formsetfam.management_form }}
+            {% for form in formsetfam.forms %}
+                <div class = family>
+                    <li class="ctrlHolder"><h3>{{form}}</h3></li>
+                    <p style=""><a class="delete" id="deletefam" href="#">Delete</a></p>
+                </div>
+            <p><a id="addfam" href="#">Add more family</a></p>
+            {% endfor %}
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <legend>Dependent Student's Income Information to Be Verified</legend>
+        <ol>
+            <li>1. TAX RETURN FILERS-<b>Important Note</b>: If the student filed, or will file, an amended {{ year0 }} IRS tax return, the student must 
+                contact the financial aid administrator before completing this section.<br><br>
+                <b>Instructions:</b> Complete this section if the student, filed or will file a {{ year0 }} income tax return with the IRS. The best way to 
+                verify income is by using the IRS Data Retrieval Tool that is part of FAFSA on the Web. If the student has not already used the 
+                tool, go to FAFSA.gov, log in to the student's FAFSA record, select "Make FAFSA Corrections," and navigate to the 
+                Financial Information section of the form. From there, follow the instructions to determine if the student is eligible to use the 
+                IRS Data Retrieval Tool to transfer {{ year0 }} IRS income tax information into the student's FAFSA. It takes up to two weeks for 
+                IRS income information to be available for the IRS Data Retrieval Tool for electronic IRS tax return filers, and up to eight
+                weeks for paper IRS tax return filers. If you need more information about when, or how to use the IRS Data Retrieval Tool see 
+                your financial aid administrator.<br><br>
+                <b>For the first set of radio buttons, please choose whether:</b>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_useddata_0"></label></h3>
+                <ul>
+                    <li class="highlightradio"><input id="id_useddata_0" name="useddata" class="radioHolder" type="radio" value="HAS" />
+                        <label for="id_useddata_0" class="radiostyle">The student has used the IRS Data Retrieval Tool in
+                        FAFSA on the Web to retrieve and transfer {{ year0 }} IRS income information into the student's FAFSA,
+                        either on the initial FAFSA or when making a correction to the FAFSA.
+                        (The student's school will use the IRS information that was transferred in the verification process).</label></li><br>
+                    <li class="highlightradio"><input id="id_useddata_1" name="useddata" type="radio" value="HASN" />
+                        <label for="id_useddata_1" class="radiostyle">
+                        The student has not yet used the IRS Data Retrieval Tool in FAFSA on the Web,
+                        but will use the tool to retrieve and transfer {{ year0 }} IRS income information into the student's FAFSA
+                        once the student has filed a 2012 IRS tax return. See instructions above for information on
+                        how to use the IRS Data Retrieval Tool.(The student's school cannot complete the verification process until
+                        the IRS information has been transferred into the FAFSA).</label></li><br>
+                    <li class="highlightradio"><input id="id_useddata_2" name="useddata" type="radio" value="WONT" />
+                        <label for="id_useddata_2" class="radiostyle">The student is unable or chooses not to use
+                        the IRS Data Retrieval Tool in FAFSA on the Web, and the student will submit to the school a
+                        {{ year0 }} IRS tax return transcript-not a photocopy of the income tax return.
+                        To obtain an IRS tax return transcript, go to www.IRS.gov and click on the "Order a Return or Account Transcript"
+                        link, or call 1-800-908-9946. Make sure to request the "IRS tax return transcript" and not the
+                        "IRS tax account transcript." You will need your Social Security Number, date of birth, and the address on file
+                        with the IRS (normally this will be the address used when the {{ year0 }} IRS tax return was filed).
+                        It takes up to two weeks for IRS income information to be available for electronic IRS tax return filers,
+                        and up to eight weeks for paper IRS tax return filers.</label>
+                    </li>
+               </ul>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_attached_0"></label></h3>
+                <ul>
+                    <li><label for="id_attached_0"><input id="id_attached_0" name="attached" type="radio" value="IS" />
+                    Check here if the student's IRS tax return transcript is attached to this worksheet.</label></li>
+                    <li><label for="id_attached_1"><input id="id_attached_1" name="attached" type="radio" value="ISNT" />
+                    Check here if the student's IRS tax return transcript will be submitted to the student's school later.
+                    Verification cannot be completed until the IRS tax return transcript has been submitted to the student's school
+                    </label></li>
+                </ul>
+            </li>
+                <li id='fileli' class="ctrlHolder"><h3><label for="id_file">Upload your IRS tax return transcript</label></h3>
+                <div class='required'><input type='file' name='file' id='id_file' maxlength=20/></div>
+                </li>
+            <li>
+                2. TAX RETURN NONFILERS-complete this section if the student will not file and is not required to file a {{ year0 }} income tax 
+                return with the IRS.<br><br><b>Check the box that applies:</b>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_employed_0"></label></h3>
+                <ul>
+                    <li><label for="id_employed_0"><input id="id_employed_0" name="employed" type="radio" value="WASNT" />
+                    The student was not employed and had no income earned from work in {{ year0 }}</label></li>
+                    <li><label for="id_employed_1"><input id="id_employed_1" name="employed" type="radio" value="WAS" />
+                    The student was employed in {{ year0 }} and has listed below the names of all the student's employers,
+                    the amount earned from each employer in {{ year0 }}, and whether an IRS W-2 form is attached.
+                    Attach copies of all {{ year0 }} IRS W-2 forms issued to the student by employers.
+                    List every employer even if they did not issue an IRS W-2 form.
+                    </label></li>
+                </ul>
+            </li>
+            <div id='studentli'>
+                {{ formsetstud.management_form }}
+                {% for form in formsetstud.forms %}
+                    <div class = student>
+                        <li class="ctrlHolder"><h3>{{form}}</h3></li>
+                        <p style=""><a class="delete" id="deletestud" href="#">Delete</a></p>
+                    </div>
+                <p><a id="addstud" href="#">Add more employers</a></p>
                 {% endfor %}
-                   
-                <div id="attachedcss">
-                    {{formsincome.attached.errors}}
-                    {{formsincome.attached}}
-                </div>
-                    <br>
-                <div id=filediv>{{formdepend.file.errors}}
-                {{formdepend.file.label}}
-                {{formdepend.file}}     </div>
-                <p>
-                    2. TAX RETURN NONFILERS-complete this section if the student will not file and is not required to file a {{ year0 }} income tax 
-                    return with the IRS.<br><br><b>Check the box that applies:</b>
-                </p>
-                {{formsincome.employed.errors}}
-                {{formsincome.employed}}
-                <table border="1">
-                    <tr>
-                        <th>Employer's Name</th>
-                        <th>{{ year0 }} Amount Earned</th>
-                        <th>IRS W-2 Attached?</th>
-                    </tr>
-                    {% for form in formsetstud %}
-                        <tr>
-                            {% for field in form %}
-                            <td>
-                                {{ field.errors }}
-                                {{ field }}
-                            </td>    
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>      
-                <input type='submit' name='add_stud' id='stud_id' value='Add'>
             </div>
-            <h3>Parent's Income Information to Be Verified{% if formdepend.file.errors or formsetpar.errors %}<span class="error">  *</span> {% endif %}</h3>
-            <div>
-                <p>
-                    NOTE:If two parents were reported in Section B of this worksheet, the 
-                    instructions and certifications below refer and apply to both parents.<br><br>
-                    1.TAX RETURN FILERS-Important Note: If the student's parent(s), filed or will file, an amended {{ year0 }} IRS tax return the 
-                    student's financial aid administrator must be contacted before completing this section.<br><br>
-                    <b>Instructions:</b> Complete this section if the student's parent(s) filed or will file a {{ year0 }} income tax return with the IRS. The best 
-                    way to verify income is by using the IRS Data Retrieval Tool that is part of FAFSA on the Web. If the student's parent(s) has
-                    not already used the tool, the parent and the student should go to FAFSA.gov, log in to the student's FAFSA record, select 
-                    "Make FAFSA Corrections," and navigate to the Financial Information section of the form. From there, follow the instructions 
-                    to determine if the parent(s) is eligible to use the IRS Data Retrieval Tool to transfer {{ year0 }} IRS income tax information into the 
-                    student's FAFSA. It takes up to two weeks for IRS income information to be available for the IRS Data Retrieval Tool for 
-                    electronic IRS tax return filers, and up to eight weeks for paper IRS tax return filers. If you need more information about
-                    whether or how to use the IRS Data Retrieval Tool see the student's financial aid administrator.
-                    Check the box that applies:
-                </p>
-                {{formparincome.useddata2.errors}}
-                {{formparincome.useddata2}}
-                <div id="attachedcss">
-                    {{formparincome.attached2.errors}}
-                    {{formparincome.attached2}}
-                </div>
-                <br>
-                <div id=filediv2>{{formdepend.file2.errors}}
-                {{formdepend.file2.label}}
-                {{formdepend.file2}}		</div>
-                <p>
-                    2. TAX RETURN NONFILERS-complete this section if the student will not file and is not required to file a {{ year0 }} income tax 
-                    return with the IRS.<br><br><b>Check the box that applies:</b>
-                </p>
-                {{formparincome.employed2.errors}}
-                {{formparincome.employed2}}
-                <table border="1">
-                    <tr>
-                        <th>Employer's Name</th>
-                        <th>{{ year0 }} Amount Earned</th>
-                        <th>IRS W-2 Attached?</th>
-                    </tr>
-                    {% for form in formsetpar %}
-                    <tr>
-                        {% for field in form %}
-                        <td>
-                            {{ field.errors }}
-                            {{ field }}
-                        </td>    
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </table>   
-                <input type='submit' name='add_par' id='add_par' value='Add'>
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <legend>Parent's Income Information to Be Verified</legend>
+        <ol>
+            <li>NOTE:If two parents were reported in Section B of this worksheet, the 
+                instructions and certifications below refer and apply to both parents.<br><br>
+                1. TAX RETURN FILERS-Important Note: If the student's parent(s), filed or will file, an amended {{ year0 }} IRS tax return the 
+                student's financial aid administrator must be contacted before completing this section.<br><br>
+                <b>Instructions:</b> Complete this section if the student's parent(s) filed or will file a {{ year0 }} income tax return with the IRS. The best 
+                way to verify income is by using the IRS Data Retrieval Tool that is part of FAFSA on the Web. If the student's parent(s) has
+                not already used the tool, the parent and the student should go to FAFSA.gov, log in to the student's FAFSA record, select 
+                "Make FAFSA Corrections," and navigate to the Financial Information section of the form. From there, follow the instructions 
+                to determine if the parent(s) is eligible to use the IRS Data Retrieval Tool to transfer {{ year0 }} IRS income tax information into the 
+                student's FAFSA. It takes up to two weeks for IRS income information to be available for the IRS Data Retrieval Tool for 
+                electronic IRS tax return filers, and up to eight weeks for paper IRS tax return filers. If you need more information about
+                whether or how to use the IRS Data Retrieval Tool see the student's financial aid administrator.
+                Check the box that applies:
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_useddata2_0"></label></h3>
+                <ul>
+                    <li class="highlightradio"><input id="id_useddata2_0" name="useddata2" type="radio" value="HAS" />
+                    <label for="id_useddata2_0" class="radiostyle">
+                    The student's parent has used the IRS Data Retrieval Tool in FAFSA on the Web to retrieve and transfer
+                    {{ year0 }} IRS income information into the student's FAFSA, either on the initial FAFSA or when making
+                    a correction to the FAFSA.(The student's school will use the IRS information that was transferred
+                    in the verification process).</label></li><br>
+                    <li class="highlightradio"><input id="id_useddata2_1" name="useddata2" type="radio" value="HASN" />
+                    <label for="id_useddata2_1" class="radiostyle">
+                    The student's parent has not yet used the IRS Data Retrieval Tool in FAFSA on the Web, but will use
+                    the tool to retrieve and transfer {{ year0 }} IRS income information into the student's FAFSA once the student
+                    has filed a {{ year0 }} IRS tax return. See instructions above for information on how to use the IRS Data Retrieval Tool.
+                    (The student's school cannot complete the verification process until the IRS information has been
+                    transferred into the FAFSA).</label></li><br>
+                    <li class="highlightradio"><input id="id_useddata2_2" name="useddata2" type="radio" value="WONT" />
+                    <label for="id_useddata2_2" class="radiostyle">
+                    The parent is unable or chooses not to use the IRS Data Retrieval Tool in FAFSA on the Web, and
+                    the parent will submit to the student's school a 2012 IRS tax return transcript-not a photocopy
+                    of the income tax return. To obtain an IRS tax return transcript, go to www.IRS.gov and click on the
+                    "Order a Return or Account Transcript" link, or call 1-800-908-9946. Make sure to request the
+                    "IRS tax return transcript" and not the "IRS tax account transcript." You will need your
+                    Social Security Number, date of birth, and the address on file with the IRS
+                    (normally this will be the address used when the 2012 IRS tax return was filed).
+                    It takes up to two weeks for IRS income information to be available for electronic
+                    IRS tax return filers, and up to eight weeks for paper IRS tax return filers.</label>
+                    </li>
+               </ul>            
+            <li class="ctrlHolder"><h3><label for="id_attached2_0"></label></h3>
+                <ul>
+                    <li><label for="id_attached2_0"><input id="id_attached2_0" name="attached2" type="radio" value="IS" />
+                    Check here if an IRS tax return transcript(s) is attached to this worksheet.</label></li>
+                    <li><label for="id_attached2_1"><input id="id_attached2_1" name="attached2" type="radio" value="ISNT" />
+                    Check here if IRS tax return transcript(s) will be submitted to the student's school later.
+                    Verification cannot be completed until the IRS tax return transcript(s) has been submitted to the school.
+                    </label></li>
+                </ul>
+            </li>
+                <li id='fileli2' class="ctrlHolder"><h3><label for="id_file2">Upload your IRS tax return transcript</label></h3>
+                <div class='required'><input type='file' name='file2' id='id_file2' maxlength=20/></div>
+                </li>
+            <li>
+                2. TAX RETURN NONFILERS-complete this section if the student will not file and is not required to file a {{ year0 }} income tax 
+                return with the IRS.<br><br><b>Check the box that applies:</b>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_employed2_0"></label></h3>
+                <ul>
+                    <li><label for="id_employed2_0"><input id="id_employed2_0" name="employed2" type="radio" value="WASNT" />
+                    Was not employed in {{ year0 }}</label></li>
+                    <li><label for="id_employed2_1"><input id="id_employed2_1" name="employed2" type="radio" value="WAS" />
+                    Was employed in {{ year0 }}
+                    </label></li>
+                </ul>
+            </li>
+            <div id='parentli'>
+                {{ formsetpar.management_form }}
+                {% for form in formsetpar.forms %}
+                    <div class = parent>
+                        <li class="ctrlHolder"><h3>{{form}}</h3></li>
+                        <p style=""><a class="delete" id="deletepar" href="#">Delete</a></p>
+                    </div>
+                <p><a id="addpar" href="#">Add more employers</a></p>
+                {% endfor %}
             </div>
-            <h3>Parent's Other Information to Be Verified{% if formsetcs.errors %}<span class="error">  *</span> {% endif %}</h3>
-            <div>
-                <p>
-                    1. Complete this section if someone in the student's parent's household (listed in Section B) received benefits from the<br>
-                    Supplemental Nutrition Assistance Program or SNAP (formerly known as food stamps) any time during the {{ year00 }} or {{ year0 }} calendar years.<br><br>
-                </p>
-                {{ formotherinformation.snapbenefits }}
-                {{ formotherinformation.snapbenefits.label }}
-                <p>
-                    2.Complete this section if one of the student's parents paid child support in {{ year0 }}<br>
-                </p>
-                {{ formotherinformation.childsupport }}
-                {{ formotherinformation.childsupport.label }}
-                <table border="1">
-                    <tr>
-                        <th>Name of Person Who Paid <br>Child Support</th>
-                        <th>Name of Person to Whom Child<br>Support was Paid</th>
-                        <th>Name of Child for Whom<br>Support Was Paid</th>
-                        <th>Amount of Child<br>Support Paid in<br>{{ year0 }}</th>
-                    </tr>
-                    {% for form in formsetcs %}
-                        <tr>
-                            {% for field in form %}
-                            <td>
-                                {{ field.errors }}
-                                {{ field }}
-                            </td>    
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>
-                <input type='submit' name='add_cs' id='add_cs' value='Add'>
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <legend>SNAP Benefits</legend>
+        <ol>
+            <li>Check the box below if someone in the student's parent's household (listed in Section B) received benefits from the<br>
+                Supplemental Nutrition Assistance Program or SNAP (formerly known as food stamps) any time during the {{ year00 }} or {{ year0 }} calendar years.<br><br>
+            </li>
+            <li class="ctrlHolder"><h3>
+                <div class='required'><input type='checkbox' name='snapbenefits' id='id_snapbenefits' />
+                <label for="id_snapbenefits">One of the persons listed in Section B of this worksheet received SNAP benefits
+                in {{ year00 }} or {{ year0 }} If asked by the student's school,
+                I will provide documentation of the receipt of SNAP benefits
+                during {{ year00 }} and/or {{ year0 }}.</label></div></h3>
+            </li>
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <legend>Child Support</legend>
+        <ol>
+            <li>
+                Check the box below if one of the student's parents paid child support in {{ year0 }}<br>
+            </li>
+            <li class="ctrlHolder"><h3>
+                <div class='required'><input type='checkbox' name='childsupport' id='id_childsupport' />
+                <label for="id_childsupport">
+                    One (or both) of the student's parents listed in Section B of this worksheet paid child support in {{ year0 }}
+                    The parent has indicated below the name of the person who paid the child support,
+                    the name of the person to whom the child support was paid, the names of the children for whom child support was paid,
+                    and the total annual amount of child support that was paid in {{ year0 }} for each child.
+                    If asked by the school, I will provide documentation of the payment of child support.</label></div></h3>
+            </li>
+            <div id='csli'>
+                {{ formsetcs.management_form }}
+                {% for form in formsetcs.forms %}
+                    <div class = child>
+                        <li class="ctrlHolder"><h3>{{form}}</h3></li>
+                        <p style=""><a class="delete" id="deletecs" href="#">Delete</a></p>
+                    </div>
+                <p><a id="addcs" href="#">Add more child support</a></p>
+                {% endfor %}
             </div>
-            <h3>Submit form</h3>
-            <div>
-                <p>
-                    <b>If you purposely give false or misleading
-                    information on this form, you may be fined, be<br>
-                    sentenced to jail, or both.</b>
-                </p>
-                I confirm on behalf of student and parent that this form contains correct information filled out to the best of our ability and knowledge.
-                <input type="submit" name="submit" value="Submit">
-            </div>
-        </div>
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <legend>Warning and Submit</legend>
+        <ol>
+            <li><b>If you purposely give false or misleading
+                information on this form, you may be fined, be
+                sentenced to jail, or both.</b><br>
+                I confirm on behalf of student and parent that this form
+                contains correct information filled out to the best of our ability and knowledge.
+            </li>            
+            <li class="btnHolder">
+                <label for="submit">&nbsp;&nbsp;</label>
+                <input type="Submit" name="submit" value="Submit" class="button"/>
+            </li>
+        </div>                
+        </ol>
+    </fieldset>
     </form>
-        {% if formdepend.fname.errors %}
-        <script>
-            //$("#accordion").accordion( "option", "active", 1 );
-            $("#accordion").accordion().active(3);
-        </script>
-        {% endif %}
 </body>
     <script type='text/javascript'>
-    var element = document.getElementsByName('useddata');
-    for (var i = 0; i < element.length; i++)
-       {
-            element[i].onclick = function() {
-            var value = this.value;
-            var useddata = document.getElementsByName('useddata');
-            if (value == "HAS") {
-                useddata[0].parentNode.parentNode.style.background = "gray";
-                useddata[1].parentNode.parentNode.style.background = "white";
-                useddata[2].parentNode.parentNode.style.background = "white";
-                }
-            else if (value == "HASN") {
-                useddata[0].parentNode.parentNode.style.background = "white";
-                useddata[1].parentNode.parentNode.style.background = "gray";
-                useddata[2].parentNode.parentNode.style.background = "white";
-                }
-            else if (value == "WONT") {
-                useddata[0].parentNode.parentNode.style.background = "white";
-                useddata[1].parentNode.parentNode.style.background = "white";
-                useddata[2].parentNode.parentNode.style.background = "gray";
-                }
-            };
-        }
         
-        document.getElementById('dob_no').style.display='none';
-        document.getElementById('dob_yes').style.display='none';
         document.getElementById('fname_no').style.display='none';
         document.getElementById('fname_yes').style.display='none';
         document.getElementById('mname_no').style.display='none';
@@ -481,6 +784,8 @@
         document.getElementById('lname_yes').style.display='none';
         document.getElementById('ssn_no').style.display='none';
         document.getElementById('ssn_yes').style.display='none';
+        document.getElementById('dob_no').style.display='none';
+        document.getElementById('dob_yes').style.display='none';
         document.getElementById('address_no').style.display='none';
         document.getElementById('address_yes').style.display='none';
         document.getElementById('city_no').style.display='none';
@@ -493,47 +798,8 @@
         document.getElementById('hphone_yes').style.display='none';
         document.getElementById('cphone_no').style.display='none';
         document.getElementById('cphone_yes').style.display='none';
-        element = document.getElementById('id_dob');
-        element.onblur = function() {                               
-            var n=document.getElementById('dob_no');
-            var y=document.getElementById('dob_yes');
-            if(!validate_dob()){ 
-                n.style.display='inline'; y.style.display='none'; 
-            }
-            else {
-                n.style.display='none'; y.style.display='inline';
-            }
-        };
         
-        var element = document.getElementsByName('attached');
-        for (var i = 0; i < element.length; i++)
-           {
-                element[i].onclick = function() {
-                var value = this.value;
-                var othervar = document.getElementById('filediv'); 
-                if (value != "IS"){
-                    othervar.style.display = 'none';
-                    }
-                else{
-                    othervar.style.display = 'inline';
-                    }
-                };
-            }
-        var element2 = document.getElementsByName('attached2');
-        for (var i = 0; i < element2.length; i++)
-           {
-                element2[i].onclick = function() {
-                var value2 = this.value;
-                var othervar2 = document.getElementById('filediv2'); 
-                if (value2 != "IS"){
-                    othervar2.style.display = 'none';
-                    }
-                else{
-                    othervar2.style.display = 'inline';
-                    }
-                };
-            }
-        element = document.getElementById('id_fname');
+        var element = document.getElementById('id_fname');
         element.onblur = function(){
             var n=document.getElementById('fname_no');
             var y=document.getElementById('fname_yes');
@@ -548,7 +814,7 @@
                 y.style.display='inline';
             }
         };
-        element = document.getElementById('id_mname');
+        var element = document.getElementById('id_mname');
         element.onblur = function(){
             var n=document.getElementById('mname_no');
             var y=document.getElementById('mname_yes');
@@ -563,7 +829,7 @@
                 y.style.display='inline';
             }
         };
-        element = document.getElementById('id_lname');
+        var element = document.getElementById('id_lname');
         element.onblur = function(){
             var n=document.getElementById('lname_no');
             var y=document.getElementById('lname_yes');
@@ -578,7 +844,7 @@
                 y.style.display='inline';
             }
         };
-        element = document.getElementById('id_ssn');
+        var element = document.getElementById('id_ssn');
         element.onblur = function(){
             var n=document.getElementById('ssn_no');
             var y=document.getElementById('ssn_yes');
@@ -593,7 +859,18 @@
                 y.style.display='inline';
             }
         };
-        element = document.getElementById('id_address');
+        var element = document.getElementById('id_dob');
+        element.onblur = function() {                               
+            var n=document.getElementById('dob_no');
+            var y=document.getElementById('dob_yes');
+            if(!validate_dob()){ 
+                n.style.display='inline'; y.style.display='none'; 
+            }
+            else {
+                n.style.display='none'; y.style.display='inline';
+            }
+        };
+        var element = document.getElementById('id_address');
         element.onblur = function(){
             var n=document.getElementById('address_no');
             var y=document.getElementById('address_yes');
@@ -608,7 +885,7 @@
                 y.style.display='inline';
             }
         };
-        element = document.getElementById('id_city');
+        var element = document.getElementById('id_city');
         element.onblur = function(){
             var n=document.getElementById('city_no');
             var y=document.getElementById('city_yes');
@@ -623,7 +900,7 @@
                 y.style.display='inline';
             }
         };
-        element = document.getElementById('id_state');
+        var element = document.getElementById('id_state');
         element.onblur = function(){
             var n=document.getElementById('state_no');
             var y=document.getElementById('state_yes');
@@ -638,7 +915,7 @@
                 y.style.display='inline';
             }
         };
-        element = document.getElementById('id_zip');
+        var element = document.getElementById('id_zip');
         element.onblur = function(){
             var n=document.getElementById('zip_no');
             var y=document.getElementById('zip_yes');
@@ -653,7 +930,7 @@
                 y.style.display='inline';
             }
         };
-        element = document.getElementById('id_hphone');
+        var element = document.getElementById('id_hphone');
         element.onblur = function(){
             var n=document.getElementById('hphone_no');
             var y=document.getElementById('hphone_yes');
@@ -668,7 +945,7 @@
                 y.style.display='inline';
             }
         };
-        element = document.getElementById('id_cphone');
+        var element = document.getElementById('id_cphone');
         element.onblur = function(){
             var n=document.getElementById('cphone_no');
             var y=document.getElementById('cphone_yes');
@@ -683,6 +960,107 @@
                 y.style.display='inline';
             }
         };
+        
+        var element = document.getElementsByName('attached');
+        for (var i = 0; i < element.length; i++)
+        {
+            element[i].onclick = function() {
+               var value = this.value;
+               var othervar = document.getElementById('fileli'); 
+               if (value == "IS"){
+                   othervar.style.display = 'list-item';
+                   }
+               else{
+                   othervar.style.display = 'none';
+                   }
+            };
+        }
+        if( document.getElementsByName('attached').value == 'IS' ){
+            document.getElementById('fileli').style.display = 'list-item';
+        }
+        else {
+            document.getElementById('fileli').style.display = 'none';
+        }
+        element = document.getElementsByName('attached2');
+        for (var i = 0; i < element.length; i++)
+        {
+            element[i].onclick = function() {
+               var value = this.value;
+               var othervar = document.getElementById('fileli2'); 
+               if (value == "IS"){
+                   othervar.style.display = 'list-item';
+                   }
+               else{
+                   othervar.style.display = 'none';
+                   }
+            };
+        }
+        if( document.getElementsByName('attached2').value == 'IS' ){
+            document.getElementById('fileli2').style.display = 'list-item';
+        }
+        else {
+            document.getElementById('fileli2').style.display = 'none';
+        }
+        element = document.getElementsByName('employed');
+        for (var i = 0; i < element.length; i++)
+        {
+            element[i].onclick = function() {
+               var value = this.value;
+               var othervar = document.getElementById('studentli'); 
+               if (value == "WAS"){
+                   othervar.style.display = 'list-item';
+                   }
+               else{
+                   othervar.style.display = 'none';
+                   }
+            };
+        }
+        if( document.getElementsByName('employed').value == 'WAS' ){
+            document.getElementById('studentli').style.display = 'list-item';
+        }
+        else {
+            document.getElementById('studentli').style.display = 'none';
+        }
+        element = document.getElementsByName('employed2');
+        for (var i = 0; i < element.length; i++)
+        {
+            element[i].onclick = function() {
+               var value = this.value;
+               var othervar = document.getElementById('parentli'); 
+               if (value == "WAS"){
+                   othervar.style.display = 'list-item';
+                   }
+               else{
+                   othervar.style.display = 'none';
+                   }
+            };
+        }
+        if( document.getElementsByName('employed2').value == 'WAS' ){
+            document.getElementById('parentli').style.display = 'list-item';
+        }
+        else {
+            document.getElementById('parentli').style.display = 'none';
+        }
+        
+        element = document.getElementsByName('childsupport');
+        for (var i = 0; i < element.length; i++)
+        {
+            element[i].onclick = function() {
+               var othervar = document.getElementById('csli');
+               if (othervar.style.display == 'none'){
+                   othervar.style.display = 'list-item';
+                   }
+               else{
+                   othervar.style.display = 'none';
+                   }
+            };
+        }
+        if( document.getElementById('csli').style.display == 'none'){
+            document.getElementById('csli').style.display = 'list-item';
+        }
+        else {
+            document.getElementById('csli').style.display = 'none';
+        }
     </script>
     {% endblock %}
 </html>

@@ -7,12 +7,12 @@ from django.forms.formsets import formset_factory
 import datetime
 
 def create(request):
-    
+
     FamInfoFormset = formset_factory(FamInfoForm, extra=1)
     StudWorkFormset = formset_factory(StudworkForm, extra=1)
     ParWorkFormset = formset_factory(ParworkForm, extra=1)
     CSFormset = formset_factory(CSForm, extra=1)
-    
+
     if request.POST:
         formsetfam = FamInfoFormset(request.POST, prefix='fam')
         formsetstud = StudWorkFormset(request.POST, prefix='stud')
@@ -23,123 +23,7 @@ def create(request):
         formparincome = ParincomeForm(request.POST)
         formotherinformation = OtherinfoForm(request.POST)
         formcertification = CertificationForm(request.POST)
-        if 'add_fam' in request.POST:  
-            list=[]
-            for i in range(0,int(formsetfam.data['fam-TOTAL_FORMS'])):
-                    try:
-                            list.append({
-                                            'name': formsetfam.data['fam-%s-name' % (i)],
-                                            'age': formsetfam.data['fam-%s-age' % (i)],
-                                            'relationship': formsetfam.data['fam-%s-relationship' % (i)],
-                                            'college': formsetfam.data['fam-%s-college' % (i)],
-                                            'halftimeenroll': formsetfam.data['fam-%s-college' % (i)]
-                            })
-                    except:
-                            list.append({
-                                            'name': formsetfam.data['fam-%s-name' % (i)],
-                                            'age': formsetfam.data['fam-%s-age' % (i)],
-                                            'relationship': formsetfam.data['fam-%s-relationship' % (i)],
-                                            'college': formsetfam.data['fam-%s-college' % (i)],
-                                            'halftimeenroll': u'off'
-                            })
-            formsetfam = FamInfoFormset(prefix='fam', initial= list)
-            for f in formsetfam:
-                    f._errors = {}
-            for f in formsetstud:
-                    f._errors = {}
-            for f in formsetpar:
-                    f._errors = {}
-            for f in formsetcs:
-                    f._errors = {}
-            formdepend._errors = {}
-            formsincome._errors = {}
-            formparincome._errors = {}
-            formotherinformation._errors = {}
-            formcertification._errors = {}
-            
-        elif 'add_stud' in request.POST:
-            list=[]
-            for i in range(0,int(formsetstud.data['stud-TOTAL_FORMS'])):
-                   try:
-                            list.append({
-                                            'empname': formsetstud.data['stud-%s-empname' % (i)],
-                                            'money': formsetstud.data['stud-%s-money' % (i)],
-                                            'w2attach': formsetstud.data['stud-%s-w2attach' % (i)]
-                            })
-                   except:
-                            list.append({
-                                            'empname': formsetstud.data['stud-%s-empname' % (i)],
-                                            'money': formsetstud.data['stud-%s-money' % (i)],
-                                            'w2attach': u'off'
-                            })
-            formsetstud = StudWorkFormset(prefix='stud', initial= list)
-            for f in formsetfam:
-                    f._errors = {}
-            for f in formsetstud:
-                    f._errors = {}
-            for f in formsetpar:
-                    f._errors = {}
-            for f in formsetcs:
-                    f._errors = {}
-            formdepend._errors = {}
-            formsincome._errors = {}
-            formparincome._errors = {}
-            formotherinformation._errors = {}
-            formcertification._errors = {}
-            
-        elif 'add_par' in request.POST:
-            list=[]
-            for i in range(0,int(formsetpar.data['par-TOTAL_FORMS'])):
-                   try:
-                            list.append({
-                               'empname': formsetpar.data['par-%s-empname' % (i)],
-                               'money': formsetpar.data['par-%s-money' % (i)],
-                               'w2attach': formsetpar.data['par-%s-w2attach' % (i)]
-                            })
-                   except:
-                            list.append({
-                               'empname': formsetpar.data['par-%s-empname' % (i)],
-                               'money': formsetpar.data['par-%s-money' % (i)],
-                               'w2attach': u'off'
-                            })
-            formsetpar = ParWorkFormset(prefix='par', initial= list)
-            for f in formsetfam:
-                    f._errors = {}
-            for f in formsetstud:
-                    f._errors = {}
-            for f in formsetpar:
-                    f._errors = {}
-            for f in formsetcs:
-                    f._errors = {}
-            formdepend._errors = {}
-            formsincome._errors = {}
-            formparincome._errors = {}
-            formotherinformation._errors = {}
-            formcertification._errors = {}
-            
-        elif 'add_cs' in request.POST:
-            list=[({
-                       'namepaid': formsetcs.data['cs-%s-namepaid' % (i)],
-                       'namepaidto': formsetcs.data['cs-%s-namepaidto' % (i)],
-                       'namechild': formsetcs.data['cs-%s-namechild' % (i)],
-                       'amntpaid': formsetcs.data['cs-%s-amntpaid' % (i)]
-                    }) for i in range(0,int(formsetcs.data['cs-TOTAL_FORMS']))]
-            formsetcs = CSFormset(prefix='cs', initial= list)
-            for f in formsetfam:
-                    f._errors = {}
-            for f in formsetstud:
-                    f._errors = {}
-            for f in formsetpar:
-                    f._errors = {}
-            for f in formsetcs:
-                    f._errors = {}
-            formdepend._errors = {}
-            formsincome._errors = {}
-            formparincome._errors = {}
-            formotherinformation._errors = {}
-            formcertification._errors = {}
-            
-        elif formdepend.is_valid() and formsetcs.is_valid() and formsetpar.is_valid() and formsetstud.is_valid() and formsetfam.is_valid() and formsincome.is_valid() and formparincome.is_valid() and formotherinformation.is_valid() and formcertification.is_valid():
+        if formdepend.is_valid() and formsetcs.is_valid() and formsetpar.is_valid() and formsetstud.is_valid() and formsetfam.is_valid() and formsincome.is_valid() and formparincome.is_valid() and formotherinformation.is_valid() and formcertification.is_valid():
             instance = formdepend.save(commit=False)
             instance.useddata = formsincome.cleaned_data['useddata']
             instance.attached = formsincome.cleaned_data['attached']

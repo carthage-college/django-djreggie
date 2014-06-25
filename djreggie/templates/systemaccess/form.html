@@ -228,9 +228,23 @@
         </fieldset>
     </form>
 </body>
-    <script type='text/javascript'>        
+    <script type='text/javascript'>
+        element = document.getElementsByName('reason_for_change');
+        for (var i = 0; i < element.length; i++)
+        {
+            element[i].onclick = function() {
+            var value = this.value;
+            var othervar = document.getElementById('otherli'); 
+            if (value != "OTH"){
+                othervar.style.display = 'none';
+                }
+            else{
+                othervar.style.display = 'list-item';
+                }
+            };
+        }
         if( document.getElementsByName('reason_for_change').value == 'OTH' ){
-            document.getElementById('otherli').style.display = 'table-row';
+            document.getElementById('otherli').style.display = 'list-item';
         }
         else {
             document.getElementById('otherli').style.display = 'none';
@@ -300,20 +314,7 @@
                 n.style.display='none'; y.style.display='inline';
             }
         };
-        element = document.getElementsByName('reason_for_change');
-        for (var i = 0; i < element.length; i++)
-        {
-            element[i].onclick = function() {
-            var value = this.value;
-            var othervar = document.getElementById('otherli'); 
-            if (value != "OTH"){
-                othervar.style.display = 'none';
-                }
-            else{
-                othervar.style.display = 'list-item';
-                }
-            };
-        }
+
     </script>
     {% endblock %}
 </html>
