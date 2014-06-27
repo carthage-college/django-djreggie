@@ -5,12 +5,12 @@
 #'admin' - necessary to change view settings when viewing an 'changemajor' object
 #'messages' - necessary to change success/fail messages when performing an action to an 'changemajor' object
 from django.contrib import admin, messages
-from djreggie.changemajor.models import Student, Major, Minor, ProxyStudent
+from djreggie.changemajor.models import ChangeModel
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
 #from Production.models import AaRec, AcadRec, IdRec, ProgramEnrollRec
 
-#This is an 'action' a user can perform to a 'changemajor' object
+'''This is an 'action' a user can perform to a 'changemajor' object
 def push_to_production(modeladmin, request, queryset):
     push_to_production.short_description = 'Push to production server' #What the user sees
     #SQL Alchemy
@@ -105,9 +105,9 @@ def push_to_production(modeladmin, request, queryset):
     #    obj.save()
 
 
-class MajorAdmin(admin.ModelAdmin):
+#class MajorAdmin(admin.ModelAdmin):
     actions = [push_to_production] #Includes the action we defined earlier in this page
 
 #Include all these models in the admin page
-admin.site.register(ProxyStudent, MajorAdmin)
+#admin.site.register(ProxyStudent, MajorAdmin)'''
 

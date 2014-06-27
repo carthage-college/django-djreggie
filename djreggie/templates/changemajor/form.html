@@ -1,15 +1,11 @@
 {% extends "djkorra/base.html" %}
 <!DOCTYPE html>
 <html lang='en'>
+    {% block content_head %}
+        <h1 id="page-title">Change Major/Minor</h1>
+    {% endblock %}
 <head>
-<style>
-#id_majors, #id_minors, #id_majors_list, #id_minors_list{
-        min-width: 100px;
-}
-</style>
     <meta charset="utf-8" />
-    <title>Change Major/Minor Form</title>
-    <link rel='stylesheet' type='text/css' href='{{static_url}}djbuis/css/base_css.css'/>
     <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
     <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
@@ -34,226 +30,218 @@
             var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
             return patt.test(val);        
         }
-        function add_major(){
-                var major_list = document.getElementById('id_majors_list');
-                var majors = document.getElementById('id_majors');
-                while(major_list.selectedIndex!=-1)
-                {
-                        var pos = 0;
-                        for(pos=0;pos<majors.length;pos++)
-                        {
-                                if(major_list[major_list.selectedIndex].label<majors[pos].label)
-                                {
-                                        break;
-                                }
-                        }
-                        majors.add(major_list[major_list.selectedIndex],majors[pos]);
-                        majors.selectedIndex=-1;
-                }
-        }
-        function remove_major(){
-                var major_list = document.getElementById('id_majors_list');
-                var majors = document.getElementById('id_majors');
-                while(majors.selectedIndex!=-1)
-                {
-                        var pos = 0;
-                        for(pos=0;pos<major_list.length;pos++)
-                        {
-                                if(majors[majors.selectedIndex].label<major_list[pos].label)
-                                {
-                                        break;
-                                }
-                        }
-                        major_list.add(majors[majors.selectedIndex],major_list[pos]);
-                        major_list.selectedIndex=-1;
-                }
-        }
-        function add_minor(){
-                var minor_list = document.getElementById('id_minors_list');
-                var minors = document.getElementById('id_minors');
-                while(minor_list.selectedIndex!=-1)
-                {
-                        var pos = 0;
-                        for(pos=0;pos<minors.length;pos++)
-                        {
-                                if(minor_list[minor_list.selectedIndex].label<minors[pos].label)
-                                {
-                                        break;
-                                }
-                        }
-                        minors.add(minor_list[minor_list.selectedIndex],minors[pos]);
-                        minors.selectedIndex=-1;
-                }
-        
-        }
-        function remove_minor(){
-                var minor_list = document.getElementById('id_minors_list');
-                var minors = document.getElementById('id_minors');
-                while(minors.selectedIndex!=-1)
-                {
-                        var pos = 0;
-                        for(pos=0;pos<minor_list.length;pos++)
-                        {
-                                if(minors[minors.selectedIndex].label<minor_list[pos].label)
-                                {
-                                        break;
-                                }
-                        }
-                        minor_list.add(minors[minors.selectedIndex],minor_list[pos]);
-                        minor_list.selectedIndex=-1;
-                }
-        }
-        function setSelected()
-        {
-                majors = document.getElementById('id_majors');
-                minors = document.getElementById('id_minors');
-                for(var i=0; i<majors.length;i++)
-                {
-                        majors[i].selected = true;
-                }
-                for(var i=0; i<minors.length; i++)
-                {
-                        minors[i].selected = true;
-                }
-                return true;
-        }
     </script>
     {% endblock %}
 </head>
 {% block content %}
 <body>
-<div style='width:100%'>
-{% if submitted %}
-        <h2>Your form has been submitted, thank you</h2>
-{% endif %}
-</div>
-    <div>
-        <div class='sidebar'>
-            <img src='http://imageshack.us/a/img651/7008/carthage1.png'></img>
-        </div>
-        <div class='mainbar'>
-            <div class='header'>
-                <span class='headertext'>Change Major / Minor Form</span>
-            </div><br>
-            {{ form.non_field_errors }}
-            <form action='' method='post' class = "form" onsubmit='setSelected()'>{% csrf_token %}
-                <span class='separator'>Student information</span><hr>
-                {% for field in form.hidden_fields %}
-                        {{ field }}
-                        {{ field.errors }}
-                {% endfor %}
-                <table>
-
-                    <tr>
-                        <td><span class='fieldlabel'>{{ form.year.label }}</span></td>
-                        <td>{{ class_year }}</td>
-                        <td>
-                            {% for e in form.year.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </table><br>
-                <span class='separator'>Major / Minor information</span><hr>
-               <div style='width:100%;'><span>{{ mm_form.majors.help_text }}</span></div>
-                <div style='width:100%;'><span>I would like my majors/minors listed as...</span></div>
-                <table>                
-                    <tr>                     
-                        <td><span class='fieldlabel'>{{ mm_form.majors_list.label }}</span></td>
-                        <td>{{ mm_form.majors_list }}</td>
-                        <td>
-                            {% for e in mm_form.majors_list.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                        <td><button type='button' onclick='add_major()'>Add</button>
-                        <br>
-                        <button type='button' onclick='remove_major()'>Remove</button></td>
-                        <td><span class='fieldlabel'>{{ mm_form.majors.label }}</span></td>
-                        <td style='width:100px;'>{{ mm_form.majors }}</td>
-                        <td>
-                            {% for e in mm_form.majors.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class='fieldlabel'>{{ mm_form.minors_list.label }}</span></td>
-                        <td>{{ mm_form.minors_list }}</td>
-                        <td>
-                            {% for e in mm_form.minors_list.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                        <td><button type='button' onclick='add_minor()'>Add</button>
-                        <br>
-                        <button type='button' onclick='remove_minor()'>Remove</button></td>
-                        <td><span class='fieldlabel'>{{ mm_form.minors.label }}</span></td>
-                        <td style='width:100px;'>{{ mm_form.minors }}</td>
-                        <td>
-                            {% for e in mm_form.minors.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </table><br>
-                <span class='separator'>Advisor information</span><hr>
-                <span>I would like to change my advisor to... (leave blank for no change)</span>
-                <table>
-                    <tr>
-                        <td><span class='fieldlabel'>{{ form.advisor.label }}</span></td>
-                        <td>{{ form.advisor }}</td>
-                        <td>
-                            <img class='hidden' id='advisor_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                            <img class='hidden' id='advisor_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                            {% for e in form.advisor.errors %}
-                                <span class='error'>*{{ e }}</span>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </table><br><br>
-                <input type="submit" name="submit" value="Submit form">
-            </form>
-        </div>
-    </div>
+    <form action='' method='post' class = "form">{% csrf_token %}
+        {{ mmformset.management_form }}
+        {% for field in form.hidden_fields %}
+            {{ field }}
+            {{ field.errors }}
+        {% endfor %}
+        <fieldset class="blockLabels">
+            <legend>Year in School</legend>
+            <ol>
+                <li class="ctrlHolder"><h3><label for="id_year_0"></label></h3>
+                    <ul>
+                        <li><label for="id_year_0"><input id="id_year_0" name="year" type="radio" value="FR" />
+                        Freshman</label></li>
+                        <li><label for="id_year_1"><input id="id_year_1" name="year" type="radio" value="SO" />
+                        Sophomore</label></li>
+                        <li><label for="id_year_0"><input id="id_year_0" name="year" type="radio" value="JR" />
+                        Junior</label></li>
+                        <li><label for="id_year_1"><input id="id_year_1" name="year" type="radio" value="SR" />
+                        Senior</label></li>
+                    </ul>
+                </li>
+            </ol>
+        </fieldset>
+        <fieldset class="blockLabels">
+            <legend>Majors and Minors</legend>
+            <ol>
+                <li>How many majors and/or minors will you be adding today?</li>
+                <li class="btnHolder" style: inline>
+                    <input type="button" id="1" value="1" class="button"/>  
+                    <input type="button" id="2" value="2" class="button"/>
+                    <input type="button" id="3" value="3" class="button"/>
+                </li>
+                <li class="ctrlHolder"><h3><label for="id_mjormn1">Would you like to add a major or a minor?</label></h3>
+                    <div class="required">
+                        <select id="mjormn1">
+                            <option value="MJ">Major</option>
+                            <option value="MN">Minor</option>
+                        </select>
+                    </div>
+                </li>
+                <li class="ctrlHolder" id="major1"><h3><label for="id_major1">Major:</label></h3>
+                    <div class="required">
+                        {{ form.major1 }}
+                    </div>
+                </li>
+                
+                <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minor:</label></h3>
+                    <div class="required">
+                        {{ form.minor1 }}
+                    </div>
+                </li>
+                
+                <li class="ctrlHolder" style='display: none' id="mjormn2li"><h3><label for="id_mjormn2">Would you like to add a major or a minor?</label></h3>
+                    <select id="mjormn2">
+                        <option value="MJ">Major</option>
+                        <option value="MN">Minor</option>
+                    </select>
+                </li>
+                
+                <li class="ctrlHolder" style='display: none' id="major2"><h3><label for="id_major2">Major:</label></h3>
+                    {{ form.major2 }}
+                </li>
+                
+                <li class="ctrlHolder" style='display: none' id="minor2"><h3><label for="id_minor2">Minor:</label></h3>
+                    {{ form.minor2 }}
+                </li>
+                
+                <li class="ctrlHolder" style='display: none' id="mjormn3li"><h3><label for="id_mjormn3">Would you like to add a major or a minor?</label></h3>
+                    <select id="mjormn3">
+                        <option value="MJ">Major</option>
+                        <option value="MN">Minor</option>
+                    </select>
+                </li>
+                <li class="ctrlHolder" style='display: none' id="major3"><h3><label for="id_major3">Major:</label></h3>
+                    {{ form.major3 }}
+                </li>
+                
+                <li class="ctrlHolder" style='display: none' id="minor3"><h3><label for="id_minor3">Minor:</label></h3>
+                    {{ form.minor3 }}
+                </li>
+            </ol>
+        </fieldset>
+        <fieldset class="blockLabels">
+            <legend>Advisor</legend>
+            <ol>
+                <li class="ctrlHolder"><h3><label for="id_advisor">
+                Who would you like to be your new advisor? (If no change, leave blank)</label></h3>
+                    <div class='required'>
+                        <input id="id_advisor" name="advisor" type="text"/>
+                    </div>
+                </li>
+                <li class="btnHolder">
+                    <label for="submit">&nbsp;&nbsp;</label>
+                    <input type="Submit" name="submit" value="Submit" class="button"/>
+                </li>
+            </ol>
+        </fieldset>
+    </form>
 </body>
-    <script type='text/javascript'>
- 
-        document.getElementById('advisor_no').style.display='none';
-        document.getElementById('advisor_yes').style.display='none';
-       /* var element = document.getElementById('id_student_id');
-        element.onblur = function(){
-            var n=document.getElementById('student_id_no');
-            var y=document.getElementById('student_id_yes');
-            if(!validate_student_id()){ 
-                n.style.display='inline'; y.style.display='none'; 
+<script type="text/javascript">
+    element = document.getElementById('mjormn1');
+    element.onchange = function() {
+            var value = this.value;
+            var majvar = document.getElementById('major1');
+            var minvar = document.getElementById('minor1');
+            if (value == "MJ"){
+                majvar.style.display = 'list-item';
+                minvar.style.display = 'none';
+                }
+            else{
+                majvar.style.display = 'none';
+                minvar.style.display = 'list-item';
+                }
+         };
+        if( document.getElementById('mjormn1').value == 'MJ' ){
+            document.getElementById('major1').style.display = 'list-item';
+            document.getElementById('minor1').style.display = 'none';
+        }
+        else {
+            document.getElementById('major1').style.display = 'none';
+            document.getElementById('minor1').style.display = 'list-item';
+        }
+    element = document.getElementById('mjormn2');
+    element.onchange = function() {
+            var value = this.value;
+            var majvar = document.getElementById('major2');
+            var minvar = document.getElementById('minor2');
+            if (value == "MJ"){
+                majvar.style.display = 'list-item';
+                minvar.style.display = 'none';
+                }
+            else{
+                majvar.style.display = 'none';
+                minvar.style.display = 'list-item';
+                }
+         };
+        if( document.getElementById('mjormn2').value == 'MJ' ){
+            document.getElementById('minor2').style.display = 'none';
+        }
+        else {
+            document.getElementById('major2').style.display = 'none';
+        }
+    element = document.getElementById('mjormn3');
+    element.onchange = function() {
+            var value = this.value;
+            var majvar = document.getElementById('major3');
+            var minvar = document.getElementById('minor3');
+            if (value == "MJ"){
+                majvar.style.display = 'list-item';
+                minvar.style.display = 'none';
+                }
+            else{
+                majvar.style.display = 'none';
+                minvar.style.display = 'list-item';
+                }
+         };
+        if( document.getElementById('mjormn3').value == 'MJ' ){
+            document.getElementById('minor3').style.display = 'none';
+        }
+        else {
+            document.getElementById('major3').style.display = 'none';
+        }
+        
+    $("#1").click(function () {
+        document.getElementById('mjormn2li').style.display = 'none';
+        document.getElementById('major2').style.display = 'none';
+        document.getElementById('minor2').style.display = 'none';
+        document.getElementById('mjormn2').value = 'MJ'
+        document.getElementById('id_major2').value = '';
+        document.getElementById('id_minor2').value = '';            
+        document.getElementById('mjormn3li').style.display = 'none';
+        document.getElementById('major3').style.display = 'none';
+        document.getElementById('minor3').style.display = 'none';
+        document.getElementById('mjormn3').value = 'MJ'
+        document.getElementById('id_major3').value = '';
+        document.getElementById('id_minor3').value = '';
+        });
+    $("#2").click(function () {
+        document.getElementById('mjormn2li').style.display = 'list-item';
+        if (document.getElementById('mjormn2').value == "MJ")
+            {
+                document.getElementById('major2').style.display = 'list-item';
             }
-            else {
-                n.style.display='none'; y.style.display='inline';
+        else
+            {
+                document.getElementById('minor2').style.display = 'list-item';
             }
-        };
-        var element = document.getElementById('id_name');
-        element.onblur = function(){
-            var n=document.getElementById('name_no');
-            var y=document.getElementById('name_yes');
-            if(!validate_name()){ 
-                n.style.display='inline'; y.style.display='none'; 
+        document.getElementById('mjormn3li').style.display = 'none';
+        document.getElementById('major3').style.display = 'none';
+        document.getElementById('minor3').style.display = 'none';        
+        document.getElementById('mjormn3').value = 'MJ'
+        document.getElementById('id_major3').value = '';
+        document.getElementById('id_minor3').value = '';            
+        });    
+    $("#3").click(function () {
+        document.getElementById('mjormn2li').style.display = 'list-item';
+        if (document.getElementById('mjormn2').value == "MJ")
+            {
+                document.getElementById('major2').style.display = 'list-item';
             }
-            else {
-                n.style.display='none'; y.style.display='inline';
+        else
+            {
+                document.getElementById('minor2').style.display = 'list-item';
             }
-        };*/
-        var element2 = document.getElementById('id_advisor');
-        element2.onblur = function(){
-            var n=document.getElementById('advisor_no');
-            var y=document.getElementById('advisor_yes');
-            if(!validate_advisor()){ 
-                n.style.display='inline'; y.style.display='none'; 
-            }
-            else {
-                n.style.display='none'; y.style.display='inline';
-            }
-        };
-    </script>
-    {% endblock %}
+        document.getElementById('mjormn3li').style.display = 'list-item';
+        document.getElementById('major3').style.display = 'list-item';
+        });
+</script>
+{% endblock %}
 </html>

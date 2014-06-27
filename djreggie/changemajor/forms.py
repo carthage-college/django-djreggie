@@ -2,40 +2,12 @@
 from django import forms
 from django.core import validators #Need this for validation
 
-from djreggie.changemajor.models import Student
-from djzbar.settings import INFORMIX_EARL_TEST
-from sqlalchemy import create_engine
-import re
+from djreggie.changemajor.models import ChangeModel
 
-
-#SQL Alchemy
-engine = create_engine(INFORMIX_EARL_TEST)
-connection = engine.connect()
-
-#Majors
-sql1 = "SELECT txt, major from major_table \
-       WHERE sysdate BETWEEN active_date AND NVL(inactive_date, sysdate) \
-       AND LENGTH(txt) > 0 \
-       AND web_display = 'Y' \
-       ORDER BY txt ASC"
-major = connection.execute(sql1)
-CHOICES1 = tuple((row['major'], row['txt']) for row in major)
-
-#Minors
-sql2 = "SELECT txt, minor from minor_table \
-       WHERE sysdate BETWEEN active_date AND NVL(inactive_date, sysdate) \
-       AND LENGTH(txt) > 0 \
-       AND web_display = 'Y' \
-       ORDER BY txt ASC"
-minor = connection.execute(sql2)
-CHOICES2 = tuple((row['minor'], row['txt']) for row in minor)
-connection.close()
-#This is the model that includes all the fields that are in the form
-class StudentForm(forms.ModelForm):
-
-    #Overrides this function so I can add custom validation
+class ChangeForm(forms.ModelForm):
+ #Overrides this function so I can add custom validation
     def __init__(self, *args, **kwargs):
-        super(StudentForm, self).__init__(*args,**kwargs)
+        super(ChangeForm, self).__init__(*args,**kwargs)
     
     def clean_student_id(self):
         data = self.cleaned_data['student_id']
@@ -57,22 +29,4 @@ class StudentForm(forms.ModelForm):
 
     #Global options    
     class Meta:
-        model = Student  
-        exclude = ['majors', 'minors']
-        widgets = {
-            'student_id': forms.TextInput(attrs={'maxlength':7}),
-        }
-        
-
-
-class MajorMinorForm(forms.Form):
-    
-    def __init__(self, *args, **kwargs):
-        super(MajorMinorForm, self).__init__(*args, **kwargs)
-        
-    majors_list = forms.CharField(widget=forms.SelectMultiple(choices=CHOICES1, attrs={'size': 5}), required=False)
-    minors_list = forms.CharField(widget=forms.SelectMultiple(choices=CHOICES2, attrs={'size': 5}), required=False)
-    majors = forms.CharField(widget=forms.SelectMultiple(attrs={'size':5}))
-    minors = forms.CharField(widget=forms.SelectMultiple(attrs={'size':5}), required=False)
-    
-#test comment
+        model = ChangeModel
