@@ -5,15 +5,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from datetime import date
 
 #Including the form class
-from djreggie.undergradcandidacy.forms import UndergradFormForm
+from djreggie.undergradcandidacy.forms import UndergradForm
 
 # Create your views here.
 def index(request):
     year = date.today().year
     if date.today().month <= 5:
-            year = year - 1
+        year = year - 1
     if request.POST: #If we do a POST
-        form = UndergradFormForm(request.POST) #Scrape the data from the form and save it in a variable
+        form = UndergradForm(request.POST) #Scrape the data from the form and save it in a variable
         if form.is_valid(): #If the form is valid
             obj = form.save(commit=False) #'commit=False' - Don't save the data to the database yet
             
@@ -22,8 +22,7 @@ def index(request):
                 obj.carthage_email = True
             obj.save()
             
-            form.save_m2m() #Saves many-to-many form data
-            form = UndergradFormForm()
+            form = UndergradForm()
             submitted = True
             return render(request, 'undergradcandidacy/form.html', {
                 'form': form,
@@ -31,9 +30,8 @@ def index(request):
                 'year_low': year,
                 'year_up': year+1,
             })
-                    
     else:
-        form = UndergradFormForm()
+        form = UndergradForm()
         
     return render(request, 'undergradcandidacy/form.html', {
         'form': form,
@@ -42,3 +40,6 @@ def index(request):
     })
 
         
+
+def submitted(request):
+    return render(request, 'undergradcandidacy/form.html')

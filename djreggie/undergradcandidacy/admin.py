@@ -5,7 +5,7 @@
 #'admin' - necessary to change view settings when viewing an 'undergradcandidacy' object
 #'messages' - necessary to change success/fail messages when performing an action to an 'undergradcandidacy' object
 from django.contrib import admin, messages
-from djreggie.undergradcandidacy.models import Major, Minor, UndergradForm
+from djreggie.undergradcandidacy.models import UndergradModel
 #from undergradCandForm.production_models import AaRec, AcadRec, IdRec, ProgramEnrollRec, GradwalkRec
 
 
@@ -123,6 +123,4 @@ class FormAdmin(admin.ModelAdmin):
     actions = [push_to_production] #Includes the action we defined earlier in this page
 
 
-admin.site.register(Major) #Add this model to the admin page
-admin.site.register(Minor) #Add this model to the admin page
-admin.site.register(UndergradForm, FormAdmin) #Always be sure to add the model before adding the admin class                                 
+admin.site.register(UndergradModel, FormAdmin) #Always be sure to add the model before adding the admin class                                 

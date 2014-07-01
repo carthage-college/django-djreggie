@@ -8,28 +8,8 @@ from sqlalchemy import create_engine
 engine = create_engine(INFORMIX_EARL_TEST)
 connection = engine.connect()
 
-
-sql1 = "select * from st_table"
-state = connection.execute(sql1)  
-CHOICES1 = tuple((row['st'], row['txt']) for row in state)
-
-class Major(models.Model):
-
-    txt = models.CharField(db_column='txt', max_length=128)
-
-    #How the class is displayed in the admin page
-    def __unicode__(self):
-        return self.txt
-
-class Minor(models.Model):
-    txt = models.CharField(db_column='txt', max_length=128)
-
-    #How the class is displayed in the admin page
-    def __unicode__(self):
-        return self.txt
-
 #The main fields in the form are in this class listed below
-class UndergradForm(models.Model):
+class UndergradModel(models.Model):
     year = date.today().year
     if date.today().month <= 5:
             year = year - 1
@@ -41,8 +21,58 @@ class UndergradForm(models.Model):
                              verbose_name='Middle Name') #'null=True' means this data member can be represented as null in the database
     lname = models.CharField(max_length=200, verbose_name='Last Name')
     student_id = models.PositiveIntegerField() #Only positive numbers are valid
-    majors = models.ManyToManyField(Major)
-    minors = models.ManyToManyField(Minor, null=True, blank=True) #'blank=True' means the field is not required
+    
+    #SQL Alchemy
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    
+    #Majors
+    sql1 = "SELECT txt, major from major_table \
+           WHERE sysdate BETWEEN active_date AND NVL(inactive_date, sysdate) \
+           AND LENGTH(txt) > 0 \
+           AND web_display = 'Y' \
+           ORDER BY txt ASC"
+    major = connection.execute(sql1)
+    CHOICES1 = tuple((row['major'], row['txt']) for row in major)
+    
+    #Minors
+    sql2 = "SELECT txt, minor from minor_table \
+           WHERE sysdate BETWEEN active_date AND NVL(inactive_date, sysdate) \
+           AND LENGTH(txt) > 0 \
+           AND web_display = 'Y' \
+           ORDER BY txt ASC"
+    minor = connection.execute(sql2)
+    CHOICES2 = tuple((row['minor'], row['txt']) for row in minor)
+    
+    MJORMN = (
+        ('MJ', 'Major'),
+        ('MN', 'Minor'),
+    )
+
+    mjormn1 = models.CharField(max_length=2,
+                              blank=False,
+                              default = 'MJ',
+                              choices=MJORMN,
+                              verbose_name="Would you like to add a major or a minor?")
+    major1 = models.CharField(max_length=200, choices=CHOICES1)
+    minor1 = models.CharField(max_length=200, choices=CHOICES2)
+    
+    mjormn2 = models.CharField(max_length=2,
+                              blank=False,
+                              default = 'MJ',
+                              choices=MJORMN,
+                              verbose_name="Would you like to add a major or a minor?")
+    major2 = models.CharField(max_length=200, choices=CHOICES1)
+    minor2 = models.CharField(max_length=200, choices=CHOICES2)
+    
+    mjormn3 = models.CharField(max_length=2,
+                              blank=False,
+                              default = 'MJ',
+                              choices=MJORMN,
+                              verbose_name="Would you like to add a major or a minor?")
+    major3 = models.CharField(max_length=200, choices=CHOICES1)
+    minor3 = models.CharField(max_length=200, choices=CHOICES2)
+    
     participate_in_graduation = models.BooleanField() #Renders as a checkbox
 
     FINISH_REQUIREMENTS_LIST = (
@@ -54,9 +84,9 @@ class UndergradForm(models.Model):
     finish_requirements_by = models.CharField(max_length=200, choices=FINISH_REQUIREMENTS_LIST) #Renders as a select box
 
     WHEN_TEACH_LIST = (
-        ('fall1', 'Fall Term %d' % (year)),
-        ('spring', 'Spring Term %d' % (year+1)),
-        ('fall2', 'Fall Term %d' % (year+1)),
+        ('F1', 'Fall Term %d' % (year)),
+        ('SP', 'Spring Term %d' % (year+1)),
+        ('F2', 'Fall Term %d' % (year+1)),
     )
     when_teach = models.CharField(max_length=200,
                                   null=True,
@@ -72,7 +102,13 @@ class UndergradForm(models.Model):
     email = models.EmailField(verbose_name='Email')
     address = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
-    state = models.CharField(max_length=2, choices=CHOICES1)
+    
+    sql3 = "SELECT * FROM st_table WHERE NVL(low_zone,1) > 1 AND NVL(high_zone,1) > 0 ORDER BY txt ASC"
+    state = connection.execute(sql3)  
+    CHOICESST = tuple((row['st'], row['txt']) for row in state)    
+    connection.close()   
+    
+    state = models.CharField(max_length=2, choices=CHOICESST)
     zipcode = models.PositiveIntegerField(max_length=5, verbose_name='Zip')
     date = models.DateField(auto_now_add=True) #'auto_now_add' sets the date to the current date and makes this field invisible in the form
 
