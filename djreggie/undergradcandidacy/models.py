@@ -14,12 +14,13 @@ class UndergradModel(models.Model):
     if date.today().month <= 5:
             year = year - 1
     #All the fields in the form are below
-    fname = models.CharField(max_length=200, verbose_name='First Name') #'max_length' is required in (most) all fields
+    fname = models.CharField(max_length=200) #'max_length' is required in (most) all fields
     mname = models.CharField(max_length=200,
                              null=True,
-                             blank=True,
-                             verbose_name='Middle Name') #'null=True' means this data member can be represented as null in the database
-    lname = models.CharField(max_length=200, verbose_name='Last Name')
+                             blank=True) #'null=True' means this data member can be represented as null in the database
+    lname = models.CharField(max_length=200)
+    fnamepro = models.CharField(max_length=200)
+    lnamepro = models.CharField(max_length=200)
     student_id = models.PositiveIntegerField() #Only positive numbers are valid
     
     #SQL Alchemy
@@ -44,32 +45,10 @@ class UndergradModel(models.Model):
     minor = connection.execute(sql2)
     CHOICES2 = tuple((row['minor'], row['txt']) for row in minor)
     
-    MJORMN = (
-        ('MJ', 'Major'),
-        ('MN', 'Minor'),
-    )
-
-    mjormn1 = models.CharField(max_length=2,
-                              blank=False,
-                              default = 'MJ',
-                              choices=MJORMN,
-                              verbose_name="Would you like to add a major or a minor?")
     major1 = models.CharField(max_length=200, choices=CHOICES1)
     minor1 = models.CharField(max_length=200, choices=CHOICES2)
-    
-    mjormn2 = models.CharField(max_length=2,
-                              blank=False,
-                              default = 'MJ',
-                              choices=MJORMN,
-                              verbose_name="Would you like to add a major or a minor?")
     major2 = models.CharField(max_length=200, choices=CHOICES1)
     minor2 = models.CharField(max_length=200, choices=CHOICES2)
-    
-    mjormn3 = models.CharField(max_length=2,
-                              blank=False,
-                              default = 'MJ',
-                              choices=MJORMN,
-                              verbose_name="Would you like to add a major or a minor?")
     major3 = models.CharField(max_length=200, choices=CHOICES1)
     minor3 = models.CharField(max_length=200, choices=CHOICES2)
     
@@ -93,13 +72,12 @@ class UndergradModel(models.Model):
                                   blank=True,
                                   choices=WHEN_TEACH_LIST)
 
-    best_phone = models.CharField(max_length=16, verbose_name='Best phone')
+    best_phone = models.CharField(max_length=16)
     cell = models.CharField(max_length=16,
                             null=True,
-                            blank=True,
-                            verbose_name='Cell')
-    carthage_email = models.BooleanField(verbose_name='Check if carthage email')
-    email = models.EmailField(verbose_name='Email')
+                            blank=True)
+    carthage_email = models.BooleanField()
+    email = models.EmailField()
     address = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
     

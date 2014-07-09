@@ -1,86 +1,73 @@
 {% extends "djkorra/base.html" %}
-<!doctype html>
-<html lang='en'>
-    {% block content_head %}
-        <h1 id="page-title">FERPA Authorization</h1>
-    {% endblock %}
-<head>
-    <meta charset='utf-8' />
-    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
-    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
-    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
-</head>
+{% block title %}
+    FERPA Consent
+{% endblock %}
+{% block content_head %}
+    <h1 id="page-title">FERPA Authorization</h1>
+{% endblock %}
 {% block content %}
-<body>
-    <form action='' method='post' class = "form">{% csrf_token %}
-        {{ form.non_field_errors }}
-        {% for field in form.hidden_fields %}
-            {{ field }}
-            {{ field.errors }}
-        {% endfor %}
-        <fieldset class="blockLabels">
-            <legend>General Information</legend>
-            <ol>
-                <li class="ctrlHolder">The Family Educational Rights and Privacy Act ("FERPA" - 20 U.S.C.  1232g; 34 CFR Part 99) is a
-                    Federal law that protects the privacy of student education records. The following form is intended to
-                    authorize the disclosure of directory information that is limited and generally found not to be harmful or invasive.
-                    Carthage College considers the following types of information as directory information:
-                    <li>                    
-                        <ul class="bullets">
-                                <li>Student's name</li>
-                                <li>Mailing and email address</li>
-                                <li>Telephone Listing</li>
-                                <li>Date and place of birth</li>
-                                <li>Photographs</li>
-                                <li>Dates of enrollment</li>
-                                <li>Major field of study</li>
-                                <li>Enrollment status (e.g., full-time or part-time)</li>
-                                <li>Classification (e.g., Freshman, Sophomore, Junior, Senior)</li>
-                                <li>Degrees earned and dates of graduation including anticipated graduation dates</li>
-                                <li>Awards and honors received</li>
-                                <li>Participation in officially recognized activities and sports</li>
-                                <li>Weight and height of members of athletic teams</li>
-                                <li>The most recent previous educational agency or institution attended</li>
-                        </ul>
-                    </li>
+<form action='' method='post' class = "form">{% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form.hidden_fields %}
+        {{ field }}
+        {{ field.errors }}
+    {% endfor %}
+    <fieldset class="blockLabels">
+        <legend>General Information</legend>
+        <ol>
+            <li class="ctrlHolder">The Family Educational Rights and Privacy Act ("FERPA" - 20 U.S.C.  1232g; 34 CFR Part 99) is a
+                Federal law that protects the privacy of student education records. The following form is intended to
+                authorize the disclosure of directory information that is limited and generally found not to be harmful or invasive.
+                Carthage College considers the following types of information as directory information:
+                <li>                    
+                    <ul class="bullets">
+                            <li>Student's name</li>
+                            <li>Mailing and email address</li>
+                            <li>Telephone Listing</li>
+                            <li>Date and place of birth</li>
+                            <li>Photographs</li>
+                            <li>Dates of enrollment</li>
+                            <li>Major field of study</li>
+                            <li>Enrollment status (e.g., full-time or part-time)</li>
+                            <li>Classification (e.g., Freshman, Sophomore, Junior, Senior)</li>
+                            <li>Degrees earned and dates of graduation including anticipated graduation dates</li>
+                            <li>Awards and honors received</li>
+                            <li>Participation in officially recognized activities and sports</li>
+                            <li>Weight and height of members of athletic teams</li>
+                            <li>The most recent previous educational agency or institution attended</li>
+                    </ul>
                 </li>
-                <li class="ctrlHolder">At its discretion, the College may provide directory
-                information to the public in accordance with the provisions of FERPA.
-                </li>
-            </ol>
-        </fieldset>
-        <fieldset class="blockLabels">
-            <legend>Choose and Submit</legend>
-            <ol>
-                <li class="ctrlHolder"><h3><label for="id_consent">Consent</label></h3>
-                    <div class='required'>
-                        {{ form.consent }}
-                    </div>
-                </li>
-                <li id='hidden' style='display:none;'>
-                    *I understand the implications of this decision to withold such directory information. Any requests for such information will be refused.
-                </li>
-                <li class="btnHolder">
-                    <label for="submit">&nbsp;&nbsp;</label>
-                    <input type="Submit" name="submit" value="Submit" class="button"/>
-                </li>
-            </ol>
-        </fieldset>
-    </form>
-</body>
+            </li>
+            <li class="ctrlHolder">At its discretion, the College may provide directory
+            information to the public in accordance with the provisions of FERPA.
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_consent"></label></h3>
+                    {{ form.consent }}
+            </li>
+            <li id='hidden' style='display:none;'>
+                *I understand the implications of this decision to withold such directory information. Any requests for such information will be refused.
+            </li>
+            <li class="btnHolder">
+                <label for="submit">&nbsp;&nbsp;</label>
+                <input type="Submit" name="submit" value="Submit" class="button"/>
+            </li>
+        </ol>
+    </fieldset>
+</form>
 <script>
-    element = document.getElementById('id_consent');
-    element.onchange = function(){
-        var hidden = document.getElementById('hidden');
-        var val = element.value;
-        if(val == 'NOCONSENT'){
-            hidden.style.display='inline';
-        }
-        else {
-            hidden.style.display='none';
-        }
-    };
+    var element = document.getElementsByName('consent');
+       for (var i = 0; i < element.length; i++)
+       {
+           element[i].onclick = function() {
+              var value = this.value;
+              var othervar = document.getElementById('hidden');
+              if (value == "NOCONSENT"){
+                  othervar.style.display = 'list-item';
+                  }
+              else{
+                  othervar.style.display = 'none';
+                  }
+           };
+       }
 </script>
 {% endblock %}
-</html>

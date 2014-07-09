@@ -9,9 +9,7 @@ class EmailModel(models.Model):
     #date = models.DateField(max_length=16,blank=False) #Keeping this commented out unless we need this field in the database
     requested_by = models.CharField(max_length=64, blank=False) #'blank=False' means the field is required
     
-    name_of_account_requested = models.CharField(max_length=64, blank=False,
-    verbose_name="Email address you are requesting"
-    )
+    name_of_account_requested = models.CharField(max_length=64, blank=False)
     purpose_of_account = models.EmailField(max_length=300, blank=False)
     names_of_all_users = models.CharField(max_length=300, blank=False)
     needed_until = models.DateField(max_length=16, blank=False)

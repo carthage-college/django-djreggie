@@ -1,164 +1,148 @@
 {% extends "djkorra/base.html" %}
-<!doctype html>
-<html lang='en'>
-    {% block content_head %}
-        <h1 id="page-title">Create an Email</h1>
-    {% endblock %}
-<head>
-    <meta charset='utf-8' />
-    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
-    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
-    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
-    {% block javascript %}
-    <script type='text/javascript'>
-        function validate_unique_id(){
-            var id = document.getElementById('id_unique_id');
-            var val = id.value;
-            var patt = new RegExp('^(\\d{5,7})$');
-            return patt.test(val);
+{% block title %}
+    Create Email
+{% endblock %}
+{% block content_head %}
+    <h1 id="page-title">Create an Email</h1>
+{% endblock %}
+{% block javascript %}
+<script type='text/javascript'>
+    function validate_unique_id(){
+        var patt = new RegExp('^(\\d{5,7})$');
+        return patt.test($("#id_unique_id").val());
+    }
+    function validate_requested_by(){
+        var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
+        return patt.test($("#id_requested_by").val());       
+    }
+    function validate_name_of_account_requested(){
+        var patt = new RegExp('^[A-Za-z0-9\\.\\_\\%\\+\\-]+@[A-Za-z0-9\\.\\-]+\\.[a-zA-Z]{2,4}$');
+        return patt.test($("#id_name_of_account_requested").val());       
+    }
+    function validate_purpose_of_account(){
+        var patt = new RegExp('.+');
+        return patt.test($("#id_purpose_of_account").val());       
+    }
+    function validate_names_of_all_users(){
+        var patt = new RegExp('.+');
+        return patt.test($("#id_names_of_all_users").val());       
+    }
+    function validate_needed_until(){
+        if ($('#id_needed_until').val() == "")
+        {
+            return false;
         }
-        function validate_requested_by(){
-             var id = document.getElementById('id_requested_by');
-            var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
-            return patt.test(val);       
-        }
-        function validate_name_of_account_requested(){
-             var id = document.getElementById('id_name_of_account_requested');
-            var val = id.value;
-            var patt = new RegExp('^[A-Za-z0-9\\.\\_\\%\\+\\-]+@[A-Za-z0-9\\.\\-]+\\.[a-zA-Z]{2,4}$');
-            return patt.test(val);       
-        }
-        function validate_purpose_of_account(){
-             var id = document.getElementById('id_purpose_of_account');
-            var val = id.value;
-            var patt = new RegExp('.+');
-            return patt.test(val);       
-        }
-        function validate_names_of_all_users(){
-             var id = document.getElementById('id_names_of_all_users');
-            var val = id.value;
-            var patt = new RegExp('.+');
-            return patt.test(val);       
-        }
-        function validate_needed_until(){
-            var id = document.getElementById('id_needed_until');
-            var val = id.value;
-            var newdate = new Date();
-            var value = val.split("-");
-            var inputdate = new Date(value[0],value[1]-1,value[2]);
-            if (inputdate.getTime() < newdate.getTime()){
-                return false;
-                }
-            else{
-                return true;
+        var newdate = new Date();
+        var value = $('#id_needed_until').val().split("-");
+        var inputdate = new Date(value[0],value[1]-1,value[2]);
+        if (inputdate.getTime() < newdate.getTime()){
+            return false;
             }
+        else{
+            return true;
         }
-    </script>
-    {% endblock %}
-</head>
+    }
+</script>
+{% endblock %}
 {% block content %}
-<body>
-    <form action='' method='post' class = "form">{% csrf_token %}
-    {{ form.non_field_errors }}
-        {% for field in form.hidden_fields %}
-            {{ field }}
-            {{ field.errors }}
-        {% endfor %}
-        <fieldset class="blockLabels">
-            <legend>Account Information</legend>
-            <ol>
-                <li class="ctrlHolder"><h3><label for="id_name_of_account_requested">Email address you'd like to request</label></h3>
-                    <div class='required'>
-                        <input id="id_name_of_account_requested" maxlength="100" name="email" type="email"/> 
-                        <img class='hidden' id='name_of_account_requested_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                        <img class='hidden' id='name_of_account_requested_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                </li>
-                <li class="ctrlHolder"><h3><label for="id_purpose_of_account">Purpose of account:</label></h3>
-                    <div class='required'>
-                        <textarea cols="40" id="id_purpose_of_account" name="purpose" rows="10"></textarea>
-                        <img class='hidden' id='purpose_of_account_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                        <img class='hidden' id='purpose_of_account_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                </li>
-                <li class="ctrlHolder"><h3><label for="id_names_of_all_users">Names of all users with access:</label></h3>
-                    <div class='required'>
-                        <textarea cols="40" id="id_names_of_all_users" name="namesofusers" rows="10"></textarea>
-                        <img class='hidden' id='names_of_all_users_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                        <img class='hidden' id='names_of_all_users_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                </li>
-                <li class="ctrlHolder"><h3><label for="id_needed_until">Needed until</label></h3>
-                    <div class='required'>
-                        <input id="id_needed_until" name="neededuntil" type="date"/> 
-                        <img class='hidden' id='needed_until_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                        <img class='hidden' id='needed_until_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                    </div>
-                </li>
-                <li class="btnHolder">
-                    <label for="submit">&nbsp;&nbsp;</label>
-                    <input type="Submit" name="submit" value="Submit" class="button"/>
-                </li>             
-            </ol>
-        </fieldset>
-    </form>
-</body>
-    <script type='text/javascript'>
-        document.getElementById('name_of_account_requested_no').style.display='none';
-        document.getElementById('name_of_account_requested_yes').style.display='none';
-        document.getElementById('needed_until_no').style.display='none';
-        document.getElementById('needed_until_yes').style.display='none';
-        document.getElementById('purpose_of_account_no').style.display='none';
-        document.getElementById('purpose_of_account_yes').style.display='none';
-        document.getElementById('names_of_all_users_no').style.display='none';
-        document.getElementById('names_of_all_users_yes').style.display='none';
-        var element = document.getElementById('id_unique_id');
-        element = document.getElementById('id_name_of_account_requested')
-        element.onblur = function() {
-            var n=document.getElementById('name_of_account_requested_no');
-            var y=document.getElementById('name_of_account_requested_yes');
-            if(!validate_name_of_account_requested()){ 
-                n.style.display='inline'; y.style.display='none'; 
-            }
-            else {
-                n.style.display='none'; y.style.display='inline';
-            }
-        };
-        element = document.getElementById('id_needed_until')
-        element.onblur = function() {                               
-            var n=document.getElementById('needed_until_no');
-            var y=document.getElementById('needed_until_yes');
-            if(!validate_needed_until()){ 
-                n.style.display='inline'; y.style.display='none'; 
-            }
-            else {
-                n.style.display='none'; y.style.display='inline';
-            }
-        };
-        element = document.getElementById('id_purpose_of_account')
-        element.oninput = function() {                               
-            var n=document.getElementById('purpose_of_account_no');
-            var y=document.getElementById('purpose_of_account_yes');
-            if(!validate_purpose_of_account()){ 
-                n.style.display='inline'; y.style.display='none'; 
-            }
-            else {
-                n.style.display='none'; y.style.display='inline';
-            }
-        };
-        element = document.getElementById('id_names_of_all_users')
-        element.oninput = function() {                               
-            var n=document.getElementById('names_of_all_users_no');
-            var y=document.getElementById('names_of_all_users_yes');
-            if(!validate_names_of_all_users()){ 
-                n.style.display='inline'; y.style.display='none'; 
-            }
-            else {
-                n.style.display='none'; y.style.display='inline';
-            }
-        };        
-    </script>
-    {% endblock %}
-</html>
+<form action='' method='post' class = "form">{% csrf_token %}
+{{ form.non_field_errors }}
+    {% for field in form.hidden_fields %}
+        {{ field }}
+        {{ field.errors }}
+    {% endfor %}
+    <fieldset class="blockLabels">
+        <legend>Account Information</legend>
+        <ol>
+            <li class="ctrlHolder"><h3><label for="id_name_of_account_requested">Email address you'd like to request</label></h3>
+                <div class='required'>
+                    <input id="id_name_of_account_requested" maxlength="100" name="email" type="email"/>
+                    <img class='hidden' id='name_of_account_requested_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='name_of_account_requested_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_purpose_of_account">Purpose of account:</label></h3>
+                <div class='required'>
+                    <textarea cols="40" id="id_purpose_of_account" name="purpose" rows="10"></textarea>
+                    <img class='hidden' id='purpose_of_account_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='purpose_of_account_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_names_of_all_users">Names of all users with access:</label></h3>
+                <div class='required'>
+                    <textarea cols="40" id="id_names_of_all_users" name="namesofusers" rows="10"></textarea>
+                    <img class='hidden' id='names_of_all_users_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='names_of_all_users_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_needed_until">Needed until</label></h3>
+                <div class='required'>
+                    <input id="id_needed_until" name="neededuntil" type="date"/> 
+                    <img class='hidden' id='needed_until_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='needed_until_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>
+            <li class="btnHolder">
+                <label for="submit">&nbsp;&nbsp;</label>
+                <input type="Submit" name="submit" value="Submit" class="button"/>
+            </li>             
+        </ol>
+    </fieldset>
+</form>
+<script type='text/javascript'>
+    
+    document.getElementById('name_of_account_requested_no').style.display='none';
+    document.getElementById('name_of_account_requested_yes').style.display='none';
+    document.getElementById('needed_until_no').style.display='none';
+    document.getElementById('needed_until_yes').style.display='none';
+    document.getElementById('purpose_of_account_no').style.display='none';
+    document.getElementById('purpose_of_account_yes').style.display='none';
+    document.getElementById('names_of_all_users_no').style.display='none';
+    document.getElementById('names_of_all_users_yes').style.display='none';
+    var element = document.getElementById('id_unique_id');
+    element = document.getElementById('id_name_of_account_requested')
+    element.onblur = function() {
+        var n=document.getElementById('name_of_account_requested_no');
+        var y=document.getElementById('name_of_account_requested_yes');
+        if(!validate_name_of_account_requested()){ 
+            n.style.display='inline'; y.style.display='none'; 
+        }
+        else {
+            n.style.display='none'; y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_needed_until')
+    element.onblur = function() {                               
+        var n=document.getElementById('needed_until_no');
+        var y=document.getElementById('needed_until_yes');
+        if(!validate_needed_until()){ 
+            n.style.display='inline'; y.style.display='none'; 
+        }
+        else {
+            n.style.display='none'; y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_purpose_of_account')
+    element.oninput = function() {                               
+        var n=document.getElementById('purpose_of_account_no');
+        var y=document.getElementById('purpose_of_account_yes');
+        if(!validate_purpose_of_account()){ 
+            n.style.display='inline'; y.style.display='none'; 
+        }
+        else {
+            n.style.display='none'; y.style.display='inline';
+        }
+    };
+    element = document.getElementById('id_names_of_all_users')
+    element.oninput = function() {                               
+        var n=document.getElementById('names_of_all_users_no');
+        var y=document.getElementById('names_of_all_users_yes');
+        if(!validate_names_of_all_users()){ 
+            n.style.display='inline'; y.style.display='none'; 
+        }
+        else {
+            n.style.display='none'; y.style.display='inline';
+        }
+    };        
+</script>
+{% endblock %}

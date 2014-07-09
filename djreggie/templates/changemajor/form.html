@@ -1,248 +1,107 @@
 {% extends "djkorra/base.html" %}
-<!DOCTYPE html>
-<html lang='en'>
-    {% block content_head %}
-        <h1 id="page-title">Change Major/Minor</h1>
-    {% endblock %}
-<head>
-    <meta charset="utf-8" />
-    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
-    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
-    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
-    {% block javascript %}
-    <script type='text/javascript'>
-        function validate_student_id(){
-            var id = document.getElementById('id_student_id');
-            var val = id.value;
-            var patt = new RegExp('^(\\d{5,7})$');
-            return patt.test(val);            
-        }
-        function validate_name(){
-            var id = document.getElementById('id_name');
-            var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
-            return patt.test(val);        
-        }
-        function validate_advisor(){
-            var id = document.getElementById('id_advisor');
-            var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
-            return patt.test(val);        
-        }
-    </script>
-    {% endblock %}
-</head>
-{% block content %}
-<body>
-    {{ form.non_field_errors }}
-    <form action='' method='post' class = "form">{% csrf_token %}
-        {{ mmformset.management_form }}
-        {% for field in form.hidden_fields %}
-            {{ field }}
-            {{ field.errors }}
-        {% endfor %}
-        <fieldset class="blockLabels">
-            <legend>Year in School</legend>
-            <ol>
-                <li class="ctrlHolder"><h3><label for="id_year_0"></label></h3>
-                    <ul>
-                        <li><label for="id_year_0"><input id="id_year_0" name="year" type="radio" value="FR" />
-                        Freshman</label></li>
-                        <li><label for="id_year_1"><input id="id_year_1" name="year" type="radio" value="SO" />
-                        Sophomore</label></li>
-                        <li><label for="id_year_0"><input id="id_year_0" name="year" type="radio" value="JR" />
-                        Junior</label></li>
-                        <li><label for="id_year_1"><input id="id_year_1" name="year" type="radio" value="SR" />
-                        Senior</label></li>
-                    </ul>
-                </li>
-            </ol>
-        </fieldset>
-        <fieldset class="blockLabels">
-            <legend>Majors and Minors</legend>
-            <ol>
-                <li>How many majors and/or minors will you be adding today?</li>
-                <li class="btnHolder" style: inline>
-                    <input type="button" id="1" value="1" class="button"/>  
-                    <input type="button" id="2" value="2" class="button"/>
-                    <input type="button" id="3" value="3" class="button"/>
-                </li>
-                <li class="ctrlHolder"><h3><label for="id_mjormn1">Would you like to add a major or a minor?</label></h3>
-                    <div class="required">
-                        <select id="mjormn1">
-                            <option value="MJ">Major</option>
-                            <option value="MN">Minor</option>
-                        </select>
-                    </div>
-                </li>
-                <li class="ctrlHolder" id="major1"><h3><label for="id_major1">Major:</label></h3>
-                    <div class="required">
-                        {{ form.major1 }}
-                    </div>
-                </li>
-                
-                <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minor:</label></h3>
-                    <div class="required">
-                        {{ form.minor1 }}
-                    </div>
-                </li>
-                
-                <li class="ctrlHolder" style='display: none' id="mjormn2li"><h3><label for="id_mjormn2">Would you like to add a major or a minor?</label></h3>
-                    <select id="mjormn2">
-                        <option value="MJ">Major</option>
-                        <option value="MN">Minor</option>
-                    </select>
-                </li>
-                
-                <li class="ctrlHolder" style='display: none' id="major2"><h3><label for="id_major2">Major:</label></h3>
-                    {{ form.major2 }}
-                </li>
-                
-                <li class="ctrlHolder" style='display: none' id="minor2"><h3><label for="id_minor2">Minor:</label></h3>
-                    {{ form.minor2 }}
-                </li>
-                
-                <li class="ctrlHolder" style='display: none' id="mjormn3li"><h3><label for="id_mjormn3">Would you like to add a major or a minor?</label></h3>
-                    <select id="mjormn3">
-                        <option value="MJ">Major</option>
-                        <option value="MN">Minor</option>
-                    </select>
-                </li>
-                <li class="ctrlHolder" style='display: none' id="major3"><h3><label for="id_major3">Major:</label></h3>
-                    {{ form.major3 }}
-                </li>
-                
-                <li class="ctrlHolder" style='display: none' id="minor3"><h3><label for="id_minor3">Minor:</label></h3>
-                    {{ form.minor3 }}
-                </li>
-            </ol>
-        </fieldset>
-        <fieldset class="blockLabels">
-            <legend>Advisor</legend>
-            <ol>
-                <li class="ctrlHolder"><h3><label for="id_advisor">
-                Who would you like to be your new advisor? (If no change, leave blank)</label></h3>
-                    <div class='required'>
-                        <input id="id_advisor" name="advisor" type="text"/>
-                    </div>
-                </li>
-                <li class="btnHolder">
-                    <label for="submit">&nbsp;&nbsp;</label>
-                    <input type="Submit" name="submit" value="Submit" class="button"/>
-                </li>
-            </ol>
-        </fieldset>
-    </form>
-</body>
-<script type="text/javascript">
-    element = document.getElementById('mjormn1');
-    element.onchange = function() {
-            var value = this.value;
-            var majvar = document.getElementById('major1');
-            var minvar = document.getElementById('minor1');
-            if (value == "MJ"){
-                majvar.style.display = 'list-item';
-                minvar.style.display = 'none';
-                }
-            else{
-                majvar.style.display = 'none';
-                minvar.style.display = 'list-item';
-                }
-         };
-        if( document.getElementById('mjormn1').value == 'MJ' ){
-            document.getElementById('major1').style.display = 'list-item';
-            document.getElementById('minor1').style.display = 'none';
-        }
-        else {
-            document.getElementById('major1').style.display = 'none';
-            document.getElementById('minor1').style.display = 'list-item';
-        }
-    element = document.getElementById('mjormn2');
-    element.onchange = function() {
-            var value = this.value;
-            var majvar = document.getElementById('major2');
-            var minvar = document.getElementById('minor2');
-            if (value == "MJ"){
-                majvar.style.display = 'list-item';
-                minvar.style.display = 'none';
-                }
-            else{
-                majvar.style.display = 'none';
-                minvar.style.display = 'list-item';
-                }
-         };
-        if( document.getElementById('mjormn2').value == 'MJ' ){
-            document.getElementById('minor2').style.display = 'none';
-        }
-        else {
-            document.getElementById('major2').style.display = 'none';
-        }
-    element = document.getElementById('mjormn3');
-    element.onchange = function() {
-            var value = this.value;
-            var majvar = document.getElementById('major3');
-            var minvar = document.getElementById('minor3');
-            if (value == "MJ"){
-                majvar.style.display = 'list-item';
-                minvar.style.display = 'none';
-                }
-            else{
-                majvar.style.display = 'none';
-                minvar.style.display = 'list-item';
-                }
-         };
-        if( document.getElementById('mjormn3').value == 'MJ' ){
-            document.getElementById('minor3').style.display = 'none';
-        }
-        else {
-            document.getElementById('major3').style.display = 'none';
-        }
-        
-    $("#1").click(function () {
-        document.getElementById('mjormn2li').style.display = 'none';
-        document.getElementById('major2').style.display = 'none';
-        document.getElementById('minor2').style.display = 'none';
-        document.getElementById('mjormn2').value = 'MJ'
-        document.getElementById('id_major2').value = '';
-        document.getElementById('id_minor2').value = '';            
-        document.getElementById('mjormn3li').style.display = 'none';
-        document.getElementById('major3').style.display = 'none';
-        document.getElementById('minor3').style.display = 'none';
-        document.getElementById('mjormn3').value = 'MJ'
-        document.getElementById('id_major3').value = '';
-        document.getElementById('id_minor3').value = '';
-        });
-    $("#2").click(function () {
-        document.getElementById('mjormn2li').style.display = 'list-item';
-        if (document.getElementById('mjormn2').value == "MJ")
-            {
-                document.getElementById('major2').style.display = 'list-item';
-            }
-        else
-            {
-                document.getElementById('minor2').style.display = 'list-item';
-            }
-        document.getElementById('mjormn3li').style.display = 'none';
-        document.getElementById('major3').style.display = 'none';
-        document.getElementById('minor3').style.display = 'none';        
-        document.getElementById('mjormn3').value = 'MJ'
-        document.getElementById('id_major3').value = '';
-        document.getElementById('id_minor3').value = '';            
-        });    
-    $("#3").click(function () {
-        document.getElementById('mjormn2li').style.display = 'list-item';
-        if (document.getElementById('mjormn2').value == "MJ")
-            {
-                document.getElementById('major2').style.display = 'list-item';
-            }
-        else
-            {
-                document.getElementById('minor2').style.display = 'list-item';
-            }
-        document.getElementById('mjormn3li').style.display = 'list-item';
-        document.getElementById('major3').style.display = 'list-item';
-        });
+{% block title %}
+    Change Major/Minor
+{% endblock %}
+{% block content_head %}
+    <h1 id="page-title">Change Major/Minor</h1>
+{% endblock %}
+{% block extra_style %}
+<style type="text/css">
+    .tabme{
+        color: grey;
+        padding-left:2em
+    }
+</style>
+{% endblock %}
+{% block javascript %}
+<script type='text/javascript'>
+    function validate_student_id(){
+        var id = document.getElementById('id_student_id');
+        var val = id.value;
+        var patt = new RegExp('^(\\d{5,7})$');
+        return patt.test(val);            
+    }
+    function validate_name(){
+        var id = document.getElementById('id_name');
+        var val = id.value;
+        var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
+        return patt.test(val);        
+    }
+    function validate_advisor(){
+        var id = document.getElementById('id_advisor');
+        var val = id.value;
+        var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
+        return patt.test(val);        
+    }
 </script>
 {% endblock %}
-</html>
+{% block content %}
+{{ form.non_field_errors }}
+<form action='' method='post' class = "form">{% csrf_token %}
+    {{ mmformset.management_form }}
+    {% for field in form.hidden_fields %}
+        {{ field }}
+        {{ field.errors }}
+    {% endfor %}
+    <fieldset class="blockLabels">
+        <legend>Your Current Information</legend>
+        <ol>
+            <li class="ctrlHolder"><h3><label for="id_name">Name</label></h3>
+                <div class=tabme>{{form.name.value}}<br></div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_student_id">Student ID</label></h3>
+                <div class=tabme>{{form.student_id.value}}<br></div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_majorlist">Current Majors</label></h3>
+                <div class=tabme>{{form.majorlist.value}}<br></div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_minorlist">Current Minors</label></h3>
+                <div class=tabme>{{form.minorlist.value}}<br></div>
+            </li>
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <legend>Majors and Minors</legend>
+        <ol>
+            <li class="ctrlHolder" id="major1"><h3><label for="id_major1">Majors</label></h3>
+                <div class="required">
+                    {{ form.major1 }}
+                </div>
+            </li>
+            <li class="ctrlHolder" id="major2"><h3><label for="id_major2"></label></h3>
+                {{ form.major2 }}
+            </li>
+            <li class="ctrlHolder" id="major3"><h3><label for="id_major3"></label></h3>
+                {{ form.major3 }}
+            </li>
+            <hr>
+            <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minors</label></h3>
+                <div class="required">
+                    {{ form.minor1 }}
+                </div>
+            </li>                
+            <li class="ctrlHolder" id="minor2"><h3><label for="id_minor2"></label></h3>
+                {{ form.minor2 }}
+            </li>                
+            <li class="ctrlHolder" id="minor3"><h3><label for="id_minor3"></label></h3>
+                {{ form.minor3 }}
+            </li>
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <legend>Advisor</legend>
+        <ol>
+            <li class="ctrlHolder"><h3><label for="id_advisor">
+            Who would you like to be your new advisor? (If no change, leave blank)</label></h3>
+                <div class='required'>
+                    <input id="id_advisor" name="advisor" type="text"/>
+                </div>
+            </li>
+            <li class="btnHolder">
+                <label for="submit">&nbsp;&nbsp;</label>
+                <input type="Submit" name="submit" value="Submit" class="button"/>
+            </li>
+        </ol>
+    </fieldset>
+</form>
+{% endblock %}

@@ -54,4 +54,3 @@ def index(request):
     return render(request, 'createemail/form.html', {
         'form': form
     })
-

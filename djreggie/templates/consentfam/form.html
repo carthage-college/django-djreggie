@@ -1,154 +1,146 @@
 {% extends "djkorra/base.html" %}
-<!doctype html>
-<html lang="en">
-    {% block content_head %}
-        <h1 id="page-title">FERPA Authorization for Family</h1>
-    {% endblock %}
-<head>
-    <meta http-equiv='Content-Type' content='Type=text/html; charset=utf-8'>
-    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
-    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
-    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
-    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
-    {% block javascript %}
-    <script type='text/javascript'>
-    $(document).ready(function () {
-        // Code adapted from http://djangosnippets.org/snippets/1389/  
-        function updateElementIndex(el, prefix, ndx) {
-            var id_regex = new RegExp('(' + prefix + '-\\d+-)');
-            var replacement = prefix + '-' + ndx + '-';
-            if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
-            replacement));
-            if (el.id) el.id = el.id.replace(id_regex, replacement);
-            if (el.name) el.name = el.name.replace(id_regex, replacement);
-        }
-    
-        function deleteForm(btn, prefix) {
-            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-            if (formCount > 1) {
-                // Delete the item/form
-                $(btn).parents('.fam').remove();
-                var forms = $('.fam'); // Get all the forms  
-                // Update the total number of forms (1 less than before)
-                $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-                var i = 0;
-                // Go through the forms and set their indices, names and IDs
-                for (formCount = forms.length; i < formCount; i++) {
-                    $(forms.get(i)).children().children().each(function () {
-                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
-                    });
-                }
-            } // End if
-            else {
-                alert("You have to enter at least one person!");
-            }
-            return false;
-        }
-    
-        function addForm(btn, prefix) {
-            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-            // You can only submit a maximum of 10 todo items 
-            if (formCount < 10) {
-                // Clone a form (without event handlers) from the first form
-                var row = $(".fam:first").clone(false).get(0);
-                // Insert it after the last form
-                $(row).removeAttr('id').hide().insertAfter(".fam:last").slideDown(300);
-    
-                // Remove the bits we don't want in the new row/form
-                // e.g. error messages
-                $(".errorlist", row).remove();
-                $(row).children().removeClass("error");
-    
-                // Relabel or rename all the relevant bits
-                $(row).children().children().each(function () {
-                    updateElementIndex(this, prefix, formCount);
-                    $(this).val("");
+{% block title %}
+    FERPA Family
+{% endblock %}
+{% block content_head %}
+    <h1 id="page-title">FERPA Authorization for Family</h1>
+{% endblock %}
+{% block javascript %}
+<script type='text/javascript'>
+$(document).ready(function () {
+    // Code adapted from http://djangosnippets.org/snippets/1389/  
+    function updateElementIndex(el, prefix, ndx) {
+        var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+        var replacement = prefix + '-' + ndx + '-';
+        if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
+        replacement));
+        if (el.id) el.id = el.id.replace(id_regex, replacement);
+        if (el.name) el.name = el.name.replace(id_regex, replacement);
+    }
+
+    function deleteForm(btn, prefix) {
+        var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        if (formCount > 1) {
+            // Delete the item/form
+            $(btn).parents('.fam').remove();
+            var forms = $('.fam'); // Get all the forms  
+            // Update the total number of forms (1 less than before)
+            $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+            var i = 0;
+            // Go through the forms and set their indices, names and IDs
+            for (formCount = forms.length; i < formCount; i++) {
+                $(forms.get(i)).children().children().each(function () {
+                    if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
                 });
-    
-                // Add an event handler for the delete item/form link 
-                $(row).find(".delete").click(function () {
-                    return deleteForm(this, prefix);
-                });
-                // Update the total form count
-                $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
-            } // End if
-            else {
-                alert("Sorry, you can only enter a maximum of ten people.");
             }
-            return false;
+        } // End if
+        else {
+            alert("This field cannot be deleted. If you are not sharing information with anyone, simply leave it blank.");
         }
-        // Register the click event handlers
-        $("#add").click(function () {
-            return addForm(this, "Parent_or_Third_Party_Name");
-        });
-    
-        $(".delete").click(function () {
-            return deleteForm(this, "Parent_or_Third_Party_Name");
-        });
+        return false;
+    }
+
+    function addForm(btn, prefix) {
+        var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        // You can only submit a maximum of 10 todo items 
+        if (formCount < 10) {
+            // Clone a form (without event handlers) from the first form
+            var row = $(".fam:first").clone(false).get(0);
+            // Insert it after the last form
+            $(row).removeAttr('id').hide().insertAfter(".fam:last").slideDown(300);
+
+            // Remove the bits we don't want in the new row/form
+            // e.g. error messages
+            $(".errorlist", row).remove();
+            $(row).children().removeClass("error");
+
+            // Relabel or rename all the relevant bits
+            $(row).children().children().each(function () {
+                updateElementIndex(this, prefix, formCount);
+                $(this).val("");
+            });
+
+            // Add an event handler for the delete item/form link 
+            $(row).find(".delete").click(function () {
+                return deleteForm(this, prefix);
+            });
+            // Update the total form count
+            $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+        } // End if
+        else {
+            alert("Sorry, you can only enter a maximum of ten people.");
+        }
+        return false;
+    }
+    // Register the click event handlers
+    $("#add").click(function () {
+        return addForm(this, "Parent_or_Third_Party_Name");
     });
-    </script>
-    {% endblock %}
-</head>
+
+    $(".delete").click(function () {
+        return deleteForm(this, "Parent_or_Third_Party_Name");
+    });
+});
+</script>
+{% endblock %}
 {% block content %}
-<body>
-    <form action='' method='post' class = "form">{% csrf_token %}        
-        {{ Parent_formset.management_form }}
-        {% for field in form.hidden_fields %}
-            {{ field }}
-            {{ field.errors }}
-        {% endfor %}
-        <fieldset class="blockLabels">
-            <legend>General Information</legend>
-            <ol>
-                <li class="ctrlHolder">
-                    Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not
-                    release student academic records to third parties involving non-directory information unless a valid Authorization to
-                    Release Non-Directory Information form is on file. This form lists the record(s) to be released and to whom.<br><br>
-                    By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified
-                    records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the
-                    student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not
-                    affect disclosures previously made by the College prior to the receipt of said written revocation.<br><br>
-                    I authorize the full verbal and written disclosure of my student record to the parent(s)
-                    or third parties listed below in the following areas.<br><br>
-                <ul class="bullets">
-                    <li>
-                        <b>Academic Records</b> including such items, but not limited to, Attendance, Academic Standing, Homework, Tests,
-                        Mid-Term Grades, Final Grades, Grade Point Averages, Progression Towards Graduation/Program Audit.
-                    </li>
-                    <li>
-                        <b>Student Financial Records</b> including such items, but not limited to, Business Office Account, Outstanding Balances,
-                        Financial Aid Packages, FAFSA Information, Scholarships.
-                    </li>
-                </ul>
+<form action='' method='post' class = "form">{% csrf_token %}        
+    {{ Parent_formset.management_form }}
+    {% for field in form.hidden_fields %}
+        {{ field }}
+        {{ field.errors }}
+    {% endfor %}
+    <fieldset class="blockLabels">
+        <legend>General Information</legend>
+        <ol>
+            <li class="ctrlHolder">
+                Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not
+                release student academic records to third parties involving non-directory information unless a valid Authorization to
+                Release Non-Directory Information form is on file. This form lists the record(s) to be released and to whom.<br><br>
+                By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified
+                records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the
+                student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not
+                affect disclosures previously made by the College prior to the receipt of said written revocation.<br><br>
+                I authorize the full verbal and written disclosure of my student record to the parent(s)
+                or third parties listed below in the following areas.<br><br>
+            <ul class="bullets">
+                <li>
+                    <b>Academic Records</b> including such items, but not limited to, Attendance, Academic Standing, Homework, Tests,
+                    Mid-Term Grades, Final Grades, Grade Point Averages, Progression Towards Graduation/Program Audit.
                 </li>
-                <li class="ctrlHolder"><h3><label for="Which_information_would_you_like_to_share">
-                    Which information would you like to share?</label></h3>
-                    <div class='required'>
-                        {{ form.Which_information_would_you_like_to_share }}
-                    </div>
+                <li>
+                    <b>Student Financial Records</b> including such items, but not limited to, Business Office Account, Outstanding Balances,
+                    Financial Aid Packages, FAFSA Information, Scholarships.
                 </li>
-            </ol>
-        </fieldset>
-        <fieldset class="blockLabels">
-            <legend>Disclosure of Information</legend>
-            <ol>
-                <li class="ctrlHolder">
-                   Below, please indicate the names of the people who you will disclose information with, and their relation to you </li>      
-                   {{ Parent_formset.management_form }}
-                    {% for form in Parent_formset.forms %}
-                    <div class = fam>
-                        <li class="ctrlHolder"><h3>{{form}}</h3></li>
-                        <li style=""><a class="delete" href="#">Delete</a></li>
-                    </div>
-                    <li><a id="add" href="#">Add Another Parent or Third Party</a></li>
-                    {% endfor %}
-                <li class="btnHolder">
-                    <label for="submit">&nbsp;&nbsp;</label>
-                    <input type="Submit" name="submit" value="Submit" class="button"/>
-                </li>
-            </ol>
-        </fieldset>
-    </form>
-    {% endblock %}
-</body>
-</html>
+            </ul>
+            </li>
+            <li class="ctrlHolder"><h3><label for="Which_information_would_you_like_to_share">
+                Which information would you like to share?</label></h3>
+                <div class='required'>
+                    {{ form.Which_information_would_you_like_to_share }}
+                </div>
+            </li>
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <legend>Disclosure of Information</legend>
+        <ol>
+            <li class="ctrlHolder">
+               Below, please indicate the names of the people who you will disclose information with, and their relation to you </li>      
+               {{ Parent_formset.management_form }}
+                {% for form in Parent_formset.forms %}
+                <div class = fam>
+                    <li class="ctrlHolder"><h3>{{form}}</h3></li>
+                    <li style=""><a class="delete" href="#">Delete</a></li>
+                    <hr>
+                </div>
+                <li><a id="add" href="#">Add Another Parent or Third Party</a></li>
+                {% endfor %}
+            <li class="btnHolder">
+                <label for="submit">&nbsp;&nbsp;</label>
+                <input type="Submit" name="submit" value="Submit" class="button"/>
+            </li>
+        </ol>
+    </fieldset>
+</form>
+{% endblock %}

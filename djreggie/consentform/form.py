@@ -26,6 +26,14 @@ class ModelForm(forms.ModelForm):
             raise forms.ValidationError('Must be 5-7 digits long')
         return data
     
+    CHOICES = (
+        ("CONSENT", 'I authorize and consent to the release of my directory information'),
+        ("NOCONSENT", 'I hereby request that Carthage College not release my directory information.'),
+    )
+    
+    #adding the validators field at the end here lets us use that function at the top to validate
+    consent = forms.ChoiceField(widget = forms.RadioSelect, choices = CHOICES) 
+    
     #Global options    
     class Meta:
         model = Form #The fields from the model 'Form' will be the same fields in this form

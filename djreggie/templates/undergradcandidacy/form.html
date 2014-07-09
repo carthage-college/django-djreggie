@@ -1,137 +1,244 @@
 {% extends "djkorra/base.html" %}
-<!DOCTYPE html>
-<html lang='en'>
-    {% block content_head %}
-        <h1 id="page-title">Change Major/Minor</h1>
-    {% endblock %}
-<head>
-    <meta charset='utf-8' />
-    {% block extra_style %}
-    <style>
-        fieldset.inlineLabels, li {
-            list-style:none;
-        }
-        input[type=checkbox]
+{% block title %}
+    Undergrad Candidacy
+{% endblock %}
+{% block content_head %}
+    <h1 id="page-title">Undergraduate Candidacy</h1>
+{% endblock %}
+{% block extra_style %}
+<style>
+    .readonly {
+        color: grey;
+        padding-left:2em;
+    }
+    fieldset.inlineLabels, li {
+        list-style:none;
+    }
+    input[type=checkbox]
+    {
+      -webkit-appearance:checkbox;
+    }
+    input[type=radio]
+    {
+      -webkit-appearance:radio;
+    }
+</style>
+{% endblock %}
+{% block javascript %}
+<script>
+    $("img.hidden").css("display", "none");
+    
+    function validate_student_id(){
+        var patt = new RegExp('^(\\d{5,7})$');
+        return patt.test($("#id_student_id").val());            
+    }
+    function validate_fname(){
+        var patt = new RegExp('^([a-zA-Z]+)$');
+        return patt.test($("#id_fname").val());        
+    }
+    function validate_mname(){
+        var patt = new RegExp('^([a-zA-Z]+|[a-zA-Z]\\.?)$');
+        return patt.test($("#id_mname").val());        
+    }
+    function validate_lname(){
+        var patt = new RegExp('^([a-zA-Z]+)$');
+        return patt.test($("#id_lname").val());        
+    }
+    function validate_email(){
+        var patt = new RegExp('^(?:[A-Za-z0-9\\.\\_\\%\\+\\-]+)@(?:[A-Za-z0-9\\.\\-]+)\\.(?:[A-Za-z]{2,4})$');
+        return patt.test($("#id_email").val());
+    }
+    function validate_best_phone(){
+        var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
+        return patt.test($("#id_best_phone").val());
+    }
+    function validate_cell(){
+        var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
+        return patt.test($("#id_cell").val());
+    }
+    function validate_address(){
+        var patt = new RegExp('^((?:[\\w+\\s\\.\\#\\,])+[\\w\\.]+)$');
+        return patt.test($("#id_address").val());
+    }
+    function validate_city(){
+        var patt = new RegExp('^((?:[a-zA-Z\\s?\\.?]+)[a-zA-Z]+)$');
+        return patt.test($("#id_city").val());
+    }
+    function validate_state(){
+        var patt = new RegExp('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
+        return patt.test($("#id_state").val());
+    }
+    function validate_zip(){
+        var patt = new RegExp('^([\\d]{5}|\\d{5}-?\\d{4})$');
+        return patt.test($("#id_zip").val());
+    }
+    
+    $("#id_student_id").blur( function(){
+        if (!validate_student_id())
         {
-          -webkit-appearance:checkbox;
+            $('#student_id_no').css("display", "inline");
+            $('#student_id_yes').css("display", "none");
         }
-        input[type=radio]
+        else {
+            $('#student_id_no').css("display", "none");
+            $('#student_id_yes').css("display", "inline");
+        }
+    });
+    
+    $("#id_fname").blur( function(){
+        if (!validate_fname())
         {
-          -webkit-appearance:radio;
+            $('#fname_no').css("display", "inline");
+            $('#fname_id_yes').css("display", "none");
         }
-    </style>
-    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
-    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
-    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
-    {% endblock %}
-    {% block javascript %}
-    <script>
-        function validate_student_id(){
-            var id = document.getElementById('id_student_id');
-            var val = id.value;
-            var patt = new RegExp('^(\\d{5,7})$');
-            return patt.test(val);            
+        else {
+            $('#fname_no').css("display", "none");
+            $('#fname_yes').css("display", "inline");
         }
-        function validate_fname(){
-            var id = document.getElementById('id_fname');
-            var val = id.value;
-            var patt = new RegExp('^([a-zA-Z]+)$');
-            return patt.test(val);        
+    });
+    $("#id_mname").blur( function(){
+        if (!validate_mname())
+        {
+            $('#mname_no').css("display", "inline");
+            $('#mname_id_yes').css("display", "none");
         }
-        function validate_mname(){
-            var id = document.getElementById('id_mname');
-            var val = id.value;
-            var patt = new RegExp('^([a-zA-Z]+)$');
-            return patt.test(val);        
+        else {
+            $('#mname_no').css("display", "none");
+            $('#mname_yes').css("display", "inline");
         }
-        function validate_lname(){
-            var id = document.getElementById('id_lname');
-            var val = id.value;
-            var patt = new RegExp('^([a-zA-Z]+)$');
-            return patt.test(val);        
+    });
+    $("#id_lname").blur( function(){
+        if (!validate_lname())
+        {
+            $('#lname_no').css("display", "inline");
+            $('#lname_id_yes').css("display", "none");
         }
-        function validate_email(){
-            var id = document.getElementById('id_email');
-            var val = id.value;
-            var patt = new RegExp('^(?:[A-Za-z0-9\\.\\_\\%\\+\\-]+)@(?:[A-Za-z0-9\\.\\-]+)\\.(?:[A-Za-z]{2,4})$');
-            return patt.test(val);
+        else {
+            $('#lname_no').css("display", "none");
+            $('#lname_yes').css("display", "inline");
         }
-        function validate_best_phone(){
-            var id = document.getElementById('id_best_phone');
-            var val = id.value;
-            var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-            return patt.test(val);
+    });
+    $("#id_best_phone").blur( function(){
+        if(!validate_best_phone())
+        {
+            $('#best_phone_no').css("display", "inline");
+            $('#best_phone_yes').css("display", "none");
         }
-        function validate_cell(){
-            var id = document.getElementById('id_cell');
-            var val = id.value;
-            var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-            return patt.test(val);
+        else {
+            $('#best_phone_no').css("display", "none");
+            $('#best_phone_yes').css("display", "inline");
         }
-        function validate_address(){
-            var id = document.getElementById('id_address');
-            var val = id.value;
-            var patt = new RegExp('^((?:[\\w+\\s\\.\\#\\,])+[\\w\\.]+)$');
-            return patt.test(val);
+    });
+    $("#id_cell").blur( function(){
+        if(!validate_cell())
+        {
+            $('#cell_no').css("display", "inline");
+            $('#cell_yes').css("display", "none");
         }
-        function validate_city(){
-            var id = document.getElementById('id_city');
-            var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z\\s?\\.?]+)[a-zA-Z]+)$');
-            return patt.test(val);
+        else {
+            $('#cell_no').css("display", "none");
+            $('#cell_yes').css("display", "inline");
         }
-        function validate_state(){
-            var id = document.getElementById('id_state');
-            var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
-            return patt.test(val);
+    });
+    $("#id_email").blur( function(){
+        if(!validate_email())
+        {
+            $('#email_no').css("display", "inline");
+            $('#email_yes').css("display", "none");
         }
-        function validate_zipcode(){
-            var id = document.getElementById('id_zip');
-            var val = id.value;
-            var patt = new RegExp('^([\\d]{5}|\\d{5}-?\\d{4})$');
-            return patt.test(val);
+        else {
+            $('#email_no').css("display", "none");
+            $('#email_yes').css("display", "inline");
         }
-    </script>  
-    <script type="text/javascript" href="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-    {% endblock %}
-</head>
+    });
+    $("#id_address").blur( function(){
+        if(!validate_address())
+        {
+            $('#address_no').css("display", "inline");
+            $('#address_yes').css("display", "none");
+        }
+        else {
+            $('#address_no').css("display", "none");
+            $('#address_yes').css("display", "inline");
+        }
+    });
+    $("#id_city").blur( function(){
+        if(!validate_city())
+        {
+            $('#city_no').css("display", "inline");
+            $('#city_yes').css("display", "none");
+        }
+        else {
+            $('#city_no').css("display", "none");
+            $('#city_yes').css("display", "inline");
+        }
+    });
+    $("#id_state").blur( function(){
+        if(!validate_state())
+        {
+            $('#state_no').css("display", "inline");
+            $('#state_yes').css("display", "none");
+        }
+        else {
+            $('#state_no').css("display", "none");
+            $('#state_yes').css("display", "inline");
+        }
+    });
+    $("#id_zip").blur( function(){
+        if(!validate_zip())
+        {
+            $('#zip_no').css("display", "inline");
+            $('#zip_yes').css("display", "none");
+        }
+        else {
+            $('#zip_no').css("display", "none");
+            $('#zip_yes').css("display", "inline");
+        }
+    });
+</script>
+{% endblock %}
 {% block content %}
-<body>
-    {{ form.non_field_errors }}
-    <form action='' method='post' class = "form">{% csrf_token %}
+{{ form.non_field_errors }}
+<form action='' method='post' class = "form">{% csrf_token %}
     <fieldset class="blockLabels">
         <legend>For Diploma</legend>
         <ol>
-            <li>Print your name EXACTLY as you want it to appear on your diploma, which will also be how
+            <li>Type your name EXACTLY as you want it to appear on your diploma, which will also be how
                 your name will be read as you cross the stage at the graduation ceremony.</li>
             <li class="ctrlHolder"><h3><label for="id_student_id">Student ID</label></h3>
-                <div class='required'>
-                    <input type='text' name='sid' id='id_student_id' maxlength=100/>
-                    <img class='hidden' id='student_id_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='student_id_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                <div class='readonly'>
+                    {{form.student_id.value}}
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_fname">First Name</label></h3>
                 <div class='required'>
-                    <input type='text' name='fname' id='id_fname' maxlength=100/>
+                    {{form.fname}}
                     <img class='hidden' id='fname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='fname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
-            <li class="ctrlHolder"><h3><label for="id_mname">Middle Name</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_mname">Middle Initial</label></h3>
                 <div class='required'>
-                    <input type='text' name='mname' id='id_mname' maxlength=100/>
+                    {{form.mname}}
                     <img class='hidden' id='mname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='mname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_lname">Last Name</label></h3>
                 <div class='required'>
-                    <input type='text' name='lname' id='id_lname' maxlength=100/>
+                    {{form.lname}}
                     <img class='hidden' id='lname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='lname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_fnamepro">Tell us how to pronounce your first name</label></h3>
+                <div class='required'>
+                    <input type='text' name='fnamepro' id='id_fnamepro' maxlength=100/>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_lnamepro">Tell us how to pronounce your last name</label></h3>
+                <div class='required'>
+                    <input type='text' name='lnamepro' id='id_lnamepro' maxlength=100/>
                 </div>
             </li>
         </ol>
@@ -142,60 +249,29 @@
             <li>List all major(s) and minor(s) that you plan on completing. You will not be certified
                 for graduation until you complete all requirements for all listed majors and minors.<br><br>
             </li>
-        <li>Select the number of majors and minors you plan on completing</li>
-                <li class="btnHolder" style: inline>
-                    <input type="button" id="1" value="1" class="button"/>  
-                    <input type="button" id="2" value="2" class="button"/>
-                    <input type="button" id="3" value="3" class="button"/>
-                </li>
-                <li class="ctrlHolder"><h3><label for="id_mjormn1">Is this a major or a minor?</label></h3>
-                    <div class="required">
-                        <select id="mjormn1">
-                            <option value="MJ">Major</option>
-                            <option value="MN">Minor</option>
-                        </select>
-                    </div>
-                </li>
-                <li class="ctrlHolder" id="major1"><h3><label for="id_major1">Major:</label></h3>
-                    <div class="required">
-                        {{ form.major1 }}
-                    </div>
-                </li>
-                
-                <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minor:</label></h3>
-                    <div class="required">
-                        {{ form.minor1 }}
-                    </div>
-                </li>
-                
-                <li class="ctrlHolder" style='display: none' id="mjormn2li"><h3><label for="id_mjormn2">Is this a major or a minor?</label></h3>
-                    <select id="mjormn2">
-                        <option value="MJ">Major</option>
-                        <option value="MN">Minor</option>
-                    </select>
-                </li>
-                
-                <li class="ctrlHolder" style='display: none' id="major2"><h3><label for="id_major2">Major:</label></h3>
-                    {{ form.major2 }}
-                </li>
-                
-                <li class="ctrlHolder" style='display: none' id="minor2"><h3><label for="id_minor2">Minor:</label></h3>
-                    {{ form.minor2 }}
-                </li>
-                
-                <li class="ctrlHolder" style='display: none' id="mjormn3li"><h3><label for="id_mjormn3">Is this a major or a minor?</label></h3>
-                    <select id="mjormn3">
-                        <option value="MJ">Major</option>
-                        <option value="MN">Minor</option>
-                    </select>
-                </li>
-                <li class="ctrlHolder" style='display: none' id="major3"><h3><label for="id_major3">Major:</label></h3>
-                    {{ form.major3 }}
-                </li>
-                
-                <li class="ctrlHolder" style='display: none' id="minor3"><h3><label for="id_minor3">Minor:</label></h3>
-                    {{ form.minor3 }}
-                </li>
+            <li class="ctrlHolder" id="major1"><h3><label for="id_major1">Majors</label></h3>
+                <div class="required">
+                    {{ form.major1 }}
+                </div>
+            </li>
+            <li class="ctrlHolder" id="major2"><h3><label for="id_major2"></label></h3>
+                {{ form.major2 }}
+            </li>
+            <li class="ctrlHolder" id="major3"><h3><label for="id_major3"></label></h3>
+                {{ form.major3 }}
+            </li>
+            <hr>
+            <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minors</label></h3>
+                <div class="required">
+                    {{ form.minor1 }}
+                </div>
+            </li>                
+            <li class="ctrlHolder" id="minor2"><h3><label for="id_minor2"></label></h3>
+                {{ form.minor2 }}
+            </li>                
+            <li class="ctrlHolder" id="minor3"><h3><label for="id_minor3"></label></h3>
+                {{ form.minor3 }}
+            </li>
         </ol>
     </fieldset>    
     <fieldset class="blockLabels">
@@ -321,272 +397,5 @@
             </li>
         </ol>
     </fieldset>
-    </form>
-</body>
-<script type='text/javascript'>
-    document.getElementById('fname_no').style.display='none';
-    document.getElementById('fname_yes').style.display='none';
-    document.getElementById('mname_no').style.display='none';
-    document.getElementById('mname_yes').style.display='none';
-    document.getElementById('lname_no').style.display='none';
-    document.getElementById('lname_yes').style.display='none';
-    document.getElementById('student_id_no').style.display='none';
-    document.getElementById('student_id_yes').style.display='none';
-    document.getElementById('email_no').style.display='none';
-    document.getElementById('email_yes').style.display='none';
-    document.getElementById('best_phone_no').style.display='none';
-    document.getElementById('best_phone_yes').style.display='none';
-    document.getElementById('cell_no').style.display='none';
-    document.getElementById('cell_yes').style.display='none';
-    document.getElementById('address_no').style.display='none';
-    document.getElementById('address_yes').style.display='none';
-    document.getElementById('city_no').style.display='none';
-    document.getElementById('city_yes').style.display='none';
-    document.getElementById('state_no').style.display='none';
-    document.getElementById('state_yes').style.display='none';
-    document.getElementById('zip_no').style.display='none';
-    document.getElementById('zip_yes').style.display='none';
-    
-    var element = document.getElementById('id_fname');
-    element.onblur = function(){
-        var n=document.getElementById('fname_no');
-        var y=document.getElementById('fname_yes');
-        if (!validate_fname())
-        {
-            n.style.display='inline';
-            y.style.display='none';
-        }
-        else {
-            n.style.display='none';
-            y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_mname');
-    element.onblur = function(){
-        var n=document.getElementById('mname_no');
-        var y=document.getElementById('mname_yes');
-        if (!validate_mname())
-        {
-            n.style.display='inline';
-            y.style.display='none';
-        }
-        else {
-            n.style.display='none';
-            y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_lname');
-    element.onblur = function(){
-        var n=document.getElementById('lname_no');
-        var y=document.getElementById('lname_yes');
-        if (!validate_lname())
-        {
-            n.style.display='inline';
-            y.style.display='none';
-        }
-        else {
-            n.style.display='none';
-            y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_student_id');
-    element.onblur = function(){
-        var n=document.getElementById('student_id_no');
-        var y=document.getElementById('student_id_yes');
-        if (!validate_student_id())
-        {
-            n.style.display='inline';
-            y.style.display='none';
-        }
-        else {
-            n.style.display='none';
-            y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_best_phone');
-    element.onblur = function(){
-        var n=document.getElementById('best_phone_no');
-        var y=document.getElementById('best_phone_yes');
-        if(!validate_best_phone()){
-            n.style.display='inline'; y.style.display='none';
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_cell');
-    element.onblur = function(){
-        var n=document.getElementById('cell_no');
-        var y=document.getElementById('cell_yes');
-        if(!validate_cell()){
-            n.style.display='inline'; y.style.display='none';
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_email');
-    element.onblur = function(){
-        var n=document.getElementById('email_no');
-        var y=document.getElementById('email_yes');
-        if(!validate_email()){
-            n.style.display='inline'; y.style.display='none';
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_address');
-    element.onblur = function(){
-        var n=document.getElementById('address_no');
-        var y=document.getElementById('address_yes');
-        if(!validate_address()){
-            n.style.display='inline'; y.style.display='none';
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_city');
-    element.onblur = function(){
-        var n=document.getElementById('city_no');
-        var y=document.getElementById('city_yes');
-        if(!validate_city()){
-            n.style.display='inline'; y.style.display='none';
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_state');
-    element.onblur = function(){
-        var n=document.getElementById('state_no');
-        var y=document.getElementById('state_yes');
-        if(!validate_state()){
-            n.style.display='inline'; y.style.display='none';
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_zip');
-    element.onblur = function(){
-        var n=document.getElementById('zip_no');
-        var y=document.getElementById('zip_yes');
-        if(!validate_zipcode()){
-            n.style.display='inline'; y.style.display='none';
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };
-    element = document.getElementById('mjormn1');
-    element.onchange = function() {
-            var value = this.value;
-            var majvar = document.getElementById('major1');
-            var minvar = document.getElementById('minor1');
-            if (value == "MJ"){
-                majvar.style.display = 'list-item';
-                minvar.style.display = 'none';
-                }
-            else{
-                majvar.style.display = 'none';
-                minvar.style.display = 'list-item';
-                }
-         };
-        if( document.getElementById('mjormn1').value == 'MJ' ){
-            document.getElementById('major1').style.display = 'list-item';
-            document.getElementById('minor1').style.display = 'none';
-        }
-        else {
-            document.getElementById('major1').style.display = 'none';
-            document.getElementById('minor1').style.display = 'list-item';
-        }
-    element = document.getElementById('mjormn2');
-    element.onchange = function() {
-            var value = this.value;
-            var majvar = document.getElementById('major2');
-            var minvar = document.getElementById('minor2');
-            if (value == "MJ"){
-                majvar.style.display = 'list-item';
-                minvar.style.display = 'none';
-                }
-            else{
-                majvar.style.display = 'none';
-                minvar.style.display = 'list-item';
-                }
-         };
-        if( document.getElementById('mjormn2').value == 'MJ' ){
-            document.getElementById('minor2').style.display = 'none';
-        }
-        else {
-            document.getElementById('major2').style.display = 'none';
-        }
-    element = document.getElementById('mjormn3');
-    element.onchange = function() {
-            var value = this.value;
-            var majvar = document.getElementById('major3');
-            var minvar = document.getElementById('minor3');
-            if (value == "MJ"){
-                majvar.style.display = 'list-item';
-                minvar.style.display = 'none';
-                }
-            else{
-                majvar.style.display = 'none';
-                minvar.style.display = 'list-item';
-                }
-         };
-        if( document.getElementById('mjormn3').value == 'MJ' ){
-            document.getElementById('minor3').style.display = 'none';
-        }
-        else {
-            document.getElementById('major3').style.display = 'none';
-        }
-        
-    $("#1").click(function () {
-        document.getElementById('mjormn2li').style.display = 'none';
-        document.getElementById('major2').style.display = 'none';
-        document.getElementById('minor2').style.display = 'none';
-        document.getElementById('mjormn2').value = 'MJ'
-        document.getElementById('id_major2').value = '';
-        document.getElementById('id_minor2').value = '';            
-        document.getElementById('mjormn3li').style.display = 'none';
-        document.getElementById('major3').style.display = 'none';
-        document.getElementById('minor3').style.display = 'none';
-        document.getElementById('mjormn3').value = 'MJ'
-        document.getElementById('id_major3').value = '';
-        document.getElementById('id_minor3').value = '';
-        });
-    $("#2").click(function () {
-        document.getElementById('mjormn2li').style.display = 'list-item';
-        if (document.getElementById('mjormn2').value == "MJ")
-            {
-                document.getElementById('major2').style.display = 'list-item';
-            }
-        else
-            {
-                document.getElementById('minor2').style.display = 'list-item';
-            }
-        document.getElementById('mjormn3li').style.display = 'none';
-        document.getElementById('major3').style.display = 'none';
-        document.getElementById('minor3').style.display = 'none';        
-        document.getElementById('mjormn3').value = 'MJ'
-        document.getElementById('id_major3').value = '';
-        document.getElementById('id_minor3').value = '';            
-        });    
-    $("#3").click(function () {
-        document.getElementById('mjormn2li').style.display = 'list-item';
-        if (document.getElementById('mjormn2').value == "MJ")
-            {
-                document.getElementById('major2').style.display = 'list-item';
-            }
-        else
-            {
-                document.getElementById('minor2').style.display = 'list-item';
-            }
-        document.getElementById('mjormn3li').style.display = 'list-item';
-        document.getElementById('major3').style.display = 'list-item';
-        });
-</script>
+</form>
 {% endblock %}
-</html>

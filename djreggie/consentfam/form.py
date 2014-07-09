@@ -49,7 +49,6 @@ class Parent(forms.Form):
     name = forms.CharField()
     
     CHOICES3 = (    
-    ("wrong", '-------'),
     ("MOM", 'Mother'),
     ("DAD", 'Father'),
     ("GRAN", 'Grandparent'),
@@ -64,4 +63,4 @@ class Parent(forms.Form):
     )
     
     #adding the validators field at the end here lets us use that function at the top to validate
-    Relation = forms.ChoiceField(required = False, widget = forms.Select, choices = CHOICES3, validators = [fff]) 
+    Relation = forms.ChoiceField(required = False, widget = forms.RadioSelect, choices = CHOICES3, validators = [fff]) 

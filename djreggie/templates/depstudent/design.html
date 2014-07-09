@@ -1,407 +1,629 @@
 {% extends "djkorra/base.html" %}
-<!doctype html>
+{% block title %}
+    Dependent Student
+{% endblock %}
+{% block content_head %}
+    <h1 id="page-title">{{ year }}-{{ year2 }} Verification Worksheet for Dependent Students</h1>
+{% endblock %}
+{% block extra_style %}
+<style type='text/css'>
+    li.highlightradio input[type=radio]:checked + label {
+        display: inline;
+        padding: .5%;
+        background-color: darkgrey;
+    }
+    li.highlightradio label.radiostyle {
+        display: inline;
+        padding: .5%;
+        background-color: lightgrey;
+    }
+    .errorlist, .error {
+        color: red;
+    }
+    .highlight {
+        background: yellow;
+    }
+    td {
+        text-align:center;
+    }
+    #attachedcss, #filediv, #filediv2 {
+        padding-left:5em;
+    }
 
-<html lang="en">
-    {% block content_head %}
-        <h1 id="page-title">{{ year }}-{{ year2 }} Verification Worksheet for Dependent Students</h1>
-    {% endblock %}
-<head>
-    <meta charset="utf-8" />
-    <title>jQuery UI Accordion - Default functionality</title>
-    {% block extra_style %}
-    <style type='text/css'>
-        li.highlightradio input[type=radio]:checked + label {
-            display: inline;
-            padding: .5%;
-            background-color: darkgrey;
-        }
-        li.highlightradio label.radiostyle {
-            display: inline;
-            padding: .5%;
-            background-color: lightgrey;
-        }
-        .errorlist, .error {
-            color: red;
-        }
-        .highlight {
-            background: yellow;
-        }
-        td {
-            text-align:center;
-        }
-        #attachedcss, #filediv, #filediv2 {
-            padding-left:5em;
+    .line{
+            width:100%;
+    }
+    .hidden{
+            display:none;
+    }
+    input[type=checkbox]
+    {
+      -webkit-appearance:checkbox;
+    }
+    input[type=radio]
+    {
+      -webkit-appearance:radio;
+    }
+</style>
+{% endblock %}
+{% block javascript %}
+<script type='text/javascript'>
+    $(document).ready(function () {
+        // Code adapted from http://djangosnippets.org/snippets/1389/
+        function updateElementIndex(el, prefix, ndx) {
+            var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+            var replacement = prefix + '-' + ndx + '-';
+            if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
+            replacement));
+            if (el.id) el.id = el.id.replace(id_regex, replacement);
+            if (el.name) el.name = el.name.replace(id_regex, replacement);
         }
 
-        .line{
-                width:100%;
-        }
-        .hidden{
-                display:none;
-        }
-        input[type=checkbox]
-        {
-          -webkit-appearance:checkbox;
-        }
-        input[type=radio]
-        {
-          -webkit-appearance:radio;
-        }
-    </style>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
-    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet" />
-    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css" />
-    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css" />
-    {% endblock %}
-    {% block javascript %}
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <script type='text/javascript'>
-        $(document).ready(function () {
-            // Code adapted from http://djangosnippets.org/snippets/1389/
-            function updateElementIndex(el, prefix, ndx) {
-                var id_regex = new RegExp('(' + prefix + '-\\d+-)');
-                var replacement = prefix + '-' + ndx + '-';
-                if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
-                replacement));
-                if (el.id) el.id = el.id.replace(id_regex, replacement);
-                if (el.name) el.name = el.name.replace(id_regex, replacement);
-            }
-
-            function deleteStud(btn, prefix) {
-                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-                if (formCount > 1) {
-                    // Delete the item/form
-                    $(btn).parents('.student').remove();
-                    var forms = $('.student'); // Get all the forms
-                    // Update the total number of forms (1 less than before)
-                    $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-                    var i = 0;
-                    // Go through the forms and set their indices, names and IDs
-                    for (formCount = forms.length; i < formCount; i++) {
-                        $(forms.get(i)).children().children().each(function () {
-                            if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
-                        });
-                    }
-                } // End if
-                else {
-                    alert("If you have no previous employment, please check the other box.");
-                }
-                return false;
-            }
-
-            function addStud(btn, prefix) {
-                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-                if (formCount < 5) {
-                    // Clone a form (without event handlers) from the first form
-                    var row = $(".student:first").clone(false).get(0);
-                    // Insert it after the last form
-                    $(row).removeAttr('id').hide().insertAfter(".student:last").slideDown(300);
-
-                    // Remove the bits we don't want in the new row/form
-                    // e.g. error messages
-                    $(".errorlist", row).remove();
-                    $(row).children().removeClass("error");
-
-                    // Relabel or rename all the relevant bits
-                    $(row).children().children().each(function () {
-                        updateElementIndex(this, prefix, formCount);
-                        $(this).val("");
+        function deleteStud(btn, prefix) {
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (formCount > 1) {
+                // Delete the item/form
+                $(btn).parents('.student').remove();
+                var forms = $('.student'); // Get all the forms
+                // Update the total number of forms (1 less than before)
+                $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                var i = 0;
+                // Go through the forms and set their indices, names and IDs
+                for (formCount = forms.length; i < formCount; i++) {
+                    $(forms.get(i)).children().children().each(function () {
+                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
                     });
+                }
+            } // End if
+            else {
+                alert("If you have no previous employment, please check the other box.");
+            }
+            return false;
+        }
 
-                    // Add an event handler for the delete item/form link
-                    $(row).find("#deletestud").click(function () {
-                        return deleteStud(this, prefix);
+        function addStud(btn, prefix) {
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (formCount < 5) {
+                // Clone a form (without event handlers) from the first form
+                var row = $(".student:first").clone(false).get(0);
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".student:last").slideDown(300);
+
+                // Remove the bits we don't want in the new row/form
+                // e.g. error messages
+                $(".errorlist", row).remove();
+                $(row).children().removeClass("error");
+
+                // Relabel or rename all the relevant bits
+                $(row).children().children().each(function () {
+                    updateElementIndex(this, prefix, formCount);
+                    $(this).val("");
+                });
+
+                // Add an event handler for the delete item/form link
+                $(row).find("#deletestud").click(function () {
+                    return deleteStud(this, prefix);
+                });
+                // Update the total form count
+                $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+            } // End if
+            else {
+                alert("You can only add a maximum of 5 previous employers.");
+            }
+            return false;
+        }
+        // Register the click event handlers
+        $("#addstud").click(function () {
+            return addStud(this, "stud");
+        });
+
+        $("#deletestud").click(function () {
+            return deleteStud(this, "stud");
+        });
+
+        function deletePar(btn, prefix) {
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (formCount > 1) {
+                // Delete the item/form
+                $(btn).parents('.parent').remove();
+                var forms = $('.parent'); // Get all the forms
+                // Update the total number of forms (1 less than before)
+                $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                var i = 0;
+                // Go through the forms and set their indices, names and IDs
+                for (formCount = forms.length; i < formCount; i++) {
+                    $(forms.get(i)).children().children().each(function () {
+                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
                     });
-                    // Update the total form count
-                    $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
-                } // End if
-                else {
-                    alert("You can only add a maximum of 5 previous employers.");
                 }
-                return false;
+            } // End if
+            else {
+                alert("If you have no previous employment, please check the other box.");
             }
-            // Register the click event handlers
-            $("#addstud").click(function () {
-                return addStud(this, "stud");
-            });
+            return false;
+        }
 
-            $("#deletestud").click(function () {
-                return deleteStud(this, "stud");
-            });
+        function addPar(btn, prefix) {
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (formCount < 5) {
+                // Clone a form (without event handlers) from the first form
+                var row = $(".parent:first").clone(false).get(0);
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".parent:last").slideDown(300);
 
-            function deletePar(btn, prefix) {
-                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-                if (formCount > 1) {
-                    // Delete the item/form
-                    $(btn).parents('.parent').remove();
-                    var forms = $('.parent'); // Get all the forms
-                    // Update the total number of forms (1 less than before)
-                    $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-                    var i = 0;
-                    // Go through the forms and set their indices, names and IDs
-                    for (formCount = forms.length; i < formCount; i++) {
-                        $(forms.get(i)).children().children().each(function () {
-                            if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
-                        });
-                    }
-                } // End if
-                else {
-                    alert("If you have no previous employment, please check the other box.");
-                }
-                return false;
+                // Remove the bits we don't want in the new row/form
+                // e.g. error messages
+                $(".errorlist", row).remove();
+                $(row).children().removeClass("error");
+
+                // Relabel or rename all the relevant bits
+                $(row).children().children().each(function () {
+                    updateElementIndex(this, prefix, formCount);
+                    $(this).val("");
+                });
+
+                // Add an event handler for the delete item/form link
+                $(row).find("#deletepar").click(function () {
+                    return deletePar(this, prefix);
+                });
+                // Update the total form count
+                $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+            } // End if
+            else {
+                alert("You can only add a maximum of 5 previous employers.");
             }
+            return false;
+        }
+        // Register the click event handlers
+        $("#addpar").click(function () {
+            return addPar(this, "fam");
+        });
 
-            function addPar(btn, prefix) {
-                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-                if (formCount < 5) {
-                    // Clone a form (without event handlers) from the first form
-                    var row = $(".parent:first").clone(false).get(0);
-                    // Insert it after the last form
-                    $(row).removeAttr('id').hide().insertAfter(".parent:last").slideDown(300);
+        $("#deletepar").click(function () {
+            return deletePar(this, "fam");
+        });
 
-                    // Remove the bits we don't want in the new row/form
-                    // e.g. error messages
-                    $(".errorlist", row).remove();
-                    $(row).children().removeClass("error");
-
-                    // Relabel or rename all the relevant bits
-                    $(row).children().children().each(function () {
-                        updateElementIndex(this, prefix, formCount);
-                        $(this).val("");
+        function deleteCS(btn, prefix) {
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (formCount > 1) {
+                // Delete the item/form
+                $(btn).parents('.child').remove();
+                var forms = $('.child'); // Get all the forms
+                // Update the total number of forms (1 less than before)
+                $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                var i = 0;
+                // Go through the forms and set their indices, names and IDs
+                for (formCount = forms.length; i < formCount; i++) {
+                    $(forms.get(i)).children().children().each(function () {
+                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
                     });
+                }
+            } // End if
+            else {
+                alert("If you have no child support to list, please uncheck the box above.");
+            }
+            return false;
+        }
 
-                    // Add an event handler for the delete item/form link
-                    $(row).find("#deletepar").click(function () {
-                        return deletePar(this, prefix);
+        function addCS(btn, prefix) {
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (formCount < 5) {
+                // Clone a form (without event handlers) from the first form
+                var row = $(".child:first").clone(false).get(0);
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".child:last").slideDown(300);
+
+                // Remove the bits we don't want in the new row/form
+                // e.g. error messages
+                $(".errorlist", row).remove();
+                $(row).children().removeClass("error");
+
+                // Relabel or rename all the relevant bits
+                $(row).children().children().each(function () {
+                    updateElementIndex(this, prefix, formCount);
+                    $(this).val("");
+                });
+
+                // Add an event handler for the delete item/form link
+                $(row).find("#deletecs").click(function () {
+                    return deleteCS(this, prefix);
+                });
+                // Update the total form count
+                $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+            } // End if
+            else {
+                alert("Sorry, you can only add a maximum of five child support situations.");
+            }
+            return false;
+        }
+        // Register the click event handlers
+        $("#addcs").click(function () {
+            return addCS(this, "fam");
+        });
+
+        $("#deletecs").click(function () {
+            return deleteCS(this, "fam");
+        });
+
+        function deleteFam(btn, prefix) {
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (formCount > 1) {
+                // Delete the item/form
+                $(btn).parents('.family').remove();
+                var forms = $('.family'); // Get all the forms
+                // Update the total number of forms (1 less than before)
+                $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                var i = 0;
+                // Go through the forms and set their indices, names and IDs
+                for (formCount = forms.length; i < formCount; i++) {
+                    $(forms.get(i)).children().children().each(function () {
+                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
                     });
-                    // Update the total form count
-                    $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
-                } // End if
-                else {
-                    alert("You can only add a maximum of 5 previous employers.");
                 }
-                return false;
+            } // End if
+            else {
+                alert("You must enter at least one family member.");
             }
-            // Register the click event handlers
-            $("#addpar").click(function () {
-                return addPar(this, "fam");
-            });
+            return false;
+        }
 
-            $("#deletepar").click(function () {
-                return deletePar(this, "fam");
-            });
+        function addFam(btn, prefix) {
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (formCount < 5) {
+                // Clone a form (without event handlers) from the first form
+                var row = $(".family:first").clone(false).get(0);
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".family:last").slideDown(300);
 
-            function deleteCS(btn, prefix) {
-                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-                if (formCount > 1) {
-                    // Delete the item/form
-                    $(btn).parents('.child').remove();
-                    var forms = $('.child'); // Get all the forms
-                    // Update the total number of forms (1 less than before)
-                    $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-                    var i = 0;
-                    // Go through the forms and set their indices, names and IDs
-                    for (formCount = forms.length; i < formCount; i++) {
-                        $(forms.get(i)).children().children().each(function () {
-                            if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
-                        });
-                    }
-                } // End if
-                else {
-                    alert("If you have no child support to list, please uncheck the box above.");
-                }
-                return false;
+                // Remove the bits we don't want in the new row/form
+                // e.g. error messages
+                $(".errorlist", row).remove();
+                $(row).children().removeClass("error");
+
+                // Relabel or rename all the relevant bits
+                $(row).children().children().each(function () {
+                    updateElementIndex(this, prefix, formCount);
+                    $(this).val("");
+                });
+
+                // Add an event handler for the delete item/form link
+                $(row).find("#deletefam").click(function () {
+                    return deleteFam(this, prefix);
+                });
+                // Update the total form count
+                $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+            } // End if
+            else {
+                alert("Sorry, you can only request a maximum of five family members.");
             }
+            return false;
+        }
+        // Register the click event handlers
+        $("#addfam").click(function () {
+            return addFam(this, "fam");
+        });
 
-            function addCS(btn, prefix) {
-                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-                if (formCount < 5) {
-                    // Clone a form (without event handlers) from the first form
-                    var row = $(".child:first").clone(false).get(0);
-                    // Insert it after the last form
-                    $(row).removeAttr('id').hide().insertAfter(".child:last").slideDown(300);
-
-                    // Remove the bits we don't want in the new row/form
-                    // e.g. error messages
-                    $(".errorlist", row).remove();
-                    $(row).children().removeClass("error");
-
-                    // Relabel or rename all the relevant bits
-                    $(row).children().children().each(function () {
-                        updateElementIndex(this, prefix, formCount);
-                        $(this).val("");
-                    });
-
-                    // Add an event handler for the delete item/form link
-                    $(row).find("#deletecs").click(function () {
-                        return deleteCS(this, prefix);
-                    });
-                    // Update the total form count
-                    $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
-                } // End if
-                else {
-                    alert("Sorry, you can only add a maximum of five child support situations.");
-                }
-                return false;
-            }
-            // Register the click event handlers
-            $("#addcs").click(function () {
-                return addCS(this, "fam");
-            });
-
-            $("#deletecs").click(function () {
-                return deleteCS(this, "fam");
-            });
-
-            function deleteFam(btn, prefix) {
-                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-                if (formCount > 1) {
-                    // Delete the item/form
-                    $(btn).parents('.family').remove();
-                    var forms = $('.family'); // Get all the forms
-                    // Update the total number of forms (1 less than before)
-                    $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-                    var i = 0;
-                    // Go through the forms and set their indices, names and IDs
-                    for (formCount = forms.length; i < formCount; i++) {
-                        $(forms.get(i)).children().children().each(function () {
-                            if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
-                        });
-                    }
-                } // End if
-                else {
-                    alert("You must enter at least one family member.");
-                }
-                return false;
-            }
-
-            function addFam(btn, prefix) {
-                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-                if (formCount < 5) {
-                    // Clone a form (without event handlers) from the first form
-                    var row = $(".family:first").clone(false).get(0);
-                    // Insert it after the last form
-                    $(row).removeAttr('id').hide().insertAfter(".family:last").slideDown(300);
-
-                    // Remove the bits we don't want in the new row/form
-                    // e.g. error messages
-                    $(".errorlist", row).remove();
-                    $(row).children().removeClass("error");
-
-                    // Relabel or rename all the relevant bits
-                    $(row).children().children().each(function () {
-                        updateElementIndex(this, prefix, formCount);
-                        $(this).val("");
-                    });
-
-                    // Add an event handler for the delete item/form link
-                    $(row).find("#deletefam").click(function () {
-                        return deleteFam(this, prefix);
-                    });
-                    // Update the total form count
-                    $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
-                } // End if
-                else {
-                    alert("Sorry, you can only request a maximum of five family members.");
-                }
-                return false;
-            }
-            // Register the click event handlers
-            $("#addfam").click(function () {
-                return addFam(this, "fam");
-            });
-
-            $("#deletefam").click(function () {
-                return deleteFam(this, "fam");
-            });
-                function validate_dob(){
-                var id = document.getElementById('id_dob');
-                var val = id.value;
-                var newdate = new Date();
-                newdate.setFullYear(newdate.getFullYear()-10)
-                var value = val.split("-");
-                var inputdate = new Date(value[0],value[1]-1,value[2]);
-                if (inputdate.getTime() > newdate.getTime()){
-                    return false;
-                    }
-                else{
-                    return true;
-                }
-            }
+        $("#deletefam").click(function () {
+            return deleteFam(this, "fam");
         });
         function validate_fname(){
-            var id = document.getElementById('id_fname');
-            var val = id.value;
-            var patt = new RegExp('^([a-zA-Z\\-]+)$');
-            return patt.test(val);
+            var patt = new RegExp('^([a-zA-Z]+)$');
+            return patt.test($("#id_fname").val());
         }
         function validate_mname(){
-            var id = document.getElementById('id_mname');
-            var val = id.value;
-            var patt = new RegExp('^([a-zA-Z\\-]+)$');
-            return patt.test(val);
+            var patt = new RegExp('^([a-zA-Z]+)$');
+            return patt.test($("#id_mname").val());
         }
         function validate_lname(){
-            var id = document.getElementById('id_lname');
-            var val = id.value;
-            var patt = new RegExp('^([a-zA-Z\\-]+)$');
-            return patt.test(val);
+            var patt = new RegExp('^([a-zA-Z]+)$');
+            return patt.test($("#id_lname").val());
         }
         function validate_ssn(){
-            var id = document.getElementById('id_ssn');
-            var val = id.value;
             var patt = new RegExp('^(\\d{3}[\\-|\\.\\s]?\d{2}[\\-|\\.\\s]??\\d{4})$');
-            return patt.test(val);
+            return patt.test($("#id_ssn").val());
         }
         function validate_address(){
-            var id = document.getElementById('id_address');
-            var val = id.value;
-            var patt = new RegExp('?:[\\w]+\\s?)+[\\w]+)$');
-            return patt.test(val);
+            var patt = new RegExp('^(?:[\\w]+\\s?)+[\\w]+)$');
+            return patt.test($("#id_address").val());
+        }
+        function validate_dob(){
+            if ($('#id_dob').val() == "")
+            {
+                return false;
+            }
+            var newdate = new Date();
+            newdate.setFullYear(newdate.getFullYear()-10)
+            var value = $('#id_dob').val().split("-");
+            var inputdate = new Date(value[0],value[1]-1,value[2]);
+            if (inputdate.getTime() > newdate.getTime()){
+                return false;
+                }
+            else{
+                return true;
+            }
         }
         function validate_city(){
-            var id = document.getElementById('id_city');
-            var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
-            return patt.test(val);
+            var patt = new RegExp('^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$');
+            return patt.test($("#id_city").val());
         }
         function validate_state(){
-            var id = document.getElementById('id_state');
-            var val = id.value;
-            var patt = new RegExp('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
-            return patt.test(val);
+            var patt = new RegExp('^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$');
+            return patt.test($("#id_state").val());
         }
         function validate_zip(){
-            var id = document.getElementById('id_zip');
-            var val = id.value;
             var patt = new RegExp('^([\\d]{5}|\\d{5}-?\\d{4})$');
-            return patt.test(val);
+            return patt.test($("#id_zip").val());
         }
         function validate_hphone(){
-            var id = document.getElementById('id_hphone');
-            var val = id.value;
             var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-            return patt.test(val);
+            return patt.test($("#id_hphone").val());
         }
         function validate_cphone(){
-            var id = document.getElementById('id_cphone');
-            var val = id.value;
             var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-            return patt.test(val);
+            return patt.test($("#id_cphone").val());
         }
-    </script>
-    {% endblock %}
-</head>
+        
+        $("#1").click(function () {
+            $("#1").css('backgroundColor', 'darkgreen')
+            $("#2,#3,#4,#5,#6,#7,#8").css('backgroundColor', '#1ABC9C');           
+            $("#f2, #f3, #f4, #f5, #f6, #f7, #f8").css('display', 'none');
+            $('#f1')[0].style.display = 'list-item';
+        });
+        $("#2, #next1").click(function () {
+            $("#2").css('backgroundColor', 'darkgreen')
+            $("#1,#3,#4,#5,#6,#7,#8").css('backgroundColor', '#1ABC9C');           
+            $("#f1, #f3, #f4, #f5, #f6, #f7, #f8").css('display', 'none');
+            $('#f2')[0].style.display = 'list-item';
+        });
+        $("#3, #next2").click(function () {
+            $("#3, #11").css('backgroundColor', 'darkgreen')
+            $("#1,#2,#4,#5,#6,#7,#8").css('backgroundColor', '#1ABC9C');           
+            $("#f1, #f2, #f4, #f5, #f6, #f7, #f8").css('display', 'none');
+            $('#f3')[0].style.display = 'list-item';
+        });
+        $("#4, #next3").click(function () {
+            $("#4").css('backgroundColor', 'darkgreen')
+            $("#1,#2,#3,#5,#6,#7,#8").css('backgroundColor', '#1ABC9C');           
+            $("#f1, #f2, #f3, #f5, #f6, #f7, #f8").css('display', 'none');
+            $('#f4')[0].style.display = 'list-item';
+        });
+        $("#5, #next4").click(function () {
+            $("#5").css('backgroundColor', 'darkgreen')
+            $("#1,#2,#3,#4,#6,#7,#8").css('backgroundColor', '#1ABC9C');           
+            $("#f1, #f2, #f3, #f4, #f6, #f7, #f8").css('display', 'none');
+            $('#f5')[0].style.display = 'list-item';
+        });
+        $("#6, #next5").click(function () {
+            $("#6").css('backgroundColor', 'darkgreen')
+            $("#1,#2,#3,#4,#5,#7,#8").css('backgroundColor', '#1ABC9C');           
+            $("#f1, #f2, #f3, #f4, #f5, #f7, #f8").css('display', 'none');
+            $('#f6')[0].style.display = 'list-item';
+        });
+        $("#7, #next6").click(function () {
+            $("#7").css('backgroundColor', 'darkgreen')
+            $("#1,#2,#3,#4,#5,#6,#8").css('backgroundColor', '#1ABC9C');            
+            $("#f1, #f2, #f3, #f4, #f5, #f6, #f8").css('display', 'none');
+            $('#f7')[0].style.display = 'list-item';
+        });
+        $("#8, #next7").click(function () {
+            $("#8").css('backgroundColor', 'darkgreen')
+            $("#1,#2,#3,#4,#5,#6,#7").css('backgroundColor', '#1ABC9C');            
+            $("#f1, #f2, #f3, #f4, #f5, #f6, #f7").css('display', 'none');
+            $('#f8')[0].style.display = 'list-item';
+        });
+        
+        $("#id_fname").blur( function(){
+            if (!validate_fname())
+            {
+                $('#fname_no').css("display", "inline");
+                $('#fname_yes').css("display", "none");
+            }
+            else
+            {
+                $('#fname_no').css("display", "none");
+                $('#fname_yes').css("display", "inline");
+            }
+        });
+        $("#id_mname").blur( function(){
+            if (!validate_mname())
+            {
+                $('#mname_no').css("display", "inline");
+                $('#mname_yes').css("display", "none");
+            }
+            else
+            {
+                $('#mname_no').css("display", "none");
+                $('#mname_yes').css("display", "inline");
+            }
+        });
+        $("#id_lname").blur( function(){
+            if (!validate_lname())
+            {
+                $('#lname_no').css("display", "inline");
+                $('#lname_yes').css("display", "none");
+            }
+            else
+            {
+                $('#lname_no').css("display", "none");
+                $('#lname_yes').css("display", "inline");
+            }
+        });
+        $("#ssn").blur( function(){
+            if (!validate_ssn())
+            {
+                $('#ssn_no').css("display", "inline");
+                $('#ssn_yes').css("display", "none");
+            }
+            else
+            {
+                $('#ssn_no').css("display", "none");
+                $('#ssn_yes').css("display", "inline");
+            }
+        });
+        $("#id_dob").blur( function(){
+            if (!validate_dob())
+            {
+                $('#dob_no').css("display", "inline");
+                $('#dob_yes').css("display", "none");
+            }
+            else
+            {
+                $('#dob_no').css("display", "none");
+                $('#dob_yes').css("display", "inline");
+            }
+        });
+        $("#id_address").blur( function(){
+            if (!validate_address())
+            {
+                $('#address_no').css("display", "inline");
+                $('#address_yes').css("display", "none");
+            }
+            else
+            {
+                $('#address_no').css("display", "none");
+                $('#address_yes').css("display", "inline");
+            }
+        });
+        $("#id_city").blur( function(){
+            if (!validate_city())
+            {
+                $('#city_no').css("display", "inline");
+                $('#city_yes').css("display", "none");
+            }
+            else
+            {
+                $('#city_no').css("display", "none");
+                $('#city_yes').css("display", "inline");
+            }
+        });
+        $("#id_zip").blur( function(){
+            if (!validate_zip())
+            {
+                $('#zip_no').css("display", "inline");
+                $('#zip_yes').css("display", "none");
+            }
+            else
+            {
+                $('#zip_no').css("display", "none");
+                $('#zip_yes').css("display", "inline");
+            }
+        });
+        $("#id_hphone").blur( function(){
+            if (!validate_hphone())
+            {
+                $('#hphone_no').css("display", "inline");
+                $('#hphone_yes').css("display", "none");
+            }
+            else
+            {
+                $('#hphone_no').css("display", "none");
+                $('#hphone_yes').css("display", "inline");
+            }
+        });
+        $("#id_cphone").blur( function(){
+            if (!validate_cphone())
+            {
+                $('#cphone_no').css("display", "inline");
+                $('#cphone_yes').css("display", "none");
+            }
+            else
+            {
+                $('#cphone_no').css("display", "none");
+                $('#cphone_yes').css("display", "inline");
+            }
+        });
+        
+        $('[name="attached"]').click( function() {
+                   if (this.value == "IS"){
+                        $('#fileli').css("display", "list-item");
+                       }
+                   else{
+                        $('#fileli').css("display", "none");
+                       }
+                });
+            if( $('[name="attached"]').val() == 'IS') {
+                $('#fileli').css("display", "list-item");
+            }
+            else {
+                $('#fileli').css("display", "none");
+            }
+        $('[name="attached2"]').click( function() {
+                   if (this.value == "IS"){
+                        $('#fileli2').css("display", "list-item");
+                       }
+                   else{
+                        $('#fileli2').css("display", "none");
+                       }
+                });
+            if( $('[name="attached2"]').val() == 'IS') {
+                $('#fileli2').css("display", "list-item");
+            }
+            else {
+                $('#fileli2').css("display", "none");
+            }
+            
+        $('[name="employed"]').click( function() {
+                   if (this.value == "WAS"){
+                        $('#studentli').css("display", "list-item");
+                       }
+                   else{
+                        $('#studentli').css("display", "none");
+                       }
+                });
+            if( $('[name="employed"]').val() == 'WAS' ){
+                $('#studentli').css("display", "list-item");
+            }
+            else {
+                $('#studentli').css("display", "none");
+            }
+        $('[name="employed2"]').click( function() {
+               if (this.value == "WAS"){
+                    $('#parentli').css("display", "list-item");
+                   }
+               else{
+                    $('#parentli').css("display", "none");
+                   }
+            });
+        if( $('[name="employed2"]').val() == 'WAS' ){
+            $('#parentli').css("display", "list-item");
+        }
+        else {
+            $('#parentli').css("display", "none");
+        }
+        $("#id_childsupport").click( function() {
+               if ($('#csli').css('display') == 'none'){               
+                    $('#csli').css("display", "list-item");
+                   }
+               else{               
+                    $('#csli').css("display", "none");
+                   }
+            });
+        if( $('#csli').css('display') == 'none'){
+            $('#csli').css("display", "list-item");
+        }
+        else {
+            $('#csli').css("display", "none");
+        }
+    });
+</script>
+{% endblock %}
 {% block content %}
-<body>
-    {{formsetfam.management_form}}
-    {{formsetstud.management_form}}
-    {{formsetpar.management_form}}
-    {{formsetcs.management_form}}
-    <form action="" method="post" class = "form" enctype="multipart/form-data"> {% csrf_token %}
-    <fieldset class="blockLabels">
+{{formsetfam.management_form}}
+{{formsetstud.management_form}}
+{{formsetpar.management_form}}
+{{formsetcs.management_form}}
+<form action="" method="post" class = "form" enctype="multipart/form-data"> {% csrf_token %}
+    <ol><li class="btnHolder"><input type="button" id="1" name="about" style="background-color:darkgreen;" value="About" class="button"/>
+            <input type="button" id="2" name="sinfo" value="Student Info" class="button"/>
+            <input type="button" id="3" name="faminfo" value="Family Info" class="button"/>
+            <input type="button" id="4" name="sincome" value="Student Income" class="button"/>
+            <input type="button" id="5" name="pincome" value="Parent Income" class="button"/>            
+            <input type="button" id="6" name="snap" value="SNAP" class="button"/>
+            <input type="button" id="7" name="child" value="Child Support" class="button"/>
+            <input type="button" id="8" name="legal" value="Legal and Submit" class="button"/>
+        </li>
+    </ol>
+    <fieldset id="f1" class="blockLabels">
         <legend>About this form</legend>
         <ol>
             <li>Your {{ year }}-{{ year2 }} Free Application for Federal Student Aid (FAFSA) was
@@ -418,8 +640,9 @@
             financial aid will not be delayed.
             </li>
         </ol>
+        <input type="button" id="next1" name="next1" value="Next" class="button"/>
     </fieldset>
-    <fieldset class="blockLabels">
+    <fieldset id="f2" class="blockLabels" style='display:none;'>
         <legend>Dependent Student's Information</legend>
         <ol>
             <li class="ctrlHolder"><h3><label for="id_fname">First Name</label></h3>
@@ -521,8 +744,9 @@
                 </div>
             </li>
         </ol>
+        <input type="button" id="next2" name="next2" value="Next" class="button"/>
     </fieldset>
-    <fieldset class="blockLabels">
+    <fieldset id="f3" class="blockLabels" style='display:none;'>
         <legend>Dependent Student's Family Information</legend>
         <ol>
             <li>List below the people in your parent(s)' household. Include:
@@ -543,12 +767,14 @@
                 <div class = family>
                     <li class="ctrlHolder"><h3>{{form}}</h3></li>
                     <p style=""><a class="delete" id="deletefam" href="#">Delete</a></p>
+                    <hr>
                 </div>
             <p><a id="addfam" href="#">Add more family</a></p>
             {% endfor %}
         </ol>
+        <input type="button" id="next3" name="next3" value="Next" class="button"/>
     </fieldset>
-    <fieldset class="blockLabels">
+    <fieldset id="f4" class="blockLabels" style='display:none;'>
         <legend>Dependent Student's Income Information to Be Verified</legend>
         <ol>
             <li>1. TAX RETURN FILERS-<b>Important Note</b>: If the student filed, or will file, an amended {{ year0 }} IRS tax return, the student must
@@ -626,13 +852,15 @@
                     <div class = student>
                         <li class="ctrlHolder"><h3>{{form}}</h3></li>
                         <p style=""><a class="delete" id="deletestud" href="#">Delete</a></p>
+                        <hr>
                     </div>
                 <p><a id="addstud" href="#">Add more employers</a></p>
                 {% endfor %}
             </div>
         </ol>
+        <input type="button" id="next4" name="next4" value="Next" class="button"/>
     </fieldset>
-    <fieldset class="blockLabels">
+    <fieldset id="f5" class="blockLabels" style='display:none;'>
         <legend>Parent's Income Information to Be Verified</legend>
         <ol>
             <li>NOTE:If two parents were reported in Section B of this worksheet, the
@@ -709,13 +937,15 @@
                     <div class = parent>
                         <li class="ctrlHolder"><h3>{{form}}</h3></li>
                         <p style=""><a class="delete" id="deletepar" href="#">Delete</a></p>
+                        <hr>
                     </div>
                 <p><a id="addpar" href="#">Add more employers</a></p>
                 {% endfor %}
             </div>
         </ol>
+        <input type="button" id="next5" name="next5" value="Next" class="button"/>
     </fieldset>
-    <fieldset class="blockLabels">
+    <fieldset id="f6" class="blockLabels" style='display:none;'>
         <legend>SNAP Benefits</legend>
         <ol>
             <li>Check the box below if someone in the student's parent's household (listed in Section B) received benefits from the
@@ -727,8 +957,9 @@
                 <div class='required'><input type='checkbox' name='snapbenefits' id='id_snapbenefits'/></div></h3>
             </li>
         </ol>
+        <input type="button" id="next6" name="next6" value="Next" class="button"/>
     </fieldset>
-    <fieldset class="blockLabels">
+    <fieldset id="f7" class="blockLabels" style='display:none;'>
         <legend>Child Support</legend>
         <ol>
             <li>Check the box below if One (or both) of the student's parents listed in Section B of this worksheet
@@ -746,13 +977,15 @@
                     <div class = child>
                         <li class="ctrlHolder"><h3>{{form}}</h3></li>
                         <p style=""><a class="delete" id="deletecs" href="#">Delete</a></p>
+                        <hr>
                     </div>
                 <p><a id="addcs" href="#">Add more child support</a></p>
                 {% endfor %}
             </div>
         </ol>
+        <input type="button" id="next7" name="next7" value="Next" class="button"/>
     </fieldset>
-    <fieldset class="blockLabels">
+    <fieldset id="f8" class="blockLabels" style='display:none;'>
         <legend>Warning and Submit</legend>
         <ol>
             <li><b>If you purposely give false or misleading
@@ -765,300 +998,7 @@
                 <label for="submit">&nbsp;&nbsp;</label>
                 <input type="Submit" name="submit" value="Submit" class="button"/>
             </li>
-        </div>
         </ol>
     </fieldset>
-    </form>
-</body>
-    <script type='text/javascript'>
-
-        document.getElementById('fname_no').style.display='none';
-        document.getElementById('fname_yes').style.display='none';
-        document.getElementById('mname_no').style.display='none';
-        document.getElementById('mname_yes').style.display='none';
-        document.getElementById('lname_no').style.display='none';
-        document.getElementById('lname_yes').style.display='none';
-        document.getElementById('ssn_no').style.display='none';
-        document.getElementById('ssn_yes').style.display='none';
-        document.getElementById('dob_no').style.display='none';
-        document.getElementById('dob_yes').style.display='none';
-        document.getElementById('address_no').style.display='none';
-        document.getElementById('address_yes').style.display='none';
-        document.getElementById('city_no').style.display='none';
-        document.getElementById('city_yes').style.display='none';
-        document.getElementById('state_no').style.display='none';
-        document.getElementById('state_yes').style.display='none';
-        document.getElementById('zip_no').style.display='none';
-        document.getElementById('zip_yes').style.display='none';
-        document.getElementById('hphone_no').style.display='none';
-        document.getElementById('hphone_yes').style.display='none';
-        document.getElementById('cphone_no').style.display='none';
-        document.getElementById('cphone_yes').style.display='none';
-
-        var element = document.getElementById('id_fname');
-        element.onblur = function(){
-            var n=document.getElementById('fname_no');
-            var y=document.getElementById('fname_yes');
-            if (!validate_fname())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-        var element = document.getElementById('id_mname');
-        element.onblur = function(){
-            var n=document.getElementById('mname_no');
-            var y=document.getElementById('mname_yes');
-            if (!validate_mname())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-        var element = document.getElementById('id_lname');
-        element.onblur = function(){
-            var n=document.getElementById('lname_no');
-            var y=document.getElementById('lname_yes');
-            if (!validate_lname())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-        var element = document.getElementById('id_ssn');
-        element.onblur = function(){
-            var n=document.getElementById('ssn_no');
-            var y=document.getElementById('ssn_yes');
-            if (!validate_ssn())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-        var element = document.getElementById('id_dob');
-        element.onblur = function() {
-            var n=document.getElementById('dob_no');
-            var y=document.getElementById('dob_yes');
-            if(!validate_dob()){
-                n.style.display='inline'; y.style.display='none';
-            }
-            else {
-                n.style.display='none'; y.style.display='inline';
-            }
-        };
-        var element = document.getElementById('id_address');
-        element.onblur = function(){
-            var n=document.getElementById('address_no');
-            var y=document.getElementById('address_yes');
-            if (!validate_address())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-        var element = document.getElementById('id_city');
-        element.onblur = function(){
-            var n=document.getElementById('city_no');
-            var y=document.getElementById('city_yes');
-            if (!validate_city())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-        var element = document.getElementById('id_state');
-        element.onblur = function(){
-            var n=document.getElementById('state_no');
-            var y=document.getElementById('state_yes');
-            if (!validate_state())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-        var element = document.getElementById('id_zip');
-        element.onblur = function(){
-            var n=document.getElementById('zip_no');
-            var y=document.getElementById('zip_yes');
-            if (!validate_zip())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-        var element = document.getElementById('id_hphone');
-        element.onblur = function(){
-            var n=document.getElementById('hphone_no');
-            var y=document.getElementById('hphone_yes');
-            if (!validate_hphone())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-        var element = document.getElementById('id_cphone');
-        element.onblur = function(){
-            var n=document.getElementById('cphone_no');
-            var y=document.getElementById('cphone_yes');
-            if (!validate_cphone())
-            {
-                n.style.display='inline';
-                y.style.display='none';
-            }
-            else
-            {
-                n.style.display='none';
-                y.style.display='inline';
-            }
-        };
-
-        var element = document.getElementsByName('attached');
-        for (var i = 0; i < element.length; i++)
-        {
-            element[i].onclick = function() {
-               var value = this.value;
-               var othervar = document.getElementById('fileli');
-               if (value == "IS"){
-                   othervar.style.display = 'list-item';
-                   }
-               else{
-                   othervar.style.display = 'none';
-                   }
-            };
-        }
-        if( document.getElementsByName('attached').value == 'IS' ){
-            document.getElementById('fileli').style.display = 'list-item';
-        }
-        else {
-            document.getElementById('fileli').style.display = 'none';
-        }
-        element = document.getElementsByName('attached2');
-        for (var i = 0; i < element.length; i++)
-        {
-            element[i].onclick = function() {
-               var value = this.value;
-               var othervar = document.getElementById('fileli2');
-               if (value == "IS"){
-                   othervar.style.display = 'list-item';
-                   }
-               else{
-                   othervar.style.display = 'none';
-                   }
-            };
-        }
-        if( document.getElementsByName('attached2').value == 'IS' ){
-            document.getElementById('fileli2').style.display = 'list-item';
-        }
-        else {
-            document.getElementById('fileli2').style.display = 'none';
-        }
-        element = document.getElementsByName('employed');
-        for (var i = 0; i < element.length; i++)
-        {
-            element[i].onclick = function() {
-               var value = this.value;
-               var othervar = document.getElementById('studentli');
-               if (value == "WAS"){
-                   othervar.style.display = 'list-item';
-                   }
-               else{
-                   othervar.style.display = 'none';
-                   }
-            };
-        }
-        if( document.getElementsByName('employed').value == 'WAS' ){
-            document.getElementById('studentli').style.display = 'list-item';
-        }
-        else {
-            document.getElementById('studentli').style.display = 'none';
-        }
-        element = document.getElementsByName('employed2');
-        for (var i = 0; i < element.length; i++)
-        {
-            element[i].onclick = function() {
-               var value = this.value;
-               var othervar = document.getElementById('parentli');
-               if (value == "WAS"){
-                   othervar.style.display = 'list-item';
-                   }
-               else{
-                   othervar.style.display = 'none';
-                   }
-            };
-        }
-        if( document.getElementsByName('employed2').value == 'WAS' ){
-            document.getElementById('parentli').style.display = 'list-item';
-        }
-        else {
-            document.getElementById('parentli').style.display = 'none';
-        }
-
-        element = document.getElementsByName('childsupport');
-        for (var i = 0; i < element.length; i++)
-        {
-            element[i].onclick = function() {
-               var othervar = document.getElementById('csli');
-               if (othervar.style.display == 'none'){
-                   othervar.style.display = 'list-item';
-                   }
-               else{
-                   othervar.style.display = 'none';
-                   }
-            };
-        }
-        if( document.getElementById('csli').style.display == 'none'){
-            document.getElementById('csli').style.display = 'list-item';
-        }
-        else {
-            document.getElementById('csli').style.display = 'none';
-        }
-    </script>
-    {% endblock %}
-</html>
-
-
+</form>
+{% endblock %}
