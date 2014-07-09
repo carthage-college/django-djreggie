@@ -5,6 +5,18 @@
 {% block content_head %}
     <h1 id="page-title">FERPA Authorization</h1>
 {% endblock %}
+{% block javascript %}
+<script>
+    $('[name="consent"]').click( function() {
+        if (this.value == "NOCONSENT"){
+               $('#hidden').css("display", "list-item");
+               }
+           else{
+               $('#hidden').css("display", "none");
+               }
+        });
+</script>
+{% endblock %}
 {% block content %}
 <form action='' method='post' class = "form">{% csrf_token %}
     {{ form.non_field_errors }}
@@ -54,20 +66,4 @@
         </ol>
     </fieldset>
 </form>
-<script>
-    var element = document.getElementsByName('consent');
-       for (var i = 0; i < element.length; i++)
-       {
-           element[i].onclick = function() {
-              var value = this.value;
-              var othervar = document.getElementById('hidden');
-              if (value == "NOCONSENT"){
-                  othervar.style.display = 'list-item';
-                  }
-              else{
-                  othervar.style.display = 'none';
-                  }
-           };
-       }
-</script>
 {% endblock %}

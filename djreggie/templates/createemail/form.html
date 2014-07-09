@@ -6,7 +6,9 @@
     <h1 id="page-title">Create an Email</h1>
 {% endblock %}
 {% block javascript %}
-<script type='text/javascript'>
+<script type='text/javascript'>    
+    $("img.hidden").css("display", "none");
+    
     function validate_unique_id(){
         var patt = new RegExp('^(\\d{5,7})$');
         return patt.test($("#id_unique_id").val());
@@ -42,6 +44,47 @@
             return true;
         }
     }
+    
+    $("#id_name_of_account_requested").blur( function() {
+        if(!validate_name_of_account_requested()){ 
+            $('#name_of_account_requested_no').css("display", "inline");
+            $('#name_of_account_requested_yes').css("display", "none");
+        }
+        else {
+            $('#name_of_account_requested_no').css("display", "none");
+            $('#name_of_account_requested_yes').css("display", "inline");
+        }
+    });
+    $("#id_needed_until").blur( function() {               
+        if(!validate_needed_until()){ 
+            $('#needed_until_no').css("display", "inline");
+            $('#needed_until_yes').css("display", "none");
+        }
+        else {
+            $('#needed_until_no').css("display", "none");
+            $('#needed_until_yes').css("display", "inline");
+        }
+    });
+    $("#id_purpose_of_account").blur( function() {               
+        if(!validate_purpose_of_account()){ 
+            $('#purpose_of_account_no').css("display", "inline");
+            $('#purpose_of_account_yes').css("display", "none");
+        }
+        else {
+            $('#purpose_of_account_no').css("display", "none");
+            $('#purpose_of_account_yes').css("display", "inline");
+        }
+    });
+    $("#id_names_of_all_users").blur( function() {              
+        if(!validate_names_of_all_users()){ 
+            $('#names_of_all_users_no').css("display", "inline");
+            $('#names_of_all_users_yes').css("display", "none");
+        }
+        else {
+            $('#names_of_all_users_no').css("display", "none");
+            $('#names_of_all_users_yes').css("display", "inline");
+        }
+    });   
 </script>
 {% endblock %}
 {% block content %}
@@ -89,60 +132,6 @@
         </ol>
     </fieldset>
 </form>
-<script type='text/javascript'>
-    
-    document.getElementById('name_of_account_requested_no').style.display='none';
-    document.getElementById('name_of_account_requested_yes').style.display='none';
-    document.getElementById('needed_until_no').style.display='none';
-    document.getElementById('needed_until_yes').style.display='none';
-    document.getElementById('purpose_of_account_no').style.display='none';
-    document.getElementById('purpose_of_account_yes').style.display='none';
-    document.getElementById('names_of_all_users_no').style.display='none';
-    document.getElementById('names_of_all_users_yes').style.display='none';
-    var element = document.getElementById('id_unique_id');
-    element = document.getElementById('id_name_of_account_requested')
-    element.onblur = function() {
-        var n=document.getElementById('name_of_account_requested_no');
-        var y=document.getElementById('name_of_account_requested_yes');
-        if(!validate_name_of_account_requested()){ 
-            n.style.display='inline'; y.style.display='none'; 
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_needed_until')
-    element.onblur = function() {                               
-        var n=document.getElementById('needed_until_no');
-        var y=document.getElementById('needed_until_yes');
-        if(!validate_needed_until()){ 
-            n.style.display='inline'; y.style.display='none'; 
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_purpose_of_account')
-    element.oninput = function() {                               
-        var n=document.getElementById('purpose_of_account_no');
-        var y=document.getElementById('purpose_of_account_yes');
-        if(!validate_purpose_of_account()){ 
-            n.style.display='inline'; y.style.display='none'; 
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };
-    element = document.getElementById('id_names_of_all_users')
-    element.oninput = function() {                               
-        var n=document.getElementById('names_of_all_users_no');
-        var y=document.getElementById('names_of_all_users_yes');
-        if(!validate_names_of_all_users()){ 
-            n.style.display='inline'; y.style.display='none'; 
-        }
-        else {
-            n.style.display='none'; y.style.display='inline';
-        }
-    };        
+<script type='text/javascript'>     
 </script>
 {% endblock %}

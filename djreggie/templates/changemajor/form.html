@@ -16,22 +16,16 @@
 {% block javascript %}
 <script type='text/javascript'>
     function validate_student_id(){
-        var id = document.getElementById('id_student_id');
-        var val = id.value;
         var patt = new RegExp('^(\\d{5,7})$');
-        return patt.test(val);            
+        return patt.test($("#id_student_id").val());            
     }
     function validate_name(){
-        var id = document.getElementById('id_name');
-        var val = id.value;
         var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
-        return patt.test(val);        
+        return patt.test($("#id_name").val());        
     }
     function validate_advisor(){
-        var id = document.getElementById('id_advisor');
-        var val = id.value;
         var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
-        return patt.test(val);        
+        return patt.test($("#id_advisor").val());        
     }
 </script>
 {% endblock %}
