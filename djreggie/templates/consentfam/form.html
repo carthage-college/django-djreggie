@@ -29,9 +29,9 @@ $(document).ready(function () {
             var i = 0;
             // Go through the forms and set their indices, names and IDs
             for (formCount = forms.length; i < formCount; i++) {
-                $(forms.get(i)).children().children().each(function () {
-                    if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
-                });
+                $(forms.get(i)).find('[id*="Parent_or_Third_Party"], [for*=Parent_or_Third_Party]').each(function () {
+                updateElementIndex(this, prefix, i);
+            });
             }
         } // End if
         else {
@@ -47,19 +47,19 @@ $(document).ready(function () {
             // Clone a form (without event handlers) from the first form
             var row = $(".fam:first").clone(false).get(0);
             // Insert it after the last form
-            $(row).removeAttr('id').hide().insertAfter(".fam:last").slideDown(300);
+            
 
             // Remove the bits we don't want in the new row/form
             // e.g. error messages
             $(".errorlist", row).remove();
             $(row).children().removeClass("error");
-
-            // Relabel or rename all the relevant bits
-            $(row).children().children().each(function () {
+            //rename new elements
+            $(row).find('[id*="Parent_or_Third_Party"], [for*=Parent_or_Third_Party]').each(function () {
                 updateElementIndex(this, prefix, formCount);
-                $(this).val("");
+                if($(this).attr('type') == 'text') $(this).val("");
+                if($(this).attr('type') == 'radio') $(this).attr("checked", false)
             });
-
+            $(row).removeAttr('id').hide().insertAfter(".fam:last").slideDown(300);
             // Add an event handler for the delete item/form link 
             $(row).find(".delete").click(function () {
                 return deleteForm(this, prefix);
