@@ -73,7 +73,7 @@
         return patt.test($("#id_zip").val());
     }
     
-    $("#id_student_id").blur( function(){
+    $("#id_student_id").change( function(){
         if (!validate_student_id())
         {
             $('#student_id_no').css("display", "inline");
@@ -85,7 +85,7 @@
         }
     });
     
-    $("#id_fname").blur( function(){
+    $("#id_fname").change( function(){
         if (!validate_fname())
         {
             $('#fname_no').css("display", "inline");
@@ -96,7 +96,7 @@
             $('#fname_yes').css("display", "inline");
         }
     });
-    $("#id_mname").blur( function(){
+    $("#id_mname").change( function(){
         if (!validate_mname())
         {
             $('#mname_no').css("display", "inline");
@@ -107,7 +107,7 @@
             $('#mname_yes').css("display", "inline");
         }
     });
-    $("#id_lname").blur( function(){
+    $("#id_lname").change( function(){
         if (!validate_lname())
         {
             $('#lname_no').css("display", "inline");
@@ -118,7 +118,7 @@
             $('#lname_yes').css("display", "inline");
         }
     });
-    $("#id_best_phone").blur( function(){
+    $("#id_best_phone").change( function(){
         if(!validate_best_phone())
         {
             $('#best_phone_no').css("display", "inline");
@@ -129,7 +129,7 @@
             $('#best_phone_yes').css("display", "inline");
         }
     });
-    $("#id_cell").blur( function(){
+    $("#id_cell").change( function(){
         if(!validate_cell())
         {
             $('#cell_no').css("display", "inline");
@@ -140,7 +140,7 @@
             $('#cell_yes').css("display", "inline");
         }
     });
-    $("#id_email").blur( function(){
+    $("#id_email").change( function(){
         if(!validate_email())
         {
             $('#email_no').css("display", "inline");
@@ -151,7 +151,7 @@
             $('#email_yes').css("display", "inline");
         }
     });
-    $("#id_address").blur( function(){
+    $("#id_address").change( function(){
         if(!validate_address())
         {
             $('#address_no').css("display", "inline");
@@ -162,7 +162,7 @@
             $('#address_yes').css("display", "inline");
         }
     });
-    $("#id_city").blur( function(){
+    $("#id_city").change( function(){
         if(!validate_city())
         {
             $('#city_no').css("display", "inline");
@@ -173,7 +173,7 @@
             $('#city_yes').css("display", "inline");
         }
     });
-    $("#id_state").blur( function(){
+    $("#id_state").change( function(){
         if(!validate_state())
         {
             $('#state_no').css("display", "inline");
@@ -184,7 +184,7 @@
             $('#state_yes').css("display", "inline");
         }
     });
-    $("#id_zip").blur( function(){
+    $("#id_zip").change( function(){
         if(!validate_zip())
         {
             $('#zip_no').css("display", "inline");

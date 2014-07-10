@@ -34,7 +34,7 @@
             width:100%;
     }
     .hidden{
-            display:none;
+          display:inline;
     }
     input[type=checkbox]
     {
@@ -49,6 +49,7 @@
 {% block javascript %}
 <script type='text/javascript'>
     $(document).ready(function () {
+        $("img.hidden").css("display", "none");
         // Code adapted from http://djangosnippets.org/snippets/1389/
         function updateElementIndex(el, prefix, ndx) {
             var id_regex = new RegExp('(' + prefix + '-\\d+-)');
@@ -306,16 +307,33 @@
         $("#deletefam").click(function () {
             return deleteFam(this, "fam");
         });
+        
+        //deals with the header buttons
+        $(".actionbutton").click(function () {
+            $("#1,#2,#3,#4,#5,#6,#7,#8").css('backgroundColor', '#1ABC9C');
+            $(this).css('backgroundColor', 'darkgreen')
+            $("#f1,#f2,#f3,#f4,#f5,#f6,#f7,#f8").hide();
+            $("#f" + $(this).attr('id')).toggle();
+        });
+        
+        //deals with the next buttons
+        $(".nextbutton").click(function () {
+            $("#1,#2,#3,#4,#5,#6,#7,#8").css('backgroundColor', '#1ABC9C');
+            $($(this).attr('id').replace("next", "#")).css('backgroundColor', 'darkgreen')
+            $("#f1,#f2,#f3,#f4,#f5,#f6,#f7,#f8").hide();
+            $("#f" + $(this).attr('id').replace("next", "")).toggle();
+        });
+        
         function validate_fname(){
-            var patt = new RegExp('^([a-zA-Z]+)$');
+            var patt = new RegExp('/^([a-z]+)$/i');
             return patt.test($("#id_fname").val());
         }
         function validate_mname(){
-            var patt = new RegExp('^([a-zA-Z]+)$');
+            var patt = new RegExp('/^([a-z]+)$/i');
             return patt.test($("#id_mname").val());
         }
         function validate_lname(){
-            var patt = new RegExp('^([a-zA-Z]+)$');
+            var patt = new RegExp('/^([a-z]+)$/i');
             return patt.test($("#id_lname").val());
         }
         function validate_ssn(){
@@ -343,11 +361,11 @@
             }
         }
         function validate_city(){
-            var patt = new RegExp('^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$');
+            var patt = new RegExp('^((?:[a-zA-Z]+(?i)\s?)+[a-zA-Z]+)$');
             return patt.test($("#id_city").val());
         }
         function validate_state(){
-            var patt = new RegExp('^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$');
+            var patt = new RegExp('^((?:[a-zA-Z]+(?i)\s?)+[a-zA-Z]+)$');
             return patt.test($("#id_state").val());
         }
         function validate_zip(){
@@ -363,227 +381,72 @@
             return patt.test($("#id_cphone").val());
         }
         
-        $("#1").click(function () {
-            $("#1").css('backgroundColor', 'darkgreen')
-            $("#2,#3,#4,#5,#6,#7,#8").css('backgroundColor', '#1ABC9C');           
-            $("#f2, #f3, #f4, #f5, #f6, #f7, #f8").css('display', 'none');
-            $('#f1')[0].style.display = 'list-item';
-        });
-        $("#2, #next1").click(function () {
-            $("#2").css('backgroundColor', 'darkgreen')
-            $("#1,#3,#4,#5,#6,#7,#8").css('backgroundColor', '#1ABC9C');           
-            $("#f1, #f3, #f4, #f5, #f6, #f7, #f8").css('display', 'none');
-            $('#f2')[0].style.display = 'list-item';
-        });
-        $("#3, #next2").click(function () {
-            $("#3, #11").css('backgroundColor', 'darkgreen')
-            $("#1,#2,#4,#5,#6,#7,#8").css('backgroundColor', '#1ABC9C');           
-            $("#f1, #f2, #f4, #f5, #f6, #f7, #f8").css('display', 'none');
-            $('#f3')[0].style.display = 'list-item';
-        });
-        $("#4, #next3").click(function () {
-            $("#4").css('backgroundColor', 'darkgreen')
-            $("#1,#2,#3,#5,#6,#7,#8").css('backgroundColor', '#1ABC9C');           
-            $("#f1, #f2, #f3, #f5, #f6, #f7, #f8").css('display', 'none');
-            $('#f4')[0].style.display = 'list-item';
-        });
-        $("#5, #next4").click(function () {
-            $("#5").css('backgroundColor', 'darkgreen')
-            $("#1,#2,#3,#4,#6,#7,#8").css('backgroundColor', '#1ABC9C');           
-            $("#f1, #f2, #f3, #f4, #f6, #f7, #f8").css('display', 'none');
-            $('#f5')[0].style.display = 'list-item';
-        });
-        $("#6, #next5").click(function () {
-            $("#6").css('backgroundColor', 'darkgreen')
-            $("#1,#2,#3,#4,#5,#7,#8").css('backgroundColor', '#1ABC9C');           
-            $("#f1, #f2, #f3, #f4, #f5, #f7, #f8").css('display', 'none');
-            $('#f6')[0].style.display = 'list-item';
-        });
-        $("#7, #next6").click(function () {
-            $("#7").css('backgroundColor', 'darkgreen')
-            $("#1,#2,#3,#4,#5,#6,#8").css('backgroundColor', '#1ABC9C');            
-            $("#f1, #f2, #f3, #f4, #f5, #f6, #f8").css('display', 'none');
-            $('#f7')[0].style.display = 'list-item';
-        });
-        $("#8, #next7").click(function () {
-            $("#8").css('backgroundColor', 'darkgreen')
-            $("#1,#2,#3,#4,#5,#6,#7").css('backgroundColor', '#1ABC9C');            
-            $("#f1, #f2, #f3, #f4, #f5, #f6, #f7").css('display', 'none');
-            $('#f8')[0].style.display = 'list-item';
-        });
+        var validators = {"fname": validate_fname, "mname": validate_mname, "lname": validate_lname};
         
-        $("#id_fname").blur( function(){
-            if (!validate_fname())
+        $(".val").change( function(){
+            if (!validators[$(this).attr('name')]())
             {
-                $('#fname_no').css("display", "inline");
-                $('#fname_yes').css("display", "none");
+                $("#"+$(this).attr('name')+"_no").show();
+                $("#"+$(this).attr('name')+"_yes").hide();
             }
             else
             {
-                $('#fname_no').css("display", "none");
-                $('#fname_yes').css("display", "inline");
-            }
-        });
-        $("#id_mname").blur( function(){
-            if (!validate_mname())
-            {
-                $('#mname_no').css("display", "inline");
-                $('#mname_yes').css("display", "none");
-            }
-            else
-            {
-                $('#mname_no').css("display", "none");
-                $('#mname_yes').css("display", "inline");
-            }
-        });
-        $("#id_lname").blur( function(){
-            if (!validate_lname())
-            {
-                $('#lname_no').css("display", "inline");
-                $('#lname_yes').css("display", "none");
-            }
-            else
-            {
-                $('#lname_no').css("display", "none");
-                $('#lname_yes').css("display", "inline");
-            }
-        });
-        $("#ssn").blur( function(){
-            if (!validate_ssn())
-            {
-                $('#ssn_no').css("display", "inline");
-                $('#ssn_yes').css("display", "none");
-            }
-            else
-            {
-                $('#ssn_no').css("display", "none");
-                $('#ssn_yes').css("display", "inline");
-            }
-        });
-        $("#id_dob").blur( function(){
-            if (!validate_dob())
-            {
-                $('#dob_no').css("display", "inline");
-                $('#dob_yes').css("display", "none");
-            }
-            else
-            {
-                $('#dob_no').css("display", "none");
-                $('#dob_yes').css("display", "inline");
-            }
-        });
-        $("#id_address").blur( function(){
-            if (!validate_address())
-            {
-                $('#address_no').css("display", "inline");
-                $('#address_yes').css("display", "none");
-            }
-            else
-            {
-                $('#address_no').css("display", "none");
-                $('#address_yes').css("display", "inline");
-            }
-        });
-        $("#id_city").blur( function(){
-            if (!validate_city())
-            {
-                $('#city_no').css("display", "inline");
-                $('#city_yes').css("display", "none");
-            }
-            else
-            {
-                $('#city_no').css("display", "none");
-                $('#city_yes').css("display", "inline");
-            }
-        });
-        $("#id_zip").blur( function(){
-            if (!validate_zip())
-            {
-                $('#zip_no').css("display", "inline");
-                $('#zip_yes').css("display", "none");
-            }
-            else
-            {
-                $('#zip_no').css("display", "none");
-                $('#zip_yes').css("display", "inline");
-            }
-        });
-        $("#id_hphone").blur( function(){
-            if (!validate_hphone())
-            {
-                $('#hphone_no').css("display", "inline");
-                $('#hphone_yes').css("display", "none");
-            }
-            else
-            {
-                $('#hphone_no').css("display", "none");
-                $('#hphone_yes').css("display", "inline");
-            }
-        });
-        $("#id_cphone").blur( function(){
-            if (!validate_cphone())
-            {
-                $('#cphone_no').css("display", "inline");
-                $('#cphone_yes').css("display", "none");
-            }
-            else
-            {
-                $('#cphone_no').css("display", "none");
-                $('#cphone_yes').css("display", "inline");
+                $("#"+$(this).attr('name')+"_no").hide();
+                $("#"+$(this).attr('name')+"_yes").show();
             }
         });
         
         $('[name="attached"]').click( function() {
-                   if (this.value == "IS"){
-                        $('#fileli').css("display", "list-item");
-                       }
-                   else{
-                        $('#fileli').css("display", "none");
-                       }
-                });
-            if( $('[name="attached"]').val() == 'IS') {
-                $('#fileli').css("display", "list-item");
-            }
-            else {
-                $('#fileli').css("display", "none");
-            }
+            if (this.value == "IS"){
+                 $('#fileli').css("display", "list-item");
+                }
+            else{
+                 $('#fileli').css("display", "none");
+                }
+         });
+        if( $('[name="attached"]').val() == 'IS') {
+            $('#fileli').css("display", "list-item");
+        }
+        else {
+            $('#fileli').css("display", "none");
+        }
         $('[name="attached2"]').click( function() {
-                   if (this.value == "IS"){
-                        $('#fileli2').css("display", "list-item");
-                       }
-                   else{
-                        $('#fileli2').css("display", "none");
-                       }
-                });
-            if( $('[name="attached2"]').val() == 'IS') {
-                $('#fileli2').css("display", "list-item");
-            }
-            else {
-                $('#fileli2').css("display", "none");
-            }
+            if (this.value == "IS"){
+                 $('#fileli2').css("display", "list-item");
+                }
+            else{
+                 $('#fileli2').css("display", "none");
+                }
+         });
+        if( $('[name="attached2"]').val() == 'IS') {
+            $('#fileli2').css("display", "list-item");
+        }
+        else {
+            $('#fileli2').css("display", "none");
+        }
             
         $('[name="employed"]').click( function() {
-                   if (this.value == "WAS"){
-                        $('#studentli').css("display", "list-item");
-                       }
-                   else{
-                        $('#studentli').css("display", "none");
-                       }
-                });
-            if( $('[name="employed"]').val() == 'WAS' ){
-                $('#studentli').css("display", "list-item");
-            }
-            else {
-                $('#studentli').css("display", "none");
-            }
+            if (this.value == "WAS"){
+                 $('#studentli').css("display", "list-item");
+                }
+            else{
+                 $('#studentli').css("display", "none");
+                }
+         });
+        if( $('[name="employed"]').val() == 'WAS' ){
+            $('#studentli').css("display", "list-item");
+        }
+        else {
+            $('#studentli').css("display", "none");
+        }
         $('[name="employed2"]').click( function() {
-               if (this.value == "WAS"){
-                    $('#parentli').css("display", "list-item");
-                   }
-               else{
-                    $('#parentli').css("display", "none");
-                   }
-            });
+            if (this.value == "WAS"){
+                 $('#parentli').css("display", "list-item");
+                }
+            else{
+                 $('#parentli').css("display", "none");
+                }
+         });
         if( $('[name="employed2"]').val() == 'WAS' ){
             $('#parentli').css("display", "list-item");
         }
@@ -591,13 +454,13 @@
             $('#parentli').css("display", "none");
         }
         $("#id_childsupport").click( function() {
-               if ($('#csli').css('display') == 'none'){               
-                    $('#csli').css("display", "list-item");
-                   }
-               else{               
-                    $('#csli').css("display", "none");
-                   }
-            });
+            if ($('#csli').css('display') == 'none'){               
+                 $('#csli').css("display", "list-item");
+                }
+            else{               
+                 $('#csli').css("display", "none");
+                }
+         });
         if( $('#csli').css('display') == 'none'){
             $('#csli').css("display", "list-item");
         }
@@ -613,14 +476,14 @@
 {{formsetpar.management_form}}
 {{formsetcs.management_form}}
 <form action="" method="post" class = "form" enctype="multipart/form-data"> {% csrf_token %}
-    <ol><li class="btnHolder"><input type="button" id="1" name="about" style="background-color:darkgreen;" value="About" class="button"/>
-            <input type="button" id="2" name="sinfo" value="Student Info" class="button"/>
-            <input type="button" id="3" name="faminfo" value="Family Info" class="button"/>
-            <input type="button" id="4" name="sincome" value="Student Income" class="button"/>
-            <input type="button" id="5" name="pincome" value="Parent Income" class="button"/>            
-            <input type="button" id="6" name="snap" value="SNAP" class="button"/>
-            <input type="button" id="7" name="child" value="Child Support" class="button"/>
-            <input type="button" id="8" name="legal" value="Legal and Submit" class="button"/>
+    <ol><li class="btnHolder"><input type="button" id="1" name="about" style="background-color:darkgreen;" value="About" class="button actionbutton"/>
+            <input type="button" id="2" name="sinfo" value="Student Info" class="button actionbutton"/>
+            <input type="button" id="3" name="faminfo" value="Family Info" class="button actionbutton"/>
+            <input type="button" id="4" name="sincome" value="Student Income" class="button actionbutton"/>
+            <input type="button" id="5" name="pincome" value="Parent Income" class="button actionbutton"/>            
+            <input type="button" id="6" name="snap" value="SNAP" class="button actionbutton"/>
+            <input type="button" id="7" name="child" value="Child Support" class="button actionbutton"/>
+            <input type="button" id="8" name="legal" value="Legal and Submit" class="button actionbutton"/>
         </li>
     </ol>
     <fieldset id="f1" class="blockLabels">
@@ -640,111 +503,111 @@
             financial aid will not be delayed.
             </li>
         </ol>
-        <input type="button" id="next1" name="next1" value="Next" class="button"/>
+        <input type="button" id="next2" name="next2" value="Next" class="button nextbutton"/>
     </fieldset>
     <fieldset id="f2" class="blockLabels" style='display:none;'>
         <legend>Dependent Student's Information</legend>
         <ol>
             <li class="ctrlHolder"><h3><label for="id_fname">First Name</label></h3>
                 <div class='required'>
-                    <input type='text' name='fname' id='id_fname' maxlength=100/>
+                    <input class="val" type='text' name='fname' id='id_fname' maxlength=100/>
                     <img class='hidden' id='fname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='fname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_mname">Middle Name</label></h3>
                 <div class='required'>
-                    <input type='text' name='mname' id='id_mname' maxlength=100/>
+                    <input class="val" type='text' name='mname' id='id_mname' maxlength=100/>
                     <img class='hidden' id='mname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='mname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_lname">Last Name</label></h3>
                 <div class='required'>
-                    <input type='text' name='lname' id='id_lname' maxlength=100/>
+                    <input class="val" type='text' name='lname' id='id_lname' maxlength=100/>
                     <img class='hidden' id='lname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='lname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_ssn">Social Security Number</label></h3>
                 <div class='required'>
-                    <input type='text' name='ssn' id='id_ssn' maxlength=100/>
+                    <input class="val" type='text' name='ssn' id='id_ssn' maxlength=100/>
                     <img class='hidden' id='ssn_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='ssn_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_dob">Date of Birth</label></h3>
                 <div class='required'>
-                    <input type='date' name='date' id='id_dob'/>
+                    <input class="val" type='date' name='date' id='id_dob'/>
                     <img class='hidden' id='dob_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='dob_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_address">Street Address</label></h3>
                 <div class='required'>
-                    <input type='text' name='address' id='id_address' maxlength=150/>
+                    <input class="val" type='text' name='address' id='id_address' maxlength=150/>
                     <img class='hidden' id='address_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='address_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_city">City</label></h3>
                 <div class='required'>
-                    <input type='text' name='city' id='id_city' maxlength=100/>
+                    <input class="val" type='text' name='city' id='id_city' maxlength=100/>
                     <img class='hidden' id='city_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='city_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_state">State</label></h3>
                 <div class='required'>
-                    <input type='text' name='state' id='id_state' maxlength=100/>
+                    <input class="val" type='text' name='state' id='id_state' maxlength=100/>
                     <img class='hidden' id='state_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='state_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_zip">Zip Code</label></h3>
                 <div class='required'>
-                    <input type='text' name='zip' id='id_zip' maxlength=15/>
+                    <input class="val" type='text' name='zip' id='id_zip' maxlength=15/>
                     <img class='hidden' id='zip_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='zip_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_email">Email</label></h3>
                 <div class='required'>
-                    <input type='text' name='email' id='id_email' maxlength=100/>
+                    <input class="val" type='text' name='email' id='id_email' maxlength=100/>
                     <img class='hidden' id='email_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='email_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_hphone">Primary Phone</label></h3>
                 <div class='required'>
-                    <input type='text' name='hphone' id='id_hphone' maxlength=20/>
+                    <input class="val" type='text' name='hphone' id='id_hphone' maxlength=20/>
                     <img class='hidden' id='hphone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='hphone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_phonetype">Primary Phone Type</label></h3>
                 <div class='required'>
-                    <input type='text' name='phonetype' id='id_phonetype' maxlength=20/>
+                    <input class="val" type='text' name='phonetype' id='id_phonetype' maxlength=20/>
                     <img class='hidden' id='phonetype_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='phonetype_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_cphone">Alternate Phone</label></h3>
                 <div class='required'>
-                    <input type='text' name='cphone' id='id_cphone' maxlength=20/>
+                    <input class="val" type='text' name='cphone' id='id_cphone' maxlength=20/>
                     <img class='hidden' id='cphone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='cphone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_phonetype2">Alternate Phone Type</label></h3>
                 <div class='required'>
-                    <input type='text' name='phonetype2' id='id_phonetype2' maxlength=20/>
+                    <input class="val" type='text' name='phonetype2' id='id_phonetype2' maxlength=20/>
                     <img class='hidden' id='phonetype2_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='phonetype2_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
         </ol>
-        <input type="button" id="next2" name="next2" value="Next" class="button"/>
+        <input type="button" id="next3" name="next3" value="Next" class="button nextbutton"/>
     </fieldset>
     <fieldset id="f3" class="blockLabels" style='display:none;'>
         <legend>Dependent Student's Family Information</legend>
@@ -772,7 +635,7 @@
             <p><a id="addfam" href="#">Add more family</a></p>
             {% endfor %}
         </ol>
-        <input type="button" id="next3" name="next3" value="Next" class="button"/>
+        <input type="button" id="next4" name="next4" value="Next" class="button nextbutton"/>
     </fieldset>
     <fieldset id="f4" class="blockLabels" style='display:none;'>
         <legend>Dependent Student's Income Information to Be Verified</legend>
@@ -858,7 +721,7 @@
                 {% endfor %}
             </div>
         </ol>
-        <input type="button" id="next4" name="next4" value="Next" class="button"/>
+        <input type="button" id="next5" name="next5" value="Next" class="button nextbutton"/>
     </fieldset>
     <fieldset id="f5" class="blockLabels" style='display:none;'>
         <legend>Parent's Income Information to Be Verified</legend>
@@ -943,7 +806,7 @@
                 {% endfor %}
             </div>
         </ol>
-        <input type="button" id="next5" name="next5" value="Next" class="button"/>
+        <input type="button" id="next6" name="next6" value="Next" class="button nextbutton"/>
     </fieldset>
     <fieldset id="f6" class="blockLabels" style='display:none;'>
         <legend>SNAP Benefits</legend>
@@ -957,7 +820,7 @@
                 <div class='required'><input type='checkbox' name='snapbenefits' id='id_snapbenefits'/></div></h3>
             </li>
         </ol>
-        <input type="button" id="next6" name="next6" value="Next" class="button"/>
+        <input type="button" id="next7" name="next7" value="Next" class="button nextbutton"/>
     </fieldset>
     <fieldset id="f7" class="blockLabels" style='display:none;'>
         <legend>Child Support</legend>
@@ -983,7 +846,7 @@
                 {% endfor %}
             </div>
         </ol>
-        <input type="button" id="next7" name="next7" value="Next" class="button"/>
+        <input type="button" id="next8" name="next8" value="Next" class="button nextbutton"/>
     </fieldset>
     <fieldset id="f8" class="blockLabels" style='display:none;'>
         <legend>Warning and Submit</legend>
