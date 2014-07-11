@@ -29,7 +29,7 @@ $(document).ready(function () {
             var i = 0;
             // Go through the forms and set their indices, names and IDs
             for (formCount = forms.length; i < formCount; i++) {
-                $(forms.get(i)).find('[id*="Parent_or_Third_Party"], [for*=Parent_or_Third_Party]').each(function () {
+                $(forms.get(i)).find('[id*=Parent_or_Third_Party], [for*=Parent_or_Third_Party]').each(function () {
                 updateElementIndex(this, prefix, i);
             });
             }
@@ -54,7 +54,7 @@ $(document).ready(function () {
             $(".errorlist", row).remove();
             $(row).children().removeClass("error");
             //rename new elements
-            $(row).find('[id*="Parent_or_Third_Party"], [for*=Parent_or_Third_Party]').each(function () {
+            $(row).find('[id*=Parent_or_Third_Party], [for*=Parent_or_Third_Party]').each(function () {
                 updateElementIndex(this, prefix, formCount);
                 if($(this).attr('type') == 'text') $(this).val("");
                 if($(this).attr('type') == 'radio') $(this).attr("checked", false)

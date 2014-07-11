@@ -71,8 +71,8 @@
                 var i = 0;
                 // Go through the forms and set their indices, names and IDs
                 for (formCount = forms.length; i < formCount; i++) {
-                    $(forms.get(i)).children().children().each(function () {
-                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                    $(forms.get(i)).find('[id*=id_stud], [for*=id_stud]').each(function () {
+                        updateElementIndex(this, prefix, i);
                     });
                 }
             } // End if
@@ -87,8 +87,7 @@
             if (formCount < 5) {
                 // Clone a form (without event handlers) from the first form
                 var row = $(".student:first").clone(false).get(0);
-                // Insert it after the last form
-                $(row).removeAttr('id').hide().insertAfter(".student:last").slideDown(300);
+                
 
                 // Remove the bits we don't want in the new row/form
                 // e.g. error messages
@@ -96,11 +95,12 @@
                 $(row).children().removeClass("error");
 
                 // Relabel or rename all the relevant bits
-                $(row).children().children().each(function () {
+                $(row).find('[id*=id_stud], [for*=id_stud]').each(function () {
                     updateElementIndex(this, prefix, formCount);
-                    $(this).val("");
+                    if($(this).attr('type') == 'text') $(this).val("");
                 });
-
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".student:last").slideDown(300);
                 // Add an event handler for the delete item/form link
                 $(row).find("#deletestud").click(function () {
                     return deleteStud(this, prefix);
@@ -133,8 +133,8 @@
                 var i = 0;
                 // Go through the forms and set their indices, names and IDs
                 for (formCount = forms.length; i < formCount; i++) {
-                    $(forms.get(i)).children().children().each(function () {
-                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                    $(forms.get(i)).find('[id*=id_par], [for*=id_par]').each(function () {
+                        updateElementIndex(this, prefix, i);
                     });
                 }
             } // End if
@@ -149,8 +149,7 @@
             if (formCount < 5) {
                 // Clone a form (without event handlers) from the first form
                 var row = $(".parent:first").clone(false).get(0);
-                // Insert it after the last form
-                $(row).removeAttr('id').hide().insertAfter(".parent:last").slideDown(300);
+                
 
                 // Remove the bits we don't want in the new row/form
                 // e.g. error messages
@@ -158,11 +157,12 @@
                 $(row).children().removeClass("error");
 
                 // Relabel or rename all the relevant bits
-                $(row).children().children().each(function () {
+                $(row).find('[id*=id_par], [for*=id_par]').each(function () {
                     updateElementIndex(this, prefix, formCount);
-                    $(this).val("");
+                    if($(this).attr('type') == 'text') $(this).val("");
                 });
-
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".parent:last").slideDown(300);
                 // Add an event handler for the delete item/form link
                 $(row).find("#deletepar").click(function () {
                     return deletePar(this, prefix);
@@ -195,8 +195,8 @@
                 var i = 0;
                 // Go through the forms and set their indices, names and IDs
                 for (formCount = forms.length; i < formCount; i++) {
-                    $(forms.get(i)).children().children().each(function () {
-                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                    $(forms.get(i)).find('[id*=id_cs], [for*=id_cs]').each(function () {
+                        updateElementIndex(this, prefix, i);
                     });
                 }
             } // End if
@@ -211,8 +211,7 @@
             if (formCount < 5) {
                 // Clone a form (without event handlers) from the first form
                 var row = $(".child:first").clone(false).get(0);
-                // Insert it after the last form
-                $(row).removeAttr('id').hide().insertAfter(".child:last").slideDown(300);
+                
 
                 // Remove the bits we don't want in the new row/form
                 // e.g. error messages
@@ -220,11 +219,12 @@
                 $(row).children().removeClass("error");
 
                 // Relabel or rename all the relevant bits
-                $(row).children().children().each(function () {
+                $(row).find('[id*=id_cs], [for*=id_cs]').each(function () {
                     updateElementIndex(this, prefix, formCount);
-                    $(this).val("");
+                    if($(this).attr('type') == 'text') $(this).val("");
                 });
-
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".child:last").slideDown(300);
                 // Add an event handler for the delete item/form link
                 $(row).find("#deletecs").click(function () {
                     return deleteCS(this, prefix);
@@ -257,8 +257,8 @@
                 var i = 0;
                 // Go through the forms and set their indices, names and IDs
                 for (formCount = forms.length; i < formCount; i++) {
-                    $(forms.get(i)).children().children().each(function () {
-                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                    $(forms.get(i)).find('[id*=id_fam], [for*=id_fam]').each(function () {
+                        updateElementIndex(this, prefix, i);
                     });
                 }
             } // End if
@@ -273,8 +273,7 @@
             if (formCount < 5) {
                 // Clone a form (without event handlers) from the first form
                 var row = $(".family:first").clone(false).get(0);
-                // Insert it after the last form
-                $(row).removeAttr('id').hide().insertAfter(".family:last").slideDown(300);
+                
 
                 // Remove the bits we don't want in the new row/form
                 // e.g. error messages
@@ -282,11 +281,12 @@
                 $(row).children().removeClass("error");
 
                 // Relabel or rename all the relevant bits
-                $(row).children().children().each(function () {
+                $(row).find('[id*=id_fam], [for*=id_fam]').each(function () {
                     updateElementIndex(this, prefix, formCount);
-                    $(this).val("");
+                    if($(this).attr('type') == 'text') $(this).val("");
                 });
-
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".family:last").slideDown(300);
                 // Add an event handler for the delete item/form link
                 $(row).find("#deletefam").click(function () {
                     return deleteFam(this, prefix);
