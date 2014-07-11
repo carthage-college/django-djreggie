@@ -49,7 +49,7 @@
 {% block javascript %}
 <script type='text/javascript'>
     $(document).ready(function () {
-        $("img.hidden").css("display", "none");
+        $("img.hidden").hide();
         // Code adapted from http://djangosnippets.org/snippets/1389/
         function updateElementIndex(el, prefix, ndx) {
             var id_regex = new RegExp('(' + prefix + '-\\d+-)');
@@ -323,27 +323,19 @@
             $("#f1,#f2,#f3,#f4,#f5,#f6,#f7,#f8").hide();
             $("#f" + $(this).attr('id').replace("next", "")).toggle();
         });
+        function create_validator(regex) {
+            return function (field) {
+                var patt = new RegExp(regex);
+                return patt.test(field.val());
+            }
+        }
         
-        function validate_fname(){
-            var patt = new RegExp('/^([a-z]+)$/i');
-            return patt.test($("#id_fname").val());
-        }
-        function validate_mname(){
-            var patt = new RegExp('/^([a-z]+)$/i');
-            return patt.test($("#id_mname").val());
-        }
-        function validate_lname(){
-            var patt = new RegExp('/^([a-z]+)$/i');
-            return patt.test($("#id_lname").val());
-        }
-        function validate_ssn(){
-            var patt = new RegExp('^(\\d{3}[\\-|\\.\\s]?\d{2}[\\-|\\.\\s]??\\d{4})$');
-            return patt.test($("#id_ssn").val());
-        }
-        function validate_address(){
-            var patt = new RegExp('^(?:[\\w]+\\s?)+[\\w]+)$');
-            return patt.test($("#id_address").val());
-        }
+        var validate_name = create_validator('/^([a-z]+)$/i');
+        var validate_ssn = create_validator('^(\\d{3}[\\-|\\.\\s]?\d{2}[\\-|\\.\\s]??\\d{4})$');
+        var validate_address = create_validator('^(?:[\\w]+\\s?)+[\\w]+)$');
+        var validate_city = create_validator('^((?:[a-zA-Z]+(?i)\s?)+[a-zA-Z]+)$'); //also works for state
+        var validate_zip = create_validator('^([\\d]{5}|\\d{5}-?\\d{4})$');
+        var validate_phone = create_validator('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
         function validate_dob(){
             if ($('#id_dob').val() == "")
             {
@@ -360,42 +352,35 @@
                 return true;
             }
         }
-        function validate_city(){
-            var patt = new RegExp('^((?:[a-zA-Z]+(?i)\s?)+[a-zA-Z]+)$');
-            return patt.test($("#id_city").val());
-        }
-        function validate_state(){
-            var patt = new RegExp('^((?:[a-zA-Z]+(?i)\s?)+[a-zA-Z]+)$');
-            return patt.test($("#id_state").val());
-        }
-        function validate_zip(){
-            var patt = new RegExp('^([\\d]{5}|\\d{5}-?\\d{4})$');
-            return patt.test($("#id_zip").val());
-        }
-        function validate_hphone(){
-            var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-            return patt.test($("#id_hphone").val());
-        }
-        function validate_cphone(){
-            var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-            return patt.test($("#id_cphone").val());
-        }
         
-        var validators = {"fname": validate_fname, "mname": validate_mname, "lname": validate_lname};
+        var validators = {"id_fname": validate_name,
+                            "id_mname": validate_name,
+                            "id_lname": validate_name,
+                            "id_ssn": validate_ssn,
+                            "id_address": validate_address,
+                            "id_dob": validate_dob,
+                            "id_city": validate_city,
+                            "id_state": validate_city,
+                            "id_zip": validate_zip,
+                            "id_hphone": validate_phone,
+                            "id_cphone": validate_phone,
+                            }
         
-        $(".val").change( function(){
-            if (!validators[$(this).attr('name')]())
+        //finds all elements with a check image and uses those id's to create a list of id's of the fields they are associated with
+        $($.map($('[id$="yes"]'), function (thing) {return '#id_' + thing.id.replace('_yes','');}).join()).change(function() {
+            if(!validators[$(this).attr('id')]($(this)))
             {
-                $("#"+$(this).attr('name')+"_no").show();
-                $("#"+$(this).attr('name')+"_yes").hide();
+                $('#' + $(this).attr('id').replace('id_','') + '_no').show();
+                $('#' + $(this).attr('id').replace('id_','') + '_yes').hide();
             }
             else
             {
-                $("#"+$(this).attr('name')+"_no").hide();
-                $("#"+$(this).attr('name')+"_yes").show();
+                $('#' + $(this).attr('id').replace('id_','') + '_no').hide();
+                $('#' + $(this).attr('id').replace('id_','') + '_yes').show();
             }
         });
         
+
         $('[name="attached"]').click( function() {
             if (this.value == "IS"){
                  $('#fileli').css("display", "list-item");

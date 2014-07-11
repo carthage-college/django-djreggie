@@ -7,93 +7,38 @@
 {% endblock %}
 {% block javascript %}
 <script type='text/javascript'>
-    $("img.hidden").css("display", "none");
+    $("img.hidden").hide();
+    function create_validator(regex) {
+        return function (field) {
+            var patt = new RegExp(regex);
+            return patt.test(field.val());
+        }
+    }
+    var validate_id = create_validator('^(\\d{5,7})$');
+    var validate_name = create_validator('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
+    var validate_department = create_validator('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$'); //also works for position field
+    var validate_phone = create_validator('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
     
-    function validate_carthage_id(){
-        var patt = new RegExp('^(\\d{5,7})$');
-        return patt.test($("#id_carthage_id").val());
-    }
-    function validate_full_name(){
-        var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
-        return patt.test($("#id_full_name").val());
-    }
-    function validate_department(){
-        var patt = new RegExp('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
-        return patt.test($("#id_department").val());
-    }
-    function validate_position(){
-        var patt = new RegExp('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
-        return patt.test($("#id_position").val());
-    }
-    function validate_work_phone(){
-        var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-        return patt.test($("#id_work_phone").val());
-    }
+    var validators = {"id_carthage_id": validate_id,
+                        "id_full_name": validate_name,
+                        "id_department": validate_department,
+                        "id_position": validate_department,
+                        "id_work_phone": validate_phone}
+                        
+    $($.map($('[id$="yes"]'), function (thing) {return '#id_' + thing.id.replace('_yes','');}).join()).change(function() {
+        if(!validators[$(this).attr('id')]($(this)))
+        {
+            $('#' + $(this).attr('id').replace('id_','') + '_no').show();
+            $('#' + $(this).attr('id').replace('id_','') + '_yes').hide();
+        }
+        else
+        {
+            $('#' + $(this).attr('id').replace('id_','') + '_no').hide();
+            $('#' + $(this).attr('id').replace('id_','') + '_yes').show();
+        }
+    });
     
-    $("#id_reason_for_change").click( function() {
-        if (this.value != "OTH"){
-                $('#otherli').css("display", "none");
-            }
-        else{
-                $('#otherli').css("display", "list-item");
-            }
-        });
-    if( $('#id_reason_for_change').val() == 'OTH' ){
-        $('#otherli').css("display", "list-item");
-    }
-    else {
-        $('#otherli').css("display", "none");
-    }
-    $("#id_carthage_id").blur( function(){
-        if(!validate_carthage_id()){
-            $('#carthage_id_no').css("display", "inline");
-            $('#carthage_id_yes').css("display", "none");
-        }
-        else {
-            $('#carthage_id_no').css("display", "none");
-            $('#carthage_id_yes').css("display", "inline");
-        }
-    });
-    $("#id_full_name").blur( function(){
-        if(!validate_full_name()){
-            $('#full_name_no').css("display", "inline");
-            $('#full_name_yes').css("display", "none");
-        }
-        else {
-            $('#full_name_no').css("display", "none");
-            $('#full_name_yes').css("display", "inline");
-        }
-    });
-    $("#id_department").blur( function(){
-        if(!validate_department()){
-            $('#department_no').css("display", "inline");
-            $('#department_yes').css("display", "none");
-        }
-        else {
-            $('#department_no').css("display", "none");
-            $('#department_yes').css("display", "inline");
-        }
-    });
-    $("#id_position").blur( function(){
-        if(!validate_position()){
-            $('#position_no').css("display", "inline");
-            $('#position_yes').css("display", "none");
-        }
-        else {
-            $('#position_no').css("display", "none");
-            $('#position_yes').css("display", "inline");
-        }
-    });
-    $("#id_work_phone").blur( function(){
-        if(!validate_work_phone()){
-            $('#work_phone_no').css("display", "inline");
-            $('#work_phone_yes').css("display", "none");
-        }
-        else {
-            $('#work_phone_no').css("display", "none");
-            $('#work_phone_yes').css("display", "inline");
-        }
-    });
+
 </script>
 {% endblock %}
 {% block content %}
