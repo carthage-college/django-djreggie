@@ -26,173 +26,45 @@
 {% endblock %}
 {% block javascript %}
 <script>
-    $("img.hidden").css("display", "none");
+    $("img.hidden").hide();
+    function create_validator(regex) {
+        return function (field) {
+            var patt = new RegExp(regex);
+            return patt.test(field.val());
+        }
+    }
+    var validate_id = create_validator('^(\\d{5,7})$');
+    var validate_name = create_validator('^([a-zA-Z]+)$');
+    var validate_mname = create_validator('^([a-zA-Z]+|[a-zA-Z]\\.?)$');
+    var validate_email = create_validator('^(?:[A-Za-z0-9\\.\\_\\%\\+\\-]+)@(?:[A-Za-z0-9\\.\\-]+)\\.(?:[A-Za-z]{2,4})$');
+    var validate_phone = create_validator('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
+    var validate_address = create_validator('^((?:[\\w+\\s\\.\\#\\,])+[\\w\\.]+)$');
+    var validate_city = create_validator('^((?:[a-zA-Z\\s?\\.?]+)[a-zA-Z]+)$');
+    var validate_state = create_validator('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
+    var validate_zip = create_validator('^([\\d]{5}|\\d{5}-?\\d{4})$');
     
-    function validate_student_id(){
-        var patt = new RegExp('^(\\d{5,7})$');
-        return patt.test($("#id_student_id").val());            
-    }
-    function validate_fname(){
-        var patt = new RegExp('^([a-zA-Z]+)$');
-        return patt.test($("#id_fname").val());        
-    }
-    function validate_mname(){
-        var patt = new RegExp('^([a-zA-Z]+|[a-zA-Z]\\.?)$');
-        return patt.test($("#id_mname").val());        
-    }
-    function validate_lname(){
-        var patt = new RegExp('^([a-zA-Z]+)$');
-        return patt.test($("#id_lname").val());        
-    }
-    function validate_email(){
-        var patt = new RegExp('^(?:[A-Za-z0-9\\.\\_\\%\\+\\-]+)@(?:[A-Za-z0-9\\.\\-]+)\\.(?:[A-Za-z]{2,4})$');
-        return patt.test($("#id_email").val());
-    }
-    function validate_best_phone(){
-        var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-        return patt.test($("#id_best_phone").val());
-    }
-    function validate_cell(){
-        var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-        return patt.test($("#id_cell").val());
-    }
-    function validate_address(){
-        var patt = new RegExp('^((?:[\\w+\\s\\.\\#\\,])+[\\w\\.]+)$');
-        return patt.test($("#id_address").val());
-    }
-    function validate_city(){
-        var patt = new RegExp('^((?:[a-zA-Z\\s?\\.?]+)[a-zA-Z]+)$');
-        return patt.test($("#id_city").val());
-    }
-    function validate_state(){
-        var patt = new RegExp('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
-        return patt.test($("#id_state").val());
-    }
-    function validate_zip(){
-        var patt = new RegExp('^([\\d]{5}|\\d{5}-?\\d{4})$');
-        return patt.test($("#id_zip").val());
-    }
+    var validators = {"id_student_id": validate_id,
+                        "id_fname": validate_name,
+                        "id_mname": validate_mname,
+                        "id_lname": validate_name,
+                        "id_best_phone": validate_phone,
+                        "id_cell": validate_phone,
+                        "id_email": validate_email,
+                        "id_address": validate_address,
+                        "id_city": validate_city,
+                        "id_state": validate_state,
+                        "id_zip": validate_zip}               
     
-    $("#id_student_id").change( function(){
-        if (!validate_student_id())
+    $($.map($('[id$="yes"]'), function (thing) {return '#id_' + thing.id.replace('_yes','');}).join()).change(function() {
+        if(!validators[$(this).attr('id')]($(this)))
         {
-            $('#student_id_no').css("display", "inline");
-            $('#student_id_yes').css("display", "none");
+            $('#' + $(this).attr('id').replace('id_','') + '_no').show();
+            $('#' + $(this).attr('id').replace('id_','') + '_yes').hide();
         }
-        else {
-            $('#student_id_no').css("display", "none");
-            $('#student_id_yes').css("display", "inline");
-        }
-    });
-    
-    $("#id_fname").change( function(){
-        if (!validate_fname())
+        else
         {
-            $('#fname_no').css("display", "inline");
-            $('#fname_id_yes').css("display", "none");
-        }
-        else {
-            $('#fname_no').css("display", "none");
-            $('#fname_yes').css("display", "inline");
-        }
-    });
-    $("#id_mname").change( function(){
-        if (!validate_mname())
-        {
-            $('#mname_no').css("display", "inline");
-            $('#mname_id_yes').css("display", "none");
-        }
-        else {
-            $('#mname_no').css("display", "none");
-            $('#mname_yes').css("display", "inline");
-        }
-    });
-    $("#id_lname").change( function(){
-        if (!validate_lname())
-        {
-            $('#lname_no').css("display", "inline");
-            $('#lname_id_yes').css("display", "none");
-        }
-        else {
-            $('#lname_no').css("display", "none");
-            $('#lname_yes').css("display", "inline");
-        }
-    });
-    $("#id_best_phone").change( function(){
-        if(!validate_best_phone())
-        {
-            $('#best_phone_no').css("display", "inline");
-            $('#best_phone_yes').css("display", "none");
-        }
-        else {
-            $('#best_phone_no').css("display", "none");
-            $('#best_phone_yes').css("display", "inline");
-        }
-    });
-    $("#id_cell").change( function(){
-        if(!validate_cell())
-        {
-            $('#cell_no').css("display", "inline");
-            $('#cell_yes').css("display", "none");
-        }
-        else {
-            $('#cell_no').css("display", "none");
-            $('#cell_yes').css("display", "inline");
-        }
-    });
-    $("#id_email").change( function(){
-        if(!validate_email())
-        {
-            $('#email_no').css("display", "inline");
-            $('#email_yes').css("display", "none");
-        }
-        else {
-            $('#email_no').css("display", "none");
-            $('#email_yes').css("display", "inline");
-        }
-    });
-    $("#id_address").change( function(){
-        if(!validate_address())
-        {
-            $('#address_no').css("display", "inline");
-            $('#address_yes').css("display", "none");
-        }
-        else {
-            $('#address_no').css("display", "none");
-            $('#address_yes').css("display", "inline");
-        }
-    });
-    $("#id_city").change( function(){
-        if(!validate_city())
-        {
-            $('#city_no').css("display", "inline");
-            $('#city_yes').css("display", "none");
-        }
-        else {
-            $('#city_no').css("display", "none");
-            $('#city_yes').css("display", "inline");
-        }
-    });
-    $("#id_state").change( function(){
-        if(!validate_state())
-        {
-            $('#state_no').css("display", "inline");
-            $('#state_yes').css("display", "none");
-        }
-        else {
-            $('#state_no').css("display", "none");
-            $('#state_yes').css("display", "inline");
-        }
-    });
-    $("#id_zip").change( function(){
-        if(!validate_zip())
-        {
-            $('#zip_no').css("display", "inline");
-            $('#zip_yes').css("display", "none");
-        }
-        else {
-            $('#zip_no').css("display", "none");
-            $('#zip_yes').css("display", "inline");
+            $('#' + $(this).attr('id').replace('id_','') + '_no').hide();
+            $('#' + $(this).attr('id').replace('id_','') + '_yes').show();
         }
     });
 </script>

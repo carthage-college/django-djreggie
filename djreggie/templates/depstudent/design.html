@@ -49,7 +49,7 @@
 {% block javascript %}
 <script type='text/javascript'>
     $(document).ready(function () {
-        $("img.hidden").css("display", "none");
+        $("img.hidden").hide();
         // Code adapted from http://djangosnippets.org/snippets/1389/
         function updateElementIndex(el, prefix, ndx) {
             var id_regex = new RegExp('(' + prefix + '-\\d+-)');
@@ -71,8 +71,8 @@
                 var i = 0;
                 // Go through the forms and set their indices, names and IDs
                 for (formCount = forms.length; i < formCount; i++) {
-                    $(forms.get(i)).children().children().each(function () {
-                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                    $(forms.get(i)).find('[id*=id_stud], [for*=id_stud]').each(function () {
+                        updateElementIndex(this, prefix, i);
                     });
                 }
             } // End if
@@ -87,8 +87,7 @@
             if (formCount < 5) {
                 // Clone a form (without event handlers) from the first form
                 var row = $(".student:first").clone(false).get(0);
-                // Insert it after the last form
-                $(row).removeAttr('id').hide().insertAfter(".student:last").slideDown(300);
+                
 
                 // Remove the bits we don't want in the new row/form
                 // e.g. error messages
@@ -96,11 +95,12 @@
                 $(row).children().removeClass("error");
 
                 // Relabel or rename all the relevant bits
-                $(row).children().children().each(function () {
+                $(row).find('[id*=id_stud], [for*=id_stud]').each(function () {
                     updateElementIndex(this, prefix, formCount);
-                    $(this).val("");
+                    if($(this).attr('type') == 'text') $(this).val("");
                 });
-
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".student:last").slideDown(300);
                 // Add an event handler for the delete item/form link
                 $(row).find("#deletestud").click(function () {
                     return deleteStud(this, prefix);
@@ -133,8 +133,8 @@
                 var i = 0;
                 // Go through the forms and set their indices, names and IDs
                 for (formCount = forms.length; i < formCount; i++) {
-                    $(forms.get(i)).children().children().each(function () {
-                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                    $(forms.get(i)).find('[id*=id_par], [for*=id_par]').each(function () {
+                        updateElementIndex(this, prefix, i);
                     });
                 }
             } // End if
@@ -149,8 +149,7 @@
             if (formCount < 5) {
                 // Clone a form (without event handlers) from the first form
                 var row = $(".parent:first").clone(false).get(0);
-                // Insert it after the last form
-                $(row).removeAttr('id').hide().insertAfter(".parent:last").slideDown(300);
+                
 
                 // Remove the bits we don't want in the new row/form
                 // e.g. error messages
@@ -158,11 +157,12 @@
                 $(row).children().removeClass("error");
 
                 // Relabel or rename all the relevant bits
-                $(row).children().children().each(function () {
+                $(row).find('[id*=id_par], [for*=id_par]').each(function () {
                     updateElementIndex(this, prefix, formCount);
-                    $(this).val("");
+                    if($(this).attr('type') == 'text') $(this).val("");
                 });
-
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".parent:last").slideDown(300);
                 // Add an event handler for the delete item/form link
                 $(row).find("#deletepar").click(function () {
                     return deletePar(this, prefix);
@@ -195,8 +195,8 @@
                 var i = 0;
                 // Go through the forms and set their indices, names and IDs
                 for (formCount = forms.length; i < formCount; i++) {
-                    $(forms.get(i)).children().children().each(function () {
-                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                    $(forms.get(i)).find('[id*=id_cs], [for*=id_cs]').each(function () {
+                        updateElementIndex(this, prefix, i);
                     });
                 }
             } // End if
@@ -211,8 +211,7 @@
             if (formCount < 5) {
                 // Clone a form (without event handlers) from the first form
                 var row = $(".child:first").clone(false).get(0);
-                // Insert it after the last form
-                $(row).removeAttr('id').hide().insertAfter(".child:last").slideDown(300);
+                
 
                 // Remove the bits we don't want in the new row/form
                 // e.g. error messages
@@ -220,11 +219,12 @@
                 $(row).children().removeClass("error");
 
                 // Relabel or rename all the relevant bits
-                $(row).children().children().each(function () {
+                $(row).find('[id*=id_cs], [for*=id_cs]').each(function () {
                     updateElementIndex(this, prefix, formCount);
-                    $(this).val("");
+                    if($(this).attr('type') == 'text') $(this).val("");
                 });
-
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".child:last").slideDown(300);
                 // Add an event handler for the delete item/form link
                 $(row).find("#deletecs").click(function () {
                     return deleteCS(this, prefix);
@@ -257,8 +257,8 @@
                 var i = 0;
                 // Go through the forms and set their indices, names and IDs
                 for (formCount = forms.length; i < formCount; i++) {
-                    $(forms.get(i)).children().children().each(function () {
-                        if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                    $(forms.get(i)).find('[id*=id_fam], [for*=id_fam]').each(function () {
+                        updateElementIndex(this, prefix, i);
                     });
                 }
             } // End if
@@ -273,8 +273,7 @@
             if (formCount < 5) {
                 // Clone a form (without event handlers) from the first form
                 var row = $(".family:first").clone(false).get(0);
-                // Insert it after the last form
-                $(row).removeAttr('id').hide().insertAfter(".family:last").slideDown(300);
+                
 
                 // Remove the bits we don't want in the new row/form
                 // e.g. error messages
@@ -282,11 +281,12 @@
                 $(row).children().removeClass("error");
 
                 // Relabel or rename all the relevant bits
-                $(row).children().children().each(function () {
+                $(row).find('[id*=id_fam], [for*=id_fam]').each(function () {
                     updateElementIndex(this, prefix, formCount);
-                    $(this).val("");
+                    if($(this).attr('type') == 'text') $(this).val("");
                 });
-
+                // Insert it after the last form
+                $(row).removeAttr('id').hide().insertAfter(".family:last").slideDown(300);
                 // Add an event handler for the delete item/form link
                 $(row).find("#deletefam").click(function () {
                     return deleteFam(this, prefix);
@@ -323,27 +323,20 @@
             $("#f1,#f2,#f3,#f4,#f5,#f6,#f7,#f8").hide();
             $("#f" + $(this).attr('id').replace("next", "")).toggle();
         });
+
+        function create_validator(regex) {
+            return function (field) {
+                var patt = new RegExp(regex);
+                return patt.test(field.val());
+            }
+        }
         
-        function validate_fname(){
-            var patt = new RegExp('^((?i)[a-z]+)$');
-            return patt.test($("#id_fname").val());
-        }
-        function validate_mname(){
-            var patt = new RegExp('^((?i)[a-z]+)$');
-            return patt.test($("#id_mname").val());
-        }
-        function validate_lname(){
-            var patt = new RegExp('^((?i)[a-z]+)$');
-            return patt.test($("#id_lname").val());
-        }
-        function validate_ssn(){
-            var patt = new RegExp('^(\\d{3}[\\-|\\.\\s]?\d{2}[\\-|\\.\\s]??\\d{4})$');
-            return patt.test($("#id_ssn").val());
-        }
-        function validate_address(){
-            var patt = new RegExp('^(?:[\\w]+\\s?)+[\\w]+)$');
-            return patt.test($("#id_address").val());
-        }
+        var validate_name = create_validator('/^([a-z]+)$/i');
+        var validate_ssn = create_validator('^(\\d{3}[\\-|\\.\\s]?\d{2}[\\-|\\.\\s]??\\d{4})$');
+        var validate_address = create_validator('^(?:[\\w]+\\s?)+[\\w]+)$');
+        var validate_city = create_validator('^((?:[a-zA-Z]+(?i)\s?)+[a-zA-Z]+)$'); //also works for state
+        var validate_zip = create_validator('^([\\d]{5}|\\d{5}-?\\d{4})$');
+        var validate_phone = create_validator('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
         function validate_dob(){
             if ($('#id_dob').val() == "")
             {
@@ -360,42 +353,35 @@
                 return true;
             }
         }
-        function validate_city(){
-            var patt = new RegExp('^((?:(?i)[a-z]+\\s?)+(?i)[a-z]+)$');
-            return patt.test($("#id_city").val());
-        }
-        function validate_state(){
-            var patt = new RegExp('^((?:(?i)[a-z]+\\s?)+(?i)[a-z]+)$');
-            return patt.test($("#id_state").val());
-        }
-        function validate_zip(){
-            var patt = new RegExp('^([\\d]{5}|\\d{5}-?\\d{4})$');
-            return patt.test($("#id_zip").val());
-        }
-        function validate_hphone(){
-            var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-            return patt.test($("#id_hphone").val());
-        }
-        function validate_cphone(){
-            var patt = new RegExp('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-            return patt.test($("#id_cphone").val());
-        }
         
-        var validators = {"fname": validate_fname, "mname": validate_mname, "lname": validate_lname};
+        var validators = {"id_fname": validate_name,
+                            "id_mname": validate_name,
+                            "id_lname": validate_name,
+                            "id_ssn": validate_ssn,
+                            "id_address": validate_address,
+                            "id_dob": validate_dob,
+                            "id_city": validate_city,
+                            "id_state": validate_city,
+                            "id_zip": validate_zip,
+                            "id_hphone": validate_phone,
+                            "id_cphone": validate_phone,
+                            }
         
-        $(".val").change( function(){
-            if (!validators[$(this).attr('name')]())
+        //finds all elements with a check image and uses those id's to create a list of id's of the fields they are associated with
+        $($.map($('[id$="yes"]'), function (thing) {return '#id_' + thing.id.replace('_yes','');}).join()).change(function() {
+            if(!validators[$(this).attr('id')]($(this)))
             {
-                $("#"+$(this).attr('name')+"_no").show();
-                $("#"+$(this).attr('name')+"_yes").hide();
+                $('#' + $(this).attr('id').replace('id_','') + '_no').show();
+                $('#' + $(this).attr('id').replace('id_','') + '_yes').hide();
             }
             else
             {
-                $("#"+$(this).attr('name')+"_no").hide();
-                $("#"+$(this).attr('name')+"_yes").show();
+                $('#' + $(this).attr('id').replace('id_','') + '_no').hide();
+                $('#' + $(this).attr('id').replace('id_','') + '_yes').show();
             }
         });
         
+
         $('[name="attached"]').click( function() {
             if (this.value == "IS"){
                  $('#fileli').css("display", "list-item");
