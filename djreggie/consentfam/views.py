@@ -3,7 +3,7 @@ from django import forms
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from djreggie.consentfam.form import ModelForm, Parent
-from djreggie.consentfam.models import ConsentModel, ParentForm, Contact
+from djreggie.consentfam.models import ConsentModel, ParentForm
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
 from django.forms.formsets import formset_factory, BaseFormSet #For formsets

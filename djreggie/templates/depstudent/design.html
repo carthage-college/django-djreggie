@@ -325,15 +325,15 @@
         });
         
         function validate_fname(){
-            var patt = new RegExp('/^([a-z]+)$/i');
+            var patt = new RegExp('^((?i)[a-z]+)$');
             return patt.test($("#id_fname").val());
         }
         function validate_mname(){
-            var patt = new RegExp('/^([a-z]+)$/i');
+            var patt = new RegExp('^((?i)[a-z]+)$');
             return patt.test($("#id_mname").val());
         }
         function validate_lname(){
-            var patt = new RegExp('/^([a-z]+)$/i');
+            var patt = new RegExp('^((?i)[a-z]+)$');
             return patt.test($("#id_lname").val());
         }
         function validate_ssn(){
@@ -361,11 +361,11 @@
             }
         }
         function validate_city(){
-            var patt = new RegExp('^((?:[a-zA-Z]+(?i)\s?)+[a-zA-Z]+)$');
+            var patt = new RegExp('^((?:(?i)[a-z]+\\s?)+(?i)[a-z]+)$');
             return patt.test($("#id_city").val());
         }
         function validate_state(){
-            var patt = new RegExp('^((?:[a-zA-Z]+(?i)\s?)+[a-zA-Z]+)$');
+            var patt = new RegExp('^((?:(?i)[a-z]+\\s?)+(?i)[a-z]+)$');
             return patt.test($("#id_state").val());
         }
         function validate_zip(){

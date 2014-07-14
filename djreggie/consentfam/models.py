@@ -34,19 +34,6 @@ class ParentForm(models.Model):
     form = models.ForeignKey(ConsentModel)
     contact = models.ForeignKey(Contact)
 
-    CHOICES3 = (
-    ("MOM", 'Mother'),
-    ("DAD", 'Father'),
-    ("GRAN", 'Grandparent'),
-    ("BRO", 'Brother'),
-    ("SIS", 'Sister'),
-    ("AUNT", 'Aunt'),
-    ("UNC", 'Uncle'),
-    ("HUSB", 'Husband'),
-    ("FRIE", 'Friend'),
-    ("OTHE", 'Other'),
-    ("STEP", 'Stepparent'),
-    )
-    Relation = models.CharField(choices=CHOICES3, max_length=200)
+    Relation = models.CharField(max_length=200)
     #def __unicode__(self):
     #    return self.form
