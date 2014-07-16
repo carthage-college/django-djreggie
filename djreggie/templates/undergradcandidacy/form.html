@@ -73,8 +73,6 @@
 </script>
 {% endblock %}
 {% block content %}
-{{ form.non_field_errors }}
-{{form.errors}}
 <form action='' method='post' class = "form">{% csrf_token %}
     <fieldset class="blockLabels">
         <legend>For Diploma</legend>
@@ -83,13 +81,14 @@
                 your name will be read as you cross the stage at the graduation ceremony.</li>
             <li class="ctrlHolder"><h3><label for="id_student_id">Student ID</label></h3>
                 <div class='readonly'>
-                    {{form.student_id}}
-                    {{form.student_id.value}}
+                    {{form.student_id.value}}                    
+                    {{form.student_id.errors}}
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_fname">First Name</label></h3>
                 <div class='required'>
                     {{form.fname}}
+                    {{form.fname.errors}}
                     <img class='hidden' id='fname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='fname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -97,6 +96,7 @@
             <li class="ctrlHolder"><h3><label for="id_mname">Middle Initial</label></h3>
                 <div class='required'>
                     {{form.mname}}
+                    {{form.mname.errors}}
                     <img class='hidden' id='mname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='mname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -104,6 +104,7 @@
             <li class="ctrlHolder"><h3><label for="id_lname">Last Name</label></h3>
                 <div class='required'>
                     {{form.lname}}
+                    {{form.lname.errors}}
                     <img class='hidden' id='lname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='lname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -111,11 +112,13 @@
             <li class="ctrlHolder"><h3><label for="id_fnamepro">Tell us how to pronounce your first name</label></h3>
                 <div class='required'>
                     {{form.fnamepro}}
+                    {{form.fnamepro.errors}}
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_lnamepro">Tell us how to pronounce your last name</label></h3>
                 <div class='required'>
                     {{form.lnamepro}}
+                    {{form.lnamepro.errors}}
                 </div>
             </li>
         </ol>
@@ -129,25 +132,29 @@
             <li class="ctrlHolder" id="major1"><h3><label for="id_major1">Majors</label></h3>
                 <div class="required">
                     {{ form.major1 }}
+                    {{ form.major1.errors }}
                 </div>
             </li>
             <li class="ctrlHolder" id="major2"><h3><label for="id_major2"></label></h3>
                 {{ form.major2 }}
+                {{ form.major2.errors }}
             </li>
             <li class="ctrlHolder" id="major3"><h3><label for="id_major3"></label></h3>
                 {{ form.major3 }}
+                {{ form.major3.errors }}
             </li>
             <hr>
             <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minors</label></h3>
-                <div class="required">
                     {{ form.minor1 }}
-                </div>
+                    {{ form.minor1.errors }}
             </li>                
             <li class="ctrlHolder" id="minor2"><h3><label for="id_minor2"></label></h3>
                 {{ form.minor2 }}
+                {{ form.minor2.errors }}
             </li>                
             <li class="ctrlHolder" id="minor3"><h3><label for="id_minor3"></label></h3>
                 {{ form.minor3 }}
+                {{ form.minor3.errors }}
             </li>
         </ol>
     </fieldset>    
@@ -156,8 +163,11 @@
         <ol>
             <li>Check the box below if you intend to participate in the May {{ year_up }} Graduation Ceremony.
             </li>
-            <li class="ctrlHolder"><h3>
-                {{form.participate_in_graduation}}</h3>
+            <li class="ctrlHolder">
+                <h3>
+                    {{form.participate_in_graduation}}
+                    {{form.participate_in_graduation.errors}}
+                </h3>
             </li>
         </ol>
     </fieldset>    
@@ -171,6 +181,7 @@
                 <li>{{form.finish_requirements_by.2}}</li>
                 <li>{{form.finish_requirements_by.3}}</li>
             </ul>
+            {{form.finish_requirements_by.errors}}
             <li>Note: Carthage allows you to participate in the May {{ year_up }} graduation ceremony if you can complete
                 all of your remaining graduation requirements by taking 12 or fewer credits in the Summer of {{ year_up }}. All
                 graduation requirements must be completed before the degree can be conferred
@@ -186,6 +197,7 @@
                 <li>{{form.when_teach.1}}</li>
                 <li>{{form.when_teach.2}}</li>
             </ul>
+            {{form.when_teach.errors}}
         </ol>
     </fieldset>    
     <fieldset class="blockLabels">
@@ -194,6 +206,7 @@
             <li class="ctrlHolder"><h3><label for="id_best_phone">Best phone number to reach you at</label></h3>
                 <div class='required'>
                     {{form.best_phone}}
+                    {{form.best_phone.errors}}
                     <img class='hidden' id='best_phone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='best_phone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -201,6 +214,7 @@
             <li class="ctrlHolder"><h3><label for="id_cell">Cell Number</label></h3>
                 <div class='required'>
                     {{form.cell}}
+                    {{form.cell.errors}}
                     <img class='hidden' id='cell_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='cell_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -208,6 +222,7 @@
             <li class="ctrlHolder"><h3><label for="id_email">Email</label></h3>
                 <div class='required'>
                     {{form.email}}
+                    {{form.email.errors}}
                     <img class='hidden' id='email_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='email_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -224,6 +239,7 @@
             <li class="ctrlHolder"><h3><label for="id_address">Address</label></h3>
                 <div class='required'>
                     {{form.address}}
+                    {{form.address.errors}}
                     <img class='hidden' id='address_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='address_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -231,6 +247,7 @@
             <li class="ctrlHolder"><h3><label for="id_city">City</label></h3>
                 <div class='required'>
                     {{form.city}}
+                    {{form.city.errors}}
                     <img class='hidden' id='city_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='city_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -238,6 +255,7 @@
             <li class="ctrlHolder"><h3><label for="id_state">State</label></h3>
                 <div class='required'>
                     {{form.state}}
+                    {{form.state.errors}}
                     <img class='hidden' id='state_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='state_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -245,6 +263,7 @@
             <li class="ctrlHolder"><h3><label for="id_zip">Zip Code</label></h3>
                 <div class='required'>
                     {{form.zipcode}}
+                    {{form.zipcode.errors}}
                     <img class='hidden' id='zip_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='zip_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
