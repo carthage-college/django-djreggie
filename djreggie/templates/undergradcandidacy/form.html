@@ -81,7 +81,6 @@
                 your name will be read as you cross the stage at the graduation ceremony.</li>
             <li class="ctrlHolder"><h3><label for="id_student_id">Student ID</label></h3>
                 <div class='readonly'>
-                    {{form.student_id}}
                     {{form.student_id.value}}
                     {{form.student_id.errors}}
                 </div>
@@ -202,30 +201,21 @@
     <fieldset class="blockLabels">
         <legend>Contact Information</legend>
         <ol>
-            <li class="ctrlHolder"><h3><label for="id_best_phone">Best phone number to reach you at</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_best_contact">Best way to reach you at</label></h3>
                 <div class='required'>
-                    {{form.best_phone}}
-                    {{form.best_phone.errors}}
-                    <img class='hidden' id='best_phone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='best_phone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    {{form.best_contact}}
+                    {{form.best_contact.errors}}
+                    <img class='hidden' id='best_contact_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='best_contact_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
-            <li class="ctrlHolder"><h3><label for="id_cell">Cell Number</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_best_contact_value">Contact Info</label></h3>
                 <div class='required'>
-                    {{form.cell}}
-                    {{form.cell.errors}}
-                    <img class='hidden' id='cell_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='cell_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    {{form.best_contact_value}}
+                    {{form.best_contact_value.errors}}
+                    <img class='hidden' id='best_contact_value_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='best_contact_value_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
-            </li>
-            <li class="ctrlHolder"><h3><label for="id_email">Email</label></h3>
-                <div class='required'>
-                    {{form.email}}
-                    {{form.email.errors}}
-                    <img class='hidden' id='email_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='email_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
-                </div>
-            </li>
         </ol>
     </fieldset>    
     <fieldset class="blockLabels">
