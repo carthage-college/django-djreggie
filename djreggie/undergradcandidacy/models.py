@@ -109,19 +109,19 @@ class UndergradModel(models.Model):
     best_contact_value = models.CharField(max_length=50,
                                           db_column='aa_value')
     
-    address = models.CharField(max_length=200, db_column=address)
-    city = models.CharField(max_length=200, db_column=city)
+    address = models.CharField(max_length=200, db_column='address')
+    city = models.CharField(max_length=200, db_column='city')
     
     sql3 = "SELECT * FROM st_table WHERE NVL(low_zone,1) > 1 AND NVL(high_zone,1) > 0 ORDER BY txt ASC"
     state = connection.execute(sql3)  
     CHOICESST = tuple((row['st'], row['txt']) for row in state)    
     connection.close()   
     
-    state = models.CharField(max_length=2, choices=CHOICESST, db_column=state)
+    state = models.CharField(max_length=2, choices=CHOICESST, db_column='state')
     zipcode = models.PositiveIntegerField(max_length=5,
                                           verbose_name='Zip',
-                                          db_column=zip)
-    date = models.DateField(auto_now_add=True, db_column=datecreated) #'auto_now_add' sets the date to the current date and makes this field invisible in the form
+                                          db_column='zip')
+    date = models.DateField(auto_now_add=True, db_column='datecreated') #'auto_now_add' sets the date to the current date and makes this field invisible in the form
 
     #How the class is displayed in the admin page
     def __unicode__(self):

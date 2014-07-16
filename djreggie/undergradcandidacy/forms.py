@@ -16,8 +16,8 @@ class UndergradForm(forms.ModelForm):
         super(UndergradForm, self).__init__(*args, **kwargs)
         
         #Setting settings for select boxes
-        self.fields['finish_requirements_by'].choices = self.fields['finish_requirements_by'].choices[1:]
-        self.fields['when_teach'].choices = self.fields['when_teach'].choices[1:]        
+        #self.fields['finish_requirements_by'].choices = self.fields['finish_requirements_by'].choices[1:]
+        #self.fields['when_teach'].choices = self.fields['when_teach'].choices[1:]        
         
     def clean_fname(self):
         data = self.cleaned_data['fname']
@@ -70,8 +70,5 @@ class UndergradForm(forms.ModelForm):
     class Meta:
         model = UndergradModel #Use all of the fields from 'UndergradForm' in this form class
         widgets = { #When we want things displayed differently than their default
-            'finish_requirements_by': forms.RadioSelect(), #Radio select
-            'when_teach': forms.RadioSelect(),
-            'carthage_email': forms.HiddenInput(), #Is not visible
             'student_id': forms.HiddenInput(),
         }

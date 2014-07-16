@@ -174,32 +174,30 @@
     <fieldset class="blockLabels">
         <legend>Required Courses Status</legend>
         <ol>
-            <li class="ctrlHolder"><h3><label for="id_finish_requirements_by_0">Please indicate the situation below that applies to you:</label></h3>
-            <ul>
-                <li>{{form.finish_requirements_by.0}}</li>
-                <li>{{form.finish_requirements_by.1}}</li>
-                <li>{{form.finish_requirements_by.2}}</li>
-                <li>{{form.finish_requirements_by.3}}</li>
-            </ul>
-            {{form.finish_requirements_by.errors}}
+            <li class="ctrlHolder"><h3><label for="id_grad_yr">Year Graduating</label></h3>
+                <div class="required">
+                    {{form.grad_yr}}
+                    {{form.grad_yr.errors}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_grad_session">Session Graduating</label></h3>
+                <div class="required">
+                    {{form.grad_session}}
+                    {{form.grad_session.errors}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_will_teach">Will Teach</label></h3>
+                <div class="required">
+                    {{form.will_teach}}
+                    {{form.prog.errors}}
+                </div>
+            </li>
             <li>Note: Carthage allows you to participate in the May {{ year_up }} graduation ceremony if you can complete
                 all of your remaining graduation requirements by taking 12 or fewer credits in the Summer of {{ year_up }}. All
                 graduation requirements must be completed before the degree can be conferred
             </li>
         </ol>
-    </fieldset>    
-    <fieldset class="blockLabels">
-        <legend>Student Teaching</legend>
-        <ol>
-            <li class="ctrlHolder"><h3><label for="id_when_teach_0">Please indicate when you intend to Student Teach, if you will be doing so</label></h3>
-            <ul>
-                <li>{{form.when_teach.0}}</li>
-                <li>{{form.when_teach.1}}</li>
-                <li>{{form.when_teach.2}}</li>
-            </ul>
-            {{form.when_teach.errors}}
-        </ol>
-    </fieldset>    
+    </fieldset>      
     <fieldset class="blockLabels">
         <legend>Contact Information</legend>
         <ol>
