@@ -38,6 +38,20 @@
         }
     });
     
+    $("#id_reason_for_change").click( function() {
+          if (this.value != "OTH"){
+                  $('#otherli').css("display", "none");
+              }
+          else{
+                  $('#otherli').css("display", "list-item");
+              }
+          });
+      if( $('#id_reason_for_change').val() == 'OTH' ){
+          $('#otherli').css("display", "list-item");
+      }
+      else {
+          $('#otherli').css("display", "none");
+      }
 
 </script>
 {% endblock %}
@@ -212,11 +226,13 @@
             <li class="ctrlHolder"><h3><label for="id_reason_for_change">Reason for Change:</label></h3>
                 <div class='required'>
                     {{ form.reason_for_change }}
+                    {{ form.reason_for_change.errors }}
                 </div>
             </li>
             <li class ="ctrlHolder" id='otherli'><h3><label for="id_other_textbox">Other:</label></h3>
                 <div class='required'>
-                    <input type='text' name='other' id='id_other_textbox' maxlength=100/>
+                    {{form.other_textbox}}
+                    {{form.other_textbox.errors}}
                 </div>
             </li>
             <li class="btnHolder">
