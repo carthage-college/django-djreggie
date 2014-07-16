@@ -74,6 +74,7 @@
 {% endblock %}
 {% block content %}
 {{ form.non_field_errors }}
+{{form.errors}}
 <form action='' method='post' class = "form">{% csrf_token %}
     <fieldset class="blockLabels">
         <legend>For Diploma</legend>
@@ -82,6 +83,7 @@
                 your name will be read as you cross the stage at the graduation ceremony.</li>
             <li class="ctrlHolder"><h3><label for="id_student_id">Student ID</label></h3>
                 <div class='readonly'>
+                    {{form.student_id}}
                     {{form.student_id.value}}
                 </div>
             </li>
@@ -108,12 +110,12 @@
             </li>
             <li class="ctrlHolder"><h3><label for="id_fnamepro">Tell us how to pronounce your first name</label></h3>
                 <div class='required'>
-                    <input type='text' name='fnamepro' id='id_fnamepro' maxlength=100/>
+                    {{form.fnamepro}}
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_lnamepro">Tell us how to pronounce your last name</label></h3>
                 <div class='required'>
-                    <input type='text' name='lnamepro' id='id_lnamepro' maxlength=100/>
+                    {{form.lnamepro}}
                 </div>
             </li>
         </ol>
@@ -155,7 +157,7 @@
             <li>Check the box below if you intend to participate in the May {{ year_up }} Graduation Ceremony.
             </li>
             <li class="ctrlHolder"><h3>
-                <input type='checkbox' name='participate' id='id_participate_in_graduation' /></h3>
+                {{form.participate_in_graduation}}</h3>
             </li>
         </ol>
     </fieldset>    
@@ -164,18 +166,10 @@
         <ol>
             <li class="ctrlHolder"><h3><label for="id_finish_requirements_by_0">Please indicate the situation below that applies to you:</label></h3>
             <ul>
-                <li><label for="id_finish_requirements_by_0"><input id="id_finish_requirements_by_0" name="requirements" type="radio" value="RA" />
-                    I will be finished with all required courses & degree requirements by the end of the
-                    {{ year_low }}/{{ year_up }} Fall Term (December)</label></li>
-                    <li><label for="id_finish_requirements_by_1"><input id="id_finish_requirements_by_1" name="requirements" type="radio" value="RB" />
-                    I will be finished with all required courses & degree requirements by the end of the
-                    {{ year_low }}/{{ year_up }} J-Term (January)</label></li>
-                    <li><label for="id_finish_requirements_by_2"><input id="id_finish_requirements_by_2" name="requirements" type="radio" value="RC" />
-                    I will be finished with all required courses & degree requirements by the end of the
-                    {{ year_low }}/{{ year_up }} Spring Term (May)</label></li>
-                    <li><label for="id_finish_requirements_by_3"><input id="id_finish_requirements_by_3" name="requirements" type="radio" value="RE" />
-                    I will be finished with all required courses & degree requirements by the end of the
-                    {{ year_low }}/{{ year_up }} Summer Term (August)</label></li>
+                <li>{{form.finish_requirements_by.0}}</li>
+                <li>{{form.finish_requirements_by.1}}</li>
+                <li>{{form.finish_requirements_by.2}}</li>
+                <li>{{form.finish_requirements_by.3}}</li>
             </ul>
             <li>Note: Carthage allows you to participate in the May {{ year_up }} graduation ceremony if you can complete
                 all of your remaining graduation requirements by taking 12 or fewer credits in the Summer of {{ year_up }}. All
@@ -188,12 +182,9 @@
         <ol>
             <li class="ctrlHolder"><h3><label for="id_when_teach_0">Please indicate when you intend to Student Teach, if you will be doing so</label></h3>
             <ul>
-                <li><label for="id_finish_requirements_by_0"><input id="id_when_teach_0" name="teach" type="radio" value="F1" />
-                    Fall Term {{ year_low }}</label></li>
-                    <li><label for="id_when_teach_1"><input id="id_fwhen_teach_1" name="teach" type="radio" value="SP" />
-                    Spring Term {{ year_up }}<label></li>
-                    <li><label for="id_when_teach_2"><input id="id_when_teach_2" name="teach" type="radio" value="S2" />
-                    Fall Term {{ year_up }}</label></li>
+                <li>{{form.when_teach.0}}</li>
+                <li>{{form.when_teach.1}}</li>
+                <li>{{form.when_teach.2}}</li>
             </ul>
         </ol>
     </fieldset>    
@@ -202,21 +193,21 @@
         <ol>
             <li class="ctrlHolder"><h3><label for="id_best_phone">Best phone number to reach you at</label></h3>
                 <div class='required'>
-                    <input type='text' name='best_phone' id='id_best_phone' maxlength=100/>
+                    {{form.best_phone}}
                     <img class='hidden' id='best_phone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='best_phone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_cell">Cell Number</label></h3>
                 <div class='required'>
-                    <input type='text' name='cell' id='id_cell' maxlength=100/>
+                    {{form.cell}}
                     <img class='hidden' id='cell_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='cell_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_email">Email</label></h3>
                 <div class='required'>
-                    <input type='text' name='email' id='id_email' maxlength=100/>
+                    {{form.email}}
                     <img class='hidden' id='email_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='email_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -232,14 +223,14 @@
             </li>        
             <li class="ctrlHolder"><h3><label for="id_address">Address</label></h3>
                 <div class='required'>
-                    <input type='text' name='address' id='id_address' maxlength=100/>
+                    {{form.address}}
                     <img class='hidden' id='address_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='address_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_city">City</label></h3>
                 <div class='required'>
-                    <input type='text' name='city' id='id_city' maxlength=100/>
+                    {{form.city}}
                     <img class='hidden' id='city_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='city_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -253,7 +244,7 @@
             </li>         
             <li class="ctrlHolder"><h3><label for="id_zip">Zip Code</label></h3>
                 <div class='required'>
-                    <input type='text' name='zip' id='id_zip' maxlength=100/>
+                    {{form.zipcode}}
                     <img class='hidden' id='zip_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='zip_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>

@@ -26,7 +26,7 @@ class UndergradForm(forms.ModelForm):
         return data    
     def clean_mname(self):
         data = self.cleaned_data['mname']
-        if not re.match(r'^([a-zA-Z]+)$', data):
+        if data and not re.match(r'^([a-zA-Z]+)$', data):
             raise forms.ValidationError('Please enter just a middle name.')
         return data    
     def clean_lname(self):
@@ -55,13 +55,13 @@ class UndergradForm(forms.ModelForm):
     
     def clean_zipcode(self):
         data = self.cleaned_data['zipcode']
-        if not re.match(r'^([\d]{5}|\d{5}-?\d{4})$', data):
+        if not re.match(r'^([\d]{5}|\d{5}-?\d{4})$', str(data)):
             raise forms.ValidationError('Enter a valid zipcode')
         return data
     
     def clean_student_id(self):
         data = self.cleaned_data['student_id']
-        if not re.match(r'^(\d{5,7})$', data):
+        if not re.match(r'^(\d{5,7})$', str(data)):
             raise forms.ValidationError('Not a valid 5-7 digit Carthage id')
         return data
     
@@ -73,4 +73,5 @@ class UndergradForm(forms.ModelForm):
             'finish_requirements_by': forms.RadioSelect(), #Radio select
             'when_teach': forms.RadioSelect(),
             'carthage_email': forms.HiddenInput(), #Is not visible
+            'student_id': forms.HiddenInput(),
         }

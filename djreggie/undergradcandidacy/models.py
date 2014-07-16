@@ -46,11 +46,11 @@ class UndergradModel(models.Model):
     CHOICES2 = tuple((row['minor'], row['txt']) for row in minor)
     
     major1 = models.CharField(max_length=200, choices=CHOICES1)
-    minor1 = models.CharField(max_length=200, choices=CHOICES2)
-    major2 = models.CharField(max_length=200, choices=CHOICES1)
-    minor2 = models.CharField(max_length=200, choices=CHOICES2)
-    major3 = models.CharField(max_length=200, choices=CHOICES1)
-    minor3 = models.CharField(max_length=200, choices=CHOICES2)
+    minor1 = models.CharField(max_length=200, choices=CHOICES2, null=True, blank=True)
+    major2 = models.CharField(max_length=200, choices=CHOICES1, null=True, blank=True)
+    minor2 = models.CharField(max_length=200, choices=CHOICES2, null=True, blank=True)
+    major3 = models.CharField(max_length=200, choices=CHOICES1, null=True, blank=True)
+    minor3 = models.CharField(max_length=200, choices=CHOICES2, null=True, blank=True)
     
     participate_in_graduation = models.BooleanField() #Renders as a checkbox
 
