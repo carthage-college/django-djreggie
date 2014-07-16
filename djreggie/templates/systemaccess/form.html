@@ -48,35 +48,40 @@
         <ol>
             <li class="ctrlHolder"><h3><label for="id_carthage_id">Carthage ID</label></h3>
                 <div class='required'>
-                    <input type='text' name='ID' id='id_carthage_id' maxlength=7/>
+                    {{form.carthage_id}}
+                    {{form.carthage_id.errors}}
                     <img class='hidden' id='carthage_id_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='carthage_id_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_full_name">Full Name</label></h3>
                 <div class='required'>
-                    <input type='text' name='name' id='id_full_name' maxlength=100/>
+                    {{form.full_name}}
+                    {{form.full_name.errors}}
                     <img class='hidden' id='full_name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='full_name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_department">Department</label></h3>
                 <div class='required'>
-                    <input type='text' name='department' id='id_department' maxlength=100/>
+                    {{form.department}}
+                    {{form.department.errors}}
                     <img class='hidden' id='department_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='department_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_position">Position</label></h3>
                 <div class='required'>
-                    <input type='text' name='position' id='id_position' maxlength=100/>
+                    {{form.position}}
+                    {{form.position.errors}}
                     <img class='hidden' id='position_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='position_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_work_phone">Work Phone:</label></h3>
                 <div class='required'>
-                    <input type='text' name='phone' id='id_work_phone' maxlength=100/>
+                    {{form.work_phone}}
+                    {{form.work_phone.errors}}
                     <img class='hidden' id='work_phone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='work_phone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
