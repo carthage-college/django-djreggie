@@ -1,17 +1,23 @@
 from django import forms
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from djreggie.changemajor.forms import ChangeForm
-from djreggie.changemajor.models import ChangeModel
+from forms import ChangeForm
+from models import ChangeModel
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
 from django.core.context_processors import csrf
 from django.template import RequestContext  # For CSRF
+from django.core.mail import send_mail
 
 def create(request):
-    if request.POST: #If we do a POST
-        (a, created) = ChangeModel.objects.get_or_create(student_id=request.POST['student_id'])
-        form = ChangeForm(request.POST, instance=a) #Scrape the data from the form and save it in a variable
+    if request.POST: #If we do a POST            
+        #(a, created) = ChangeModel.objects.get_or_create(student_id=request.POST[student_id])
+        form = ChangeForm(request.POST) #Scrape the data from the form and save it in a variable
+        
+        #Email stuff should be inside "if form.is_valid()", but for whatever reason, it's not getting called in there
+        if form.data['advisor'] != '':
+            send_mail("You can't replace me, I'm the advisor!", "I'm the captai- er, advisor now", 'confirmation.carthage.edu',
+                ['zorpixfang@gmail.com'], fail_silently=False)
         
         if form.is_valid(): #If the form is valid
             form_instance = form.save()        #Save the form data to the datbase table            

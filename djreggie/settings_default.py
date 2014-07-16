@@ -14,7 +14,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-SECRET_KEY = ''
+SECRET_KEY = 'ko53qfwb5(c23#ql62ru^n*3rr_@k%+x1-)v*d&6+bpsvh7b2!'
 ALLOWED_HOSTS = []
 
 LANGUAGE_CODE = 'en-us'
@@ -26,13 +26,15 @@ USE_TZ = False
 DEFAULT_CHARSET = 'utf-8'
 FILE_CHARSET = 'utf-8'
 
-SERVER_URL = ""
+SERVER_URL = "www.carthage.edu"
+API_URL = "%s/%s" % (SERVER_URL, "api")
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ROOT_DIR = os.path.dirname(__file__)
-ROOT_URL = "/djreggie/"
+ROOT_URL = "/jsawyer/djreggie/"
 ROOT_URLCONF = 'djreggie.urls'
 WSGI_APPLICATION = 'djreggie.wsgi.application'
-MEDIA_ROOT = ''
+MEDIA_ROOT = 'home/jsawyer/sandbox/uploads/'
+MEDIA_URL = '/uploads/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATIC_ROOT = ''
 STATIC_URL = "/static/"
@@ -47,10 +49,10 @@ DATABASES = {
     'default': {
         'HOST': '127.0.0.1',
         'PORT': '3306',
-        'NAME': 'django_djreggie',
+        'NAME': 'djreggie',
         'ENGINE': 'django.db.backends.mysql',
-        'USER': '',
-        'PASSWORD': ''
+        'USER': 'brahman',
+        'PASSWORD': 'atm@n!@ke5ided3ri5i0n'
     },
 }
 
@@ -62,9 +64,19 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
-    'djreggie',
+    'djtools',
+    'djreggie.changemajor',
+    'djreggie.consentfam',
+    'djreggie.consentform',
+    'djreggie.createemail',
+    'djreggie.depstudent',
+    'djreggie.indepstudent',
+    'djreggie.systemaccess',
+    'djreggie.undergradcandidacy',
 )
+LIVEWHALE_API_URL = "https://www.carthage.edu"
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -81,7 +93,9 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 TEMPLATE_DIRS = (
-    "/data2/django_projects/djreggie/templates/",
+    "/home/jsawyer/sandbox/djreggie/templates/",
+    "/data2/django_templates/djkorra/",
+    "/data2/django_templates/djcher/",
     "/data2/django_templates/",
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -150,11 +164,6 @@ LOGGING = {
             'format': '%(levelname)s %(message)s'
         },
     },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
     'handlers': {
         'null': {
             'level':'DEBUG',
@@ -175,13 +184,16 @@ LOGGING = {
         },
         'mail_admins': {
             'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'include_html': True,
             'class': 'django.utils.log.AdminEmailHandler'
         }
     },
     'loggers': {
-        'djreggie': {
+        'mugshots.upload': {
+            'handlers':['logfile'],
+            'propagate': True,
+            'level':'DEBUG',
+        },
+        'core': {
             'handlers':['logfile'],
             'propagate': True,
             'level':'DEBUG',

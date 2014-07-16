@@ -5,22 +5,26 @@ from django.http import HttpResponseRedirect
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
 from django import forms
+from django.core.mail import send_mail
 
 #Need to include the form object
-from djreggie.consentform.form import ModelForm
-from djreggie.consentform.models import Form
+from form import ModelForm
+from models import Form
 
 def create(request):
     if request.POST: #If we do a POST
-        (a, created) = Form.objects.get_or_create(student_ID=request.POST['student_ID'])    
-        form = ModelForm(request.POST, instance=a) #Scrape the data from the form and save it in a variable
-        form.fields['student_ID'].widget = forms.HiddenInput()
-        form.fields['name'].widget = forms.HiddenInput()
+        #(a, created) = Form.objects.get(student_ID=request.POST['student_ID'])    
+        form = ModelForm(request.POST) #Scrape the data from the form and save it in a variable
+        
+        #Email stuff should be inside "if form.is_valid()", but for right now, we need to test it. 
+        if form.data['consent'] == 'NOCONSENT':
+            send_mail("Don\'t do it!", "You\'re making a huge mistake", 'confirmation.carthage.edu',
+                ['zorpixfang@gmail.com'], fail_silently=False)   
         
         if form.is_valid(): #If the form is valid
             form.save() #Save the form data to the datbase table
             form = ModelForm()
-            submitted = True
+           # submitted = True
             return render(request, 'consentform/form.html', {
                 'form': form,
                 'submitted': submitted

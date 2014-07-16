@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from datetime import date
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
+from django.core.mail import send_mail
 
 #Including the form class
 from djreggie.undergradcandidacy.forms import UndergradForm
@@ -16,7 +17,10 @@ def index(request):
         year = year - 1
     if request.POST: #If we do a POST
         form = UndergradForm(request.POST) #Scrape the data from the form and save it in a variable
+        
         if form.is_valid(): #If the form is valid
+            send_mail("Undergraduate Candidacy Response", "Thank you for submitting the form. Your information is now being reviewed.", 'confirmation.carthage.edu',
+                ['zorpixfang@gmail.com'], fail_silently=False)
             obj = form.save(commit=False) #'commit=False' - Don't save the data to the database yet
             
             #Checking if the email is a carthage email

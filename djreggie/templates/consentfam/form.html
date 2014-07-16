@@ -29,7 +29,7 @@ $(document).ready(function () {
             var i = 0;
             // Go through the forms and set their indices, names and IDs
             for (formCount = forms.length; i < formCount; i++) {
-                $(forms.get(i)).find('[id*=Parent_or_Third_Party], [for*=Parent_or_Third_Party]').each(function () {
+                $(forms.get(i)).find('[id*="Parent_or_Third_Party"], [for*=Parent_or_Third_Party]').each(function () {
                 updateElementIndex(this, prefix, i);
             });
             }
@@ -54,7 +54,7 @@ $(document).ready(function () {
             $(".errorlist", row).remove();
             $(row).children().removeClass("error");
             //rename new elements
-            $(row).find('[id*=Parent_or_Third_Party], [for*=Parent_or_Third_Party]').each(function () {
+            $(row).find('[id*="Parent_or_Third_Party"], [for*=Parent_or_Third_Party]').each(function () {
                 updateElementIndex(this, prefix, formCount);
                 if($(this).attr('type') == 'text') $(this).val("");
                 if($(this).attr('type') == 'radio') $(this).attr("checked", false)
@@ -114,10 +114,14 @@ $(document).ready(function () {
                 </li>
             </ul>
             </li>
-            <li class="ctrlHolder"><h3><label for="Which_information_would_you_like_to_share">
-                Which information would you like to share?</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_phone">Phone Number</label></h3>
                 <div class='required'>
-                    {{ form.Which_information_would_you_like_to_share }}
+                    <input type='text' name='phone' id='id_phone' maxlength=14/>
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_email">Email Address</label></h3>
+                <div class='required'>
+                    <input type='text' name='email' id='id_email' maxlength=14/>
                 </div>
             </li>
         </ol>
@@ -130,7 +134,7 @@ $(document).ready(function () {
                {{ Parent_formset.management_form }}
                 {% for form in Parent_formset.forms %}
                 <div class = fam>
-                    <li class="ctrlHolder"><h3>{{form}}</h3></li>
+                    <li class="ctrlHolder"><h3>{{form.as_p}}</h3></li>
                     <li style=""><a class="delete" href="#">Delete</a></li>
                     <hr>
                 </div>

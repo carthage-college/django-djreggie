@@ -1,0 +1,157 @@
+{% extends "dashboard/home.html" %}
+{% block extra_style %}
+{{block.super}}
+<link href="/static/djsani/css/print.css"
+    rel="stylesheet" type="text/css" media="print" />
+<style>
+.dl-horizontal dt.widus {
+    width: 300px;
+    margin-right:9px;
+}
+.dl-horizontal dd.yes {
+    margin-left: 0;
+}
+.center{text-align:center;}
+.red {color:#800;}
+.green {color:#008000;}
+</style>
+{% endblock %}
+{% block content %}
+<div id="student-container">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="page-header">
+                {{student.firstname}} {{student.lastname}}
+                <small>DOB: {{student.birth_date}} &mdash; Age: {{age}}</small>
+                {% if student.athlete %}<small>Athlete</small><br />{% endif %}
+                <a href="{% url 'student_detail_print' cid %}">
+                    <i class="fa fa-print"></i>
+                </a>
+            </h1>
+            <h3>
+                Immunization status:
+                {% if student.cc_student_immunization %}
+                    <i class="fa fa-check green">
+                        <span></span>
+                    </i>
+                {% else %}
+                    <input type="checkbox" name="immun" class="immun"
+                        id="immun_{{student.id}}" value="{{student.id}}" />
+                {% endif %}
+            </h3>
+
+        </div>
+        <!-- /.col-lg-12 -->
+        <div class="col-lg-4">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-globe fa-5x"></i>
+                        </div>
+                        <div class="col-xs-8" id="student-contact">
+                            <address>
+                            {{student.addr_line1}} {{student.addr_line2}}<br>
+                            {{student.city}}, {{student.st}}<br>
+                            {{student.zip}} {{student.ctry}}<br>
+                            <abbr title="Phone">P:</abbr>
+                            {{student.phone}}<br>
+                            <a href="mailto:{{student.ldap_name}}@carthage.edu">
+                                {{student.ldap_name}}@carthage.edu
+                            </a>
+                            </address>
+                        </div>
+                    </div> <!-- /.row -->
+                </div> <!--/.panel-heading -->
+            </div> <!-- /.panel-success -->
+        </div> <!-- /.col-lg-4 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-ambulance"></i>
+                        Emergency Contact Information
+                    </h3>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div id="emergency_information">
+                        <pre>{{ens}}</pre>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel-info -->
+        </div>
+        <!-- /.col-lg-6 -->
+        <div class="col-lg-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-umbrella"></i>
+                        Health Insurance
+                    </h3>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div id="cc_student_health_insurance">
+                        {{shi}}
+                    </div>
+                    <!-- /.health-insurance -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel-info -->
+        </div>
+        <!-- /.col-lg-6 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-plus-square"></i>
+                        Medical History
+                    </h3>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div id="student-medical-history">
+                        <ul style="margin-bottom: 15px;" class="nav nav-tabs">
+                            <li class="active">
+                                <a data-toggle="tab" href="#cc_student_medical_history">
+                                    Student
+                                </a>
+                            </li>
+                            <li{#% if not student.athlete class="disabled" endif #}>
+                                <a href="#cc_athlete_medical_history" data-toggle="tab">
+                                    Athlete
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-tabs -->
+                        <div class="tab-content" id="medical-history-content">
+                            <div id="cc_student_medical_history" class="tab-pane fade active in">
+                                {{smh}}
+                            </div>
+                            <div id="cc_athlete_medical_history" class="tab-pane fade">
+                                {{amh}}
+                            </div>
+                        </div>
+                        <!-- /.tab-content -->
+                    </div>
+                    <!-- /.medical-history -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel-info -->
+        </div>
+        <!-- /.col-lg-6 -->
+    </div>
+    <!-- /.row -->
+</div> <!-- /#student-container -->
+{% endblock content %}

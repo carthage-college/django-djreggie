@@ -1,6 +1,6 @@
 #Include django.forms
 from django import forms
-from djreggie.consentfam.models import ConsentModel, ParentForm, Contact  #Include the models that goes with this form
+from djreggie.consentfam.models import ConsentModel, ParentForm  #Include the models that goes with this form
 
 #These carry special tools useful for validating django forms
 from django.core.exceptions import ValidationError
@@ -33,10 +33,10 @@ class ModelForm(forms.ModelForm):
             raise forms.ValidationError('Must be 5-7 digits long')
         return data
     
-    def clean_Which_information_would_you_like_to_share(self):
-        data = self.cleaned_data['Which_information_would_you_like_to_share']
-        if not data:
-            raise forms.ValidationError('Must choose an option')
+    def clean_phone(self):
+        data = self.cleaned_data['phone']
+        if not re.match(r'^((?:1?[\s\-\.\/]?\(?(?:\d{3})\)?)?[\s\-\.\/]?\d{3}[\s\-\.\/]?\d{4}(?:\s?(?:x|ext|\.)?\s?\d{4})?)$', data):
+            raise forms.ValidationError('Please enter a valid phone number')
         return data
     
     
@@ -46,9 +46,20 @@ class ModelForm(forms.ModelForm):
 
 
 class Parent(forms.Form):
+    
+    CHOICES = (
+        ("ACADEMIC", 'Academic Records'),
+        ("FINANCIAL", 'Financial Records'),
+        ("BOTH", 'I would like to share both'),
+        ("NEITHER", 'I would like to share neither'),
+        ("OLD", "I would like to keep my old sharing settings"),
+    )
+    
+    share = forms.ChoiceField(choices = CHOICES, label='Which information would you like to share?')
+    
     name = forms.CharField()
     
-    CHOICES3 = (    
+    CHOICES2 = (    
     ("MOM", 'Mother'),
     ("DAD", 'Father'),
     ("GRAN", 'Grandparent'),
@@ -63,4 +74,4 @@ class Parent(forms.Form):
     )
     
     #adding the validators field at the end here lets us use that function at the top to validate
-    Relation = forms.ChoiceField(required = False, widget = forms.RadioSelect, choices = CHOICES3, validators = [fff]) 
+    Relation = forms.ChoiceField(required = False, widget = forms.RadioSelect, choices = CHOICES2, validators = [fff]) 

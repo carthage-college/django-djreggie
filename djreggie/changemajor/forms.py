@@ -1,6 +1,7 @@
 #Include these below
 from django import forms
 from django.core import validators #Need this for validation
+import re
 
 from djreggie.changemajor.models import ChangeModel
 
@@ -23,7 +24,7 @@ class ChangeForm(forms.ModelForm):
     
     def clean_advisor(self):
         data = self.cleaned_data['advisor']
-        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
+        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+|)$', data):
             raise forms.ValidationError('Please enter a valid advisor name')
         return data
 
