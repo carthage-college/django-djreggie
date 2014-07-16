@@ -17,7 +17,7 @@ def create(request):
         #Email stuff should be inside "if form.is_valid()", but for whatever reason, it's not getting called in there
         if form.data['advisor'] != '':
             send_mail("You can't replace me, I'm the advisor!", "I'm the captai- er, advisor now", 'confirmation.carthage.edu',
-                ['zorpixfang@gmail.com'], fail_silently=False)
+                ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
         
         if form.is_valid(): #If the form is valid
             form_instance = form.save()        #Save the form data to the datbase table            

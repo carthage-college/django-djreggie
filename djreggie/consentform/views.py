@@ -19,7 +19,7 @@ def create(request):
         #Email stuff should be inside "if form.is_valid()", but for right now, we need to test it. 
         if form.data['consent'] == 'NOCONSENT':
             send_mail("Don\'t do it!", "You\'re making a huge mistake", 'confirmation.carthage.edu',
-                ['zorpixfang@gmail.com'], fail_silently=False)   
+                ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)   
         
         if form.is_valid(): #If the form is valid
             form.save() #Save the form data to the datbase table
