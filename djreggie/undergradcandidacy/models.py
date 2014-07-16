@@ -83,10 +83,10 @@ class UndergradModel(models.Model):
                                db_column='grad_yr')
     
     SESSION_CHOICES = (
-        ('Fall', 'RA'),
-        ('J-Term', 'RB'),
-        ('Spring', 'RC'),
-        ('Summer', 'RE')
+        ('RA', 'Fall'),
+        ('RB', 'J-Term'),
+        ('RC', 'Spring'),
+        ('RE', 'Summer')
     )
     grad_session = models.CharField(max_length=2,
                                     choices=SESSION_CHOICES,
