@@ -116,12 +116,14 @@ $(document).ready(function () {
             </li>
             <li class="ctrlHolder"><h3><label for="id_phone">Phone Number</label></h3>
                 <div class='required'>
-                    <input type='text' name='phone' id='id_phone' maxlength=14/>
+                    {{form.phone}}
+                    {{form.phone.errors}}
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_email">Email Address</label></h3>
                 <div class='required'>
-                    <input type='text' name='email' id='id_email' maxlength=14/>
+                    {{form.email}}
+                    {{form.email.errors}}
                 </div>
             </li>
         </ol>
@@ -134,7 +136,7 @@ $(document).ready(function () {
                {{ Parent_formset.management_form }}
                 {% for form in Parent_formset.forms %}
                 <div class = fam>
-                    <li class="ctrlHolder"><h3>{{form.as_p}}</h3></li>
+                    <li class="ctrlHolder"><h3>{{form}}{{form.errors}}</h3></li>
                     <li style=""><a class="delete" href="#">Delete</a></li>
                     <hr>
                 </div>

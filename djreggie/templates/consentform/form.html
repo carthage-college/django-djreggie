@@ -18,7 +18,7 @@
 </script>
 {% endblock %}
 {% block content %}
-<form action='' method='post' class = "form">{% csrf_token %}
+<form action='' enctype="multipart/form-data" method='post' class = "form">{% csrf_token %}
     {{ form.non_field_errors }}
     {% for field in form.hidden_fields %}
         {{ field }}
@@ -55,6 +55,7 @@
             </li>
             <li class="ctrlHolder"><h3><label for="id_consent"></label></h3>
                     {{ form.consent }}
+                    {{ form.consent.errors }}
             </li>
             <li id='hidden' style='display:none;'>
                 *I understand the implications of this decision to withold such directory information. Any requests for such information will be refused.

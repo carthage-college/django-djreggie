@@ -246,7 +246,7 @@
         }
         var validate_name = create_validator('^([a-zA-Z]+)$');
         var validate_ssn = create_validator('^(\\d{3}[\\-|\\.\\s]?\d{2}[\\-|\\.\\s]??\\d{4})$');
-        var validate_address = create_validtor('^(?:[\\w]+\\s?)+[\\w]+$');
+        var validate_address = create_validator('^(?:[\\w]+\\s?)+[\\w]+$');
         var validate_city = create_validator('^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$'); //also works for state
         var validate_zip = create_validator('^([\\d]{5}|\\d{5}-?\\d{4})$');
         var validate_phone = create_validator('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
@@ -417,112 +417,112 @@
         <ol>
             <li class="ctrlHolder"><h3><label for="id_fname">First Name</label></h3>
                 <div class='required'>
-                    {{form.fname}}
-                    {{form.fname.errors}}
+                    {{formdepend.fname}}
+                    {{formdepend.fname.errors}}
                     <img class='hidden' id='fname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='fname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_mname">Middle Name</label></h3>
                 <div class='required'>
-                    {{form.mname}}
-                    {{form.mname.errors}}
+                    {{formdepend.mname}}
+                    {{formdepend.mname.errors}}
                     <img class='hidden' id='mname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='mname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_lname">Last Name</label></h3>
                 <div class='required'>
-                    {{form.lname}}
-                    {{form.lname.errors}}
+                    {{formdepend.lname}}
+                    {{formdepend.lname.errors}}
                     <img class='hidden' id='lname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='lname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_ssn">Social Security Number</label></h3>
                 <div class='required'>
-                    {{form.ssn}}
-                    {{form.ssn.errors}}
+                    {{formdepend.ssn}}
+                    {{formdepend.ssn.errors}}
                     <img class='hidden' id='ssn_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='ssn_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_dob">Date of Birth</label></h3>
                 <div class='required'>
-                    {{form.dob}}
-                    {{form.dob.errors}}
+                    {{formdepend.dob}}
+                    {{formdepend.dob.errors}}
                     <img class='hidden' id='dob_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='dob_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_address">Street Address</label></h3>
                 <div class='required'>
-                    {{form.address}}
-                    {{form.address.errors}}
+                    {{formdepend.address}}
+                    {{formdepend.address.errors}}
                     <img class='hidden' id='address_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='address_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_city">City</label></h3>
                 <div class='required'>
-                    {{form.city}}
-                    {{form.city.errors}}
+                    {{formdepend.city}}
+                    {{formdepend.city.errors}}
                     <img class='hidden' id='city_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='city_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_state">State</label></h3>
                 <div class='required'>
-                    {{form.state}}
-                    {{form.state.errors}}
+                    {{formdepend.state}}
+                    {{formdepend.state.errors}}
                     <img class='hidden' id='state_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='state_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_zip">Zip Code</label></h3>
                 <div class='required'>
-                    {{form.zip}}
-                    {{form.zip.errors}}
+                    {{formdepend.zip}}
+                    {{formdepend.zip.errors}}
                     <img class='hidden' id='zip_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='zip_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_email">Email</label></h3>
                 <div class='required'>
-                    {{form.email}}
-                    {{form.email.errors}}
+                    {{formdepend.email}}
+                    {{formdepend.email.errors}}
                     <img class='hidden' id='email_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='email_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_hphone">Primary Phone</label></h3>
                 <div class='required'>
-                    {{form.hphone}}
-                    {{form.hphone.errors}}
+                    {{formdepend.hphone}}
+                    {{formdepend.hphone.errors}}
                     <img class='hidden' id='hphone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='hphone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_phonetype">Primary Phone Type</label></h3>
                 <div class='required'>
-                    {{form.phonetype}}
-                    {{form.phonetype.errors}}
+                    {{formdepend.phonetype}}
+                    {{formdepend.phonetype.errors}}
                     <img class='hidden' id='phonetype_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='phonetype_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_cphone">Alternate Phone</label></h3>
                 <div class='required'>
-                    {{form.cphone}}
-                    {{form.cphone.errors}}
+                    {{formdepend.cphone}}
+                    {{formdepend.cphone.errors}}
                     <img class='hidden' id='cphone_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='cphone_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_phonetype2">Alternate Phone Type</label></h3>
                 <div class='required'>
-                    {{form.phonetype2}}
-                    {{form.phonetype2.errors}}
+                    {{formdepend.phonetype2}}
+                    {{formdepend.phonetype2.errors}}
                     <img class='hidden' id='phonetype2_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='phonetype2_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
@@ -580,21 +580,21 @@
             </li>
             <li class="ctrlHolder"><h3><label for="id_useddata_0"></label></h3>
                 <ul>
-                    <li class="highlightradio">{{form.useddata.0}}
-                        <label for="id_useddata_0" class="radiostyle">I, the student, have used the IRS Data Retrieval Tool in FAFSA
+                    <li class="highlightradio"><input type=radio name="useddata" id="id_useddata_0" value="HAS">
+                    <label for="id_useddata_0" class="radiostyle">I, the student, have used the IRS Data Retrieval Tool in FAFSA
                         on the Web to transfer my (and, if married, my spouse's) {{ year0 }} IRS income information into my FAFSA,
                         either on the initial FAFSA or when making a correction to the FAFSA.
                         Your school will use the IRS information that was transferred in the verification process.
                         </label></li><br>
-                    <li class="highlightradio">{{form.useddata.1}}
-                        <label for="id_useddata_1" class="radiostyle">I, the student, have not yet used the IRS Data Retrieval Tool,
+                    <li class="highlightradio"><input type=radio name="useddata" id="id_useddata_1" value="HASN">
+                    <label for="id_useddata_1" class="radiostyle">I, the student, have not yet used the IRS Data Retrieval Tool,
                         but I will use the tool to transfer my (and, if married, my spouse's) {{ year0 }} IRS income information into
                         my FAFSA once I have filed my {{ year0 }} IRS tax return. See instructions above for information on how to use
                         the IRS Data Retrieval Tool. Your school cannot complete the verification process until your
                         (and, if married, your spouse's) IRS information has been transferred into your FAFSA.
                         </label></li><br>
-                    <li class="highlightradio">{{form.useddata.2}}
-                        <label for="id_useddata_2" class="radiostyle">I, the student, am unable or choose not to use the
+                    <li class="highlightradio"><input type=radio name="useddata" id="id_useddata_2" value="WONT">
+                    <label for="id_useddata_2" class="radiostyle">I, the student, am unable or choose not to use the
                         IRS Data Retrieval Tool in FAFSA on the Web, and I will submit to the school {{ year0 }} IRS tax return
                         transcript(s) - not photocopies of the income tax return. To obtain an IRS tax return transcript, go to
                         www.IRS.gov and click on the "Order a Return or Account Transcript link", or call 1-800-908-9946.
@@ -607,22 +607,22 @@
                         </label>
                     </li>
                 </ul>
-                {{form.useddata.errors}}
+                {{formsincome.useddata.errors}}
             </li>
             <li class="ctrlHolder"><h3><label for="id_attached_0"></label></h3>
                 <ul>
-                    <li><label for="id_attached_0">{{form.attached.0}}
+                    <li><label for="id_attached_0"><input type=radio name="attached" id="id_attached_0"/ value="ISNT">
                     Check here if IRS tax return transcript(s) will be submitted to your school later.
                     Verification cannot be completed until the IRS tax return transcript(s) has been submitted to your school.
                     </label></li>
-                    <li><label for="id_attached_1">{{form.attached.1}}
+                    <li><label for="id_attached_1"><input type=radio name="attached" id="id_attached_1"/ value="IS">
                     Check here if an IRS tax return transcript(s) is attached to this worksheet.
                     </label></li>
                 </ul>
-                {{form.attached.errors}}
+                {{formsincome.attached.errors}}
             </li>
             <li id='fileli' class="ctrlHolder"><h3><label for="id_file">Upload your IRS tax return transcript</label></h3>
-                <div class='required'>{{form.file}}{{form.file.errors}}</div>
+                <div class='required'>{{formdepend.file}}{{formdepend.file.errors}}</div>
             </li>
             <li>2. TAX RETURN NONFILERS-complete this section if the student will not file and is not required to file a {{ year0 }} income tax
                 return with the IRS.<br>
@@ -630,17 +630,17 @@
             </li>
             <li class="ctrlHolder"><h3><label for="id_employed_0"></label></h3>
                 <ul>
-                    <li><label for="id_employed_0">{{form.employed.0}}
+                    <li><label for="id_employed_0"><input type=radio name="employed" id="id_employed_0" value="WASN"/>
                     The student (and, if married, the student's spouse) was not employed and had no income earned
                     from work in {{ year0 }}.</label></li>
-                    <li><label for="id_employed_1">{{form.employed.1}}
+                    <li><label for="id_employed_1"><input type=radio name="employed" id="id_employed_1" value="WAS"/>
                     The student (and/or the student's spouse if married) was employed in {{ year0 }} and has listed below
                     the names of all employers, the amount earned from each employer in {{ year0 }}, and whether an IRS W-2
                     form is attached. Attach copies of all {{ year0 }} W-2 forms issued to you (and, if married, to your spouse)
                     by employers. List every employer even if the employer did not issue an IRS W-2 form.
                     </label></li>
                 </ul>
-                {{form.employed.errors}}
+                {{formsincome.employed.errors}}
             </li>
             <li id='studentli' class="ctrlHolder">
                 {{ formsetstud.management_form }}
@@ -665,7 +665,7 @@
             {{ year0 }}.<br>
             </li>
             <li class="ctrlHolder"><h3>
-                <div class='required'>{{form.snapbenefits}}{{form.snapbenefits.errors}}</div></h3>
+                <div class='required'>{{formotherinformation.snapbenefits}}{{formotherinformation.snapbenefits.errors}}</div></h3>
             </li>
         </ol>
         <input type="button" id="next5" name="next5" value="Next" class="button"/>
@@ -679,7 +679,7 @@
             of child support that was paid in {{ year0 }} for each child. If asked by your school, you must provide documentation of
             the payment of child support.<br></li>
             <li class="ctrlHolder"><h3>
-                <div class='required'>{{form.childsupport}}{{form.childsupport.errors}}</div></h3>
+                <div class='required'>{{formotherinformation.childsupport}}{{formotherinformation.childsupport.errors}}</div></h3>
             </li>
             <li id='csli'>
                 {{ formsetcs.management_form }}

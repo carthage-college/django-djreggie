@@ -60,6 +60,7 @@
             <li class="ctrlHolder" id="major1"><h3><label for="id_major1">Majors</label></h3>
                 <div class="required">
                     {{ form.major1 }}
+                    {{ form.major1.errors }}
                 </div>
             </li>
             <li class="ctrlHolder" id="major2"><h3><label for="id_major2"></label></h3>
@@ -70,9 +71,7 @@
             </li>
             <hr>
             <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minors</label></h3>
-                <div class="required">
                     {{ form.minor1 }}
-                </div>
             </li>                
             <li class="ctrlHolder" id="minor2"><h3><label for="id_minor2"></label></h3>
                 {{ form.minor2 }}
@@ -87,9 +86,8 @@
         <ol>
             <li class="ctrlHolder"><h3><label for="id_advisor">
             Who would you like to be your new advisor? (If no change, leave blank)</label></h3>
-                <div class='required'>
-                    <input id="id_advisor" name="advisor" type="text"/>
-                </div>
+                {{form.advisor}}
+                {{form.advisor.errors}}
             </li>
             <li class="btnHolder">
                 <label for="submit">&nbsp;&nbsp;</label>

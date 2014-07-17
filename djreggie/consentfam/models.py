@@ -7,7 +7,7 @@ class ConsentModel(models.Model):
     #    ("ACCEPT", 'I agree with the previous statement.'),
     #)
     Full_Name_of_Student = models.CharField(max_length=100, verbose_name='Name')
-    Carthage_ID_Number = models.IntegerField(max_length=7,
+    Carthage_ID_Number = models.CharField(max_length=7,
                                              verbose_name='Student ID',
                                              db_column='student_id')
     Date = models.DateField(auto_now_add=True, db_column='datecreated')

@@ -20,13 +20,7 @@ def notnull (value):
 class ModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ModelForm, self).__init__(*args, **kwargs)
-        
-    def clean_Full_Name_of_Student(self):
-        data = self.cleaned_data['Full_Name_of_Student']
-        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
-            raise forms.ValidationError('Invalid name')
-        return data
-    
+            
     def clean_Carthage_ID_Number(self):
         data = self.cleaned_data['Carthage_ID_Number']
         if not re.match(r'^(\d{5,7})$', data):

@@ -56,7 +56,7 @@
                         "id_address": validate_address,
                         "id_city": validate_city,
                         "id_state": validate_state,
-                        "id_zip": validate_zip}               
+                        "id_zipcode": validate_zip}               
     
     $($.map($('[id$="yes"]'), function (thing) {return '#id_' + thing.id.replace('_yes','');}).join()).change(function() {
         if(!validators[$(this).attr('id')]($(this)))
@@ -249,12 +249,12 @@
                     <img class='hidden' id='state_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>         
-            <li class="ctrlHolder"><h3><label for="id_zip">Zip Code</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_zipcode">Zip Code</label></h3>
                 <div class='required'>
                     {{form.zipcode}}
                     {{form.zipcode.errors}}
-                    <img class='hidden' id='zip_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='zip_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <img class='hidden' id='zipcode_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='zipcode_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
         </ol>

@@ -14,8 +14,8 @@ def create(request):
     #For info on setting up formsets, see this link: http://goo.gl/Oz53K2
     ParentFormSet = formset_factory(Parent)
     if request.POST:    #If we do a POST        
-        (a, created) = ConsentModel.objects.get_or_create(Carthage_ID_Number=request.POST['Carthage_ID_Number'])    
-        form = ModelForm(request.POST, instance=a)#Scrape the data from the form and save it in a variable
+        #(a, created) = ConsentModel.objects.get_or_create(Carthage_ID_Number=request.POST['Carthage_ID_Number'])    
+        form = ModelForm(request.POST)#Scrape the data from the form and save it in a variable
         form.fields['Carthage_ID_Number'].widget = forms.HiddenInput()
         form.fields['Full_Name_of_Student'].widget = forms.HiddenInput()
         

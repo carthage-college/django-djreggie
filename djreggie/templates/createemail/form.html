@@ -45,7 +45,7 @@
         }
     }
     
-    $("#id_name_of_account_requested").blur( function() {
+    $("#id_name_of_account_requested").change( function() {
         if(!validate_name_of_account_requested()){ 
             $('#name_of_account_requested_no').css("display", "inline");
             $('#name_of_account_requested_yes').css("display", "none");
@@ -55,7 +55,7 @@
             $('#name_of_account_requested_yes').css("display", "inline");
         }
     });
-    $("#id_needed_until").blur( function() {               
+    $("#id_needed_until").change( function() {               
         if(!validate_needed_until()){ 
             $('#needed_until_no').css("display", "inline");
             $('#needed_until_yes').css("display", "none");
@@ -65,7 +65,7 @@
             $('#needed_until_yes').css("display", "inline");
         }
     });
-    $("#id_purpose_of_account").blur( function() {               
+    $("#id_purpose_of_account").change( function() {               
         if(!validate_purpose_of_account()){ 
             $('#purpose_of_account_no').css("display", "inline");
             $('#purpose_of_account_yes').css("display", "none");
@@ -75,7 +75,7 @@
             $('#purpose_of_account_yes').css("display", "inline");
         }
     });
-    $("#id_names_of_all_users").blur( function() {              
+    $("#id_names_of_all_users").change( function() {              
         if(!validate_names_of_all_users()){ 
             $('#names_of_all_users_no').css("display", "inline");
             $('#names_of_all_users_yes').css("display", "none");
@@ -99,28 +99,32 @@
         <ol>
             <li class="ctrlHolder"><h3><label for="id_name_of_account_requested">Email address you'd like to request</label></h3>
                 <div class='required'>
-                    <input id="id_name_of_account_requested" maxlength="100" name="email" type="email"/>
+                    {{form.name_of_account_requested}}
+                    {{form.name_of_account_requested.errors}}
                     <img class='hidden' id='name_of_account_requested_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='name_of_account_requested_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_purpose_of_account">Purpose of account:</label></h3>
                 <div class='required'>
-                    <textarea cols="40" id="id_purpose_of_account" name="purpose" rows="10"></textarea>
+                    {{form.purpose_of_account}}
+                    {{form.purpose_of_account.errors}}
                     <img class='hidden' id='purpose_of_account_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='purpose_of_account_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_names_of_all_users">Names of all users with access:</label></h3>
                 <div class='required'>
-                    <textarea cols="40" id="id_names_of_all_users" name="namesofusers" rows="10"></textarea>
+                    {{form.names_of_all_users}}
+                    {{form.names_of_all_users.errors}}
                     <img class='hidden' id='names_of_all_users_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='names_of_all_users_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_needed_until">Needed until</label></h3>
                 <div class='required'>
-                    <input id="id_needed_until" name="neededuntil" type="date"/> 
+                    {{form.needed_until}}
+                    {{form.needed_until.errors}}
                     <img class='hidden' id='needed_until_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='needed_until_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>

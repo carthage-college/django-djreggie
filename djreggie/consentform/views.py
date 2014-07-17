@@ -16,12 +16,10 @@ def create(request):
         #(a, created) = Form.objects.get(student_ID=request.POST['student_ID'])    
         form = ModelForm(request.POST) #Scrape the data from the form and save it in a variable
         
-        #Email stuff should be inside "if form.is_valid()", but for right now, we need to test it. 
-        if form.data['consent'] == 'NOCONSENT':
-            send_mail("Don\'t do it!", "You\'re making a huge mistake", 'confirmation.carthage.edu',
-                ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)   
-        
         if form.is_valid(): #If the form is valid
+            if form.data['consent'] == 'NOCONSENT':
+                send_mail("Don\'t do it!", "You\'re making a huge mistake", 'confirmation.carthage.edu',
+                    ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)  
             form.save() #Save the form data to the datbase table
             form = ModelForm()
            # submitted = True
