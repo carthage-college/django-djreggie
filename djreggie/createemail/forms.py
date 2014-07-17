@@ -40,9 +40,9 @@ class EmailForm(forms.ModelForm):
                 Needed until: %s \n''' % (self.cleaned_data['unique_id'],
                                             #self.cleaned_data['date'],
                                             self.cleaned_data['requested_by'],
-                                            self.cleaned_data['name_of_account_requested'],
-                                            self.cleaned_data['purpose_of_account'],
-                                            self.cleaned_data['names_of_all_users'],
+                                            self.cleaned_data['account_name'],
+                                            self.cleaned_data['purpose'],
+                                            self.cleaned_data['users'],
                                             self.cleaned_data['needed_until'])    
     
     def clean_unique_id(self):
@@ -64,8 +64,8 @@ class EmailForm(forms.ModelForm):
         widgets = { #Changes the display of fields
             #'date' : forms.DateInput(attrs={'type':'date'}), Keep this commented out unless you want to add 'date' back in
             'needed_until' : forms.DateInput(attrs={'type':'date'}), #Datepicker 
-            'purpose_of_account': forms.Textarea(attrs={'cols': 25, 'rows': 5}), #Textarea
-            'names_of_all_users': forms.Textarea(attrs={'cols': 25, 'rows': 5}),
+            'purpose': forms.Textarea(attrs={'cols': 25, 'rows': 5}), #Textarea
+            'users': forms.Textarea(attrs={'cols': 25, 'rows': 5}),
         }    
     
     
