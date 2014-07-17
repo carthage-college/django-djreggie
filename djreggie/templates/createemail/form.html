@@ -17,17 +17,17 @@
         var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
         return patt.test($("#id_requested_by").val());       
     }
-    function validate_name_of_account_requested(){
+    function validate_account_name(){
         var patt = new RegExp('^[A-Za-z0-9\\.\\_\\%\\+\\-]+@[A-Za-z0-9\\.\\-]+\\.[a-zA-Z]{2,4}$');
-        return patt.test($("#id_name_of_account_requested").val());       
+        return patt.test($("#id_account_name").val());       
     }
-    function validate_purpose_of_account(){
+    function validate_purpose(){
         var patt = new RegExp('.+');
-        return patt.test($("#id_purpose_of_account").val());       
+        return patt.test($("#id_purpose").val());       
     }
-    function validate_names_of_all_users(){
+    function validate_users(){
         var patt = new RegExp('.+');
-        return patt.test($("#id_names_of_all_users").val());       
+        return patt.test($("#id_users").val());       
     }
     function validate_needed_until(){
         if ($('#id_needed_until').val() == "")
@@ -45,14 +45,14 @@
         }
     }
     
-    $("#id_name_of_account_requested").change( function() {
-        if(!validate_name_of_account_requested()){ 
-            $('#name_of_account_requested_no').css("display", "inline");
-            $('#name_of_account_requested_yes').css("display", "none");
+    $("#id_account_name").change( function() {
+        if(!validate_account_name()){ 
+            $('#account_name_no').css("display", "inline");
+            $('#account_name_yes').css("display", "none");
         }
         else {
-            $('#name_of_account_requested_no').css("display", "none");
-            $('#name_of_account_requested_yes').css("display", "inline");
+            $('#account_name_no').css("display", "none");
+            $('#account_name_yes').css("display", "inline");
         }
     });
     $("#id_needed_until").change( function() {               
@@ -65,24 +65,24 @@
             $('#needed_until_yes').css("display", "inline");
         }
     });
-    $("#id_purpose_of_account").change( function() {               
-        if(!validate_purpose_of_account()){ 
-            $('#purpose_of_account_no').css("display", "inline");
-            $('#purpose_of_account_yes').css("display", "none");
+    $("#id_purpose").change( function() {               
+        if(!validate_purpose()){ 
+            $('#purpose_no').css("display", "inline");
+            $('#purpose_yes').css("display", "none");
         }
         else {
-            $('#purpose_of_account_no').css("display", "none");
-            $('#purpose_of_account_yes').css("display", "inline");
+            $('#purpose_no').css("display", "none");
+            $('#purpose_yes').css("display", "inline");
         }
     });
-    $("#id_names_of_all_users").change( function() {              
-        if(!validate_names_of_all_users()){ 
-            $('#names_of_all_users_no').css("display", "inline");
-            $('#names_of_all_users_yes').css("display", "none");
+    $("#id_users").change( function() {              
+        if(!validate_users()){ 
+            $('#users_no').css("display", "inline");
+            $('#users_yes').css("display", "none");
         }
         else {
-            $('#names_of_all_users_no').css("display", "none");
-            $('#names_of_all_users_yes').css("display", "inline");
+            $('#users_no').css("display", "none");
+            $('#users_yes').css("display", "inline");
         }
     });   
 </script>
@@ -97,28 +97,28 @@
     <fieldset class="blockLabels">
         <legend>Account Information</legend>
         <ol>
-            <li class="ctrlHolder"><h3><label for="id_name_of_account_requested">Email address you'd like to request</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_account_name">Email address you'd like to request</label></h3>
                 <div class='required'>
-                    {{form.name_of_account_requested}}
-                    {{form.name_of_account_requested.errors}}
-                    <img class='hidden' id='name_of_account_requested_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='name_of_account_requested_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    {{form.account_name}}
+                    {{form.account_name.errors}}
+                    <img class='hidden' id='account_name_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='account_name_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
-            <li class="ctrlHolder"><h3><label for="id_purpose_of_account">Purpose of account:</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_purpose">Purpose of account:</label></h3>
                 <div class='required'>
-                    {{form.purpose_of_account}}
-                    {{form.purpose_of_account.errors}}
-                    <img class='hidden' id='purpose_of_account_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='purpose_of_account_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    {{form.purpose}}
+                    {{form.purpose.errors}}
+                    <img class='hidden' id='purpose_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='purpose_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
-            <li class="ctrlHolder"><h3><label for="id_names_of_all_users">Names of all users with access:</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_users">Names of all users with access:</label></h3>
                 <div class='required'>
-                    {{form.names_of_all_users}}
-                    {{form.names_of_all_users.errors}}
-                    <img class='hidden' id='names_of_all_users_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='names_of_all_users_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    {{form.users}}
+                    {{form.users.errors}}
+                    <img class='hidden' id='users_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='users_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_needed_until">Needed until</label></h3>
