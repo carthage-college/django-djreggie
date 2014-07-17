@@ -85,8 +85,7 @@ class UndergradModel(models.Model):
                                     choices=SESSION_CHOICES,
                                     verbose_name='Session Graduating')
     
-    will_teach = models.CharField(max_length=4,
-                                  db_column='prog')
+    will_teach = models.CharField(max_length=4)
     sql4 = '''SELECT aa, TRIM(txt) AS txt
             FROM aa_table
             WHERE aa IN ("BILL","EML2","MAIL","PERM","PGDN")'''
@@ -107,7 +106,7 @@ class UndergradModel(models.Model):
     CHOICESST = tuple((row['st'], row['txt']) for row in state)    
     connection.close()   
     
-    state = models.CharField(max_length=2, choices=CHOICESST, db_column='state')
+    state = models.CharField(max_length=2, choices=CHOICESST)
     zipcode = models.PositiveIntegerField(max_length=5,
                                           verbose_name='Zip')
     date = models.DateField(auto_now_add=True) #'auto_now_add' sets the date to the current date and makes this field invisible in the form
