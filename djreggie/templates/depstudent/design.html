@@ -654,19 +654,19 @@
             </li>
             <li class="ctrlHolder"><h3><label for="id_useddata_0"></label></h3>
                 <ul>
-                    <li class="highlightradio">{{form.useddata.0}}
+                    <li class="highlightradio"><input type=radio name="useddata" id="id_useddata_0" value="HAS"/>
                         <label for="id_useddata_0" class="radiostyle">The student has used the IRS Data Retrieval Tool in
                         FAFSA on the Web to retrieve and transfer {{ year0 }} IRS income information into the student's FAFSA,
                         either on the initial FAFSA or when making a correction to the FAFSA.
                         (The student's school will use the IRS information that was transferred in the verification process).</label></li><br>
-                    <li class="highlightradio">{{form.useddata.1}}
+                    <li class="highlightradio"><input type=radio name="useddata" id="id_useddata_1" value="HASN"/>
                         <label for="id_useddata_1" class="radiostyle">
                         The student has not yet used the IRS Data Retrieval Tool in FAFSA on the Web,
                         but will use the tool to retrieve and transfer {{ year0 }} IRS income information into the student's FAFSA
                         once the student has filed a 2012 IRS tax return. See instructions above for information on
                         how to use the IRS Data Retrieval Tool.(The student's school cannot complete the verification process until
                         the IRS information has been transferred into the FAFSA).</label></li><br>
-                    <li class="highlightradio">{{form.useddata.2}}
+                    <li class="highlightradio"><input type=radio name="useddata" id="id_useddata_2" value="WONT"/>
                         <label for="id_useddata_2" class="radiostyle">The student is unable or chooses not to use
                         the IRS Data Retrieval Tool in FAFSA on the Web, and the student will submit to the school a
                         {{ year0 }} IRS tax return transcript-not a photocopy of the income tax return.
@@ -682,9 +682,9 @@
             </li>
             <li class="ctrlHolder"><h3><label for="id_attached_0"></label></h3>
                 <ul>
-                    <li><label for="id_attached_0">{{form.attached.0}}
+                    <li><label for="id_attached_0"><input type=radio name="attached" id="id_attached_0" value="ISNT"/>
                     Check here if the student's IRS tax return transcript is attached to this worksheet.</label></li>
-                    <li><label for="id_attached_1">{{form.attached.1}}
+                    <li><label for="id_attached_1"><input type=radio name="attached" id="id_attached_1" value="IS"/>
                     Check here if the student's IRS tax return transcript will be submitted to the student's school later.
                     Verification cannot be completed until the IRS tax return transcript has been submitted to the student's school
                     </label></li>
@@ -701,9 +701,9 @@
             </li>
             <li class="ctrlHolder"><h3><label for="id_employed_0"></label></h3>
                 <ul>
-                    <li><label for="id_employed_0">{{form.employed.0}}
+                    <li><label for="id_employed_0"><input type=radio name="employed" id="id_employed_0" value="WASN"/>
                     The student was not employed and had no income earned from work in {{ year0 }}</label></li>
-                    <li><label for="id_employed_1">{{form.employed.0}}
+                    <li><label for="id_employed_1"><input type=radio name="employed" id="id_employed_0" value="WAS"/>
                     The student was employed in {{ year0 }} and has listed below the names of all the student's employers,
                     the amount earned from each employer in {{ year0 }}, and whether an IRS W-2 form is attached.
                     Attach copies of all {{ year0 }} IRS W-2 forms issued to the student by employers.
@@ -744,20 +744,20 @@
             </li>
             <li class="ctrlHolder"><h3><label for="id_useddata2_0"></label></h3>
                 <ul>
-                    <li class="highlightradio">{{form.useddata2.0}}
+                    <li class="highlightradio"><input type=radio name="useddata2" id="id_useddata2_0" value="HAS"/>
                     <label for="id_useddata2_0" class="radiostyle">
                     The student's parent has used the IRS Data Retrieval Tool in FAFSA on the Web to retrieve and transfer
                     {{ year0 }} IRS income information into the student's FAFSA, either on the initial FAFSA or when making
                     a correction to the FAFSA.(The student's school will use the IRS information that was transferred
                     in the verification process).</label></li><br>
-                    <li class="highlightradio">{{form.useddata2.1}}
+                    <li class="highlightradio"><input type=radio name="useddata2" id="id_useddata2_1" value="HASN"/>
                     <label for="id_useddata2_1" class="radiostyle">
                     The student's parent has not yet used the IRS Data Retrieval Tool in FAFSA on the Web, but will use
                     the tool to retrieve and transfer {{ year0 }} IRS income information into the student's FAFSA once the student
                     has filed a {{ year0 }} IRS tax return. See instructions above for information on how to use the IRS Data Retrieval Tool.
                     (The student's school cannot complete the verification process until the IRS information has been
                     transferred into the FAFSA).</label></li><br>
-                    <li class="highlightradio">{{form.useddata2.2}}
+                    <li class="highlightradio"><input type=radio name="useddata2" id="id_useddata2_2" value="WONT"/>
                     <label for="id_useddata2_2" class="radiostyle">
                     The parent is unable or chooses not to use the IRS Data Retrieval Tool in FAFSA on the Web, and
                     the parent will submit to the student's school a 2012 IRS tax return transcript-not a photocopy
@@ -774,9 +774,9 @@
             </li>
             <li class="ctrlHolder"><h3><label for="id_attached2_0"></label></h3>
                 <ul>
-                    <li><label for="id_attached2_0">{{form.attached2.0}}
+                    <li><label for="id_attached2_0"><input type=radio name="attached2" id="id_attached2_0" value="ISNT"/>
                     Check here if an IRS tax return transcript(s) is attached to this worksheet.</label></li>
-                    <li><label for="id_attached2_1">{{form.attached2.1}}
+                    <li><label for="id_attached2_1"><input type=radio name="attached2" id="id_attached2_1" value="ISNT"/>
                     Check here if IRS tax return transcript(s) will be submitted to the student's school later.
                     Verification cannot be completed until the IRS tax return transcript(s) has been submitted to the school.
                     </label></li>
@@ -792,9 +792,9 @@
             </li>
             <li class="ctrlHolder"><h3><label for="id_employed2_0"></label></h3>
                 <ul>
-                    <li><label for="id_employed2_0">{{form.employed2.0}}
+                    <li><label for="id_employed2_0"><input type=radio name="employed2" id="id_employed2_0" value="WASN"/>
                     Was not employed in {{ year0 }}</label></li>
-                    <li><label for="id_employed2_1">{{form.employed2.1}}
+                    <li><label for="id_employed2_1"><input type=radio name="employed2" id="id_employed2_1" value="WAS"/>
                     Was employed in {{ year0 }}
                     </label></li>
                 </ul>
