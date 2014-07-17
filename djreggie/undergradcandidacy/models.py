@@ -14,15 +14,14 @@ class UndergradModel(models.Model):
     if date.today().month <= 5:
             year = year - 1
     #All the fields in the form are below
-    fname = models.CharField(max_length=200, db_column='first_name') #'max_length' is required in (most) all fields
+    fname = models.CharField(max_length=200) #'max_length' is required in (most) all fields
     mname = models.CharField(max_length=200,
                              null=True,
-                             blank=True,
-                             db_column='middle_initial') #'null=True' means this data member can be represented as null in the database
-    lname = models.CharField(max_length=200, db_column='last_name')
-    fnamepro = models.CharField(max_length=200, db_column='first_name_pronounce')
-    lnamepro = models.CharField(max_length=200, db_column='last_name_pronounce')
-    student_id = models.PositiveIntegerField(db_column='student_id') #Only positive numbers are valid
+                             blank=True) #'null=True' means this data member can be represented as null in the database
+    lname = models.CharField(max_length=200)
+    fnamepro = models.CharField(max_length=200)
+    lnamepro = models.CharField(max_length=200)
+    student_id = models.PositiveIntegerField() #Only positive numbers are valid
     
     #SQL Alchemy
     engine = create_engine(INFORMIX_EARL_TEST)
@@ -46,41 +45,35 @@ class UndergradModel(models.Model):
     minor = connection.execute(sql2)
     CHOICES2 = tuple((row['minor'], row['txt']) for row in minor)
     
-    major1 = models.CharField(max_length=200, choices=CHOICES1, db_column='major1')
+    major1 = models.CharField(max_length=200, choices=CHOICES1)
     minor1 = models.CharField(max_length=200,
                               choices=CHOICES2,
                               null=True,
-                              blank=True,
-                              db_column='minor1')
+                              blank=True)
     major2 = models.CharField(max_length=200,
                               choices=CHOICES1,
                               null=True,
-                              blank=True,
-                              db_column='major2')
+                              blank=True)
     minor2 = models.CharField(max_length=200,
                               choices=CHOICES2,
                               null=True,
-                              blank=True,
-                              db_column='minor2')
+                              blank=True)
     major3 = models.CharField(max_length=200,
                               choices=CHOICES1,
                               null=True,
-                              blank=True,
-                              db_column='major3')
+                              blank=True)
     minor3 = models.CharField(max_length=200,
                               choices=CHOICES2,
                               null=True,
-                              blank=True,
-                              db_column='minor3')
+                              blank=True)
     
-    participate_in_graduation = models.BooleanField(db_column='plan_to_walk') #Renders as a checkbox
+    participate_in_graduation = models.BooleanField() #Renders as a checkbox
 
 
-    YEAR_CHOICES = ((year,year),(year+1,year+1))
+    YEAR_CHOICES = ((str(year),year),(str(year+1),year+1))
     grad_yr = models.CharField(max_length=4,
                                choices=YEAR_CHOICES,
-                               verbose_name='Year Graduating',
-                               db_column='grad_yr')
+                               verbose_name='Year Graduating')
     
     SESSION_CHOICES = (
         ('RA', 'Fall'),
@@ -90,8 +83,7 @@ class UndergradModel(models.Model):
     )
     grad_session = models.CharField(max_length=2,
                                     choices=SESSION_CHOICES,
-                                    verbose_name='Session Graduating',
-                                    db_column='grad_sess')
+                                    verbose_name='Session Graduating')
     
     will_teach = models.CharField(max_length=4,
                                   db_column='prog')
@@ -100,17 +92,15 @@ class UndergradModel(models.Model):
             WHERE aa IN ("BILL","EML2","MAIL","PERM","PGDN")'''
             
     contact_types = connection.execute(sql4)
-    CONTACT_CHOICES = tuple((row['txt'], row['txt']) for row in contact_types)
+    CONTACT_CHOICES = tuple((row['aa'], row['txt']) for row in contact_types)
     
     best_contact = models.CharField(max_length=4,
-                                    choices=CONTACT_CHOICES,
-                                    db_column='aa')
+                                    choices=CONTACT_CHOICES)
     
-    best_contact_value = models.CharField(max_length=50,
-                                          db_column='aa_value')
+    best_contact_value = models.CharField(max_length=50)
     
-    address = models.CharField(max_length=200, db_column='address')
-    city = models.CharField(max_length=200, db_column='city')
+    address = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
     
     sql3 = "SELECT * FROM st_table WHERE NVL(low_zone,1) > 1 AND NVL(high_zone,1) > 0 ORDER BY txt ASC"
     state = connection.execute(sql3)  
@@ -119,13 +109,16 @@ class UndergradModel(models.Model):
     
     state = models.CharField(max_length=2, choices=CHOICESST, db_column='state')
     zipcode = models.PositiveIntegerField(max_length=5,
-                                          verbose_name='Zip',
-                                          db_column='zip')
-    date = models.DateField(auto_now_add=True, db_column='datecreated') #'auto_now_add' sets the date to the current date and makes this field invisible in the form
+                                          verbose_name='Zip')
+    date = models.DateField(auto_now_add=True) #'auto_now_add' sets the date to the current date and makes this field invisible in the form
 
     #How the class is displayed in the admin page
     def __unicode__(self):
         return '%s, %s %d' % (self.lname, self.fname, self.student_id)
     
-    class Meta:
-        db_table = 'cc_stg_undergrad_candidacy'
+    def save(self):
+        engine = create_engine(INFORMIX_EARL_TEST)
+        connection = engine.connect()
+        sql = '''INSERT INTO cc_stg_undergrad_candidacy (student_id, first_name, middle_initial, last_name, first_name_pronounce, last_name_pronounce, major1, major2, major3, minor1, minor2, minor3, plan_to_walk, grad_yr, grad_sess, prog, aa, aa_value, address, city, state, zip, datecreated)
+        VALUES (%(student_id)s, "%(fname)s", "%(mname)s", "%(lname)s", "%(fnamepro)s", "%(lnamepro)s", "%(major1)s", "%(major2)s", "%(major3)s", "%(minor1)s", "%(minor2)s", "%(minor3)s", "%(participate_in_graduation)s", "%(grad_yr)s", "%(grad_session)s", "%(will_teach)s", "%(best_contact)s", "%(best_contact_value)s", "%(address)s", "%(city)s", "%(state)s", "%(zipcode)s", TODAY)''' % (self.__dict__)
+        connection.execute(sql)

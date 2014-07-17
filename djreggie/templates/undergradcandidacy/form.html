@@ -73,6 +73,7 @@
 </script>
 {% endblock %}
 {% block content %}
+{{stuff}}
 <form action='' method='post' class = "form">{% csrf_token %}
     <fieldset class="blockLabels">
         <legend>For Diploma</legend>
@@ -81,6 +82,7 @@
                 your name will be read as you cross the stage at the graduation ceremony.</li>
             <li class="ctrlHolder"><h3><label for="id_student_id">Student ID</label></h3>
                 <div class='readonly'>
+                    {{form.student_id}}
                     {{form.student_id.value}}
                     {{form.student_id.errors}}
                 </div>

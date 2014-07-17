@@ -21,13 +21,10 @@ def index(request):
         
         
         if form.is_valid(): #If the form is valid
-            obj = form.save(commit=False) #'commit=False' - Don't save the data to the database yet
+            form.save() #'commit=False' - Don't save the data to the database yet
             send_mail("Undergraduate Candidacy Response", "Thank you for submitting the form. Your information is now being reviewed.", 'confirmation.carthage.edu',
             ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
             #Checking if the email is a carthage email
-            if re.search('^.*@carthage\.edu$', form.cleaned_data['email']) != None:
-                obj.carthage_email = True
-            obj.save()
             
             form = UndergradForm()
             submitted = True
@@ -55,6 +52,7 @@ FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
 					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
 WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
             student = connection.execute(sql)
+            
             for thing in student:
                 form.fields['student_id'].initial = thing['id']
                 form.fields['fname'].initial = thing['firstname']
