@@ -14,11 +14,11 @@ class ModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ModelForm, self).__init__(*args, **kwargs)
         
-    def clean_name(self):
-        data = self.cleaned_data['name']
-        if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
-            raise forms.ValidationError('Invalid name')
-        return data
+    #def clean_name(self):
+    #    data = self.cleaned_data['name']
+    #    if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
+    #        raise forms.ValidationError('Invalid name')
+    #    return data
     
     def clean_student_ID(self):
         data = self.cleaned_data['student_ID']
@@ -37,4 +37,3 @@ class ModelForm(forms.ModelForm):
     #Global options    
     class Meta:
         model = Form #The fields from the model 'Form' will be the same fields in this form
-        

@@ -26,8 +26,8 @@ class UndergradForm(forms.ModelForm):
         return data    
     def clean_mname(self):
         data = self.cleaned_data['mname']
-        if data and not re.match(r'^([a-zA-Z]+)$', data):
-            raise forms.ValidationError('Please enter just a middle name.')
+        if data and not re.match(r'^([a-zA-Z]+|[a-zA-Z]\.?)$', data):
+            raise forms.ValidationError('Please enter just a middle name or initial.')
         return data    
     def clean_lname(self):
         data = self.cleaned_data['lname']
