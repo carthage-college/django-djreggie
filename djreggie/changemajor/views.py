@@ -14,12 +14,10 @@ def create(request):
         #(a, created) = ChangeModel.objects.get_or_create(student_id=request.POST[student_id])
         form = ChangeForm(request.POST) #Scrape the data from the form and save it in a variable
         
-        #Email stuff should be inside "if form.is_valid()", but for whatever reason, it's not getting called in there
-        if form.data['advisor'] != '':
-            send_mail("You can't replace me, I'm the advisor!", "I'm the captai- er, advisor now", 'confirmation.carthage.edu',
-                ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
-        
         if form.is_valid(): #If the form is valid
+            if form.data['advisor'] != '':
+                send_mail("You can't replace me, I'm the advisor!", "I'm the captai- er, advisor now", 'confirmation.carthage.edu',
+                    ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
             form_instance = form.save()        #Save the form data to the datbase table            
             form = ChangeForm()
             submitted = True
@@ -68,6 +66,10 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
                 form.fields['minor2'].initial = thing['minor2code']
                 form.fields['minor3'].initial = thing['minor3code']
             connection.close()
+        form.fields['student_id'].widget = forms.HiddenInput()
+        form.fields['name'].widget = forms.HiddenInput()
+        form.fields['majorlist'].widget = forms.HiddenInput()
+        form.fields['minorlist'].widget = forms.HiddenInput()
 
     # For CSRF protection
     # See http://docs.djangoproject.com/en/dev/ref/contrib/csrf/ 

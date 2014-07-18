@@ -24,21 +24,18 @@ def create(request):
             form = ModelForm()
            # submitted = True
             return render(request, 'consentform/form.html', {
-                'form': form,
-                'submitted': submitted
+                'form': form
             })
     else:
         form = ModelForm()
         engine = create_engine(INFORMIX_EARL_TEST)
         connection = engine.connect()
-        sql = 'SELECT id_rec.id, id_rec.fullname FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_ID']))
+        sql = 'SELECT id_rec.id FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_ID']))
         student = connection.execute(sql)
         for thing in student:
             form.fields['student_ID'].initial = thing['id']
-            form.fields['name'].initial = thing['fullname']
         connection.close()
         form.fields['student_ID'].widget = forms.HiddenInput()
-        form.fields['name'].widget = forms.HiddenInput()
 
     return render(request, 'consentform/form.html', {
     'form': form,

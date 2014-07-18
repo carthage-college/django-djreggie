@@ -13,24 +13,9 @@
     }
 </style>
 {% endblock %}
-{% block javascript %}
-<script type='text/javascript'>
-    function validate_student_id(){
-        var patt = new RegExp('^(\\d{5,7})$');
-        return patt.test($("#id_student_id").val());            
-    }
-    function validate_name(){
-        var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
-        return patt.test($("#id_name").val());        
-    }
-    function validate_advisor(){
-        var patt = new RegExp('^((?:[a-zA-Z]+\\s?){1,2}[a-zA-Z]+)$');
-        return patt.test($("#id_advisor").val());        
-    }
-</script>
-{% endblock %}
 {% block content %}
 {{ form.non_field_errors }}
+{{form.errors}}
 <form action='' method='post' class = "form">{% csrf_token %}
     {{ mmformset.management_form }}
     {% for field in form.hidden_fields %}

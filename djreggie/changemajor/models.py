@@ -6,22 +6,12 @@ from sqlalchemy import create_engine
 
 
 class ChangeModel(models.Model):
-    student_id = models.IntegerField(max_length=7,blank=False, db_column='student_id')
+    student_id = models.CharField(max_length=7,blank=False, db_column='student_id')
     name = models.CharField(max_length=200,blank=False) #'blank=False' means the field is required
     majorlist = models.CharField(max_length=1000)
-    minorlist = models.CharField(max_length=1000)
-
-    '''YEAR_IN_SCHOOL = (
-        ('FR', 'Freshman'),
-        ('SO', 'Sophomore'),
-        ('JR', 'Junior'),
-        ('SR', 'Senior'),
-    )
-
-    year = models.CharField(max_length=2,blank=False,choices=YEAR_IN_SCHOOL) #Renders as a select field'''
+    minorlist = models.CharField(max_length=1000,blank=True,null=True)
     advisor = models.CharField(max_length=200, null=True, blank=True)
-    
-    date = models.DateField(auto_now_add=True, db_column='datecreated')    
+       
     #SQL Alchemy
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
@@ -43,7 +33,6 @@ class ChangeModel(models.Model):
            ORDER BY txt ASC"
     minor = connection.execute(sql2)
     CHOICES2 = tuple((row['minor'], row['txt']) for row in minor)
-    connection.close()
     
     major1 = models.CharField(max_length=200, choices=CHOICES1, db_column='major1')
     minor1 = models.CharField(max_length=200,
@@ -75,5 +64,10 @@ class ChangeModel(models.Model):
     def __unicode__(self):
         return self.name
     
-    class Meta:
-        db_table = 'cc_stg_changemajor'
+
+    def save(self):
+        engine = create_engine(INFORMIX_EARL_TEST)
+        connection = engine.connect()
+        sql = '''INSERT INTO cc_stg_changemajor (student_id, major1, major2, major3, minor1, minor2, minor3, advisor_id, datecreated)
+        VALUES (%(student_id)s, "%(major1)s", "%(major2)s", "%(major3)s", "%(minor1)s", "%(minor2)s", "%(minor3)s", "%(advisor)s", TODAY)''' % (self.__dict__)
+        connection.execute(sql)
