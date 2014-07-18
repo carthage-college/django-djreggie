@@ -6,8 +6,9 @@ from djreggie.consentfam.models import ConsentModel, ParentForm  #Include the mo
 from django.core.exceptions import ValidationError
 from django.core import validators
 import re
+from djzbar.settings import INFORMIX_EARL_TEST
+from sqlalchemy import create_engine
 
-#Validation for the 'relation' field
 def fff (value):
     if value == "wrong":
         raise ValidationError(message = 'Must choose a relation', code="a")
@@ -21,8 +22,8 @@ class ModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ModelForm, self).__init__(*args, **kwargs)
             
-    def clean_Carthage_ID_Number(self):
-        data = self.cleaned_data['Carthage_ID_Number']
+    def clean_student_id(self):
+        data = self.cleaned_data['student_id']
         if not re.match(r'^(\d{5,7})$', data):
             raise forms.ValidationError('Must be 5-7 digits long')
         return data
@@ -36,11 +37,11 @@ class ModelForm(forms.ModelForm):
     
     class Meta:
         model = ConsentModel
-        exclude = ('name', 'Relation',)
 
 
 class Parent(forms.Form):
     
+    form = forms.IntegerField(widget=forms.HiddenInput(),required=False)
     CHOICES = (
         ("ACADEMIC", 'Academic Records'),
         ("FINANCIAL", 'Financial Records'),
@@ -48,11 +49,10 @@ class Parent(forms.Form):
         ("NEITHER", 'I would like to share neither'),
         ("OLD", "I would like to keep my old sharing settings"),
     )
-    
-    share = forms.ChoiceField(choices = CHOICES, label='Which information would you like to share?')
-    
-    name = forms.CharField()
-    
+    share = forms.ChoiceField(choices=CHOICES)    
+    name = forms.CharField(max_length=100)
+    phone = forms.CharField(max_length=16)
+    email = forms.EmailField()
     CHOICES2 = (    
     ("MOM", 'Mother'),
     ("DAD", 'Father'),
@@ -66,6 +66,13 @@ class Parent(forms.Form):
     ("OTHE", 'Other'),
     ("STEP", 'Stepparent'),
     )
+    relation = forms.ChoiceField(choices=CHOICES2,
+                                widget=forms.RadioSelect(),
+                                label='Relation')
     
-    #adding the validators field at the end here lets us use that function at the top to validate
-    Relation = forms.ChoiceField(required = False, widget = forms.RadioSelect, choices = CHOICES2, validators = [fff]) 
+    def save(self):
+        engine = create_engine(INFORMIX_EARL_TEST)
+        connection = engine.connect()
+        sql = '''INSERT INTO cc_stg_ferpafamily_rec (ferpafamily_no, name, relation, phone, email, allow)
+                VALUES (%(form)d, "%(name)s", "%(relation)s", "%(phone)s", "%(email)s", "%(share)s")''' % (self.cleaned_data)
+        connection.execute(sql)
