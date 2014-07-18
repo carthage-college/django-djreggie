@@ -119,5 +119,5 @@ class UndergradModel(models.Model):
         engine = create_engine(INFORMIX_EARL_TEST)
         connection = engine.connect()
         sql = '''INSERT INTO cc_stg_undergrad_candidacy (student_id, first_name, middle_initial, last_name, first_name_pronounce, last_name_pronounce, major1, major2, major3, minor1, minor2, minor3, plan_to_walk, grad_yr, grad_sess, prog, aa, aa_value, address, city, state, zip, datecreated)
-        VALUES (%(student_id)s, "%(fname)s", "%(mname)s", "%(lname)s", "%(fnamepro)s", "%(lnamepro)s", "%(major1)s", "%(major2)s", "%(major3)s", "%(minor1)s", "%(minor2)s", "%(minor3)s", "%(participate_in_graduation)s", "%(grad_yr)s", "%(grad_session)s", "%(will_teach)s", "%(best_contact)s", "%(best_contact_value)s", "%(address)s", "%(city)s", "%(state)s", "%(zipcode)s", TODAY)''' % (self.__dict__)
+        VALUES (%(student_id)s, "%(fname)s", "%(mname)s", "%(lname)s", "%(fnamepro)s", "%(lnamepro)s", "%(major1)s", "%(major2)s", "%(major3)s", "%(minor1)s", "%(minor2)s", "%(minor3)s", "%(participate_in_graduation)s", "%(grad_yr)s", "%(grad_session)s", "%(will_teach)s", "%(best_contact)s", "%(best_contact_value)s", "%(address)s", "%(city)s", "%(state)s", "%(zipcode)s", CURRENT)''' % (self.__dict__)
         connection.execute(sql)

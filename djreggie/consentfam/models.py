@@ -21,7 +21,7 @@ class ConsentModel(models.Model):
         engine = create_engine(INFORMIX_EARL_TEST)
         connection = engine.connect()
         sql = '''INSERT INTO cc_stg_ferpafamily (student_id, datecreated)
-                VALUES (%s, TODAY)''' % (self.__dict__['student_id'])
+                VALUES (%s, CURRENT)''' % (self.__dict__['student_id'])
         connection.execute(sql)
 
 class ParentForm(models.Model):

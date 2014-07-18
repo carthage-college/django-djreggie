@@ -17,5 +17,5 @@ class Form(models.Model):
         engine = create_engine(INFORMIX_EARL_TEST)
         connection = engine.connect()
         sql = '''INSERT INTO cc_stg_ferpadirectory (student_id, consent, datecreated)
-        VALUES (%(student_ID)s, "%(consent)s", TODAY)''' % (self.__dict__)
+        VALUES (%(student_ID)s, "%(consent)s", CURRENT)''' % (self.__dict__)
         connection.execute(sql)
