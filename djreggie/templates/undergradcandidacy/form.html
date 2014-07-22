@@ -70,6 +70,13 @@
             $('#' + $(this).attr('id').replace('id_','') + '_yes').show();
         }
     });
+    /*$("#id_best_contact").change(function () {
+        $.ajax({url: "{% url 'contact' %}",
+            async: false,
+            data: {'id': $('#id_student_id').val(), 'aa': $('#id_best_contact :selected').val()},
+           success: function(data){alert(data);}
+        });
+        });*/
 </script>
 {% endblock %}
 {% block content %}
@@ -207,16 +214,16 @@
                 <div class='required'>
                     {{form.best_contact}}
                     {{form.best_contact.errors}}
-                    <img class='hidden' id='best_contact_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='best_contact_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <!--<img class='hidden' id='best_contact_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='best_contact_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>-->
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_best_contact_value">Address</label></h3>
                 <div class='required'>
                     {{form.best_contact_value}}
                     {{form.best_contact_value.errors}}
-                    <img class='hidden' id='best_contact_value_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='best_contact_value_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <!--<img class='hidden' id='best_contact_value_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='best_contact_value_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>-->
                 </div>
         </ol>
     </fieldset>    

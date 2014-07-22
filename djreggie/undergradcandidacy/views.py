@@ -76,3 +76,18 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
 
 def submitted(request):
     return render(request, 'undergradcandidacy/form.html')
+
+def contact(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT *
+            FROM aa_rec
+            WHERE id = %(id)s
+            AND aa = "%(aa)s"
+            AND TODAY BETWEEN beg_date AND NVL(end_date, TODAY)''' % (request.GET)
+    contactinfo = connection.execute(sql)
+    data = ''
+    for thing in contactinfo:
+        for key in contactinfo.keys():
+            data = data + key + ' ' + str(thing[key]) + '\n'
+    return HttpResponse(data)
