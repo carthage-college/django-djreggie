@@ -6,7 +6,7 @@ from datetime import date
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
 from django.core.mail import send_mail
-
+from django.views.decorators.csrf import csrf_exempt
 #Including the form class
 from djreggie.undergradcandidacy.forms import UndergradForm
 
@@ -91,3 +91,50 @@ def contact(request):
         for key in contactinfo.keys():
             data = data + key + ' ' + str(thing[key]) + '\n'
     return HttpResponse(data)
+
+def admin(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = 'SELECT * FROM cc_stg_undergrad_candidacy'
+    student = connection.execute(sql)
+    return render(request, 'undergradcandidacy/home.html', {
+        'student': student,
+        'keys': student.keys()
+    })
+
+def student(request, student_id):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT *
+            FROM cc_stg_undergrad_candidacy
+            WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (student_id)
+    student = connection.execute(sql)
+    #we need to get info from id_rec separately because there are some column names that are overlapping
+    sql2 = '''SELECT *
+            FROM id_rec
+            WHERE id = %s''' % (student_id)
+    student_info = connection.execute(sql2)
+    return render(request, 'undergradcandidacy/details.html', {
+        'student': student.first(),
+        'student_info': student_info.first()
+    })
+
+def search(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT *
+            FROM cc_stg_undergrad_candidacy
+            WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (request.POST['cid'])
+    student = connection.execute(sql)
+    return render(request, 'undergradcandiacy/details.html', {
+        'student': student.first()
+    })
+@csrf_exempt
+def set_approved(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''UPDATE cc_stg_undergrad_candidacy
+            SET approved="%(approved)s", datemodified=CURRENT
+            WHERE undergradcandidacy_no = %(id)s''' % (request.POST)
+    connection.execute(sql)
+    return HttpResponse('update successful')

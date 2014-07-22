@@ -1,0 +1,66 @@
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover" id="students-data">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Approved</th>
+                <th>Major 1</th>
+                <th>Minor 1</th>
+                <th>Plan To Walk</th>
+                <th>Graduation Year</th>
+                <th>Graduation Session</th>
+                <th>Plan To Teach</th>
+                <th>Date Created</th>
+                <th>Date Modified</th>
+                <th>Staff ID</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for s in student %}
+            <tr>
+                <td>
+                    <a href="{% url 'undergrad_student' s.student_id %}">
+                    {{s.last_name}}, {{s.first_name}} {{s.middle_initial}}
+                    </a>
+                </td>
+                <td class='center'>
+                    <input type='checkbox' class='approved' id='approved_{{s.undergradcandidacy_no}}'
+                           {% if s.approved = 'Y' %}checked{% endif %} value='{{s.undergradcandidacy_no}}'>
+                </td>
+                <td class='center'>
+                    {{s.major1}}
+                </td>
+                <td class='center'>
+                    {{s.minor1}}
+                </td>
+                <td class='center'>
+                    {% if s.plan_to_walk = 'T' %}
+                        Y
+                    {% elif s.plan_to_walk = 'F' %}
+                        N
+                    {% endif %}
+                </td>
+                <td class='center'>
+                    {{s.grad_yr}}
+                </td>
+                <td class='center'>
+                    {{s.grad_sess}}
+                </td>
+                <td class='center'>
+                    {{s.prog}}
+                </td>
+                <td class='center'>
+                    {{s.datecreated}}
+                </td>
+                <td class='center'>
+                    {{s.datemodified}}
+                </td>
+                <td class='center'>
+                    {{s.modified_id}}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- /.table-responsive -->

@@ -1,0 +1,265 @@
+{% extends "consentform/home.html" %}
+{% block extra_style %}
+{{block.super}}
+<link href="/static/djsani/css/print.css"
+    rel="stylesheet" type="text/css" media="print" />
+<style>
+.dl-horizontal dt.widus {
+    width: 300px;
+    margin-right:9px;
+}
+.dl-horizontal dd.yes {
+    margin-left: 0;
+}
+.center{text-align:center;}
+.red {color:#800;}
+.green {color:#008000;}
+</style>
+{% endblock %}
+{% block extra_javascript %}
+<script>
+        $(".approved").change(function(){
+        var checked;
+        if($(this).prop('checked'))
+        {
+            checked = 'Y';
+        }
+        else
+        {
+            checked = 'N';
+        }
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'set_approved' %}",
+            data: {
+                'approved': checked,
+                'id': $(this).val()
+            },
+            cache: false,
+            success: function(data){
+                alert(data);
+            },
+            });
+    });
+</script>
+{% endblock %}
+{% block content %}
+<div id="student-container">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="page-header">
+                {{student.first_name}} {{student.middle_initial}} {{student.last_name}}
+            </h1>
+        </div>
+        <!-- /.col-lg-12 -->
+        <div class="col-lg-4">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-globe fa-5x"></i>
+                        </div>
+                        <div class="col-xs-8" id="student-contact">
+                            <address>
+                            {{student_info.addr_line1}} {{student_info.addr_line2}}<br>
+                            {{student_info.city}}, {{student_info.st}}<br>
+                            {{student_info.zip}} {{student_info.ctry}}<br>
+                            <abbr title="Phone">P:</abbr>
+                            {{student_info.phone}}<br>
+                            </a>
+                            </address>
+                        </div>
+                    </div> <!-- /.row -->
+                </div> <!--/.panel-heading -->
+            </div> <!-- /.panel-success -->
+        </div> <!-- /.col-lg-4 -->
+    </div>
+    <!-- /.row -->
+        <div class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Student Information
+                    </h3>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Student ID<pre>{{student.student_id}}</pre>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        How to Pronounce First Name<pre>{{student.first_name_pronounce}}</pre>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        How to Pronounce Last Name<pre>{{student.last_name_pronounce}}</pre>
+                    </div>
+                </div>  
+                <!-- /.panel-heading -->
+            </div>
+            <!-- /.panel-info -->
+            <div class='panel panel-info'>
+                <div class='panel-heading'>
+                    <h3 class='panel-title'>
+                        Majors and Minors
+                    </h3>
+                </div>
+                <div class='panel-body'>
+                    <div>
+                        Major 1<pre>{{student.major1}}</pre>
+                    </div>
+                </div>
+                <div class='panel-body'>
+                    <div>
+                        Major 2<pre>{{student.major2}}</pre>
+                    </div>
+                </div>
+                <div class='panel-body'>
+                    <div>
+                        Major 3<pre>{{student.major3}}</pre>
+                    </div>
+                </div>
+                <div class='panel-body'>
+                    <div>
+                        Minor 1<pre>{{student.minor1}}</pre>
+                    </div>
+                </div>
+                <div class='panel-body'>
+                    <div>
+                        Minor 2<pre>{{student.minor2}}</pre>
+                    </div>
+                </div>
+                <div class='panel-body'>
+                    <div>
+                        Minor 3<pre>{{student.minor3}}</pre>
+                    </div>
+                </div>
+            </div>
+            <!-- /.panel-info -->
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Graduation Information
+                    </h3>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Plan to Walk
+                        {% if student.plan_to_walk = 'T' %}
+                            <pre>Yes</pre>
+                        {% elif student.plan_to_walk = 'F' %}
+                            <pre>No</pre>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Graduation Year<pre>{{student.grad_yr}}</pre>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        Graduation Session<pre>{{student.grad_sess}}</pre>
+                    </div>
+                </div>  
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Plan to Teach<pre>{{student.prog}}</pre>
+                    </div>
+                </div>  
+                <!-- /.panel-heading -->
+                
+            </div>
+            <!-- /.panel-info -->
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Contact Information
+                    </h3>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Best Contact Type<pre>{{student.aa}}</pre>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Best Contact Info<pre>{{student.aa_value}}</pre>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Address<pre>{{student.address}}</pre>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        City<pre>{{student.city}}</pre>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        State<pre>{{student.state}}</pre>
+                    </div>
+                </div>  
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Zipcode<pre>{{student.zip}}</pre>
+                    </div>
+                </div>  
+                <!-- /.panel-heading -->
+                
+            </div>
+            <!-- /.panel-info -->
+                        <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Admin Information
+                    </h3>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Date Created<pre>{{student.datecreated}}</pre>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Date Modified<pre>{{student.datemodified}}</pre>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        ID of Person who Last Modified<pre>{{student.modified_id}}</pre>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div>
+                        Approved<pre><input type='checkbox' class='approved'
+                        id='approved_{{student.undergradcandidacy_no}}'
+                        {% if student.approved = 'Y' %}checked{% endif %} value='{{student.undergradcandidacy_no}}'></pre>
+                    </div>
+                </div>
+            </div>
+            <!-- /.panel-info -->
+        </div>
+    </div>
+    <!-- /.row -->
+</div> <!-- /#student-container -->
+{% endblock content %}
