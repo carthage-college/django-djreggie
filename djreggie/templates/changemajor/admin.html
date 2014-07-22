@@ -3,28 +3,33 @@
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Approved</th>
                 <th>StudentID</th>
-                <th>Consent Given</th>
-                <th>Date</th>
+                <th>First Major</th>
+                <th>Advisor</th>
+                <th>Date Created</th>
             </tr>
         </thead>
         <tbody>
         {% for s in student %}
             <tr>
                 <td>
-                    <a href="{% url 'studentcform' s.student_id %}">
-                    {{s.lastname}}, {{s.firstname}}
+                    <a href="{% url 'studentcm' s.student_id %}">
+                        {{s.firstname}} {{s.lastname}}
                     </a>
+                </td>
+                <td class='center'>
+                    <input type="checkbox" name="approve" class="approved"
+                        id="approve_{{s.changemajor_no}}" value="{{s.changemajor_no}}" />
                 </td>
                 <td class='center'>
                     {{s.student_id}}
                 </td>
                 <td class='center'>
-                    {% if s.consent = 'N' %}
-                        No
-                    {% elif s.consent = 'C' %}
-                        Yes
-                    {% endif %}
+                    {{s.major1}}
+                </td>                
+                <td class='center'>
+                    {{s.advisor_id}}
                 </td>
                 <td class='center'>
                     {{s.datecreated}}

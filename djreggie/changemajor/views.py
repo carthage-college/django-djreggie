@@ -6,6 +6,7 @@ from models import ChangeModel
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
 from django.core.context_processors import csrf
+from django.views.decorators.csrf import csrf_exempt # For CSRF
 from django.template import RequestContext  # For CSRF
 from django.core.mail import send_mail
 
@@ -81,5 +82,75 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
         'form': form, 
     })
 
-def submitted(request):
-    return render(request, 'changemajor/form.html')
+
+def admin(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = 'SELECT * FROM cc_stg_changemajor INNER JOIN id_rec ON cc_stg_changemajor.student_id = id_rec.id'
+    student = connection.execute(sql)
+    return render(request, 'changemajor/home.html', {
+        'student': student
+    })
+
+def student(request, student_id):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT *
+            FROM cc_stg_changemajor
+            INNER JOIN id_rec
+            ON cc_stg_changemajor.student_id = id_rec.id
+            WHERE cc_stg_changemajor.student_id = %s''' % (student_id)
+    sql2 = '''SELECT TRIM(major1.txt) AS major1, TRIM(major2.txt) AS major2, TRIM(major3.txt) AS major3,
+                    TRIM(minor1.txt) AS minor1,TRIM(minor2.txt) AS minor2, TRIM(minor3.txt) AS minor3
+FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
+					LEFT JOIN	major_table		major1	ON	PROGrec.major1	=	major1.major
+					LEFT JOIN	major_table		major2	ON	PROGrec.major2	=	major2.major
+					LEFT JOIN	major_table		major3	ON	PROGrec.major3	=	major3.major
+					LEFT JOIN	minor_table		minor1	ON	PROGrec.minor1	=	minor1.minor
+					LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
+					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
+WHERE IDrec.id = %s''' % (student_id)
+    student = connection.execute(sql)
+    majors = connection.execute(sql2)
+    return render(request, 'changemajor/details.html', {
+        'student': student.first(),
+        'majors': majors.first(),
+        #'reqmajors': reqmajors.first()
+    })
+
+def search(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT *
+            FROM cc_stg_changemajor
+            INNER JOIN id_rec
+            ON cc_stg_changemajor.student_id = id_rec.id
+            WHERE cc_stg_changemajor.student_id = %s''' % (request.POST['cid'])
+    student = connection.execute(sql)
+    
+    sql2 = '''SELECT TRIM(major1.txt) AS major1, TRIM(major2.txt) AS major2, TRIM(major3.txt) AS major3,
+                    TRIM(minor1.txt) AS minor1,TRIM(minor2.txt) AS minor2, TRIM(minor3.txt) AS minor3
+FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
+					LEFT JOIN	major_table		major1	ON	PROGrec.major1	=	major1.major
+					LEFT JOIN	major_table		major2	ON	PROGrec.major2	=	major2.major
+					LEFT JOIN	major_table		major3	ON	PROGrec.major3	=	major3.major
+					LEFT JOIN	minor_table		minor1	ON	PROGrec.minor1	=	minor1.minor
+					LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
+					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
+WHERE IDrec.id = %s''' % (request.POST['cid'])
+    majors = connection.execute(sql2)
+    return render(request, 'changemajor/details.html', {
+        'student': student.first(),
+        'majors': majors.first(),
+        #'reqmajors': reqmajors.first()
+    })
+
+@csrf_exempt
+def set_approved(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''UPDATE cc_stg_changemajor
+            SET approved="%(approved)s", datemodified=CURRENT
+            WHERE changemajor_no = %(id)s''' % (request.POST)
+    connection.execute(sql)
+    return HttpResponse('update successful')

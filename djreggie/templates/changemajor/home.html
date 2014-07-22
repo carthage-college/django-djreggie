@@ -74,6 +74,30 @@
             alert("There was a problem fetching the student data.\nPlease reload the page or try your search again.");
         {% endif %}
     });
+    
+    $(".approved").change(function(){
+        var checked;
+        if($(this).prop('checked'))
+        {
+            checked = 'Y';
+        }
+        else
+        {
+            checked = 'N';
+        }
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'cm_set_approved' %}",
+            data: {
+                'approved': checked,
+                'id': $(this).val()
+            },
+            cache: false,
+            success: function(data){
+                alert(data);
+            },
+            });
+    });
     </script>
 {% endblock %}
 {% block navbar-header %}
@@ -114,7 +138,7 @@
             <ul class="nav" id="side-menu">
                 <li class="sidebar-search">
                     <div class="input-group custom-search-form">
-                        <form action="{% url 'searchcform' %}" method="post" />
+                        <form action="{% url 'searchcm' %}" method="post" />
                         {% csrf_token %}
                         <input type="text" name="cid" class="form-control"
                             placeholder="Search by ID...">
@@ -127,7 +151,7 @@
                     </div>
                 </li>
                 <li>
-                    <a href="{% url 'admincform' %}">
+                    <a href="{% url 'admincm' %}">
                         <i class="fa fa-dashboard fa-fw"></i> Dashboard
                     </a>
                 </li>
@@ -169,7 +193,7 @@
             <div class="panel panel-default">
                 <!-- /.panel-heading -->
                 <div class="panel-body" id="students-data-panel">
-                    {% include "consentform/admin.html" %}
+                    {% include "changemajor/admin.html" %}
                 </div>
                 <!-- /.panel-body -->
             </div>

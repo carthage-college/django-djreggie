@@ -86,7 +86,7 @@
         }
         $.ajax({
             type: 'POST',
-            url: "{% url 'set_approved' %}",
+            url: "{% url 'ug_set_approved' %}",
             data: {
                 'approved': checked,
                 'id': $(this).val()
