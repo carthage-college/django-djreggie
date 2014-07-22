@@ -40,3 +40,37 @@ def create(request):
     return render(request, 'consentform/form.html', {
     'form': form,
     })
+def admin(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = 'SELECT * FROM cc_stg_ferpadirectory INNER JOIN id_rec ON cc_stg_ferpadirectory.student_id = id_rec.id'
+    student = connection.execute(sql)
+    return render(request, 'consentform/home.html', {
+        'student': student
+    })
+
+def student(request, student_id):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT *
+            FROM cc_stg_ferpadirectory
+            INNER JOIN id_rec
+            ON cc_stg_ferpadirectory.student_id = id_rec.id
+            WHERE cc_stg_ferpadirectory.student_id = %s''' % (student_id)
+    student = connection.execute(sql)
+    return render(request, 'consentform/details.html', {
+        'student': student.first()
+    })
+
+def search(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT *
+            FROM cc_stg_ferpadirectory
+            INNER JOIN id_rec
+            ON cc_stg_ferpadirectory.student_id = id_rec.id
+            WHERE cc_stg_ferpadirectory.student_id = %s''' % (request.POST['cid'])
+    student = connection.execute(sql)
+    return render(request, 'consentform/details.html', {
+        'student': student.first()
+    })

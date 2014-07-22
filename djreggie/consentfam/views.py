@@ -9,6 +9,8 @@ from sqlalchemy import create_engine
 from django.forms.formsets import formset_factory, BaseFormSet #For formsets
 from django.core.context_processors import csrf
 from django.template import RequestContext  # For CSRF
+
+
 def create(request):
     #For info on setting up formsets, see this link: http://goo.gl/Oz53K2
     ParentFormSet = formset_factory(Parent)
@@ -68,3 +70,6 @@ def create(request):
     
 def submitted(request):
     return render(request, 'consentfam/form.html')
+
+def admin(request):
+    return render(request, 'consentfam/admin.html')

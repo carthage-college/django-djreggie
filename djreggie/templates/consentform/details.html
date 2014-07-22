@@ -1,0 +1,87 @@
+{% extends "consentform/home.html" %}
+{% block extra_style %}
+{{block.super}}
+<link href="/static/djsani/css/print.css"
+    rel="stylesheet" type="text/css" media="print" />
+<style>
+.dl-horizontal dt.widus {
+    width: 300px;
+    margin-right:9px;
+}
+.dl-horizontal dd.yes {
+    margin-left: 0;
+}
+.center{text-align:center;}
+.red {color:#800;}
+.green {color:#008000;}
+</style>
+{% endblock %}
+{% block content %}
+<div id="student-container">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="page-header">
+                {{student.firstname}} {{student.lastname}}
+            </h1>
+        </div>
+        <!-- /.col-lg-12 -->
+        <div class="col-lg-4">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-globe fa-5x"></i>
+                        </div>
+                        <div class="col-xs-8" id="student-contact">
+                            <address>
+                            {{student.addr_line1}} {{student.addr_line2}}<br>
+                            {{student.city}}, {{student.st}}<br>
+                            {{student.zip}} {{student.ctry}}<br>
+                            <abbr title="Phone">P:</abbr>
+                            {{student.phone}}<br>
+                            </a>
+                            </address>
+                        </div>
+                    </div> <!-- /.row -->
+                </div> <!--/.panel-heading -->
+            </div> <!-- /.panel-success -->
+        </div> <!-- /.col-lg-4 -->
+    </div>
+    <!-- /.row -->
+        <div class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Consent Information
+                    </h3>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div id="Consent Info">
+                        Student ID<pre>{student.student_id}</pre>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div id="Consent Info">
+                        {% if student.consent = 'N' %}
+                            Consent:<pre>Consent not given</pre>
+                        {% elif student.consent = 'C' %}
+                            Consent:<pre>Consent Given</pre>
+                        {% endif %}
+                    </div>
+                </div>                
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div id="Consent Info">
+                        Date Created:<pre>{{student.datecreated}}</pre>
+                    </div>
+                </div>
+            </div>
+            <!-- /.panel-info -->
+        </div>
+    </div>
+    <!-- /.row -->
+</div> <!-- /#student-container -->
+{% endblock content %}
