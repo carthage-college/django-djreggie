@@ -8,6 +8,7 @@
                 <th>First Major</th>
                 <th>Advisor</th>
                 <th>Date Created</th>
+                <th>Last Modified</th>
             </tr>
         </thead>
         <tbody>
@@ -20,7 +21,7 @@
                 </td>
                 <td class='center'>
                     <input type="checkbox" name="approve" class="approved"
-                        id="approve_{{s.changemajor_no}}" value="{{s.changemajor_no}}" />
+                        id="approve_{{s.changemajor_no}}" value="{{s.changemajor_no}}" {% if s.approved = 'Y' %} checked {% endif %} />
                 </td>
                 <td class='center'>
                     {{s.student_id}}
@@ -33,6 +34,9 @@
                 </td>
                 <td class='center'>
                     {{s.datecreated}}
+                </td>
+                <td class='center'>
+                    {{s.datemodified}}
                 </td>
             </tr>
         {% endfor %}

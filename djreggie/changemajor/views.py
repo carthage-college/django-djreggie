@@ -110,12 +110,23 @@ FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
 					LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
 					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
 WHERE IDrec.id = %s''' % (student_id)
+    sql3 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3,
+                TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
+FROM cc_stg_changemajor
+    LEFT JOIN major_table major1 ON cc_stg_changemajor.major1 = major1.major
+    LEFT JOIN major_table major2 ON cc_stg_changemajor.major2 = major2.major
+    LEFT JOIN major_table major3 ON cc_stg_changemajor.major3 = major3.major
+    LEFT JOIN minor_table minor1 ON cc_stg_changemajor.minor1 = minor1.minor
+    LEFT JOIN minor_table minor2 ON cc_stg_changemajor.minor2 = minor2.minor
+    LEFT JOIN minor_table minor3 ON cc_stg_changemajor.minor3 = minor3.minor
+WHERE cc_stg_changemajor.student_id = %s'''  % (student_id)
     student = connection.execute(sql)
     majors = connection.execute(sql2)
+    reqmajors = connection.execute(sql3)
     return render(request, 'changemajor/details.html', {
         'student': student.first(),
         'majors': majors.first(),
-        #'reqmajors': reqmajors.first()
+        'reqmajors': reqmajors.first()
     })
 
 def search(request):
@@ -139,10 +150,20 @@ FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
 					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
 WHERE IDrec.id = %s''' % (request.POST['cid'])
     majors = connection.execute(sql2)
+    sql3 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3, TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
+FROM cc_stg_changemajor
+    LEFT JOIN major_table major1 ON cc_stg_changemajor.major1 = major1.major
+    LEFT JOIN major_table major2 ON cc_stg_changemajor.major2 = major2.major
+    LEFT JOIN major_table major3 ON cc_stg_changemajor.major3 = major3.major
+    LEFT JOIN minor_table minor1 ON cc_stg_changemajor.minor1 = minor1.minor
+    LEFT JOIN minor_table minor2 ON cc_stg_changemajor.minor2 = minor2.minor
+    LEFT JOIN minor_table minor3 ON cc_stg_changemajor.minor3 = minor3.minor
+WHERE cc_stg_changemajor.student_id = %s'''  % (request.POST['cid'])
+    reqmajors = connection.execute(sql3)
     return render(request, 'changemajor/details.html', {
         'student': student.first(),
         'majors': majors.first(),
-        #'reqmajors': reqmajors.first()
+        'reqmajors': reqmajors.first()
     })
 
 @csrf_exempt

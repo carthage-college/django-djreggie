@@ -111,8 +111,7 @@
                         Date Created:<pre>{{student.datecreated}}</pre>
                     </div>
                 </div>
-            </div>
-            <!-- /.panel-info -->
+            </div><!-- /.panel-info -->
         </div>
         <div class="col-lg-6">
             <div class="panel panel-info">
@@ -124,14 +123,14 @@
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div>
-                        Requested Major(s)<pre>{{student.major1.value}}</pre>
+                        Requested Major(s)<pre>{{reqmajors.major_txt1}}</pre>
                     </div>
                 </div>
                 <!-- /.panel-heading -->
                 {% if student.major2 != "None" %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{student.major2}}</pre>
+                            <pre>{{reqmajors.major_txt2}}</pre>
                         </div>
                     </div>                
                 <!-- /.panel-heading -->
@@ -139,7 +138,7 @@
                 {% if student.major3 != "None" %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{student.major3}}</pre>
+                            <pre>{{reqmajors.major_txt3}}</pre>
                         </div>
                     </div>                
                 <!-- /.panel-heading -->
@@ -147,7 +146,7 @@
                 {% if student.minor1 != "None" %}
                     <div class="panel-body">
                         <div>
-                            Requested Minor(s)<pre>{{student.minor1}}</pre>
+                            Requested Minor(s)<pre>{{reqmajors.minor_txt1}}</pre>
                         </div>
                     </div>                
                 <!-- /.panel-heading -->
@@ -155,7 +154,7 @@
                 {% if student.minor2 != "None" %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{student.minor2}}</pre>
+                            <pre>{{reqmajors.minor_txt2}}</pre>
                         </div>
                     </div>                
                 <!-- /.panel-heading -->
@@ -163,10 +162,9 @@
                 {% if student.minor3 != "None" %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{student.minor3}}</pre>
+                            <pre>{{reqmajors.minor_txt3}}</pre>
                         </div>
                     </div>                
-                <!-- /.panel-heading -->
                 {% endif %}
                 <div class="panel-body">
                     <div>
