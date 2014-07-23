@@ -9,6 +9,7 @@ from sqlalchemy import create_engine
 from django.forms.formsets import formset_factory, BaseFormSet #For formsets
 from django.core.context_processors import csrf
 from django.template import RequestContext  # For CSRF
+from django.views.decorators.csrf import csrf_exempt
 
 
 def create(request):
@@ -72,4 +73,60 @@ def submitted(request):
     return render(request, 'consentfam/form.html')
 
 def admin(request):
-    return render(request, 'consentfam/admin.html')
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = 'SELECT * FROM cc_stg_ferpafamily INNER JOIN id_rec ON cc_stg_ferpafamily.student_id = id_rec.id'
+    student = connection.execute(sql)
+    return render(request, 'consentfam/home.html', {
+        'student': student
+    })
+
+def student(request, student_id):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT *
+            FROM cc_stg_ferpafamily
+            INNER JOIN id_rec
+            ON cc_stg_ferpafamily.student_id = id_rec.id
+            WHERE cc_stg_ferpafamily.student_id = %s''' % (student_id)
+    student = connection.execute(sql)
+    sql2 = '''SELECT *
+            FROM cc_stg_ferpafamily
+            INNER JOIN cc_ferpafamily_rec
+            ON cc_stg_ferpafamily.ferpafamily_no = cc_stg_ferpafamily_rec.ferpafamily_no
+            WHERE cc_stg_ferpafamily.student_id = %s''' % (student_id)
+    family = connection.execute(sql2)
+    return render(request, 'consentfam/details.html', {
+        'student': student.first(),
+        'family': family,
+    })
+
+def search(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT *
+            FROM cc_stg_ferpafamily
+            INNER JOIN id_rec
+            ON cc_stg_ferpafamily.student_id = id_rec.id
+            WHERE cc_stg_ferpafamily.student_id = %s''' % (request.POST['cid'])
+    student = connection.execute(sql)
+    sql2 = '''SELECT *
+            FROM cc_stg_ferpafamily
+            INNER JOIN cc_ferpafamily_rec
+            ON cc_stg_ferpafamily.ferpafamily_no = cc_stg_ferpafamily_rec.ferpafamily_no
+            WHERE cc_stg_ferpafamily.student_id = %s''' % (request.POST['cid'])
+    family = connection.execute(sql2)
+    return render(request, 'consentfam/details.html', {
+        'student': student.first(),
+        'family': family,
+    })
+
+@csrf_exempt
+def set_approved(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''UPDATE cc_stg_ferpafamily
+            SET approved="%(approved)s", datemodified=CURRENT
+            WHERE ferpafamily_no = %(id)s''' % (request.POST)
+    connection.execute(sql)
+    return HttpResponse('update successful')
