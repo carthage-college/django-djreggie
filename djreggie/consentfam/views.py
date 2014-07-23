@@ -130,3 +130,14 @@ def set_approved(request):
             WHERE ferpafamily_no = %(id)s''' % (request.POST)
     connection.execute(sql)
     return HttpResponse('update successful')
+
+
+@csrf_exempt
+def family_set_approved(request):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''UPDATE cc_stg_ferpafamily_rec
+            SET approved="%(approved)s", datemodified=CURRENT
+            WHERE ferpafamilyrec_no = %(id)s''' % (request.POST)
+    connection.execute(sql)
+    return HttpResponse('update successful')
