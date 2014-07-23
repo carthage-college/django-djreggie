@@ -114,9 +114,20 @@ def student(request, student_id):
             FROM id_rec
             WHERE id = %s''' % (student_id)
     student_info = connection.execute(sql2)
+    sql3 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3, TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
+            FROM cc_stg_undergrad_candidacy
+            LEFT JOIN major_table major1 ON cc_stg_undergrad_candidacy.major1 = major1.major
+            LEFT JOIN major_table major2 ON cc_stg_undergrad_candidacy.major2 = major2.major
+            LEFT JOIN major_table major3 ON cc_stg_undergrad_candidacy.major3 = major3.major
+            LEFT JOIN minor_table minor1 ON cc_stg_undergrad_candidacy.minor1 = minor1.minor
+            LEFT JOIN minor_table minor2 ON cc_stg_undergrad_candidacy.minor2 = minor2.minor
+            LEFT JOIN minor_table minor3 ON cc_stg_undergrad_candidacy.minor3 = minor3.minor
+            WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (student_id)
+    reqmajors = connection.execute(sql3)
     return render(request, 'undergradcandidacy/details.html', {
         'student': student.first(),
-        'student_info': student_info.first()
+        'student_info': student_info.first(),
+        'reqmajors': reqmajors.first()
     })
 
 def search(request):
@@ -126,8 +137,25 @@ def search(request):
             FROM cc_stg_undergrad_candidacy
             WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (request.POST['cid'])
     student = connection.execute(sql)
+        #we need to get info from id_rec separately because there are some column names that are overlapping
+    sql2 = '''SELECT *
+            FROM id_rec
+            WHERE id = %s''' % (student_id)
+    student_info = connection.execute(sql2)
+    sql3 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3, TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
+            FROM cc_stg_undergrad_candidacy
+            LEFT JOIN major_table major1 ON cc_stg_undergrad_candidacy.major1 = major1.major
+            LEFT JOIN major_table major2 ON cc_stg_undergrad_candidacy.major2 = major2.major
+            LEFT JOIN major_table major3 ON cc_stg_undergrad_candidacy.major3 = major3.major
+            LEFT JOIN minor_table minor1 ON cc_stg_undergrad_candidacy.minor1 = minor1.minor
+            LEFT JOIN minor_table minor2 ON cc_stg_undergrad_candidacy.minor2 = minor2.minor
+            LEFT JOIN minor_table minor3 ON cc_stg_undergrad_candidacy.minor3 = minor3.minor
+            WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (student_id)
+    reqmajors = connection.execute(sql3)
     return render(request, 'undergradcandiacy/details.html', {
-        'student': student.first()
+        'student': student.first(),
+        'student_info': student_info.first(),
+        'reqmajors': reqmajors.first()
     })
 @csrf_exempt
 def set_approved(request):
