@@ -15,8 +15,16 @@
 .red {color:#800;}
 .green {color:#008000;}
 </style>
+{% endblock %}
+{% block extra_javascript %}
+    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/jquery.dataTables.js"></script>
+    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script src="//www.carthage.edu/static/vendor/js/spin.min.js" type="text/javascript"></script>
+    
 <script type="text/javascript">
-    $(".approved").change(function(){
+    $(".approveone").change(function(){
         var checked;
         if($(this).prop('checked'))
         {
@@ -119,8 +127,8 @@
                     </div><!-- /.panel-body -->
                     <div class="panel-body">
                         <div>
-                            Approved<pre><input type="checkbox" name="approve" class="approved"
-                        id="approve_{{f.ferpafamily_no}}" value="{{f.ferpafamily_no}}" {% if f.approved = 'Y' %}checked{% endif %}/></pre>
+                            Approved<pre><input type="checkbox" name="approve" class="approveone"
+                        id="approve_{{f.ferpafamilyrec_no}}" value="{{f.ferpafamilyrec_no}}" {% if f.approved = 'Y' %}checked{% endif %}/></pre>
                         </div>
                     </div><!-- /.panel-body -->
                 </div>
