@@ -90,11 +90,10 @@ def student(request, student_id):
             ON cc_stg_ferpafamily.student_id = id_rec.id
             WHERE cc_stg_ferpafamily.student_id = %s''' % (student_id)
     student = connection.execute(sql)
+    studentb = connection.execute(sql)
     sql2 = '''SELECT *
-            FROM cc_stg_ferpafamily
-            INNER JOIN cc_ferpafamily_rec
-            ON cc_stg_ferpafamily.ferpafamily_no = cc_stg_ferpafamily_rec.ferpafamily_no
-            WHERE cc_stg_ferpafamily.student_id = %s''' % (student_id)
+            FROM cc_stg_ferpafamily_rec
+            WHERE cc_stg_ferpafamily_rec.ferpafamily_no = %s''' % (studentb.first()['ferpafamily_no'])
     family = connection.execute(sql2)
     return render(request, 'consentfam/details.html', {
         'student': student.first(),
@@ -111,10 +110,11 @@ def search(request):
             WHERE cc_stg_ferpafamily.student_id = %s''' % (request.POST['cid'])
     student = connection.execute(sql)
     sql2 = '''SELECT *
-            FROM cc_stg_ferpafamily
-            INNER JOIN cc_ferpafamily_rec
-            ON cc_stg_ferpafamily.ferpafamily_no = cc_stg_ferpafamily_rec.ferpafamily_no
-            WHERE cc_stg_ferpafamily.student_id = %s''' % (request.POST['cid'])
+            FROM cc_stg_ferpafamily_rec
+            WHERE cc_stg_ferpafamily_rec.ferpafamily_no = (
+                SELECT ferpafamily_no
+                FROM cc_stg_ferpafamily
+                WHERE student_id = %s)''' % (request.POST['cid'])
     family = connection.execute(sql2)
     return render(request, 'consentfam/details.html', {
         'student': student.first(),

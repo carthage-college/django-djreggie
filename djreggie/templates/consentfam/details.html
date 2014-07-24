@@ -1,4 +1,4 @@
-{% extends "changemajor/home.html" %}
+{% extends "consentfam/home.html" %}
 {% block extra_style %}
 {{block.super}}
 <link href="/static/djsani/css/print.css"
@@ -15,6 +15,31 @@
 .red {color:#800;}
 .green {color:#008000;}
 </style>
+<script type="text/javascript">
+    $(".approved").change(function(){
+        var checked;
+        if($(this).prop('checked'))
+        {
+            checked = 'Y';
+        }
+        else
+        {
+            checked = 'N';
+        }
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'cf_family_set_approved' %}",
+            data: {
+                'approved': checked,
+                'id': $(this).val()
+            },
+            cache: false,
+            success: function(data){
+                alert(data);
+            },
+            });
+    });
+</script>
 {% endblock %}
 {% block content %}
 <div id="student-container">
@@ -46,149 +71,63 @@
                 </div> <!--/.panel-heading -->
             </div> <!-- /.panel-success -->
         </div> <!-- /.col-lg-4 -->
+        {% for f in family %}
         <div class="col-lg-6">
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        Student Information
+                        Family {{forloop.counter}}
                     </h3>
+                </div><!-- /.panel-heading -->
+                <div style="float:left">
+                    <div class="panel-body">
+                        <div>
+                            Name<pre>{{f.name}}</pre>
+                        </div>
+                    </div><!-- /.panel-body -->
+                    <div class="panel-body">
+                        <div>
+                            Relation<pre>{{f.relation}}</pre>
+                        </div>
+                    </div><!-- /.panel-body -->      
+                    <div class="panel-body">
+                        <div>
+                            Phone<pre>{{f.phone}}</pre>
+                        </div>
+                    </div><!-- /.panel-body --> 
+                    <div class="panel-body">
+                        <div>
+                            Email<pre>{{f.email}}</pre>
+                        </div>
+                    </div><!-- /.panel-body -->
                 </div>
-                <!-- /.panel-heading -->
-                <div class="panel-body">
-                    <div>
-                        Student ID<pre>{{student.student_id}}</pre>
-                    </div>
-                </div>
-                <!-- /.panel-heading -->
-                <div class="panel-body">
-                    <div>
-                        Current Major(s)<pre>{{majors.major1}}</pre>
-                    </div>
-                </div>                
-                <!-- /.panel-heading -->
-                {% if majors.major2 %}
+                <div style="float:right">
                     <div class="panel-body">
                         <div>
-                            <pre>{{majors.major2}}</pre>
+                            Shared Info<pre>{{f.allow}}</pre>
                         </div>
-                    </div>                
-                <!-- /.panel-heading -->
-                {% endif %}
-                {% if majors.major3 %}
+                    </div><!-- /.panel-body -->
                     <div class="panel-body">
                         <div>
-                            <pre>{{majors.major3}}</pre>
+                            Date Modified<pre>{{f.datemodified}}</pre>
                         </div>
-                    </div>                
-                <!-- /.panel-heading -->
-                {% endif %}
-                {% if majors.minor1 %}
+                    </div><!-- /.panel-body -->
                     <div class="panel-body">
                         <div>
-                            Current Minor(s)<pre>{{majors.minor1}}</pre>
+                            Modifier ID<pre>{{f.modified_id}}</pre>
                         </div>
-                    </div>                
-                <!-- /.panel-heading -->
-                {% endif %}
-                {% if majors.minor2 %}
+                    </div><!-- /.panel-body -->
                     <div class="panel-body">
                         <div>
-                            <pre>{{majors.minor2}}</pre>
+                            Approved<pre><input type="checkbox" name="approve" class="approved"
+                        id="approve_{{f.ferpafamily_no}}" value="{{f.ferpafamily_no}}" {% if f.approved = 'Y' %}checked{% endif %}/></pre>
                         </div>
-                    </div>                
-                <!-- /.panel-heading -->
-                {% endif %}
-                {% if majors.minor3 %}
-                    <div class="panel-body">
-                        <div>
-                            <pre>{{majors.minor3}}</pre>
-                        </div>
-                    </div>                
-                <!-- /.panel-heading -->
-                {% endif %}
-                <div class="panel-body">
-                    <div>
-                        Date Created:<pre>{{student.datecreated}}</pre>
-                    </div>
+                    </div><!-- /.panel-body -->
                 </div>
             </div>
             <!-- /.panel-info -->
-        </div>
-        <div class="col-lg-6">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        Majors and Minors Requested
-                    </h3>
-                </div>
-                <!-- /.panel-heading -->
-                <div class="panel-body">
-                    <div>
-                        Requested Major(s)<pre>{{student.major1.value}}</pre>
-                    </div>
-                </div>
-                <!-- /.panel-heading -->
-                {% if student.major2 != "None" %}
-                    <div class="panel-body">
-                        <div>
-                            <pre>{{student.major2}}</pre>
-                        </div>
-                    </div>                
-                <!-- /.panel-heading -->
-                {% endif %}
-                {% if student.major3 != "None" %}
-                    <div class="panel-body">
-                        <div>
-                            <pre>{{student.major3}}</pre>
-                        </div>
-                    </div>                
-                <!-- /.panel-heading -->
-                {% endif %}
-                {% if student.minor1 != "None" %}
-                    <div class="panel-body">
-                        <div>
-                            Requested Minor(s)<pre>{{student.minor1}}</pre>
-                        </div>
-                    </div>                
-                <!-- /.panel-heading -->
-                {% endif %}
-                {% if student.minor2 != "None" %}
-                    <div class="panel-body">
-                        <div>
-                            <pre>{{student.minor2}}</pre>
-                        </div>
-                    </div>                
-                <!-- /.panel-heading -->
-                {% endif %}
-                {% if student.minor3 != "None" %}
-                    <div class="panel-body">
-                        <div>
-                            <pre>{{student.minor3}}</pre>
-                        </div>
-                    </div>                
-                <!-- /.panel-heading -->
-                {% endif %}
-                <div class="panel-body">
-                    <div>
-                        Advisor ID<pre>{{student.advisor_id}}</pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        Approval
-                    </h3>
-                </div>                
-                <div class="panel-body">
-                    <div>
-                        Approved<pre>{{student.approved}}</pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </div> <!-- /.col-lg-6 -->
+        {% endfor %}
+    </div><!-- /.row -->
 </div> <!-- /#student-container -->
 {% endblock content %}

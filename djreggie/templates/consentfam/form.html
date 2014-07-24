@@ -133,7 +133,6 @@ $(document).ready(function () {
         <ol>
             <li class="ctrlHolder">
                Below, please indicate the names of the people who you will disclose information with, and their relation to you </li>      
-               {{ Parent_formset.management_form }}
                 {% for form in Parent_formset.forms %}
                 <div class = fam>
                     <li class="ctrlHolder"><h3>{{form}}{{form.errors}}</h3></li>
