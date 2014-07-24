@@ -38,6 +38,12 @@
                 <td class='center'>
                     {{s.datemodified}}
                 </td>
+                <td>
+                    <form name='delete_form' action='' method='post'>
+                        <input type='hidden' id='record' value='{{s.changemajor_no}}'>
+                        <input type='submit' value='Delete'>
+                    </form>
+                </td>
             </tr>
         {% endfor %}
         </tbody>

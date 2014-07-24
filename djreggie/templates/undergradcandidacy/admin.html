@@ -51,7 +51,10 @@
                     {{s.datecreated}}
                 </td>
                 <td>
-                    
+                    <form name='delete_form' action='' method='post'>
+                        <input type='hidden' id='record' value='{{s.undergradcandidacy_no}}'>
+                        <input type='submit' value='Delete'>
+                    </form>
                 </td>
             </tr>
         {% endfor %}

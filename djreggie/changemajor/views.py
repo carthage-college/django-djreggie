@@ -86,6 +86,10 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
 def admin(request):
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
+    if request.POST:
+        sql2 = '''DELETE FROM cc_stg_changemajor
+                WHERE changemajor_no = %s''' % (request.POST['record'])
+        connection.execute(sql2)
     sql = 'SELECT * FROM cc_stg_changemajor INNER JOIN id_rec ON cc_stg_changemajor.student_id = id_rec.id'
     student = connection.execute(sql)
     return render(request, 'changemajor/home.html', {

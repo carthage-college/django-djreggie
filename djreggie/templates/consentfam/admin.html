@@ -34,6 +34,12 @@
                 <td class='center'>
                     {{s.modified_id}}
                 </td>
+                <td>
+                    <form name='delete_form' action='' method='post'>
+                        <input type='hidden' id='record' value='{{s.ferpafamily_no}}'>
+                        <input type='submit' value='Delete'>
+                    </form>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
