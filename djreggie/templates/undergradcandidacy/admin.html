@@ -11,6 +11,7 @@
                 <th>Graduation Session</th>
                 <th>Plan To Teach</th>
                 <th>Date Created</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -53,8 +54,8 @@
                 <td>
                     <form name='delete_form' action='' method='post'>
                         {% csrf_token %}
-                        <input type='hidden' id='record' name='record' value='{{s.undergradcandidacy_no}}'>
-                        <input type='submit' value='Delete'>
+                        <input type='hidden' id='record' name='record' value='{{s.undergradcandidacy_no}}'/>
+                        <input type='submit' value='Delete'/>
                     </form>
                 </td>
             </tr>
