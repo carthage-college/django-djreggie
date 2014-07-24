@@ -95,11 +95,14 @@ def contact(request):
 def admin(request):
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
+    if request.POST:
+        sql2 = '''DELETE FROM cc_stg_undergrad_candidacy
+            WHERE undergradcandidacy_no = %s''' % (request.POST['record'])
+        connection.execute(sql2)
     sql = 'SELECT * FROM cc_stg_undergrad_candidacy'
     student = connection.execute(sql)
     return render(request, 'undergradcandidacy/home.html', {
         'student': student,
-        'keys': student.keys()
     })
 
 def student(request, student_id):
@@ -150,7 +153,7 @@ def search(request):
             LEFT JOIN minor_table minor1 ON cc_stg_undergrad_candidacy.minor1 = minor1.minor
             LEFT JOIN minor_table minor2 ON cc_stg_undergrad_candidacy.minor2 = minor2.minor
             LEFT JOIN minor_table minor3 ON cc_stg_undergrad_candidacy.minor3 = minor3.minor
-            WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (student_id)
+            WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (request.POST['cid'])
     reqmajors = connection.execute(sql3)
     return render(request, 'undergradcandiacy/details.html', {
         'student': student.first(),
