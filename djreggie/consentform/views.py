@@ -47,7 +47,11 @@ def admin(request):
         sql2 = '''DELETE FROM cc_stg_ferpadirectory
                 WHERE ferpadirectory_no = %s''' % (request.POST['record'])
         connection.execute(sql2)
-    sql = 'SELECT * FROM cc_stg_ferpadirectory INNER JOIN id_rec ON cc_stg_ferpadirectory.student_id = id_rec.id'
+    sql = '''SELECT fd.*, id_rec.firstname, id_rec.lastname
+            FROM cc_stg_ferpadirectory AS fd
+            INNER JOIN id_rec
+            ON fd.student_id = id_rec.id
+            ORDER BY fd.datecreated DESC'''
     student = connection.execute(sql)
     return render(request, 'consentform/home.html', {
         'student': student
@@ -56,25 +60,24 @@ def admin(request):
 def student(request, student_id):
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
-    sql = '''SELECT *
-            FROM cc_stg_ferpadirectory
+    sql = '''SELECT fd.*,
+                    id_rec.firstname,
+                    id_rec.lastname,
+                    id_rec.addr_line1,
+                    id_rec.addr_line2,
+                    id_rec.city,
+                    id_rec.st,
+                    id_rec.zip,
+                    id_rec.ctry,
+                    id_rec.phone
+            FROM cc_stg_ferpadirectory AS fd
             INNER JOIN id_rec
-            ON cc_stg_ferpadirectory.student_id = id_rec.id
-            WHERE cc_stg_ferpadirectory.student_id = %s''' % (student_id)
+            ON fd.student_id = id_rec.id
+            WHERE fd.student_id = %s''' % (student_id)
     student = connection.execute(sql)
     return render(request, 'consentform/details.html', {
         'student': student.first()
     })
 
 def search(request):
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
-    sql = '''SELECT *
-            FROM cc_stg_ferpadirectory
-            INNER JOIN id_rec
-            ON cc_stg_ferpadirectory.student_id = id_rec.id
-            WHERE cc_stg_ferpadirectory.student_id = %s''' % (request.POST['cid'])
-    student = connection.execute(sql)
-    return render(request, 'consentform/details.html', {
-        'student': student.first()
-    })
+    student(request, request.POST['cid'])

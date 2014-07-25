@@ -99,7 +99,7 @@ def admin(request):
         sql2 = '''DELETE FROM cc_stg_undergrad_candidacy
             WHERE undergradcandidacy_no = %s''' % (request.POST['record'])
         connection.execute(sql2)
-    sql = 'SELECT * FROM cc_stg_undergrad_candidacy'
+    sql = 'SELECT * FROM cc_stg_undergrad_candidacy ORDER BY datecreated DESC'
     student = connection.execute(sql)
     return render(request, 'undergradcandidacy/home.html', {
         'student': student,
@@ -108,16 +108,21 @@ def admin(request):
 def student(request, student_id):
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
-    sql = '''SELECT *
-            FROM cc_stg_undergrad_candidacy
-            WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (student_id)
+    sql = '''SELECT uc.*,
+                    id_rec.addr_lin1,
+                    id_rec.addr_line2,
+                    id_rec.city AS rec_city,
+                    id_rec.st,
+                    id_rec.zip AS rec_zip,
+                    id_rec.ctry,
+                    id_rec.phone
+            FROM cc_stg_undergrad_candidacy AS uc
+            INNER JOIN id_rec
+            ON uc.student_id = id_rec.id
+            WHERE uc.student_id = %s''' % (student_id)
     student = connection.execute(sql)
-    #we need to get info from id_rec separately because there are some column names that are overlapping
-    sql2 = '''SELECT *
-            FROM id_rec
-            WHERE id = %s''' % (student_id)
     student_info = connection.execute(sql2)
-    sql3 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3, TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
+    sql2 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3, TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
             FROM cc_stg_undergrad_candidacy
             LEFT JOIN major_table major1 ON cc_stg_undergrad_candidacy.major1 = major1.major
             LEFT JOIN major_table major2 ON cc_stg_undergrad_candidacy.major2 = major2.major
@@ -126,40 +131,16 @@ def student(request, student_id):
             LEFT JOIN minor_table minor2 ON cc_stg_undergrad_candidacy.minor2 = minor2.minor
             LEFT JOIN minor_table minor3 ON cc_stg_undergrad_candidacy.minor3 = minor3.minor
             WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (student_id)
-    reqmajors = connection.execute(sql3)
+    reqmajors = connection.execute(sql2)
     return render(request, 'undergradcandidacy/details.html', {
         'student': student.first(),
-        'student_info': student_info.first(),
         'reqmajors': reqmajors.first()
     })
 
 def search(request):
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
-    sql = '''SELECT *
-            FROM cc_stg_undergrad_candidacy
-            WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (request.POST['cid'])
-    student = connection.execute(sql)
-        #we need to get info from id_rec separately because there are some column names that are overlapping
-    sql2 = '''SELECT *
-            FROM id_rec
-            WHERE id = %s''' % (student_id)
-    student_info = connection.execute(sql2)
-    sql3 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3, TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
-            FROM cc_stg_undergrad_candidacy
-            LEFT JOIN major_table major1 ON cc_stg_undergrad_candidacy.major1 = major1.major
-            LEFT JOIN major_table major2 ON cc_stg_undergrad_candidacy.major2 = major2.major
-            LEFT JOIN major_table major3 ON cc_stg_undergrad_candidacy.major3 = major3.major
-            LEFT JOIN minor_table minor1 ON cc_stg_undergrad_candidacy.minor1 = minor1.minor
-            LEFT JOIN minor_table minor2 ON cc_stg_undergrad_candidacy.minor2 = minor2.minor
-            LEFT JOIN minor_table minor3 ON cc_stg_undergrad_candidacy.minor3 = minor3.minor
-            WHERE cc_stg_undergrad_candidacy.student_id = %s''' % (request.POST['cid'])
-    reqmajors = connection.execute(sql3)
-    return render(request, 'undergradcandiacy/details.html', {
-        'student': student.first(),
-        'student_info': student_info.first(),
-        'reqmajors': reqmajors.first()
-    })
+    student(request, request.POST['cid'])
+    
+    
 @csrf_exempt
 def set_approved(request):
     engine = create_engine(INFORMIX_EARL_TEST)

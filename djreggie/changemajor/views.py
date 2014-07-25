@@ -90,7 +90,35 @@ def admin(request):
         sql2 = '''DELETE FROM cc_stg_changemajor
                 WHERE changemajor_no = %s''' % (request.POST['record'])
         connection.execute(sql2)
-    sql = 'SELECT * FROM cc_stg_changemajor INNER JOIN id_rec ON cc_stg_changemajor.student_id = id_rec.id'
+    sql = '''SELECT cm.*,
+                    id_rec.firstname,
+                    id_rec.lastname,
+                    advisor.firstname AS advisor_first,
+                    advisor.lastname AS advisor_last,
+                    TRIM(majors1.txt) AS major1_txt,
+                    TRIM(majors2.txt) AS major2_txt,
+                    TRIM(majors3.txt) AS major3_txt,
+                    TRIM(minors1.txt) AS minor1_txt,
+                    TRIM(minors2.txt) AS minor2_txt,
+                    TRIM(minors3.txt) AS minor3_txt,
+            FROM cc_stg_changemajor AS cm
+            INNER JOIN id_rec
+            ON cm.student_id = id_rec.id
+            LEFT JOIN id_rec AS advisor
+            ON advisor.id = cm.advisor_id
+            LEFT JOIN major_table AS majors1
+            ON cm.major1 = majors1.major
+            LEFT JOIN major_table AS majors2
+            ON cm.major2 = majors2.major
+            LEFT JOIN major_table AS majors3
+            ON cm.major3 = majors3.major
+            LEFT JOIN minor_table AS minor1
+            ON cm.minor1 = minors1.minor
+            LEFT JOIN minor_table AS minor2
+            ON cm.minor2 = minors2.minor
+            LEFT JOIN minor_table AS minor3
+            ON cm.minor3 = minors3.minor
+            ORDER BY cm.datecreated DESC'''
     student = connection.execute(sql)
     return render(request, 'changemajor/home.html', {
         'student': student
@@ -99,11 +127,24 @@ def admin(request):
 def student(request, student_id):
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
-    sql = '''SELECT *
-            FROM cc_stg_changemajor
+    sql = '''SELECT cm.*,
+                    id_rec.firstname,
+                    id_rec.lastname,
+                    id_rec.addr_line1,
+                    id_rec.addr_line2,
+                    id_rec.city,
+                    id_rec.st,
+                    id_rec.zip,
+                    id_rec.ctry,
+                    id_rec.phone,
+                    advisor.firstname AS advisor_first,
+                    advisor.lastname AS advisor_last
+            FROM cc_stg_changemajor AS cm
             INNER JOIN id_rec
-            ON cc_stg_changemajor.student_id = id_rec.id
-            WHERE cc_stg_changemajor.student_id = %s''' % (student_id)
+            ON cm.student_id = id_rec.id
+            LEFT JOIN id_rec AS advisor
+            ON advisor.id = cm.advisor_id
+            WHERE cm.student_id = %s''' % (student_id)
     sql2 = '''SELECT TRIM(major1.txt) AS major1, TRIM(major2.txt) AS major2, TRIM(major3.txt) AS major3,
                     TRIM(minor1.txt) AS minor1,TRIM(minor2.txt) AS minor2, TRIM(minor3.txt) AS minor3
 FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
@@ -134,41 +175,7 @@ WHERE cc_stg_changemajor.student_id = %s'''  % (student_id)
     })
 
 def search(request):
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
-    sql = '''SELECT *
-            FROM cc_stg_changemajor
-            INNER JOIN id_rec
-            ON cc_stg_changemajor.student_id = id_rec.id
-            WHERE cc_stg_changemajor.student_id = %s''' % (request.POST['cid'])
-    student = connection.execute(sql)
-    
-    sql2 = '''SELECT TRIM(major1.txt) AS major1, TRIM(major2.txt) AS major2, TRIM(major3.txt) AS major3,
-                    TRIM(minor1.txt) AS minor1,TRIM(minor2.txt) AS minor2, TRIM(minor3.txt) AS minor3
-FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
-					LEFT JOIN	major_table		major1	ON	PROGrec.major1	=	major1.major
-					LEFT JOIN	major_table		major2	ON	PROGrec.major2	=	major2.major
-					LEFT JOIN	major_table		major3	ON	PROGrec.major3	=	major3.major
-					LEFT JOIN	minor_table		minor1	ON	PROGrec.minor1	=	minor1.minor
-					LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
-					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
-WHERE IDrec.id = %s''' % (request.POST['cid'])
-    majors = connection.execute(sql2)
-    sql3 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3, TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
-FROM cc_stg_changemajor
-    LEFT JOIN major_table major1 ON cc_stg_changemajor.major1 = major1.major
-    LEFT JOIN major_table major2 ON cc_stg_changemajor.major2 = major2.major
-    LEFT JOIN major_table major3 ON cc_stg_changemajor.major3 = major3.major
-    LEFT JOIN minor_table minor1 ON cc_stg_changemajor.minor1 = minor1.minor
-    LEFT JOIN minor_table minor2 ON cc_stg_changemajor.minor2 = minor2.minor
-    LEFT JOIN minor_table minor3 ON cc_stg_changemajor.minor3 = minor3.minor
-WHERE cc_stg_changemajor.student_id = %s'''  % (request.POST['cid'])
-    reqmajors = connection.execute(sql3)
-    return render(request, 'changemajor/details.html', {
-        'student': student.first(),
-        'majors': majors.first(),
-        'reqmajors': reqmajors.first()
-    })
+    student(request, request.POST['cid'])
 
 @csrf_exempt
 def set_approved(request):

@@ -82,7 +82,11 @@ def admin(request):
         sql3 = '''DELETE FROM cc_stg_ferpafamily
                 WHERE ferpafamily_no = %s''' % (request.POST['record'])
         connection.execute(sql3)
-    sql = 'SELECT * FROM cc_stg_ferpafamily INNER JOIN id_rec ON cc_stg_ferpafamily.student_id = id_rec.id'
+    sql = '''SELECT ff.*, id_rec.firstname, id_rec.lastname
+            FROM cc_stg_ferpafamily AS ff
+            INNER JOIN id_rec
+            ON ff.student_id = id_rec.id
+            ORDER BY ff.datecreated DESC'''
     student = connection.execute(sql)
     return render(request, 'consentfam/home.html', {
         'student': student
@@ -91,16 +95,26 @@ def admin(request):
 def student(request, student_id):
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
-    sql = '''SELECT *
-            FROM cc_stg_ferpafamily
+    sql = '''SELECT ff.*,
+                    id_rec.firstname,
+                    id_rec.lastname,
+                    id_rec.addr_line1,
+                    id_rec.addr_line2,
+                    id_rec.city,
+                    id_rec.st,
+                    id_rec.zip,
+                    id_rec.ctry,
+                    id_rec.phone
+            FROM cc_stg_ferpafamily AS ff
             INNER JOIN id_rec
-            ON cc_stg_ferpafamily.student_id = id_rec.id
-            WHERE cc_stg_ferpafamily.student_id = %s''' % (student_id)
+            ON ff.student_id = id_rec.id
+            WHERE ff.student_id = %s''' % (student_id)
     student = connection.execute(sql)
-    studentb = connection.execute(sql)
-    sql2 = '''SELECT *
-            FROM cc_stg_ferpafamily_rec
-            WHERE cc_stg_ferpafamily_rec.ferpafamily_no = %s''' % (studentb.first()['ferpafamily_no'])
+    sql2 = '''SELECT ff_rec.*
+            FROM cc_stg_ferpafamily_rec AS ff_rec
+            INNER JOIN cc_stg_ferpafamily AS ff
+            ON ff_rec.ferpafamily_no = ff.ferpafamily_no
+            WHERE ff_rec.ferpafamily_no = %s''' % (student_id)
     family = connection.execute(sql2)
     return render(request, 'consentfam/details.html', {
         'student': student.first(),
@@ -108,25 +122,7 @@ def student(request, student_id):
     })
 
 def search(request):
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
-    sql = '''SELECT *
-            FROM cc_stg_ferpafamily
-            INNER JOIN id_rec
-            ON cc_stg_ferpafamily.student_id = id_rec.id
-            WHERE cc_stg_ferpafamily.student_id = %s''' % (request.POST['cid'])
-    student = connection.execute(sql)
-    sql2 = '''SELECT *
-            FROM cc_stg_ferpafamily_rec
-            WHERE cc_stg_ferpafamily_rec.ferpafamily_no = (
-                SELECT ferpafamily_no
-                FROM cc_stg_ferpafamily
-                WHERE student_id = %s)''' % (request.POST['cid'])
-    family = connection.execute(sql2)
-    return render(request, 'consentfam/details.html', {
-        'student': student.first(),
-        'family': family,
-    })
+    student(request, request.POST('cid'))
 
 @csrf_exempt
 def set_approved(request):
