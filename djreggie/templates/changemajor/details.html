@@ -14,7 +14,64 @@
 .center{text-align:center;}
 .red {color:#800;}
 .green {color:#008000;}
+.loader {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('http://i.imgur.com/VOYFJhg.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .loader {
+    display: block;
+}
 </style>
+{% endblock %}
+{% block extra_javascript %}
+<script>
+    $(".approved").change(function(){
+        var checked;
+        if($(this).prop('checked'))
+        {
+            checked = 'Y';
+        }
+        else
+        {
+            checked = 'N';
+        }
+        $body = $("body");
+        $(document).on({
+            ajaxStart: function() { $body.addClass("loading");    },
+            ajaxStop: function() { $body.removeClass("loading"); }    
+        });
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'cm_set_approved' %}",
+            data: {
+                'approved': checked,
+                'id': $(this).val()
+            },
+            cache: false,
+            success: function(data){
+                alert(data);
+            },
+            });
+    });
+</script>
 {% endblock %}
 {% block content %}
 <div id="student-container">
@@ -111,7 +168,23 @@
                         Date Created:<pre>{{student.datecreated}}</pre>
                     </div>
                 </div>
-            </div><!-- /.panel-info -->
+            </div><!-- /.panel-info -->            
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Approval
+                    </h3>
+                </div>                
+                <div class="panel-body">
+                    <div>
+                    <div>
+                        Approved<pre><input type='checkbox' class='approved'
+                        id='approved_{{student.changemajor_no}}'
+                        {% if student.approved = 'Y' %}checked{% endif %} value='{{student.changemajor_no}}'></pre>
+                    </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-lg-6">
             <div class="panel panel-info">
@@ -173,20 +246,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        Approval
-                    </h3>
-                </div>                
-                <div class="panel-body">
-                    <div>
-                        Approved<pre>{{student.approved}}</pre>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div> <!-- /#student-container -->
+<div class="loader"><!-- for loading icon --></div>
 {% endblock content %}
