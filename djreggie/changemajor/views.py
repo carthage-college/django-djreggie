@@ -100,7 +100,7 @@ def admin(request):
                     TRIM(majors3.txt) AS major3_txt,
                     TRIM(minors1.txt) AS minor1_txt,
                     TRIM(minors2.txt) AS minor2_txt,
-                    TRIM(minors3.txt) AS minor3_txt,
+                    TRIM(minors3.txt) AS minor3_txt
             FROM cc_stg_changemajor AS cm
             INNER JOIN id_rec
             ON cm.student_id = id_rec.id
@@ -112,11 +112,11 @@ def admin(request):
             ON cm.major2 = majors2.major
             LEFT JOIN major_table AS majors3
             ON cm.major3 = majors3.major
-            LEFT JOIN minor_table AS minor1
+            LEFT JOIN minor_table AS minors1
             ON cm.minor1 = minors1.minor
-            LEFT JOIN minor_table AS minor2
+            LEFT JOIN minor_table AS minors2
             ON cm.minor2 = minors2.minor
-            LEFT JOIN minor_table AS minor3
+            LEFT JOIN minor_table AS minors3
             ON cm.minor3 = minors3.minor
             ORDER BY cm.datecreated DESC'''
     student = connection.execute(sql)
