@@ -99,7 +99,28 @@ def admin(request):
         sql2 = '''DELETE FROM cc_stg_undergrad_candidacy
             WHERE undergradcandidacy_no = %s''' % (request.POST['record'])
         connection.execute(sql2)
-    sql = 'SELECT * FROM cc_stg_undergrad_candidacy ORDER BY datecreated DESC'
+    sql = '''SELECT uc.*,
+                    TRIM(majors1.txt) AS major1_txt,
+                    TRIM(majors2.txt) AS major2_txt,
+                    TRIM(majors3.txt) AS major3_txt,
+                    TRIM(minors1.txt) AS minor1_txt,
+                    TRIM(minors2.txt) AS minor2_txt,
+                    TRIM(minors3.txt) AS minor3_txt
+            FROM cc_stg_undergrad_candidacy AS uc
+            LEFT JOIN major_table AS majors1
+            ON uc.major1 = majors1.major
+            LEFT JOIN major_table AS majors2
+            ON uc.major2 = majors2.major
+            LEFT JOIN major_table AS majors3
+            ON uc.major3 = majors3.major
+            LEFT JOIN minor_table AS minors1
+            ON uc.minor1 = minors1.minor
+            LEFT JOIN minor_table AS minors2
+            ON uc.minor2 = minors2.minor
+            LEFT JOIN minor_table AS minors3
+            ON uc.minor3 = minors3.minor
+            WHERE uc.approved != 'N'
+            ORDER BY uc.datecreated DESC'''
     student = connection.execute(sql)
     return render(request, 'undergradcandidacy/home.html', {
         'student': student,
