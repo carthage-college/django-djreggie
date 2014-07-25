@@ -53,6 +53,7 @@
         <!-- Initialise the DataTables -->
         $('#students-data').dataTable({
             "sDom": 'T<"clear">lfrtip',
+            "order": [[ 3, "desc" ]],
             "aoColumnDefs": [{
                 "bSortable": false,
                 "aTargets": [-1]

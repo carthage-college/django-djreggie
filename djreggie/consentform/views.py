@@ -51,7 +51,6 @@ def admin(request):
             FROM cc_stg_ferpadirectory AS fd
             INNER JOIN id_rec
             ON fd.student_id = id_rec.id
-            WHERE fd.approved != 'Y'
             ORDER BY fd.datecreated DESC'''
     student = connection.execute(sql)
     return render(request, 'consentform/home.html', {
