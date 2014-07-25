@@ -5,8 +5,10 @@
                 <th>Name</th>
                 <th>Approved</th>
                 <th>StudentID</th>
-                <th>First Major</th>
-                <th>Advisor</th>
+                <th>Requested Major(s)</th>
+                <th>Requested Minor(s)</th>
+                <th>Advisor First Name</th>
+                <th>Advisor Last Name</th>
                 <th>Date Created</th>
                 <th>Delete</th>
             </tr>
@@ -27,10 +29,20 @@
                     {{s.student_id}}
                 </td>
                 <td class='center'>
-                    {{s.major1}}
+                    {{s.major1_txt}}
+                    <br>{% if s.major2 != "None" %}{{s.major2_txt}}{% endif %}
+                    <br>{% if s.major3 != "None" %}{{s.major3_txt}}{% endif %}
+                </td>     
+                <td class='center'>
+                    {% if s.minor1 != "None" %}{{s.minor1_txt}}{% else %}None{% endif %}
+                    <br>{% if s.minor2 != "None" %}{{s.minor2_txt}}{% endif %}
+                    <br>{% if s.minor3 != "None" %}{{s.minor3_txt}}{% endif %}
                 </td>                
                 <td class='center'>
-                    {{s.advisor_id}}
+                    {{s.advisor_first}}
+                </td>
+                <td class='center'>
+                    {{s.advisor_last}}
                 </td>
                 <td class='center'>
                     {{s.datecreated}}

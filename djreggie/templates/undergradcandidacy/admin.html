@@ -4,8 +4,8 @@
             <tr>
                 <th>Name</th>
                 <th>Approved</th>
-                <th>Major 1</th>
-                <th>Minor 1</th>
+                <th>Major(s)</th>
+                <th>Minor(s)</th>
                 <th>Plan To Walk</th>
                 <th>Graduation Year</th>
                 <th>Graduation Session</th>
@@ -27,16 +27,20 @@
                            {% if s.approved = 'Y' %}checked{% endif %} value='{{s.undergradcandidacy_no}}'>
                 </td>
                 <td class='center'>
-                    {{s.major1}}
-                </td>
+                    {{s.major1_txt}}
+                    <br>{% if s.major2 != "None" %}{{s.major2_txt}}{% endif %}
+                    <br>{% if s.major3 != "None" %}{{s.major3_txt}}{% endif %}
+                </td>     
                 <td class='center'>
-                    {{s.minor1}}
-                </td>
+                    {% if s.minor1 != "None" %}{{s.minor1_txt}}{% else %}None{% endif %}
+                    <br>{% if s.minor2 != "None" %}{{s.minor2_txt}}{% endif %}
+                    <br>{% if s.minor3 != "None" %}{{s.minor3_txt}}{% endif %}
+                </td> 
                 <td class='center'>
                     {% if s.plan_to_walk = 'T' %}
-                        Y
+                        Yes
                     {% elif s.plan_to_walk = 'F' %}
-                        N
+                        No
                     {% endif %}
                 </td>
                 <td class='center'>
