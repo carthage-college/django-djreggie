@@ -78,6 +78,10 @@
         <!-- Initialise the DataTables -->
         $('#students-data').dataTable({
             "sDom": 'T<"clear">lfrtip',
+            "aoColumnDefs": [{
+                "bSortable": false,
+                "aTargets": [-1]
+            }],
             "oTableTools": {
                 "sSwfPath": "//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
                 "aButtons": [

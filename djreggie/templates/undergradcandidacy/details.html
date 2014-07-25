@@ -14,6 +14,31 @@
 .center{text-align:center;}
 .red {color:#800;}
 .green {color:#008000;}
+.loader {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('http://i.imgur.com/VOYFJhg.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .loader {
+    display: block;
+}
 </style>
 {% endblock %}
 {% block extra_javascript %}
@@ -28,6 +53,11 @@
         {
             checked = 'N';
         }
+        $body = $("body");
+        $(document).on({
+            ajaxStart: function() { $body.addClass("loading");    },
+            ajaxStop: function() { $body.removeClass("loading"); }    
+        });
         $.ajax({
             type: 'POST',
             url: "{% url 'ug_set_approved' %}",
@@ -61,11 +91,11 @@
                         </div>
                         <div class="col-xs-8" id="student-contact">
                             <address>
-                            {{student_info.addr_line1}} {{student_info.addr_line2}}<br>
-                            {{student_info.city}}, {{student_info.st}}<br>
-                            {{student_info.zip}} {{student_info.ctry}}<br>
+                            {{student.addr_line1}} {{student.addr_line2}}<br>
+                            {{student.rec_city}}, {{student.st}}<br>
+                            {{student.rec_zip}} {{student.ctry}}<br>
                             <abbr title="Phone">P:</abbr>
-                            {{student_info.phone}}<br>
+                            {{student.phone}}<br>
                             </a>
                             </address>
                         </div>
@@ -280,4 +310,5 @@
     </div>
     <!-- /.row -->
 </div> <!-- /#student-container -->
+<div class="loader"><!-- for loading icon --></div>
 {% endblock content %}
