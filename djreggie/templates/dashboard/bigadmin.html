@@ -1,0 +1,133 @@
+{% extends "djdash/base.html" %}
+{% block extra_style %}
+    <!-- Page-Level Plugin CSS - Tables -->
+    <link href="//www.carthage.edu/static/vendor/dashboard/css/plugins/dataTables/jquery.dataTables.min.css"
+        rel="stylesheet">
+    <link href="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/css/dataTables.tableTools.min.css"
+        rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css"
+        rel="stylesheet"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+    <style>
+    .ui-autocomplete.ui-menu {
+        z-index: 10000;
+      }
+    .center{text-align:center;}
+    .red {color:#800;}
+    .green {color:#008000;}
+    div.DTTT {
+    float: right;
+    margin-bottom: 1em;
+    position: relative;
+    }
+    </style>
+{% endblock %}
+{% block extra_javascript %}
+<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+
+<script>
+  $(function() {
+    $( "#tabs" ).tabs();
+  });
+  </script>
+{% endblock %}
+{% block navbar-header %}
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse"
+            data-target=".sidebar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand"
+            href="http://www.carthage.edu//">
+            Carthage Main Page
+        </a>
+    </div>
+{% endblock %}
+{% block navbar-top-links %}
+    <ul class="nav navbar-top-links navbar-right">
+        <li class="dropdown user-dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-user"></i> {{user.first_name}}
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li class="divider"></li>
+                <li>
+                    <i class="fa fa-power-off"></i> Log Out
+                </li>
+            </ul>
+        </li>
+        <!-- /.dropdown-user -->
+    </ul>
+{% endblock %}
+{% block navbar-static-side %}
+    <div class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+                <li class="sidebar-search">
+                    <div class="input-group custom-search-form">
+                        <form action="{% url 'searchcform' %}" method="post" />
+                        {% csrf_token %}
+                        <input type="text" name="cid" class="form-control"
+                            placeholder="Search by ID...">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        </form>
+                    </span>
+                    </div>
+                </li>
+                <li>
+                    <a href="{% url 'admincform' %}">
+                        <i class="fa fa-dashboard fa-fw"></i> Dashboard
+                    </a>
+                </li>
+                {% if user.is_superuser %}
+                <li>
+                    <a href="/campus-life/medical/forms/admin/">
+                        <i class="fa fa-gears"></i> Administration
+                    </a>
+                </li>
+                {% endif %}
+                <li>
+                    <a href="http://www.carthage.edu/">
+                        <i class="fa fa-home fa-fw"></i> Carthage Home
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.carthage.edu/my/">
+                        <i class="fa fa-lemon-o fa-fw"></i> My.Carthage
+                    </a>
+                </li>
+            </ul>
+            <!-- /#side-menu -->
+        </div>
+        <!-- /.sidebar-collapse -->
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="tabs">
+      <ul>
+        <li><a href="#tabs-1">Change Major</a></li>
+        <li><a href="#tabs-2">FERPA Consent</a></li>
+        <li><a href="#tabs-3">Ferpa Family</a></li>
+        <li><a href="#tabs-4">Undergrad Candidacy</a></li>
+      </ul>
+      <div id="tabs-1">
+        <p></p>
+      </div>
+      <div id="tabs-2">
+        <p></p>
+      </div>
+      <div id="tabs-3">
+        <p></p>
+      </div>
+      <div id="tabs-4">
+        <p></p>
+      </div>
+    </div>
+{% endblock %}
