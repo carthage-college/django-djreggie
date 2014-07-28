@@ -80,4 +80,4 @@ def student(request, student_id):
     })
 
 def search(request):
-    student(request, request.POST['cid'])
+    return student(request, request.POST['cid'])
