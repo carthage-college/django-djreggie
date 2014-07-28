@@ -14,5 +14,6 @@ urlpatterns = patterns('',
     url(r'^createemail/', include('djreggie.createemail.urls')),
     url(r'^depstudent/', include('djreggie.depstudent.urls')),
     url(r'^indepstudent/', include('djreggie.indepstudent.urls')),
+    url(r'^dashboard/', include('djreggie.dashboard.urls')),
     #url(r'^$', RedirectView.as_view(url="/adult/")),
 )
