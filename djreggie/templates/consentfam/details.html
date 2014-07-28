@@ -45,7 +45,7 @@
 </style>
 {% endblock %}
 {% block extra_javascript %}
-    
+    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <script type="text/javascript">
     $(".approveone").change(function(){
         var checked;
@@ -77,7 +77,14 @@
     });
     $(".showhide").click(function() {
         $(this).parent().parent().find(".showinfo").toggle()
-    })
+    });
+    var list = new Array();
+    {% for stud in full_student_list %}
+        list.push({label: '{{stud.lastname}}, {{stud.firstname}} {{stud.student_id}}',
+                    value: {{stud.student_id}}})
+    {% endfor %}
+    $('[name=cid]').autocomplete({source: list});
+    $('[name=cid]').autocomplete("enable");
 </script>
 {% endblock %}
 {% block content %}
