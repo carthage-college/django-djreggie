@@ -47,7 +47,6 @@ class Parent(forms.Form):
         ("FINANCIAL", 'Financial Records'),
         ("BOTH", 'I would like to share both'),
         ("NEITHER", 'I would like to share neither'),
-        ("OLD", "I would like to keep my old sharing settings"),
     )
     share = forms.ChoiceField(choices=CHOICES)    
     name = forms.CharField(max_length=100)

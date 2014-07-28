@@ -31,7 +31,6 @@ class ParentForm(models.Model):
         ("FINANCIAL", 'Financial Records'),
         ("BOTH", 'I would like to share both'),
         ("NEITHER", 'I would like to share neither'),
-        ("OLD", "I would like to keep my old sharing settings"),
     )
     share = models.CharField(choices=CHOICES, max_length=200)    
     name = models.CharField(max_length=100)
