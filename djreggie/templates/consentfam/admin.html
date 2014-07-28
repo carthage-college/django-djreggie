@@ -24,6 +24,7 @@
                 <td class='center'>
                     <input type="checkbox" name="approve" class="approved"
                         id="approve_{{s.ferpafamily_no}}" value="{{s.ferpafamily_no}}" {% if s.approved = 'Y' %}checked{% endif %}/>
+                    {% if s.approved = 'Y' %}<div style="display:none;">1</div>{% else %}<div style="display:none;">0</div>{% endif %}
                 </td>
                 <td class='center'>
                     {{s.student_id}}

@@ -29,6 +29,7 @@
                 <td class='center'>
                     <input type='checkbox' class='approved' id='approved_{{s.undergradcandidacy_no}}'
                            {% if s.approved = 'Y' %}checked{% endif %} value='{{s.undergradcandidacy_no}}'>
+                        {% if s.approved = 'Y' %}<div style="display:none;">1</div>{% else %}<div style="display:none;">0</div>{% endif %}
                 </td>
                 <td class='center'>
                     {{s.major1_txt}}
