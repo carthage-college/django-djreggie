@@ -39,14 +39,12 @@
     body.loading .loader {
         display: block;
     }
+    .showinfo {
+        display: none;
+    }
 </style>
 {% endblock %}
 {% block extra_javascript %}
-    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/jquery.dataTables.js"></script>
-    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
-    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/dataTables.bootstrap.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-    <script src="//www.carthage.edu/static/vendor/js/spin.min.js" type="text/javascript"></script>
     
 <script type="text/javascript">
     $(".approveone").change(function(){
@@ -77,6 +75,9 @@
             },
             });
     });
+    $(".showhide").click(function() {
+        $(this).parent().parent().find(".showinfo").toggle()
+    })
 </script>
 {% endblock %}
 {% block content %}
@@ -114,53 +115,41 @@
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        Family {{forloop.counter}}
+                        <pre>Name: {{f.name}} | Relation: {{f.relation}} | Is allowed to see: {{f.allow}}</pre>
                     </h3>
+                    <input type="button" class="showhide" value="Show/hide info"/>
                 </div><!-- /.panel-heading -->
-                <div style="float:left">
-                    <div class="panel-body">
-                        <div>
-                            Name<pre>{{f.name}}</pre>
-                        </div>
-                    </div><!-- /.panel-body -->
-                    <div class="panel-body">
-                        <div>
-                            Relation<pre>{{f.relation}}</pre>
-                        </div>
-                    </div><!-- /.panel-body -->      
-                    <div class="panel-body">
-                        <div>
-                            Phone<pre>{{f.phone}}</pre>
-                        </div>
-                    </div><!-- /.panel-body --> 
-                    <div class="panel-body">
-                        <div>
-                            Email<pre>{{f.email}}</pre>
-                        </div>
-                    </div><!-- /.panel-body -->
-                </div>
-                <div style="float:right">
-                    <div class="panel-body">
-                        <div>
-                            Shared Info<pre>{{f.allow}}</pre>
-                        </div>
-                    </div><!-- /.panel-body -->
-                    <div class="panel-body">
-                        <div>
-                            Date Modified<pre>{{f.datemodified}}</pre>
-                        </div>
-                    </div><!-- /.panel-body -->
-                    <div class="panel-body">
-                        <div>
-                            Modifier ID<pre>{{f.modified_id}}</pre>
-                        </div>
-                    </div><!-- /.panel-body -->
-                    <div class="panel-body">
-                        <div>
-                            Approved<pre><input type="checkbox" name="approve" class="approveone"
-                        id="approve_{{f.ferpafamilyrec_no}}" value="{{f.ferpafamilyrec_no}}" {% if f.approved = 'Y' %}checked{% endif %}/></pre>
-                        </div>
-                    </div><!-- /.panel-body -->
+                <div class="showinfo">
+                    <div style="float:left">
+                        <div class="panel-body">
+                            <div>
+                                Phone<pre>{{f.phone}}</pre>
+                            </div>
+                        </div><!-- /.panel-body --> 
+                        <div class="panel-body">
+                            <div>
+                                Email<pre>{{f.email}}</pre>
+                            </div>
+                        </div><!-- /.panel-body -->
+                    </div>
+                    <div style="float:right">
+                        <div class="panel-body">
+                            <div>
+                                Date Modified<pre>{{f.datemodified}}</pre>
+                            </div>
+                        </div><!-- /.panel-body -->
+                        <div class="panel-body">
+                            <div>
+                                Modifier ID<pre>{{f.modified_id}}</pre>
+                            </div>
+                        </div><!-- /.panel-body -->
+                        <div class="panel-body">
+                            <div>
+                                Approved<pre><input type="checkbox" name="approve" class="approveone"
+                            id="approve_{{f.ferpafamilyrec_no}}" value="{{f.ferpafamilyrec_no}}" {% if f.approved = 'Y' %}checked{% endif %}/></pre>
+                            </div>
+                        </div><!-- /.panel-body -->
+                    </div>
                 </div>
             </div>
             <!-- /.panel-info -->
