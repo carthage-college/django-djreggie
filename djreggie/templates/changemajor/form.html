@@ -6,12 +6,28 @@
     <h1 id="page-title">Change Major/Minor</h1>
 {% endblock %}
 {% block extra_style %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 <style type="text/css">
     .tabme{
         color: grey;
         padding-left:2em
     }
+    .ui-autocomplete.ui-menu {
+        z-index: 10000;
+      }
 </style>
+{% endblock %}
+{% block extra_javascript %}
+<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<script>
+    var list = new Array();
+    {% for advisor in advisor_list %}
+        list.push({label: "{{advisor.firstname}} {{advisor.lastname}}",
+                    value: {{advisor.id}}})
+    {% endfor %}
+    $('#id_advisor').autocomplete({source: list});
+    $('#id_advisor').autocomplete('enable');
+</script>
 {% endblock %}
 {% block content %}
 {{ form.non_field_errors }}

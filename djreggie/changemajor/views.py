@@ -77,9 +77,21 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
     c = {'form': form,
         }
     c.update(csrf(request))
-    
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql2 = '''SELECT UNIQUE id_rec.id, TRIM(id_rec.firstname) AS firstname, TRIM(id_rec.lastname) AS lastname, TRIM(aa_rec.line1) AS email
+            FROM job_rec
+            INNER JOIN id_rec ON job_rec.id = id_rec.id
+            INNER JOIN aa_rec ON id_rec.id = aa_rec.id
+            AND aa_rec.aa = 'EML1'
+            WHERE hrstat = 'FT'
+            AND TODAY BETWEEN job_rec.beg_date AND NVL(job_rec.end_date, TODAY)
+            AND TODAY BETWEEN aa_rec.beg_date AND NVL(aa_rec.end_date, TODAY)
+            ORDER BY lastname, firstname'''
+    advisor_list = connection.execute(sql2)
     return render(request, 'changemajor/form.html', {
-        'form': form, 
+        'form': form,
+        'advisor_list': advisor_list,
     })
 
 def get_all_students():
