@@ -134,7 +134,7 @@ def student(request, student_id):
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
     sql = '''SELECT uc.*,
-                    id_rec.addr_lin1,
+                    id_rec.addr_line1,
                     id_rec.addr_line2,
                     id_rec.city AS rec_city,
                     id_rec.st,
@@ -146,7 +146,6 @@ def student(request, student_id):
             ON uc.student_id = id_rec.id
             WHERE uc.student_id = %s''' % (student_id)
     student = connection.execute(sql)
-    student_info = connection.execute(sql2)
     sql2 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3, TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
             FROM cc_stg_undergrad_candidacy
             LEFT JOIN major_table major1 ON cc_stg_undergrad_candidacy.major1 = major1.major
