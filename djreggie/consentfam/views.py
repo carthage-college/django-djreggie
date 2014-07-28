@@ -72,6 +72,16 @@ def create(request):
 def submitted(request):
     return render(request, 'consentfam/form.html')
 
+def get_all_students():
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT id_rec.firstname, id_rec.lastname, cf.student_id
+            FROM cc_stg_ferpafamily AS cf
+            INNER JOIN id_rec
+            ON cf.student_id = id_rec.id'''
+    return connection.execute(sql)
+
+
 def admin(request):
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
@@ -90,7 +100,8 @@ def admin(request):
             ORDER BY ff.datecreated DESC'''
     student = connection.execute(sql)
     return render(request, 'consentfam/home.html', {
-        'student': student
+        'student': student,
+        'full_student_list': get_all_students(),
     })
 
 def student(request, student_id):
@@ -120,6 +131,7 @@ def student(request, student_id):
     return render(request, 'consentfam/details.html', {
         'student': student.first(),
         'family': family,
+        'full_student_list': get_all_students(),
     })
 
 def search(request):

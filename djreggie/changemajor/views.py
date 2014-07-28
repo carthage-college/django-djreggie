@@ -82,6 +82,15 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
         'form': form, 
     })
 
+def get_all_students():
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT id_rec.firstname, id_rec.lastname, cm.student_id
+            FROM cc_stg_changemajor AS cm
+            INNER JOIN id_rec
+            ON cm.student_id = id_rec.id'''
+    return connection.execute(sql)
+
 
 def admin(request):
     engine = create_engine(INFORMIX_EARL_TEST)
@@ -122,7 +131,8 @@ def admin(request):
             ORDER BY cm.datecreated DESC'''
     student = connection.execute(sql)
     return render(request, 'changemajor/home.html', {
-        'student': student
+        'student': student,
+        'full_student_list': get_all_students(),
     })
 
 def student(request, student_id):
@@ -172,7 +182,8 @@ WHERE cc_stg_changemajor.student_id = %s'''  % (student_id)
     return render(request, 'changemajor/details.html', {
         'student': student.first(),
         'majors': majors.first(),
-        'reqmajors': reqmajors.first()
+        'reqmajors': reqmajors.first(),
+        'full_student_list': get_all_students(),
     })
 
 def search(request):

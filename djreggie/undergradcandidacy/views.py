@@ -92,6 +92,14 @@ def contact(request):
             data = data + key + ' ' + str(thing[key]) + '\n'
     return HttpResponse(data)
 
+def get_all_students():
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    sql = '''SELECT first_name, last_name, middle_initial, student_id
+            FROM cc_stg_undergrad_candidacy'''
+    return connection.execute(sql)
+
+
 def admin(request):
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
@@ -122,12 +130,9 @@ def admin(request):
             WHERE uc.approved != 'Y'
             ORDER BY uc.datecreated DESC'''
     student = connection.execute(sql)
-    sql3 = '''SELECT first_name, last_name, middle_initial, student_id
-            FROM cc_stg_undergrad_candidacy'''
-    full_student_list = connection.execute(sql3)
     return render(request, 'undergradcandidacy/home.html', {
         'student': student,
-        'full_student_list': full_student_list,
+        'full_student_list': get_all_students(),
     })
 
 def student(request, student_id):
@@ -158,7 +163,8 @@ def student(request, student_id):
     reqmajors = connection.execute(sql2)
     return render(request, 'undergradcandidacy/details.html', {
         'student': student.first(),
-        'reqmajors': reqmajors.first()
+        'reqmajors': reqmajors.first(),
+        'full_student_list': get_all_students(),
     })
 
 def search(request):
