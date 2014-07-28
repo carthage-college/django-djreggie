@@ -115,7 +115,7 @@ def student(request, student_id):
             FROM cc_stg_ferpafamily_rec AS ff_rec
             INNER JOIN cc_stg_ferpafamily AS ff
             ON ff_rec.ferpafamily_no = ff.ferpafamily_no
-            WHERE ff_rec.ferpafamily_no = %s''' % (student_id)
+            WHERE ff.student_id = %s''' % (student_id)
     family = connection.execute(sql2)
     return render(request, 'consentfam/details.html', {
         'student': student.first(),

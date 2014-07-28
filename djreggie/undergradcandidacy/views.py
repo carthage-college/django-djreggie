@@ -121,15 +121,13 @@ def admin(request):
             ON uc.minor3 = minors3.minor
             WHERE uc.approved != 'Y'
             ORDER BY uc.datecreated DESC'''
-    student = connection.execute(sql
+    student = connection.execute(sql)
     sql3 = '''SELECT first_name, last_name, middle_initial, student_id
             FROM cc_stg_undergrad_candidacy'''
     full_student_list = connection.execute(sql3)
-    autocomplete_list = [{'label': '%(last_name)s, %(first_name)s %(middle_initial)s %(student_id)s' % (stud),
-                          'value': stud['student_id']} for stud in full_student_list]
     return render(request, 'undergradcandidacy/home.html', {
         'student': student,
-        'autocomplete_list': autocomplete_list,
+        'full_student_list': full_student_list,
     })
 
 def student(request, student_id):
