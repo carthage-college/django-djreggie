@@ -129,7 +129,7 @@ def student(request, student_id):
     family = connection.execute(sql2)
     return render(request, 'consentfam/details.html', {
         'student': student.first(),
-        'family': famiy,
+        'family': family,
         'full_student_list': get_all_students(),
     })
 
