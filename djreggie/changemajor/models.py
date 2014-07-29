@@ -33,7 +33,6 @@ class ChangeModel(models.Model):
            ORDER BY txt ASC"
     minor = connection.execute(sql2)
     CHOICES2 = tuple((row['minor'], row['txt']) for row in minor)
-    
     major1 = models.CharField(max_length=200, choices=CHOICES1, db_column='major1')
     minor1 = models.CharField(max_length=200,
                               choices=CHOICES2,

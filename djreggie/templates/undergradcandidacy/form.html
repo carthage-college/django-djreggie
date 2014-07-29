@@ -77,6 +77,9 @@
            success: function(data){alert(data);}
         });
         });*/
+    {% if valid_class = 'N' %}
+        alert('You are not a junior or senior');
+    {% endif %}
 </script>
 {% endblock %}
 {% block content %}

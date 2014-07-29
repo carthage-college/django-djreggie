@@ -50,7 +50,6 @@ def get_all_students():
             ON cf.student_id = id_rec.id'''
     return connection.execute(sql)
 
-
 def admin(request):
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()

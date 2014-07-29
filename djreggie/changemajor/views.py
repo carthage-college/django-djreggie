@@ -17,6 +17,14 @@ def create(request):
         
         if form.is_valid(): #If the form is valid
             if form.data['advisor'] != '':
+                engine = create_engine(INFORMIX_EARL_TEST)
+                connection = engine.connect()
+                advisor_sql = '''SELECT TRIM(aa_rec.line1) AS email
+                                FROM aa_rec
+                                WHERE aa_rec.id = %s''' % (form.data['advisor'])
+                advisor = connection.execute(advisor_sql)
+                advisor_email = advisor.first()['email']
+                connection.close()
                 send_mail("You can't replace me, I'm the advisor!", "I'm the captai- er, advisor now", 'confirmation.carthage.edu',
                     ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
             form_instance = form.save()        #Save the form data to the datbase table            
@@ -79,14 +87,11 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
     c.update(csrf(request))
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
-    sql2 = '''SELECT UNIQUE id_rec.id, TRIM(id_rec.firstname) AS firstname, TRIM(id_rec.lastname) AS lastname, TRIM(aa_rec.line1) AS email
+    sql2 = '''SELECT UNIQUE id_rec.id, TRIM(id_rec.firstname) AS firstname, TRIM(id_rec.lastname) AS lastname
             FROM job_rec
             INNER JOIN id_rec ON job_rec.id = id_rec.id
-            INNER JOIN aa_rec ON id_rec.id = aa_rec.id
-            AND aa_rec.aa = 'EML1'
             WHERE hrstat = 'FT'
             AND TODAY BETWEEN job_rec.beg_date AND NVL(job_rec.end_date, TODAY)
-            AND TODAY BETWEEN aa_rec.beg_date AND NVL(aa_rec.end_date, TODAY)
             ORDER BY lastname, firstname'''
     advisor_list = connection.execute(sql2)
     return render(request, 'changemajor/form.html', {

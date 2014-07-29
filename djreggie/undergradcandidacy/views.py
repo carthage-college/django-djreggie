@@ -64,12 +64,24 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
                 form.fields['minor1'].initial = thing['minor1code']
                 form.fields['minor2'].initial = thing['minor2code']
                 form.fields['minor3'].initial = thing['minor3code']
+                
+            sql2 = '''SELECT
+                        CASE prog_enr_rec.cl
+                            WHEN 'JR' THEN 'Y'
+                            WHEN 'SR' THEN 'Y'
+                            ELSE 'N'
+                        END AS valid_class
+                    FROM prog_enr_rec
+                    WHERE prog_enr_rec.id = %s''' % (request.GET['student_id'])
+            class_standing = connection.execute(sql2)
+            valid_class = class_standing.first()['valid_class']
             connection.close()
         
     return render(request, 'undergradcandidacy/form.html', {
         'form': form,
         'year_low': year,
-        'year_up': year+1
+        'year_up': year+1,
+        'valid_class': valid_class,
     })
 
         
