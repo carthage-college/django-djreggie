@@ -80,6 +80,20 @@
     {% if valid_class = 'N' %}
         alert('You are not a junior or senior');
     {% endif %}
+    
+    $("[name*=major],[name*=minor]").change(function(){
+        if ($(this).val() != ''){
+            for (var i=0; i<$("[name*=major],[name*=minor]").length; i++){
+                if ($("[name*=major],[name*=minor]")[i].id != $(this).attr("id")){
+                    if ($(this).find(":selected").prop("text") == $("[name*=major] :selected,[name*=minor] :selected")[i].text){
+                        $(this).val('');
+                        alert("You have already selected that as a major or minor. You cannot select it again.");
+                        break;
+                    }
+                }
+            }
+        }
+    });
 </script>
 {% endblock %}
 {% block content %}

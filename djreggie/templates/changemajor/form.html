@@ -27,6 +27,20 @@
     {% endfor %}
     $('#id_advisor').autocomplete({source: list});
     $('#id_advisor').autocomplete('enable');
+    
+    $("select").change(function(){
+        if ($(this).val() != ''){
+            for (var i=0; i<$("select").length; i++){
+                if ($("select")[i].id != $(this).attr("id")){
+                    if ($(this).find(":selected").prop("text") == $("select :selected")[i].text){
+                        $(this).val('');
+                        alert("You have already selected that as a major or minor. You cannot select it again.");
+                        break;
+                    }
+                }
+            }
+        }
+    });
 </script>
 {% endblock %}
 {% block content %}

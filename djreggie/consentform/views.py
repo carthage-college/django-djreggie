@@ -30,7 +30,7 @@ def create(request):
         form = ModelForm()
         engine = create_engine(INFORMIX_EARL_TEST)
         connection = engine.connect()
-        sql = 'SELECT id_rec.id FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_ID']))
+        sql = 'SELECT id_rec.id FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_id']))
         student = connection.execute(sql)
         for thing in student:
             form.fields['student_ID'].initial = thing['id']
