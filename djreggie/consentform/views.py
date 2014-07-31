@@ -34,6 +34,13 @@ def create(request):
         student = connection.execute(sql)
         for thing in student:
             form.fields['student_ID'].initial = thing['id']
+        sql2 = 'SELECT cc_stg_ferpadirectory.consent FROM cc_stg_ferpadirectory WHERE cc_stg_ferpadirectory.student_id = %d' % (int(request.GET['student_id']))
+        student2 = connection.execute(sql2)
+        for thing in student2:
+            if thing['consent'] == "N":
+                form.fields['consent'].initial = "NOCONSENT"
+            else:
+                form.fields['consent'].initial = "CONSENT"
         connection.close()
         form.fields['student_ID'].widget = forms.HiddenInput()
 

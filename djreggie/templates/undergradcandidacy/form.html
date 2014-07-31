@@ -25,6 +25,31 @@
     {
       -webkit-appearance:radio;
     }
+    .loader {
+        display:    none;
+        position:   fixed;
+        z-index:    1000;
+        top:        0;
+        left:       0;
+        height:     100%;
+        width:      100%;
+        background: rgba( 255, 255, 255, .8 ) 
+                    url('http://i.imgur.com/VOYFJhg.gif') 
+                    50% 50% 
+                    no-repeat;
+    }
+    
+    /* When the body has the loading class, we turn
+       the scrollbar off with overflow:hidden */
+    body.loading {
+        overflow: hidden;   
+    }
+    
+    /* Anytime the body has the loading class, our
+       modal element will be visible */
+    body.loading .loader {
+        display: block;
+    }
 </style>
 {% endblock %}
 {% block javascript %}
@@ -70,16 +95,36 @@
             $('#' + $(this).attr('id').replace('id_','') + '_yes').show();
         }
     });
-    /*$("#id_best_contact").change(function () {
-        $.ajax({url: "{% url 'contact' %}",
-            async: false,
-            data: {'id': $('#id_student_id').val(), 'aa': $('#id_best_contact :selected').val()},
-           success: function(data){alert(data);}
+    $("#id_best_contact").change(function () {
+        $body = $("body");
+        $(document).on({
+            ajaxStart: function() { $body.addClass("loading");    },
+            ajaxStop: function() { $body.removeClass("loading"); }    
         });
-        });*/
-    {% if valid_class = 'N' %}
+        $.ajax({url: "{% url 'contact' %}",
+            data: {'id': $('#id_student_id').val(), 'aa': $('#id_best_contact :selected').val()},
+            success: function(data){
+                if(data != "")
+                {
+                    if ($("#id_best_contact :selected").val() == "EML2")
+                    {
+                        $("#id_best_contact_value").val(data['line1']);
+                    }
+                    else if ($("#id_best_contact :selected").val() == "PGDN")
+                    {
+                        $("#id_best_contact_value").val(data['line2'] + data['line3'] + data['city'] + ',' + data['state'] + data['zip']);
+                    }
+                    else if ($("#id_best_contact :selected").val() != "")
+                    {
+                        $("#id_best_contact_value").val(data['line1'] + data['line2'] + data['city'] + ',' + data['state'] + data['zip']);
+                    }
+                }
+            }
+        });
+        });
+    //{% if valid_class = 'N' %}
         alert('You are not a junior or senior');
-    {% endif %}
+    //{% endif %}
     
     $("[name*=major],[name*=minor]").change(function(){
         if ($(this).val() != ''){
@@ -298,4 +343,5 @@
         </ol>
     </fieldset>
 </form>
+<div class="loader"><!-- for loading icon --></div>
 {% endblock %}

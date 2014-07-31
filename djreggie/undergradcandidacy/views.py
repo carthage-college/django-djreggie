@@ -33,6 +33,7 @@ def index(request):
                 'submitted': submitted,
                 'year_low': year,
                 'year_up': year+1,
+                'valid_class': "Y"
             })
     else:
         form = UndergradForm()
@@ -97,12 +98,8 @@ def contact(request):
             WHERE id = %(id)s
             AND aa = "%(aa)s"
             AND TODAY BETWEEN beg_date AND NVL(end_date, TODAY)''' % (request.GET)
-    contactinfo = connection.execute(sql)
-    data = ''
-    for thing in contactinfo:
-        for key in contactinfo.keys():
-            data = data + key + ' ' + str(thing[key]) + '\n'
-    return HttpResponse(data)
+    contactinfo = connection.execute(sql)  
+    return HttpResponse(contactinfo)
 
 def get_all_students():
     engine = create_engine(INFORMIX_EARL_TEST)

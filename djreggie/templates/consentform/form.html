@@ -7,12 +7,20 @@
 {% endblock %}
 {% block javascript %}
 <script>
-    $('[name="consent"]').click( function() {
-        if (this.value == "NOCONSENT"){
-               $('#hidden').css("display", "list-item");
+    $(document).ready( function() {
+        if ("{{form.consent.value}}" == "NOCONSENT"){
+               $('#hidden').show();
                }
            else{
-               $('#hidden').css("display", "none");
+               $('#hidden').hide();
+               }
+        });
+    $('[name="consent"]').click( function() {
+        if (this.value == "NOCONSENT"){
+               $('#hidden').show();
+               }
+           else{
+               $('#hidden').hide();
                }
         });
 </script>
