@@ -44,7 +44,7 @@ def create(request):
             })#This is the URL where users are redirected after submitting the form
     else: #This is for the first time you go to the page. It sets it all up
         form = ModelForm()
-        Parent_formset = ParentFormSet(prefix='Parent_or_Third_Party_Name')
+        
         if request.GET:
             engine = create_engine(INFORMIX_EARL_TEST)
             connection = engine.connect()
@@ -53,6 +53,23 @@ def create(request):
             for thing in student:
                 form.fields['student_id'].initial = thing['id']
                 form.fields['full_name'].initial = thing['fullname']
+            sql2 = '''SELECT ff_rec.*
+                    FROM cc_stg_ferpafamily_rec AS ff_rec
+                    INNER JOIN cc_stg_ferpafamily AS ff
+                    ON ff_rec.ferpafamily_no = ff.ferpafamily_no
+                    WHERE ff.student_id = %s''' % (request.GET['student_id'])
+            family = connection.execute(sql2)
+            data = {'Parent_or_Third_Party_Name-TOTAL_FORMS': '0',
+                    'Parent_or_Third_Party_Name-INITIAL_FORMS': '0',
+                    'Parent_or_Third_Party_Name-MAX_NUM_FORMS': ''}
+            for count, person in enumerate(family):
+                data['Parent_or_Third_Party_Name-'+str(count)+'-share'] = person['allow']
+                data['Parent_or_Third_Party_Name-'+str(count)+'-name'] = person['name']
+                data['Parent_or_Third_Party_Name-'+str(count)+'-phone'] = person['phone']
+                data['Parent_or_Third_Party_Name-'+str(count)+'-email'] = person['email']
+                data['Parent_or_Third_Party_Name-'+str(count)+'-relation'] = person['relation']
+                data['Parent_or_Third_Party_Name-TOTAL_FORMS'] = count + 1
+            Parent_formset = ParentFormSet(data, prefix='Parent_or_Third_Party_Name')
             connection.close()
         form.fields['student_id'].widget = forms.HiddenInput()
         form.fields['full_name'].widget = forms.HiddenInput()
