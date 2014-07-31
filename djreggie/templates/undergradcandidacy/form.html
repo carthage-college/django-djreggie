@@ -106,18 +106,37 @@
             success: function(data){
                 if(data != "")
                 {
+                    var data_dict = {};
+                    var splitdict = data.split(",");
+                    for (thing in splitdict)
+                    {
+                        var pair = splitdict[thing].split(":");
+                        data_dict[pair[0]] = ""+pair[1];
+                    }
                     if ($("#id_best_contact :selected").val() == "EML2")
                     {
-                        $("#id_best_contact_value").val(data['line1']);
+                        $("#id_best_contact_value").val(data_dict['line1']);
                     }
                     else if ($("#id_best_contact :selected").val() == "PGDN")
                     {
-                        $("#id_best_contact_value").val(data['line2'] + data['line3'] + data['city'] + ',' + data['state'] + data['zip']);
+                        $("#id_best_contact_value").val(data_dict['line2'] + data_dict['line3'] + data_dict['city'] + ',' + data_dict['st'] + data_dict['zip']);
+                        if ($("#id_best_contact_value").val() == ",")
+                        {
+                            $("#id_best_contact_value").val("");
+                        }
                     }
                     else if ($("#id_best_contact :selected").val() != "")
                     {
-                        $("#id_best_contact_value").val(data['line1'] + data['line2'] + data['city'] + ',' + data['state'] + data['zip']);
+                        $("#id_best_contact_value").val(data_dict['line1'] + data_dict['line2'] + data_dict['city'] + ',' + data_dict['st'] + data_dict['zip']);
+                        if ($("#id_best_contact_value").val() == ",")
+                        {
+                            $("#id_best_contact_value").val("");
+                        }
                     }
+                }
+                else
+                {
+                    $("#id_best_contact_value").val("")
                 }
             }
         });

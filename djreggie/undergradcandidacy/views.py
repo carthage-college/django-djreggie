@@ -98,8 +98,12 @@ def contact(request):
             WHERE id = %(id)s
             AND aa = "%(aa)s"
             AND TODAY BETWEEN beg_date AND NVL(end_date, TODAY)''' % (request.GET)
-    contactinfo = connection.execute(sql)  
-    return HttpResponse(contactinfo)
+    contactinfo = connection.execute(sql)
+    data = ''
+    for thing in contactinfo:
+        for key in contactinfo.keys():
+            data = data + key + ':' + str(thing[key]) + ','
+    return HttpResponse(data)
 
 def get_all_students():
     engine = create_engine(INFORMIX_EARL_TEST)
