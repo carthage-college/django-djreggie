@@ -59,7 +59,7 @@ def create(request):
                     ON ff_rec.ferpafamily_no = ff.ferpafamily_no
                     WHERE ff.student_id = %s''' % (request.GET['student_id'])
             family = connection.execute(sql2)
-            data = {'Parent_or_Third_Party_Name-TOTAL_FORMS': '0',
+            data = {'Parent_or_Third_Party_Name-TOTAL_FORMS': '1',
                     'Parent_or_Third_Party_Name-INITIAL_FORMS': '0',
                     'Parent_or_Third_Party_Name-MAX_NUM_FORMS': ''}
             for count, person in enumerate(family):
