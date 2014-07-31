@@ -140,7 +140,6 @@ def admin(request):
             ON uc.minor2 = minors2.minor
             LEFT JOIN minor_table AS minors3
             ON uc.minor3 = minors3.minor
-            WHERE uc.approved != 'Y'
             ORDER BY uc.datecreated DESC'''
     student = connection.execute(sql)
     return render(request, 'undergradcandidacy/home.html', {

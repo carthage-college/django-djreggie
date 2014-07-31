@@ -5,7 +5,6 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Approved</th>
-                <th>StudentID</th>
                 <th>Date Created</th>
                 <th>Delete</th>
             </tr>
@@ -25,9 +24,6 @@
                     <input type="checkbox" name="approve" class="approved"
                         id="approve_{{s.ferpafamily_no}}" value="{{s.ferpafamily_no}}" {% if s.approved = 'Y' %}checked{% endif %}/>
                     {% if s.approved = 'Y' %}<div style="display:none;">1</div>{% else %}<div style="display:none;">0</div>{% endif %}
-                </td>
-                <td class='center'>
-                    {{s.student_id}}
                 </td>
                 <td class='center'>
                     {{s.datecreated}}
