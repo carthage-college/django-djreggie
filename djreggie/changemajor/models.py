@@ -67,6 +67,7 @@ class ChangeModel(models.Model):
     def save(self):
         engine = create_engine(INFORMIX_EARL_TEST)
         connection = engine.connect()
+        #put data in staging tables
         sql = '''INSERT INTO cc_stg_changemajor (student_id, major1, major2, major3, minor1, minor2, minor3, advisor_id, datecreated)
         VALUES (%(student_id)s, "%(major1)s", "%(major2)s", "%(major3)s", "%(minor1)s", "%(minor2)s", "%(minor3)s", "%(advisor)s", CURRENT)''' % (self.__dict__)
         connection.execute(sql)

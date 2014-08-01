@@ -16,15 +16,17 @@ def create(request):
         form = ChangeForm(request.POST) #Scrape the data from the form and save it in a variable
         
         if form.is_valid(): #If the form is valid
-            if form.data['advisor'] != '':
+            if form.data['advisor'] != '': #if they put in an new advisor
                 engine = create_engine(INFORMIX_EARL_TEST)
                 connection = engine.connect()
+                #get new advisor's email
                 advisor_sql = '''SELECT TRIM(aa_rec.line1) AS email
                                 FROM aa_rec
                                 WHERE aa_rec.id = %s''' % (form.data['advisor'])
                 advisor = connection.execute(advisor_sql)
                 advisor_email = advisor.first()['email']
                 connection.close()
+                #email new advisor
                 send_mail("You can't replace me, I'm the advisor!", "I'm the captai- er, advisor now", 'confirmation.carthage.edu',
                     ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
             form_instance = form.save()        #Save the form data to the datbase table            
@@ -39,6 +41,7 @@ def create(request):
         if request.GET:
             engine = create_engine(INFORMIX_EARL_TEST)
             connection = engine.connect()
+            #gets student's id, name, and current majors/minors
             sql = '''SELECT IDrec.id, IDrec.fullname, major1.major AS major1code,
                     TRIM(major1.txt) AS major1, major2.major AS major2code, TRIM(major2.txt) AS major2,
                     major3.major AS major3code, TRIM(major3.txt) AS major3, minor1.minor AS minor1code,
@@ -51,9 +54,9 @@ FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
 					LEFT JOIN	minor_table		minor1	ON	PROGrec.minor1	=	minor1.minor
 					LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
 					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
-WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
+WHERE IDrec.id = %d''' % (int(request.GET['student_id'])) #hvae to have ?student_id= in url for now
             student = connection.execute(sql)
-            for thing in student:
+            for thing in student: # set initial data based on student
                 form.fields['student_id'].initial = thing['id']
                 form.fields['name'].initial = thing['fullname']
                 if thing['major2'] == None and thing['major3'] == None:
@@ -87,6 +90,7 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
     c.update(csrf(request))
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
+    #get list of valid advisors for jquery autocomplete
     sql2 = '''SELECT UNIQUE id_rec.id, TRIM(id_rec.firstname) AS firstname, TRIM(id_rec.lastname) AS lastname
             FROM job_rec
             INNER JOIN id_rec ON job_rec.id = id_rec.id
@@ -99,7 +103,7 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
         'advisor_list': advisor_list,
     })
 
-def get_all_students():
+def get_all_students(): #function to get a list of all entries in table for use in jquery autocomplete
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
     sql = '''SELECT id_rec.firstname, id_rec.lastname, cm.student_id
@@ -109,14 +113,15 @@ def get_all_students():
     return connection.execute(sql)
 
 
-def admin(request):
+def admin(request): #the function for the main admin page
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
-    if request.POST:
+    if request.POST: #if the delete button was clicked. remove entry from database
         sql2 = '''DELETE FROM cc_stg_changemajor
                 WHERE changemajor_no = %s''' % (request.POST['record'])
         connection.execute(sql2)
-    sql = '''SELECT cm.*,
+    #get all entries in database along with advisor full name and major/minor full text
+    sql = '''SELECT cm.*, 
                     id_rec.firstname,
                     id_rec.lastname,
                     advisor.firstname AS advisor_first,
@@ -151,7 +156,7 @@ def admin(request):
         'full_student_list': get_all_students(),
     })
 
-def student(request, student_id):
+def student(request, student_id): #admin details page
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
     sql = '''SELECT cm.*,
@@ -172,6 +177,7 @@ def student(request, student_id):
             LEFT JOIN id_rec AS advisor
             ON advisor.id = cm.advisor_id
             WHERE cm.student_id = %s''' % (student_id)
+    #get current majors/minors full text
     sql2 = '''SELECT TRIM(major1.txt) AS major1, TRIM(major2.txt) AS major2, TRIM(major3.txt) AS major3,
                     TRIM(minor1.txt) AS minor1,TRIM(minor2.txt) AS minor2, TRIM(minor3.txt) AS minor3
 FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
@@ -182,6 +188,7 @@ FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
 					LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
 					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
 WHERE IDrec.id = %s''' % (student_id)
+    #get requested majors/minors full text
     sql3 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3,
                 TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
 FROM cc_stg_changemajor
@@ -202,11 +209,11 @@ WHERE cc_stg_changemajor.student_id = %s'''  % (student_id)
         'full_student_list': get_all_students(),
     })
 
-def search(request):
+def search(request): #admin details page access through search bar
     return student(request, request.POST['cid'])
 
 @csrf_exempt
-def set_approved(request):
+def set_approved(request): #for setting entry to be approved
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
     sql = '''UPDATE cc_stg_changemajor

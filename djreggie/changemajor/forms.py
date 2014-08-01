@@ -26,17 +26,20 @@ class ChangeForm(forms.ModelForm):
     
     def clean_advisor(self):
         data = self.cleaned_data['advisor']
-        engine = create_engine(INFORMIX_EARL_TEST)
-        connection = engine.connect()
-        sql = '''SELECT COUNT(*) AS count
-                FROM job_rec
-                INNER JOIN id_rec ON job_rec.id = id_rec.id
-                WHERE hrstat = 'FT'
-                AND TODAY BETWEEN job_rec.beg_date AND NVL(job_rec.end_date, TODAY)
-                AND job_rec.id = %s''' % (data)
-        advisor = connection.execute(sql)
-        if not re.match(r'^(\d{5,7}|)$', data) or not advisor.first()['count']:
-            raise forms.ValidationError('Please enter a valid advisor')
+        #make sure there is something in data so there wont be an error with the sql
+        if data:
+            engine = create_engine(INFORMIX_EARL_TEST)
+            connection = engine.connect()
+            #try to find advisor id in database to see if this id is for a valid advisor
+            sql = '''SELECT COUNT(*) AS count
+                    FROM job_rec
+                    INNER JOIN id_rec ON job_rec.id = id_rec.id
+                    WHERE hrstat = 'FT'
+                    AND TODAY BETWEEN job_rec.beg_date AND NVL(job_rec.end_date, TODAY)
+                    AND job_rec.id = %s''' % (data)
+            advisor = connection.execute(sql)
+            if not re.match(r'^(\d{5,7}|)$', data) or not advisor.first()['count']:
+                raise forms.ValidationError('Please enter a valid advisor')
         return data
 
     #Global options    

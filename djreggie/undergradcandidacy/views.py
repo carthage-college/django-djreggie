@@ -22,9 +22,9 @@ def index(request):
         
         if form.is_valid(): #If the form is valid
             form.save()
+            #email on valid submit
             send_mail("Undergraduate Candidacy Response", "Thank you for submitting the form. Your information is now being reviewed.", 'confirmation.carthage.edu',
             ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
-            #Checking if the email is a carthage email
             
             form = UndergradForm()
             submitted = True
@@ -33,13 +33,14 @@ def index(request):
                 'submitted': submitted,
                 'year_low': year,
                 'year_up': year+1,
-                'valid_class': "Y"
+                'valid_class': "Y" #this is here so there isn't an error.
             })
     else:
         form = UndergradForm()
         if request.GET:
             engine = create_engine(INFORMIX_EARL_TEST)
             connection = engine.connect()
+            #get student's id, name, and majors/minors
             sql = '''SELECT IDrec.id, IDrec.firstname, IDrec.middlename, IDrec.lastname,
                     major1.major AS major1code, major2.major AS major2code,
                     major3.major AS major3code, minor1.minor AS minor1code,
@@ -54,7 +55,7 @@ FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
 WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
             student = connection.execute(sql)
             
-            for thing in student:
+            for thing in student: #set student's initial data
                 form.fields['student_id'].initial = thing['id']
                 form.fields['fname'].initial = thing['firstname']
                 form.fields['mname'].initial = thing['middlename']
@@ -65,7 +66,7 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
                 form.fields['minor1'].initial = thing['minor1code']
                 form.fields['minor2'].initial = thing['minor2code']
                 form.fields['minor3'].initial = thing['minor3code']
-                
+            #check if student is a junior/senior or not
             sql2 = '''SELECT
                         CASE prog_enr_rec.cl
                             WHEN 'JR' THEN 'Y'
@@ -90,7 +91,7 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
 def submitted(request):
     return render(request, 'undergradcandidacy/form.html')
 
-def contact(request):
+def contact(request): #gets student's contact info from form through ajax call
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
     sql = '''SELECT *
@@ -101,11 +102,11 @@ def contact(request):
     contactinfo = connection.execute(sql)
     data = ''
     for thing in contactinfo:
-        for key in contactinfo.keys():
+        for key in contactinfo.keys(): #we order the data this way so we can put it into a dict when it's recieved. HttpResponse only sends strings
             data = data + key + ':' + str(thing[key]) + ','
     return HttpResponse(data)
 
-def get_all_students():
+def get_all_students(): #get all entries in table for use by jquery autocomplete
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
     sql = '''SELECT first_name, last_name, middle_initial, student_id
@@ -113,13 +114,14 @@ def get_all_students():
     return connection.execute(sql)
 
 
-def admin(request):
+def admin(request): #main admin page
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
-    if request.POST:
+    if request.POST: #if delete button was clicked. removes entry from database
         sql2 = '''DELETE FROM cc_stg_undergrad_candidacy
             WHERE undergradcandidacy_no = %s''' % (request.POST['record'])
         connection.execute(sql2)
+    #gets all entries along with majors/minors full text 
     sql = '''SELECT uc.*,
                     TRIM(majors1.txt) AS major1_txt,
                     TRIM(majors2.txt) AS major2_txt,
@@ -147,9 +149,10 @@ def admin(request):
         'full_student_list': get_all_students(),
     })
 
-def student(request, student_id):
+def student(request, student_id): #admin details page
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
+    #gets entry's info
     sql = '''SELECT uc.*,
                     id_rec.addr_line1,
                     id_rec.addr_line2,
@@ -163,6 +166,7 @@ def student(request, student_id):
             ON uc.student_id = id_rec.id
             WHERE uc.student_id = %s''' % (student_id)
     student = connection.execute(sql)
+    #gets majors/minors full text
     sql2 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3, TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
             FROM cc_stg_undergrad_candidacy
             LEFT JOIN major_table major1 ON cc_stg_undergrad_candidacy.major1 = major1.major
@@ -179,12 +183,12 @@ def student(request, student_id):
         'full_student_list': get_all_students(),
     })
 
-def search(request):
+def search(request): #admin details page accessed through search bar
     return student(request, request.POST['cid'])
     
     
 @csrf_exempt
-def set_approved(request):
+def set_approved(request): #for setting the approved column in database for entry
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
     sql = '''UPDATE cc_stg_undergrad_candidacy

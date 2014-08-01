@@ -115,7 +115,7 @@ class UndergradModel(models.Model):
     def __unicode__(self):
         return '%s, %s %d' % (self.lname, self.fname, self.student_id)
     
-    def save(self):
+    def save(self): #put data into staging tables
         engine = create_engine(INFORMIX_EARL_TEST)
         connection = engine.connect()
         sql = '''INSERT INTO cc_stg_undergrad_candidacy (student_id, first_name, middle_initial, last_name, first_name_pronounce, last_name_pronounce, major1, major2, major3, minor1, minor2, minor3, plan_to_walk, grad_yr, grad_sess, prog, aa, aa_value, address, city, state, zip, datecreated)

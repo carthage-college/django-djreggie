@@ -40,7 +40,7 @@ class ModelForm(forms.ModelForm):
 
 
 class Parent(forms.Form):
-    
+    #have to create fields here instead of in models so we can use a formset
     form = forms.IntegerField(widget=forms.HiddenInput(),required=False)
     CHOICES = (
         ("ACADEMIC", 'Academic Records'),
@@ -72,6 +72,7 @@ class Parent(forms.Form):
     def save(self):
         engine = create_engine(INFORMIX_EARL_TEST)
         connection = engine.connect()
+        #put data in staging tables
         sql = '''INSERT INTO cc_stg_ferpafamily_rec (ferpafamily_no, name, relation, phone, email, allow)
                 VALUES (%(form)d, "%(name)s", "%(relation)s", "%(phone)s", "%(email)s", "%(share)s")''' % (self.cleaned_data)
         connection.execute(sql)
