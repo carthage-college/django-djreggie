@@ -18,7 +18,7 @@ def create(request):
     if request.POST:    #If we do a POST        
         #(a, created) = ConsentModel.objects.get_or_create(Carthage_ID_Number=request.POST['Carthage_ID_Number'])    
         form = ModelForm(request.POST)#Scrape the data from the form and save it in a variable
-        form.fields['student_id'].widget = forms.HiddenInput()
+        form.fields['student_id'].widget = forms.HiddenInput() #This makes these fields hidden on the actual form
         form.fields['full_name'].widget = forms.HiddenInput()
         
         #Scrape the data from the form and save it in a variable
@@ -45,20 +45,22 @@ def create(request):
     else: #This is for the first time you go to the page. It sets it all up
         form = ModelForm()
         
-        if request.GET:
+        if request.GET: #If we do a GET
             engine = create_engine(INFORMIX_EARL_TEST)
-            connection = engine.connect()
+            connection = engine.connect() #Set up to make a sql call where we get fields based on the ID in the url
             sql = 'SELECT id_rec.id, id_rec.fullname FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_id']))
             student = connection.execute(sql)
-            for thing in student:
+            for thing in student: #Put in database values for the hidden fields
                 form.fields['student_id'].initial = thing['id']
                 form.fields['full_name'].initial = thing['fullname']
+            #getting info from database if form has already been submitted by student
             sql2 = '''SELECT ff_rec.*
                     FROM cc_stg_ferpafamily_rec AS ff_rec
                     INNER JOIN cc_stg_ferpafamily AS ff
                     ON ff_rec.ferpafamily_no = ff.ferpafamily_no
                     WHERE ff.student_id = %s''' % (request.GET['student_id'])
             family = connection.execute(sql2)
+            #making dict of data for setting formset's initial data
             data = {'Parent_or_Third_Party_Name-TOTAL_FORMS': '1',
                     'Parent_or_Third_Party_Name-INITIAL_FORMS': '0',
                     'Parent_or_Third_Party_Name-MAX_NUM_FORMS': ''}
@@ -89,7 +91,7 @@ def create(request):
 def submitted(request):
     return render(request, 'consentfam/form.html')
 
-def get_all_students():
+def get_all_students(): #gets all entries in table for use by jquery autocomplete
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
     sql = '''SELECT id_rec.firstname, id_rec.lastname, cf.student_id
@@ -99,16 +101,17 @@ def get_all_students():
     return connection.execute(sql)
 
 
-def admin(request):
+def admin(request): #main admin page
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
-    if  request.POST:
+    if  request.POST: #if delete button was clicked. removes entry from database and all other entries associated with it
         sql2 = '''DELETE FROM cc_stg_ferpafamily_rec
                 WHERE ferpafamily_no = %s''' % (request.POST['record'])
         connection.execute(sql2)
         sql3 = '''DELETE FROM cc_stg_ferpafamily
                 WHERE ferpafamily_no = %s''' % (request.POST['record'])
         connection.execute(sql3)
+    #get all entries from database
     sql = '''SELECT ff.*, id_rec.firstname, id_rec.lastname
             FROM cc_stg_ferpafamily AS ff
             INNER JOIN id_rec
@@ -120,9 +123,10 @@ def admin(request):
         'full_student_list': get_all_students(),
     })
 
-def student(request, student_id):
+def student(request, student_id): #admin details page
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
+    #get entry's info
     sql = '''SELECT ff.*,
                     id_rec.firstname,
                     id_rec.lastname,
@@ -150,7 +154,7 @@ def student(request, student_id):
         'full_student_list': get_all_students(),
     })
 
-def search(request):
+def search(request): #admin details page accessed through search bar
     return student(request, request.POST['cid'])
 
 @csrf_exempt
