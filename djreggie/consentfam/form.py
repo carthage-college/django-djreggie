@@ -9,23 +9,16 @@ import re
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
 
-def fff (value):
-    if value == "wrong":
-        raise ValidationError(message = 'Must choose a relation', code="a")
-        
-def notnull (value):
-    if value == None:
-        raise ValidationError(message = 'Must choose an option', code='a')
-        
 # Create your forms here.
 class ModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ModelForm, self).__init__(*args, **kwargs)
-            
+    
+    #clean functions are our validation functions
     def clean_student_id(self):
-        data = self.cleaned_data['student_id']
-        if not re.match(r'^(\d{5,7})$', data):
-            raise forms.ValidationError('Must be 5-7 digits long')
+        data = self.cleaned_data['student_id'] #This is how we get the field we want to validate
+        if not re.match(r'^(\d{5,7})$', data): #This checks the data against a regex function
+            raise forms.ValidationError('Must be 5-7 digits long') #This is what will be displayed if there is an error in the code.
         return data
     
     def clean_phone(self):
@@ -39,20 +32,19 @@ class ModelForm(forms.ModelForm):
         model = ConsentModel
 
 
-class Parent(forms.Form):
-    
-    form = forms.IntegerField(widget=forms.HiddenInput(),required=False)
-    CHOICES = (
+class Parent(forms.Form):    
+    form = forms.IntegerField(widget=forms.HiddenInput(),required=False) #this is the foreign key
+    CHOICES = ( #this sets up our choices when it comes to what we'd like to share
         ("ACADEMIC", 'Academic Records'),
         ("FINANCIAL", 'Financial Records'),
         ("BOTH", 'I would like to share both'),
         ("NEITHER", 'I would like to share neither'),
     )
-    share = forms.ChoiceField(choices=CHOICES)    
+    share = forms.ChoiceField(choices=CHOICES) #this is the field that uses the choices above
     name = forms.CharField(max_length=100)
     phone = forms.CharField(max_length=16)
     email = forms.EmailField()
-    CHOICES2 = (    
+    CHOICES2 = (    #more choices for another field
     ("MOM", 'Mother'),
     ("DAD", 'Father'),
     ("GRAN", 'Grandparent'),
@@ -66,10 +58,10 @@ class Parent(forms.Form):
     ("STEP", 'Stepparent'),
     )
     relation = forms.ChoiceField(choices=CHOICES2,
-                                widget=forms.RadioSelect(),
+                                widget=forms.RadioSelect(), #We've given this field a widget that will change its appearance on the page
                                 label='Relation')
     
-    def save(self):
+    def save(self): #This is how we "save" data to the database
         engine = create_engine(INFORMIX_EARL_TEST)
         connection = engine.connect()
         sql = '''INSERT INTO cc_stg_ferpafamily_rec (ferpafamily_no, name, relation, phone, email, allow)
