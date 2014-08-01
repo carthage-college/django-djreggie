@@ -144,7 +144,7 @@ def admin(request):
             ON cm.minor2 = minors2.minor
             LEFT JOIN minor_table AS minors3
             ON cm.minor3 = minors3.minor
-            ORDER BY cm.datecreated DESC'''
+            ORDER BY cm.approved, cm.datecreated DESC'''
     student = connection.execute(sql)
     return render(request, 'changemajor/home.html', {
         'student': student,

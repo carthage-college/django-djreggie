@@ -140,7 +140,7 @@ def admin(request):
             ON uc.minor2 = minors2.minor
             LEFT JOIN minor_table AS minors3
             ON uc.minor3 = minors3.minor
-            ORDER BY uc.datecreated DESC'''
+            ORDER BY uc.approved, uc.datecreated DESC'''
     student = connection.execute(sql)
     return render(request, 'undergradcandidacy/home.html', {
         'student': student,
