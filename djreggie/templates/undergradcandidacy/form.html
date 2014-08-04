@@ -54,6 +54,7 @@
 {% endblock %}
 {% block javascript %}
 <script>
+    $(".hideme").hide();
     $("img.hidden").hide();
     function create_validator(regex) {
         return function (field) {
@@ -62,7 +63,7 @@
         }
     }
     $("[name = will_teach]").change(function () {
-        if($("#id_will_teach") == "Y")
+        if($("[name = will_teach]").val() == "Y")
         {
             $(".hideme").show();
         }
@@ -246,8 +247,8 @@
             </li>
             <hr>
             <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minors</label></h3>
-                    {{ form.minor1 }}
-                    {{ form.minor1.errors }}
+                {{ form.minor1 }}
+                {{ form.minor1.errors }}
             </li>                
             <li class="ctrlHolder" id="minor2"><h3><label for="id_minor2"></label></h3>
                 {{ form.minor2 }}
@@ -293,13 +294,13 @@
                     {{form.will_teach.errors}}
                 </div>
             </li>            
-            <li class="ctrlHolder hideme" style="display: none;"><h3><label for="id_teach_year">In which year will you be teaching?</label></h3>
+            <li class="ctrlHolder hideme"><h3><label for="id_teach_year">In which year will you be teaching?</label></h3>
                 <div class="required">
-                    {{form.teach_year}}
-                    {{form.teach_year.errors}}
+                    {{form.year_teach}}
+                    {{form.year_teach.errors}}
                 </div>
             </li>         
-            <li class="ctrlHolder hideme" style="display: none;"><h3><label for="id_teach_year">In which term will you be teaching?</label></h3>
+            <li class="ctrlHolder hideme"><h3><label for="id_teach_year">In which term will you be teaching?</label></h3>
                 <div class="required">
                     {{form.term}}
                     {{form.term.errors}}

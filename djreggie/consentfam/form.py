@@ -21,12 +21,6 @@ class ModelForm(forms.ModelForm):
             raise forms.ValidationError('Must be 5-7 digits long') #This is what will be displayed if there is an error in the code.
         return data
     
-    def clean_phone(self):
-        data = self.cleaned_data['phone']
-        if not re.match(r'^((?:1?[\s\-\.\/]?\(?(?:\d{3})\)?)?[\s\-\.\/]?\d{3}[\s\-\.\/]?\d{4}(?:\s?(?:x|ext|\.)?\s?\d{4})?)$', data):
-            raise forms.ValidationError('Please enter a valid phone number')
-        return data
-    
     
     class Meta:
         model = ConsentModel

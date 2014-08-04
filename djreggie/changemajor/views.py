@@ -220,4 +220,6 @@ def set_approved(request): #for setting entry to be approved
             SET approved="%(approved)s", datemodified=CURRENT
             WHERE changemajor_no = %(id)s''' % (request.POST)
     connection.execute(sql)
+    send_mail("Change Major Approval", "Congratulations! Your request to change your major has been approved",
+                'confirmation.carthage.edu', ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
     return HttpResponse('update successful')

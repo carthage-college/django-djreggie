@@ -8,8 +8,6 @@ class ConsentModel(models.Model):
     full_name = models.CharField(max_length=100)
     student_id = models.CharField(max_length=7)
     Date = models.DateField(auto_now_add=True) #Auto now add makes the date equal the time the form was submitted
-    phone = models.CharField(max_length=14)
-    email = models.EmailField()
     
     def save(self): #this is for putting data in the database
         engine = create_engine(INFORMIX_EARL_TEST)

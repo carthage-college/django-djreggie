@@ -69,6 +69,4 @@ class UndergradForm(forms.ModelForm):
         widgets = { #When we want things displayed differently than their default
             'student_id': forms.HiddenInput(),
             'will_teach': forms.RadioSelect(),
-            'year_teach': forms.RadioSelect(),
-            'term':       forms.RadioSelect(),
         }
