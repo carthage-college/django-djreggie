@@ -61,6 +61,17 @@
             return patt.test(field.val());
         }
     }
+    $("[name = will_teach]").change(function () {
+        if($("#id_will_teach") == "Y")
+        {
+            $(".hideme").show();
+        }
+        else
+        {
+            $(".hideme").hide();
+        }
+    })
+    
     var validate_id = create_validator('^(\\d{5,7})$');
     var validate_name = create_validator('^([a-zA-Z]+)$');
     var validate_mname = create_validator('^([a-zA-Z]+|[a-zA-Z]\\.?)$');
@@ -199,13 +210,13 @@
                     <img class='hidden' id='lname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
-            <li class="ctrlHolder"><h3><label for="id_fnamepro">Tell us how to pronounce your first name</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_fnamepro">Tell us how to pronounce your first name (phonetically)</label></h3>
                 <div class='required'>
                     {{form.fnamepro}}
                     {{form.fnamepro.errors}}
                 </div>
             </li>
-            <li class="ctrlHolder"><h3><label for="id_lnamepro">Tell us how to pronounce your last name</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_lnamepro">Tell us how to pronounce your last name (phonetically)</label></h3>
                 <div class='required'>
                     {{form.lnamepro}}
                     {{form.lnamepro.errors}}
@@ -276,10 +287,22 @@
                     {{form.grad_session.errors}}
                 </div>
             </li>
-            <li class="ctrlHolder"><h3><label for="id_will_teach">Will you be teaching?</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_will_teach">Will you be student teaching?</label></h3>
                 <div class="required">
                     {{form.will_teach}}
-                    {{form.prog.errors}}
+                    {{form.will_teach.errors}}
+                </div>
+            </li>            
+            <li class="ctrlHolder hideme" style="display: none;"><h3><label for="id_teach_year">In which year will you be teaching?</label></h3>
+                <div class="required">
+                    {{form.teach_year}}
+                    {{form.teach_year.errors}}
+                </div>
+            </li>         
+            <li class="ctrlHolder hideme" style="display: none;"><h3><label for="id_teach_year">In which term will you be teaching?</label></h3>
+                <div class="required">
+                    {{form.term}}
+                    {{form.term.errors}}
                 </div>
             </li>
             <li>Note: Carthage allows you to participate in the May {{ year_up }} graduation ceremony if you can complete
@@ -309,7 +332,7 @@
         </ol>
     </fieldset>    
     <fieldset class="blockLabels">
-        <legend>Location information</legend>
+        <legend>Diploma Destination</legend>
         <ol>
             <li>Where should we send your diploma?
             Please list an address that will remain

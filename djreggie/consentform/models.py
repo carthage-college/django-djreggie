@@ -14,7 +14,7 @@ class Form(models.Model):
     consent = models.CharField(max_length = 9) #This renders as a select box
     
     def save(self):
-        engine = create_engine(INFORMIX_EARL_TEST)
+        engine = create_engine(INFORMIX_EARL_TEST) #This is how we save to the database
         connection = engine.connect()
         sql = '''INSERT INTO cc_stg_ferpadirectory (student_id, consent, datecreated)
         VALUES (%(student_ID)s, "%(consent)s", CURRENT)''' % (self.__dict__)

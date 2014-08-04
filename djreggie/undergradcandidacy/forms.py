@@ -14,10 +14,7 @@ class UndergradForm(forms.ModelForm):
     #This is needed if you want to add error messages, labels or additional validation for fields
     def __init__(self, *args, **kwargs):
         super(UndergradForm, self).__init__(*args, **kwargs)
-        
-        #Setting settings for select boxes
-        #self.fields['finish_requirements_by'].choices = self.fields['finish_requirements_by'].choices[1:]
-        #self.fields['when_teach'].choices = self.fields['when_teach'].choices[1:]        
+        self.fields["will_teach"].choices = self.fields["will_teach"].choices[1:]
         
     def clean_fname(self):
         data = self.cleaned_data['fname']
@@ -71,4 +68,7 @@ class UndergradForm(forms.ModelForm):
         model = UndergradModel #Use all of the fields from 'UndergradForm' in this form class
         widgets = { #When we want things displayed differently than their default
             'student_id': forms.HiddenInput(),
+            'will_teach': forms.RadioSelect(),
+            'year_teach': forms.RadioSelect(),
+            'term':       forms.RadioSelect(),
         }

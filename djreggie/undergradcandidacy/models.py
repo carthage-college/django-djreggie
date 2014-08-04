@@ -85,7 +85,20 @@ class UndergradModel(models.Model):
                                     choices=SESSION_CHOICES,
                                     verbose_name='Session Graduating')
     
-    will_teach = models.CharField(max_length=4)
+    YESNOCHOICE = (
+        ('Y', 'Yes'),
+        ('N', 'No')
+    )
+    will_teach = models.CharField(max_length=1, choices=YESNOCHOICE)
+    
+    year_teach = models.CharField(null=True, blank=True, max_length=4, choices=YEAR_CHOICES)
+    
+    TERMCHOICE = (
+        ('SPR', 'Spring'),
+        ('FAL', 'Fall')
+    )    
+    term = models.CharField(null=True, blank=True, max_length=3, choices=TERMCHOICE)
+    
     sql4 = '''SELECT aa, TRIM(txt) AS txt
             FROM aa_table
             WHERE aa IN ("BILL","EML2","MAIL","PERM","PGDN")'''

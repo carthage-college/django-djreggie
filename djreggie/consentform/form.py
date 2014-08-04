@@ -14,19 +14,14 @@ class ModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ModelForm, self).__init__(*args, **kwargs)
         
-    #def clean_name(self):
-    #    data = self.cleaned_data['name']
-    #    if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
-    #        raise forms.ValidationError('Invalid name')
-    #    return data
-    
+    #all of our clean functions are used to validate data in fields
     def clean_student_ID(self):
-        data = self.cleaned_data['student_ID']
-        if not re.match(r'^(\d{5,7})$', data):
-            raise forms.ValidationError('Must be 5-7 digits long')
+        data = self.cleaned_data['student_ID'] #this is how we get data that's been submitted
+        if not re.match(r'^(\d{5,7})$', data): #then we compare the data to some regex
+            raise forms.ValidationError('Must be 5-7 digits long') #If the data is bad, we display this message
         return data
     
-    CHOICES = (
+    CHOICES = ( #Here we're adding some choices for a field
         ("CONSENT", 'I authorize and consent to the release of my directory information'),
         ("NOCONSENT", 'I hereby request that Carthage College not release my directory information.'),
     )
