@@ -99,12 +99,8 @@ class UndergradModel(models.Model):
     )    
     term = models.CharField(null=True, blank=True, max_length=3, choices=TERMCHOICE)
     
-    sql4 = '''SELECT aa, TRIM(txt) AS txt
-            FROM aa_table
-            WHERE aa IN ("BILL","EML2","MAIL","PERM","PGDN")'''
-            
-    contact_types = connection.execute(sql4)
-    CONTACT_CHOICES = tuple((row['aa'], row['txt']) for row in contact_types)
+
+    CONTACT_CHOICES = (('PHN', 'Phone'), ('EML', 'Email'))
     
     best_contact = models.CharField(max_length=4,
                                     choices=CONTACT_CHOICES)
