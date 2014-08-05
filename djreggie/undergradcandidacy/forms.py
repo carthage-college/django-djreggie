@@ -62,6 +62,14 @@ class UndergradForm(forms.ModelForm):
             raise forms.ValidationError('Not a valid 5-7 digit Carthage id')
         return data
     
+    def clean(self):
+        cleaned_data = super(UndergradForm, self).clean()
+        if cleaned_data.get('will_teach') == 'Y': # if said yes to will teach have year_teach and term be required
+            if not cleaned_data.get('year_teach'):
+                self.add_error('year_teach', 'This field is required')
+            if not cleaned_data.get('term'):
+                self.add_error('term', 'This field is required')
+        return cleaned_data
     
     #Global options for the form    
     class Meta:

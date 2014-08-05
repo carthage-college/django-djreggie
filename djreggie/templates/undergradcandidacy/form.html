@@ -63,7 +63,7 @@
         }
     }
     $("[name = will_teach]").change(function () {
-        if($("[name = will_teach]").val() == "Y")
+        if($("[name = will_teach]:checked").val() == "Y")
         {
             $(".hideme").show();
         }
