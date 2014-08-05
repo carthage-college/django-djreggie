@@ -41,6 +41,53 @@
             }
         }
     });
+    
+    $('.form').submit(function(){
+        //if majors aren't ordered right ie. major2 have a value and major1 doesn't, then reoreder the data
+        if ($("#id_major1").val() == '')
+        {
+            if ($("#id_major2").val() != '')
+            {
+                $("#id_major1").val($("#id_major2").val());
+                $("#id_major2").val("");
+            }
+            else if ($("#id_major3").val() != '')
+            {
+                $("#id_major1").val($("#id_major3").val());
+                $("#id_major3").val("");
+            }
+        }
+        if ($("#id_major2").val() == '')
+        {
+            if ($("#id_major3").val() != '')
+            {
+                $("#id_major2").val($("#id_major3").val());
+                $("#id_major3").val("");
+            }
+        }
+        //do the same thing for minors
+        if ($("#id_minor1").val() == '')
+        {
+            if ($("#id_minor2").val() != '')
+            {
+                $("#id_minor1").val($("#id_minor2").val());
+                $("#id_minor2").val("");
+            }
+            else if ($("#id_minor3").val() != '')
+            {
+                $("#id_minor1").val($("#id_minor3").val());
+                $("#id_minor3").val("");
+            }
+        }
+        if ($("#id_minor2").val() == '')
+        {
+            if ($("#id_minor3").val() != '')
+            {
+                $("#id_minor2").val($("#id_minor3").val());
+                $("#id_minor3").val("");
+            }
+        }
+    });
 </script>
 {% endblock %}
 {% block content %}
