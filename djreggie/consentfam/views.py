@@ -177,3 +177,8 @@ def family_set_approved(request):
             WHERE ferpafamilyrec_no = %(id)s''' % (request.POST)
     connection.execute(sql)
     return HttpResponse('update successful')
+
+def advisor_search(request):
+    return render(request, 'consentfam/advisorsearch.html', {
+        'full_student_list': get_all_students(),
+    })
