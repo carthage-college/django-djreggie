@@ -224,24 +224,15 @@ def set_approved(request): #for setting entry to be approved
             WHERE changemajor_no = %s''' % (request.POST['id'])
     result = connection.execute(sql2)
     student = result.first()
-    if not student['advisor_id']: #if advisor is blank then don't set advisor id in prog_enr_rec
-        sql3 = '''UPDATE prog_enr_rec
-            SET major1 = "%(major1)s",
-                major2 = "%(major2)s",
-                major3 = "%(major3)s",
-                minor1 = "%(minor1)s",
-                minor2 = "%(minor2)s",
-                minor3 = "%(minor3)s"
-            WHERE id = %(student_id)s''' % (student)
-    else:
-        sql3 = '''UPDATE prog_enr_rec
-                SET major1 = "%(major1)s",
-                    major2 = "%(major2)s",
-                    major3 = "%(major3)s",
-                    minor1 = "%(minor1)s",
-                    minor2 = "%(minor2)s",
-                    minor3 = "%(minor3)s",
-                    adv_id = %(advisor_id)s
-                WHERE id = %(student_id)s''' % (student)
+    sql3 = '''UPDATE prog_enr_rec
+        SET major1 = "%(major1)s",
+            major2 = "%(major2)s",
+            major3 = "%(major3)s",
+            minor1 = "%(minor1)s",
+            minor2 = "%(minor2)s",
+            minor3 = "%(minor3)s"''' % (student)
+    if student['advisor_id']: #if advisor id exists then update that field in the database otherwise don't
+        sql3 += ', adv_id = %s' % (student['advisor_id'])
+    sql3 += 'WHERE id = %s' % (student['student_id'])
     connection.execute(sql3)
     return HttpResponse('update successful')
