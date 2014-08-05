@@ -62,6 +62,16 @@
             return patt.test(field.val());
         }
     }
+    $(document).ready(function(){
+        if($("[name = will_teach]:checked").val() == "Y")
+            {
+                $(".hideme").show();
+            }
+            else
+            {
+                $(".hideme").hide();
+            }
+    });
     $("[name = will_teach]").change(function () {
         if($("[name = will_teach]:checked").val() == "Y")
         {

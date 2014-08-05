@@ -12,6 +12,7 @@ from djreggie.undergradcandidacy.forms import UndergradForm
 
 # Create your views here.
 def index(request):
+    valid_class = 'Y'
     year = date.today().year
     if date.today().month <= 5:
         year = year - 1
