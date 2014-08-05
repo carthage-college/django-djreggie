@@ -129,11 +129,19 @@
         {
             $(".phonec").show();
             $(".emailc").hide();
+            validators['id_best_contact_value'] = validate_phone;
         }
         else if ($("#id_best_contact").val() == "EML")
         {
             $(".phonec").hide();
             $(".emailc").show();
+            validators['id_best_contact_value'] = validate_email;
+        }
+        else
+        {
+            $(".phonec").hide();
+            $(".emailc").hide();
+            delete(validators['id_best_contact_value']);
         }
         $.ajax({url: "{% url 'contact' %}",
             data: {'id': $('#id_student_id').val(), 'aa': $('#id_best_contact :selected').val()},
@@ -189,6 +197,52 @@
                         break;
                     }
                 }
+            }
+        }
+    });
+    $('.form').submit(function(){
+        //if majors aren't ordered right ie. major2 have a value and major1 doesn't, then reoreder the data
+        if ($("#id_major1").val() == '')
+        {
+            if ($("#id_major2").val() != '')
+            {
+                $("#id_major1").val($("#id_major2").val());
+                $("#id_major2").val("");
+            }
+            else if ($("#id_major3").val() != '')
+            {
+                $("#id_major1").val($("#id_major3").val());
+                $("#id_major3").val("");
+            }
+        }
+        if ($("#id_major2").val() == '')
+        {
+            if ($("#id_major3").val() != '')
+            {
+                $("#id_major2").val($("#id_major3").val());
+                $("#id_major3").val("");
+            }
+        }
+        //do the same thing for minors
+        if ($("#id_minor1").val() == '')
+        {
+            if ($("#id_minor2").val() != '')
+            {
+                $("#id_minor1").val($("#id_minor2").val());
+                $("#id_minor2").val("");
+            }
+            else if ($("#id_minor3").val() != '')
+            {
+                $("#id_minor1").val($("#id_minor3").val());
+                $("#id_minor3").val("");
+            }
+        }
+        if ($("#id_minor2").val() == '')
+        {
+            if ($("#id_minor3").val() != '')
+            {
+                $("#id_minor2").val($("#id_minor3").val());
+                $("#id_minor3").val("");
             }
         }
     });
@@ -351,8 +405,8 @@
                 <div class='required'>
                     {{form.best_contact_value}}
                     {{form.best_contact_value.errors}}
-                    <!--<img class='hidden' id='best_contact_value_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='best_contact_value_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>-->
+                    <img class='hidden' id='best_contact_value_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='best_contact_value_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
                 </div>
             </li>
             <li class="ctrlHolder emailc"><h3><label for="id_best_contact_value">Email</label></h3>
