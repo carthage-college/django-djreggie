@@ -203,6 +203,11 @@
                         <i class="fa fa-dashboard fa-fw"></i> Dashboard
                     </a>
                 </li>
+                <li>
+                    <a href="{% url 'advisorsearch' %}">
+                        <i class="fa fa-search fa-fw"></i> Advisor Search
+                    </a>
+                </li>
                 {% if user.is_superuser %}
                 <li>
                     <a href="/campus-life/medical/forms/admin/">

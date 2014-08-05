@@ -23,7 +23,7 @@ def index(request):
         if form.is_valid(): #If the form is valid
             form.save()
             #email on valid submit
-            send_mail("Undergraduate Candidacy Response", "Thank you for submitting the form. Your information is now being reviewed.", 'confirmation.carthage.edu',
+            send_mail("Undergraduate Candidacy Response", "Thank you for submitting your Candidacy Form for potential graduation this school year.  Your submission has been received and is pending acceptance.  Please keep an eye on your Carthage email for further correspondence regarding your eligibility for graduation.", 'confirmation.carthage.edu',
             ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
             
             form = UndergradForm()

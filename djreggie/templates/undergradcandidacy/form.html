@@ -55,6 +55,8 @@
 {% block javascript %}
 <script>
     $(".hideme").hide();
+    $(".phonec").hide();
+    $(".emailc").hide();
     $("img.hidden").hide();
     function create_validator(regex) {
         return function (field) {
@@ -113,6 +115,16 @@
             ajaxStart: function() { $body.addClass("loading");    },
             ajaxStop: function() { $body.removeClass("loading"); }    
         });
+        if ($("#id_best_contact").val() == "PHN")
+        {
+            $(".phonec").show();
+            $(".emailc").hide();
+        }
+        else if ($("#id_best_contact").val() == "EML")
+        {
+            $(".phonec").hide();
+            $(".emailc").show();
+        }
         $.ajax({url: "{% url 'contact' %}",
             data: {'id': $('#id_student_id').val(), 'aa': $('#id_best_contact :selected').val()},
             success: function(data){
@@ -317,7 +329,7 @@
     <fieldset class="blockLabels">
         <legend>Contact Information</legend>
         <ol>
-            <li class="ctrlHolder"><h3><label for="id_best_contact">Best type of address to reach you at</label></h3>
+            <li class="ctrlHolder"><h3><label for="id_best_contact">Best way to reach you</label></h3>
                 <div class='required'>
                     {{form.best_contact}}
                     {{form.best_contact.errors}}
@@ -325,13 +337,22 @@
                     <img class='hidden' id='best_contact_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>-->
                 </div>
             </li>
-            <li class="ctrlHolder"><h3><label for="id_best_contact_value">Address</label></h3>
+            <li class="ctrlHolder phonec"><h3><label for="id_best_contact_value">Phone Number</label></h3>
                 <div class='required'>
                     {{form.best_contact_value}}
                     {{form.best_contact_value.errors}}
                     <!--<img class='hidden' id='best_contact_value_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
                     <img class='hidden' id='best_contact_value_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>-->
                 </div>
+            </li>
+            <li class="ctrlHolder emailc"><h3><label for="id_best_contact_value">Email</label></h3>
+                <div class='required'>
+                    {{form.best_contact_value}}
+                    {{form.best_contact_value.errors}}
+                    <!--<img class='hidden' id='best_contact_value_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
+                    <img class='hidden' id='best_contact_value_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>-->
+                </div>
+            </li>
         </ol>
     </fieldset>    
     <fieldset class="blockLabels">
