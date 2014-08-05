@@ -22,8 +22,8 @@
 <script>
     var list = new Array();
     {% for advisor in advisor_list %}
-        list.push({label: "{{advisor.firstname}} {{advisor.lastname}}",
-                    value: {{advisor.id}}})
+        list.push({label: "{{advisor.lastname}}, {{advisor.firstname}}",
+                    value: "{{advisor.lastname}}, {{advisor.firstname}}"})
     {% endfor %}
     $('#id_advisor').autocomplete({source: list});
     $('#id_advisor').autocomplete('enable');
@@ -45,6 +45,9 @@
 {% endblock %}
 {% block content %}
 {{ form.non_field_errors }}
+{% if submitted %}
+<h3>Your form has been submitted</h3>
+{% endif %}
 <form action='' method='post' class = "form">{% csrf_token %}
     {{ mmformset.management_form }}
     {% for field in form.hidden_fields %}

@@ -16,25 +16,24 @@ def create(request):
         form = ChangeForm(request.POST) #Scrape the data from the form and save it in a variable
         
         if form.is_valid(): #If the form is valid
-            if form.data['advisor'] != '': #if they put in an new advisor
+            if form.cleaned_data['advisor'] != '': #if they put in an new advisor
                 engine = create_engine(INFORMIX_EARL_TEST)
                 connection = engine.connect()
                 #get new advisor's email
                 advisor_sql = '''SELECT TRIM(aa_rec.line1) AS email
                                 FROM aa_rec
-                                WHERE aa_rec.id = %s''' % (form.data['advisor'])
+                                WHERE id = %s''' % (form.cleaned_data['advisor'])
                 advisor = connection.execute(advisor_sql)
                 advisor_email = advisor.first()['email']
                 connection.close()
                 #email new advisor
                 send_mail("You can't replace me, I'm the advisor!", "I'm the captai- er, advisor now", 'confirmation.carthage.edu',
                     ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
-            form_instance = form.save()        #Save the form data to the datbase table            
+            form.save()        #Save the form data to the datbase table            
             form = ChangeForm()
-            submitted = True
             return render(request, 'changemajor/form.html', {
                 'form': form, 
-                'submitted': submitted
+                'submitted': True
             })#This is the URL where users are redirected after submitting the form
     else: #This is for the first time you go to the page. It sets it all up
         form = ChangeForm()
@@ -78,16 +77,12 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id'])) #hvae to have ?student
                 form.fields['minor2'].initial = thing['minor2code']
                 form.fields['minor3'].initial = thing['minor3code']
             connection.close()
-        form.fields['student_id'].widget = forms.HiddenInput()
-        form.fields['name'].widget = forms.HiddenInput()
-        form.fields['majorlist'].widget = forms.HiddenInput()
-        form.fields['minorlist'].widget = forms.HiddenInput()
+        
 
-    # For CSRF protection
-    # See http://docs.djangoproject.com/en/dev/ref/contrib/csrf/ 
-    c = {'form': form,
-        }
-    c.update(csrf(request))
+    form.fields['student_id'].widget = forms.HiddenInput()
+    form.fields['name'].widget = forms.HiddenInput()
+    form.fields['majorlist'].widget = forms.HiddenInput()
+    form.fields['minorlist'].widget = forms.HiddenInput()
     engine = create_engine(INFORMIX_EARL_TEST)
     connection = engine.connect()
     #get list of valid advisors for jquery autocomplete
@@ -98,9 +93,11 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id'])) #hvae to have ?student
             AND TODAY BETWEEN job_rec.beg_date AND NVL(job_rec.end_date, TODAY)
             ORDER BY lastname, firstname'''
     advisor_list = connection.execute(sql2)
+    
     return render(request, 'changemajor/form.html', {
         'form': form,
         'advisor_list': advisor_list,
+        'submitted': False,
     })
 
 def get_all_students(): #function to get a list of all entries in table for use in jquery autocomplete
@@ -222,4 +219,29 @@ def set_approved(request): #for setting entry to be approved
     connection.execute(sql)
     send_mail("Change Major Approval", "Congratulations! Your request to change your major has been approved",
                 'confirmation.carthage.edu', ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
+    sql2 = '''SELECT *
+            FROM cc_stg_changemajor
+            WHERE changemajor_no = %s''' % (request.POST['id'])
+    result = connection.execute(sql2)
+    student = result.first()
+    if not student['advisor_id']: #if advisor is blank then don't set advisor id in prog_enr_rec
+        sql3 = '''UPDATE prog_enr_rec
+            SET major1 = "%(major1)s",
+                major2 = "%(major2)s",
+                major3 = "%(major3)s",
+                minor1 = "%(minor1)s",
+                minor2 = "%(minor2)s",
+                minor3 = "%(minor3)s"
+            WHERE id = %(student_id)s''' % (student)
+    else:
+        sql3 = '''UPDATE prog_enr_rec
+                SET major1 = "%(major1)s",
+                    major2 = "%(major2)s",
+                    major3 = "%(major3)s",
+                    minor1 = "%(minor1)s",
+                    minor2 = "%(minor2)s",
+                    minor3 = "%(minor3)s",
+                    adv_id = %(advisor_id)s
+                WHERE id = %(student_id)s''' % (student)
+    connection.execute(sql3)
     return HttpResponse('update successful')

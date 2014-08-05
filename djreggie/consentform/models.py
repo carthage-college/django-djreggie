@@ -19,3 +19,12 @@ class Form(models.Model):
         sql = '''INSERT INTO cc_stg_ferpadirectory (student_id, consent, datecreated)
         VALUES (%(student_ID)s, "%(consent)s", CURRENT)''' % (self.__dict__)
         connection.execute(sql)
+        if self.__dict__['consent'] == "NOCONSENT":
+            sql2 = '''UPDATE profile_rec
+                    SET priv_code = "FERP"
+                    WHERE id = %s''' % (self.__dict__['student_ID'])
+        else:
+            sql2 = '''UPDATE profile_rec
+                    SET priv_code = ""
+                    WHERE id = %s''' % (self.__dict__['student_ID'])
+        connection.execute(sql2)

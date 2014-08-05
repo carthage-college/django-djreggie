@@ -26,6 +26,9 @@
 </script>
 {% endblock %}
 {% block content %}
+{% if submitted %}
+<h3>Your form has been submitted</h3>
+{% endif %}
 <form action='' enctype="multipart/form-data" method='post' class = "form">{% csrf_token %}
     {{ form.non_field_errors }}
     {% for field in form.hidden_fields %}

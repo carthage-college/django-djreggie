@@ -24,7 +24,8 @@ def create(request):
             form = ModelForm()
            # submitted = True
             return render(request, 'consentform/form.html', {
-                'form': form
+                'form': form,
+                'submitted': True,
             })
     else:
         form = ModelForm()
@@ -45,7 +46,8 @@ def create(request):
         form.fields['student_ID'].widget = forms.HiddenInput()
 
     return render(request, 'consentform/form.html', {
-    'form': form,
+        'form': form,
+        'submitted': False,
     })
 
 def get_all_students():

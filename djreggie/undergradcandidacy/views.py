@@ -27,10 +27,9 @@ def index(request):
             ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
             
             form = UndergradForm()
-            submitted = True
             return render(request, 'undergradcandidacy/form.html', {
                 'form': form,
-                'submitted': submitted,
+                'submitted': True,
                 'year_low': year,
                 'year_up': year+1,
                 'valid_class': "Y" #this is here so there isn't an error.
@@ -84,6 +83,7 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
         'year_low': year,
         'year_up': year+1,
         'valid_class': valid_class,
+        'submitted': False,
     })
 
         
@@ -195,4 +195,67 @@ def set_approved(request): #for setting the approved column in database for entr
             SET approved="%(approved)s", datemodified=CURRENT
             WHERE undergradcandidacy_no = %(id)s''' % (request.POST)
     connection.execute(sql)
+    sql2 = '''SELECT COUNT(*) AS count
+            FROM gradwalk_rec
+            WHERE id = %s ''' % (request.POST['student_id'])
+    record = connection.execute(sql2)
+    record_exists = record.first()['count']
+    sql3 = '''SELECT *
+            FROM cc_stg_undergradcandidacy
+            WHERE undergradcandidacy_no = %s''' % (request.POST['id'])
+    student = connection.execute(sql3)
+    if record_exists:
+        sql4 = '''UPDATE gradwalk_rec
+                SET grad_sess = "%(grad_sess)s",
+                    grad_yr = "%(grad_yr)s",
+                    name_on_diploma = "%(first_name)s %(middle_initial)s %(last_name)s",
+                    fname_pronounce = "%(first_name_pronounce)s",
+                    lname_pronounce = "%(last_name_pronounce)s",
+                    addr = "%(address)s %(city)s, %(state)s %(zip)s",
+                    plan2walk = "%(plan_to_walk)s",
+                    major1 = "%(major1)s",
+                    major2 = "%(major2)s",
+                    major3 = "%(major3)s",
+                    minor1 = "%(minor1)s",
+                    minor2 = "%(minor2)s",
+                    minor3 = "%(minor3)s"
+                WHERE id = %(student_id)s''' % (student.first())
+        connection.execute(sql4)
+    else:
+        sql5 = '''INSERT INTO gradwalk_rec
+                (id,
+                prog,
+                site,
+                degree,
+                grad_sess,
+                grad_yr,
+                name_on_diploma,
+                fname_pronounce,
+                lname_pronounce,
+                addr,
+                plan2walk,
+                major1,
+                major2,
+                major3,
+                minor1,
+                minor2,
+                minor3)
+                VALUES (%(student_id)s,
+                        "UNDG",
+                        "CART",
+                        "BA",
+                        "%(grad_sess)s",
+                        "%(grad_yr)s",
+                        "%(first_name)s %(middle_initial)s %(last_name)s",
+                        "%(first_name_pronounce)s",
+                        "%(last_name_pronounce)s",
+                        "%(address)s %(city)s, %(state)s %(zip)s",
+                        "%(plan_to_walk)s",
+                        "%(major1)s",
+                        "%(major2)s",
+                        "%(major3)s",
+                        "%(minor1)s",
+                        "%(minor2)s",
+                        "%(minor3)s")''' % (student.first())
+        connection.execute(sql5)
     return HttpResponse('update successful')

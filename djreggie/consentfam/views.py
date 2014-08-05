@@ -36,11 +36,10 @@ def create(request):
                 f.save()
             form = ModelForm()
             Parent_formset = ParentFormSet(prefix='Parent_or_Third_Party_Name')
-            submitted = True
             return render(request, 'consentfam/form.html', {
                 'form': form, 
                 'Parent_formset': Parent_formset,
-                'submitted': submitted
+                'submitted': True
             })#This is the URL where users are redirected after submitting the form
     else: #This is for the first time you go to the page. It sets it all up
         form = ModelForm()
@@ -86,6 +85,7 @@ def create(request):
     return render(request, 'consentfam/form.html', {
         'form': form, 
         'Parent_formset': Parent_formset,
+        'submitted': False,
     })
     
 def submitted(request):

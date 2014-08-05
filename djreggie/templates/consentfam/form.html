@@ -84,6 +84,9 @@ $(document).ready(function () {
 </script>
 {% endblock %}
 {% block content %}
+{% if submitted %}
+<h3>Your form has been submitted</h3>
+{% endif %}
 <form action='' method='post' class = "form">{% csrf_token %}        
     {{ Parent_formset.management_form }}
     {% for field in form.hidden_fields %}
