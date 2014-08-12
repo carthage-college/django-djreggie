@@ -2,22 +2,21 @@
     <h1 id="page-title">FERPA Authorization</h1>
 {% endblock %}
 {% block javascript %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
 <script>
-    $(document).ready( function() {
+    jQuery(document).ready( function() {
         if ("{{form.consent.value}}" == "NOCONSENT"){
-               $('#hidden').show();
+               jQuery('#hidden').show();
                }
            else{
-               $('#hidden').hide();
+               jQuery('#hidden').hide();
                }
         });
-    $('[name="consent"]').click( function() {
+    jQuery('[name="consent"]').click( function() {
         if (this.value == "NOCONSENT"){
-               $('#hidden').show();
+               jQuery('#hidden').show();
                }
            else{
-               $('#hidden').hide();
+               jQuery('#hidden').hide();
                }
         });
 </script>
