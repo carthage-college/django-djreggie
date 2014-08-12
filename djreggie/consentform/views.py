@@ -6,6 +6,7 @@ from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
 from django import forms
 from django.core.mail import send_mail
+from django.views.decorators.csrf import csrf_exempt
 
 #Need to include the form object
 from form import ModelForm
@@ -46,6 +47,46 @@ def create(request):
         form.fields['student_ID'].widget = forms.HiddenInput()
 
     return render(request, 'consentform/form.html', {
+        'form': form,
+        'submitted': False,
+    })
+
+@csrf_exempt
+def mobile(request):
+    if request.POST: #If we do a POST
+        #(a, created) = Form.objects.get(student_ID=request.POST['student_ID'])    
+        form = ModelForm(request.POST) #Scrape the data from the form and save it in a variable
+        
+        if form.is_valid(): #If the form is valid
+            if form.data['consent'] == 'NOCONSENT':
+                send_mail("Don\'t do it!", "You\'re making a huge mistake", 'confirmation.carthage.edu',
+                    ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)  
+            form.save() #Save the form data to the datbase table
+            form = ModelForm()
+           # submitted = True
+            return render(request, 'consentform/mobile.html', {
+                'form': form,
+                'submitted': True,
+            })
+    else:
+        form = ModelForm()
+        engine = create_engine(INFORMIX_EARL_TEST)
+        connection = engine.connect()
+        sql = 'SELECT id_rec.id FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_id']))
+        student = connection.execute(sql)
+        for thing in student:
+            form.fields['student_ID'].initial = thing['id']
+        sql2 = 'SELECT cc_stg_ferpadirectory.consent FROM cc_stg_ferpadirectory WHERE cc_stg_ferpadirectory.student_id = %d' % (int(request.GET['student_id']))
+        student2 = connection.execute(sql2)
+        for thing in student2:
+            if thing['consent'] == "N":
+                form.fields['consent'].initial = "NOCONSENT"
+            else:
+                form.fields['consent'].initial = "CONSENT"
+        connection.close()
+        form.fields['student_ID'].widget = forms.HiddenInput()
+
+    return render(request, 'consentform/mobile.html', {
         'form': form,
         'submitted': False,
     })

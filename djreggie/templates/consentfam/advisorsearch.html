@@ -1,164 +1,76 @@
-{% extends "djdash/base.html" %}
 {% block extra_style %}
-    <!-- Page-Level Plugin CSS - Tables -->
-    <link href="//www.carthage.edu/static/vendor/dashboard/css/plugins/dataTables/jquery.dataTables.min.css"
-        rel="stylesheet">
-    <link href="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/css/dataTables.tableTools.min.css"
-        rel="stylesheet">
-    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css"
-        rel="stylesheet"/>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-    <style>
-    .ui-autocomplete.ui-menu {
-        z-index: 10000;
-      }
-    .center{text-align:center;}
-    .red {color:#800;}
-    .green {color:#008000;}
-    div.DTTT {
-    float: right;
-    margin-bottom: 1em;
-    position: relative;
-    }
-    .loader {
-        display:    none;
-        position:   fixed;
-        z-index:    1000;
-        top:        0;
-        left:       0;
-        height:     100%;
-        width:      100%;
-        background: rgba( 255, 255, 255, .8 ) 
-                    url('http://i.imgur.com/VOYFJhg.gif') 
-                    50% 50% 
-                    no-repeat;
-    }
-    
-    /* When the body has the loading class, we turn
-       the scrollbar off with overflow:hidden */
-    body.loading {
-        overflow: hidden;   
-    }
-    
-    /* Anytime the body has the loading class, our
-       modal element will be visible */
-    body.loading .loader {
-        display: block;
-    }
-    </style>
+<link href="http://www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+<style>
+.ui-autocomplete.ui-menu {
+    z-index: 10000;
+  }
+.center{text-align:center;}
+.red {color:#800;}
+.green {color:#008000;}
+div.DTTT {
+float: right;
+margin-bottom: 1em;
+position: relative;
+}
+.loader {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('http://i.imgur.com/VOYFJhg.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .loader {
+    display: block;
+}
+</style>
 {% endblock %}
 {% block extra_javascript %}
-    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/jquery.dataTables.js"></script>
-    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
-    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/dataTables.bootstrap.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-    <script src="//www.carthage.edu/static/vendor/js/spin.min.js"
-        type="text/javascript"></script>
-    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-<script> 
+<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js" type="text/javascript"></script>
+<script>
+$( document ).ready(function() {
     var list = new Array();
     {% for stud in full_student_list %}
         list.push({label: '{{stud.lastname}}, {{stud.firstname}} {{stud.student_id}}',
-                    value: {{stud.student_id}}})
+                    value: {{stud.student_id}}});
     {% endfor %}
     $('[name=cid]').autocomplete({source: list});
     $('[name=cid]').autocomplete("enable");
+    /*$('[name=cid]').listview({source: list});
+    $('[name=cid]').listview("enable");*/
+    });
 </script>
 {% endblock %}
-{% block navbar-header %}
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse"
-            data-target=".sidebar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand"
-            href="http://www.carthage.edu/registrar/">
-            Carthage Registrar
-        </a>
-    </div>
-{% endblock %}
-{% block navbar-top-links %}
-    <ul class="nav navbar-top-links navbar-right">
-        <li class="dropdown user-dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-user"></i> {{user.first_name}}
-                <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-                <li class="divider"></li>
-                <li>
-                    <i class="fa fa-power-off"></i> Log Out
-                </li>
-            </ul>
-        </li>
-        <!-- /.dropdown-user -->
-    </ul>
-{% endblock %}
-{% block navbar-static-side %}
-    <div class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav" id="side-menu">
-                <li>
-                    <a href="{% url 'admincf' %}">
-                        <i class="fa fa-dashboard fa-fw"></i> Dashboard
-                    </a>
-                </li>                
-                <li>
-                    <a href="{% url 'advisorsearch' %}">
-                        <i class="fa fa-search fa-fw"></i> Advisor Search
-                    </a>
-                </li>
-                {% if user.is_superuser %}
-                <li>
-                    <a href="/campus-life/medical/forms/admin/">
-                        <i class="fa fa-gears"></i> Administration
-                    </a>
-                </li>
-                {% endif %}
-                <li>
-                    <a href="http://www.carthage.edu/">
-                        <i class="fa fa-home fa-fw"></i> Carthage Home
-                    </a>
-                </li>
-                <li>
-                    <a href="http://www.carthage.edu/my/">
-                        <i class="fa fa-lemon-o fa-fw"></i> My.Carthage
-                    </a>
-                </li>
-            </ul>
-            <!-- /#side-menu -->
-        </div>
-        <!-- /.sidebar-collapse -->
-    </div>
-{% endblock %}
+
 {% block content %}
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">
-                FERPA Student Search for Advisors
-            </h1>
-        </div>
-        <!-- /.col-lg-12 -->
+<div class="row">
+    Search for your students below by ID or their name.<br>
+    You'll be able to see which family members are allowed to see specific information.
+    <div class="input-group custom-search-form">
+        <form action="http://bng.carthage.edu/jsawyer/djreggie/consentfam/admin/search" method="post" />
+        <input type="text" name="cid" class="form-control" placeholder="Search">
+        <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">
+            <i class="fa fa-search"></i>
+        </button>
+        </form>
+    </span>
     </div>
-    <!-- /.row -->
-    <div class="row">
-        Search for your students below by ID or their name.<br>
-        You'll be able to see which family members are allowed to see specific information.
-        <div class="input-group custom-search-form">
-            <form action="{% url 'searchcf' %}" method="post" />
-            {% csrf_token %}
-            <input type="text" name="cid" class="form-control"
-                placeholder="Search">
-            <span class="input-group-btn">
-            <button class="btn btn-default" type="submit">
-                <i class="fa fa-search"></i>
-            </button>
-            </form>
-        </span>
-        </div>
-    </div>
+</div>
 <div class="loader"><!-- for loading icon --></div>
 {% endblock content %}

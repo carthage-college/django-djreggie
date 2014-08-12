@@ -196,6 +196,20 @@ def set_approved(request): #for setting the approved column in database for entr
             SET approved="%(approved)s", datemodified=CURRENT
             WHERE undergradcandidacy_no = %(id)s''' % (request.POST)
     connection.execute(sql)
+    if request.POST["approved"] == "Y":
+        send_mail("Undergraduate Candidacy Approved!",
+                  '''Congratulations!  Your Candidacy Form for graduation has been accepted!\n\n
+Please be sure to keep an eye on your Carthage email, as this is where communications regarding your graduation
+requirements and graduating senior activities will be sent.  You will need to check your Degree Audit
+(available on the Carthage Portal - my.carthage.edu) to ensure that you are on track for meeting all degree requirements.
+If you have any questions about your Degree Audit, please contact the Associate Registrar, Brigid Patterson.\n\n
+** Note:  Acceptance of your Candidacy Form is based upon current information.
+If there are any changes, the Registrar's Office will need to be notified immediately and acceptance of the
+Candidacy Form may change.\n\n
+As graduation preparations begin, you will want to keep these important dates, including Graduation Gear-Up on
+your radar:\n\n
+http://www.carthage.edu/commencement/information-graduates/  ''', 'confirmation.carthage.edu',
+            ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
     sql2 = '''SELECT COUNT(*) AS count
             FROM gradwalk_rec
             WHERE id = %s ''' % (request.POST['student_id'])

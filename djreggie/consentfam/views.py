@@ -154,6 +154,7 @@ def student(request, student_id): #admin details page
         'full_student_list': get_all_students(),
     })
 
+@csrf_exempt
 def search(request): #admin details page accessed through search bar
     return student(request, request.POST['cid'])
 
