@@ -27,8 +27,13 @@ def create(request):
                 advisor_email = advisor.first()['email']
                 connection.close()
                 #email new advisor
-                send_mail("You can't replace me, I'm the advisor!", "I'm the captai- er, advisor now", 'confirmation.carthage.edu',
-                    ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
+                send_mail("You have a new student!",
+			  '''Please accept this email as notification that the following student has selected you as their advisor.  Given this, you are now able to view their Degree Audit information through my.carthage.edu to assist in your advising of this student.\n
+Student name: %s\n
+Student ID: %s''' %(form.cleaned_data['name'], form.cleaned_data['student_id']),
+			  'confirmation.carthage.edu',
+			  ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
+			  fail_silently=False)
             form.save()        #Save the form data to the datbase table            
             form = ChangeForm()
             return render(request, 'changemajor/form.html', {
@@ -217,8 +222,11 @@ def set_approved(request): #for setting entry to be approved
             SET approved="%(approved)s", datemodified=CURRENT
             WHERE changemajor_no = %(id)s''' % (request.POST)
     connection.execute(sql)
-    send_mail("Change Major Approval", "Congratulations! Your request to change your major has been approved",
-                'confirmation.carthage.edu', ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
+    send_mail("Change Major Approval",
+	      "Please accept this email as notification that your change of Major/Minor has been accepted by the Registrar's Office and your record has been updated.  Given this approved change, you should be able to view your updated graduation requirements within your Degree Audit (which is accessible through my.carthage.edu).",	      
+              'confirmation.carthage.edu',
+	      ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
+	      fail_silently=False)
     sql2 = '''SELECT *
             FROM cc_stg_changemajor
             WHERE changemajor_no = %s''' % (request.POST['id'])

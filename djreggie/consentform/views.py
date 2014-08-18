@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
 from django import forms
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives #We do this instead of send_mail because we need HTML (bullets)
 from django.views.decorators.csrf import csrf_exempt
 
 #Need to include the form object
@@ -19,8 +19,16 @@ def create(request):
         
         if form.is_valid(): #If the form is valid
             if form.data['consent'] == 'NOCONSENT':
-                send_mail("Don\'t do it!", "You\'re making a huge mistake", 'confirmation.carthage.edu',
-                    ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)  
+                subject, from_email, to = 'FERPA Denial Information', 'confirmation@carthage.edu', 'zorpixfang@gmail.com'
+                text_content = ''
+                html_content = '''Thank you for completing the form regarding your preferences for directory information, as required by FERPA.  Given that you have selected that you do not want directory information released, please note that Carthage will not be able to disclose information such as:
+<br><br><li>Dean's List accomplishments to your local newspaper</li>
+<li>Verification of enrollment/degree completion for potential or current employers</li>
+<li>Your name will not be published in the program for graduation</li>
+<br>Please note that you can change your directory information selection at any time, should you wish that Carthage be able to release this type of information.  If you would like to update your preferences, this can be done by completing the electronic form again with your updated selection.'''
+                msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
             form.save() #Save the form data to the datbase table
             form = ModelForm()
            # submitted = True
@@ -59,8 +67,16 @@ def mobile(request):
         
         if form.is_valid(): #If the form is valid
             if form.data['consent'] == 'NOCONSENT':
-                send_mail("Don\'t do it!", "You\'re making a huge mistake", 'confirmation.carthage.edu',
-                    ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)  
+                subject, from_email, to = 'FERPA Denial Information', 'confirmation@carthage.edu', 'zorpixfang@gmail.com'
+                text_content = ''
+                html_content = '''Thank you for completing the form regarding your preferences for directory information, as required by FERPA.  Given that you have selected that you do not want directory information released, please note that Carthage will not be able to disclose information such as:
+<br><br><li>Dean's List accomplishments to your local newspaper</li>
+<li>Verification of enrollment/degree completion for potential or current employers</li>
+<li>Your name will not be published in the program for graduation</li>
+<br>Please note that you can change your directory information selection at any time, should you wish that Carthage be able to release this type of information.  If you would like to update your preferences, this can be done by completing the electronic form again with your updated selection.'''
+                msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
             form.save() #Save the form data to the datbase table
             form = ModelForm()
            # submitted = True

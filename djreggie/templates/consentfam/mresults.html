@@ -1,0 +1,55 @@
+{% block extra_style %}
+<link href="http://www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<style>
+.row {
+    margin: 1em;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div id="student-container">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="page-header">
+                {{student.firstname}} {{student.lastname}}
+            </h1>
+        </div>
+        <!-- /.col-lg-12 -->
+        <div class="col-lg-4">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-8" id="student-contact">
+                            <address>
+                            {{student.addr_line1}} {{student.addr_line2}}<br>
+                            {{student.city}}, {{student.st}}<br>
+                            {{student.zip}} {{student.ctry}}<br>
+                            <abbr title="Phone">P:</abbr>
+                            {{student.phone}}<br>
+                            </a>
+                            </address>
+                        </div>
+                    </div> <!-- /.row -->
+                </div> <!--/.panel-heading -->
+            </div> <!-- /.panel-success -->
+        </div> <!-- /.col-lg-4 -->
+        {% for f in family %}
+            <b><h3><pre>Name: {{f.name}} | Relation: {{f.relation}}
+Is allowed to see: {{f.allow}}</pre></h3></b>
+            <div>
+                Phone<pre>{{f.phone}}</pre>
+            </div>
+            <div>
+                Email<pre>{{f.email}}</pre>
+            </div>
+            <div>
+                Date Modified<pre>{{f.datemodified}}</pre>
+            </div>
+            <div>
+                Modifier ID<pre>{{f.modified_id}}</pre>
+            </div>
+        <br>
+        {% endfor %}
+    </div><!-- /.row -->
+</div><!-- /.student-container -->
+{% endblock %}

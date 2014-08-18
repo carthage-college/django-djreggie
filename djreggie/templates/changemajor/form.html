@@ -93,7 +93,9 @@
 {% block content %}
 {{ form.non_field_errors }}
 {% if submitted %}
-<h3>Your form has been submitted</h3>
+<script type="text/javascript">
+    alert("Thank you for your submission!  If you have submitted a request to change your Major and/or Minor, please note that this change is pending approval by the Registrar's Office.  Keep an eye on your Carthage email for further communication.  If you have submitted a request to change your Advisor, this change is in process and your requested Advisor will receive an email notification.")
+</script>
 {% endif %}
 <form action='' method='post' class = "form">{% csrf_token %}
     {{ mmformset.management_form }}

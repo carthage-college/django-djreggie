@@ -1,54 +1,77 @@
 {% extends "consentfam/home.html" %}
 {% block extra_style %}
 {{block.super}}
-<link href="/static/djsani/css/print.css"
-    rel="stylesheet" type="text/css" media="print" />
 <style>
-    .dl-horizontal dt.widus {
-        width: 300px;
-        margin-right:9px;
+    @media only screen and (min-device-width : 320px) and (max-device-width : 480px)
+    {
+        .mobile
+        {
+            display: block;
+        }
+        .web
+        {
+            display: none;
+        }
+        .row {
+            margin: 1em;
+        }
     }
-    .dl-horizontal dd.yes {
-        margin-left: 0;
-    }
-    .center{text-align:center;}
-    .red {color:#800;}
-    .green {color:#008000;}
-    .loader {
-        display:    none;
-        position:   fixed;
-        z-index:    1000;
-        top:        0;
-        left:       0;
-        height:     100%;
-        width:      100%;
-        background: rgba( 255, 255, 255, .8 ) 
-                    url('http://i.imgur.com/VOYFJhg.gif') 
-                    50% 50% 
-                    no-repeat;
-    }
-    
-    /* When the body has the loading class, we turn
-       the scrollbar off with overflow:hidden */
-    body.loading {
-        overflow: hidden;   
-    }
-    
-    /* Anytime the body has the loading class, our
-       modal element will be visible */
-    body.loading .loader {
-        display: block;
-    }
-    .showinfo {
-        display: none;
-    }
-    .col-lg-6 {
-        float: left;
-    }
+    @media only screen and (min-device-width: 768px)
+    {
+        .mobile
+        {
+            display: none;
+        }
+        .web
+        {
+            display: block;
+        }
+        .dl-horizontal dt.widus {
+            width: 300px;
+            margin-right:9px;
+        }
+        .dl-horizontal dd.yes {
+            margin-left: 0;
+        }
+        .center{text-align:center;}
+        .red {color:#800;}
+        .green {color:#008000;}
+        .loader {
+            display:    none;
+            position:   fixed;
+            z-index:    1000;
+            top:        0;
+            left:       0;
+            height:     100%;
+            width:      100%;
+            background: rgba( 255, 255, 255, .8 ) 
+                        url('http://i.imgur.com/VOYFJhg.gif') 
+                        50% 50% 
+                        no-repeat;
+        }
+        
+        /* When the body has the loading class, we turn
+           the scrollbar off with overflow:hidden */
+        body.loading {
+            overflow: hidden;   
+        }
+        
+        /* Anytime the body has the loading class, our
+           modal element will be visible */
+        body.loading .loader {
+            display: block;
+        }
+        .showinfo {
+            display: none;
+        }
+        .col-lg-6 {
+            float: left;
+        }
+    }   
 </style>
 {% endblock %}
 {% block extra_javascript %}
-    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <script type="text/javascript">
     $(".approveone").change(function(){
         var checked;
@@ -91,75 +114,124 @@
 </script>
 {% endblock %}
 {% block content %}
-<div id="student-container">
-    <div class="row">
-        <div class="col-lg-8">
-            <h1 class="page-header">
-                {{student.firstname}} {{student.lastname}}
-            </h1>
-        </div>
-        <!-- /.col-lg-12 -->
-        <div class="col-lg-4">
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            <i class="fa fa-globe fa-5x"></i>
+<div class="mobile">
+   <div id="student-container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="page-header">
+                    {{student.firstname}} {{student.lastname}}
+                </h1>
+            </div>
+            <!-- /.col-lg-12 -->
+            <div class="col-lg-4">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-8" id="student-contact">
+                                <address>
+                                {{student.addr_line1}} {{student.addr_line2}}<br>
+                                {{student.city}}, {{student.st}}<br>
+                                {{student.zip}} {{student.ctry}}<br>
+                                <abbr title="Phone">P:</abbr>
+                                {{student.phone}}<br>
+                                </a>
+                                </address>
+                            </div>
+                        </div> <!-- /.row -->
+                    </div> <!--/.panel-heading -->
+                </div> <!-- /.panel-success -->
+            </div> <!-- /.col-lg-4 -->
+            {% for f in family %}
+                <b><h3><pre>Name: {{f.name}} | Relation: {{f.relation}}
+Is allowed to see: {{f.allow}}</pre></h3></b>
+                <div>
+                    Phone<pre>{{f.phone}}</pre>
+                </div>
+                <div>
+                    Email<pre>{{f.email}}</pre>
+                </div>
+                <div>
+                    Date Modified<pre>{{f.datemodified}}</pre>
+                </div>
+                <div>
+                    Modifier ID<pre>{{f.modified_id}}</pre>
+                </div>
+            <br>
+            {% endfor %}
+        </div><!-- /.row -->
+    </div><!-- /.student-container -->
+</div><!-- /.mobile -->
+<div class="web">
+    <div id="student-container" >
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="page-header">
+                    {{student.firstname}} {{student.lastname}}
+                </h1>
+            </div>
+            <!-- /.col-lg-12 -->
+            <div class="col-lg-4">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-globe fa-5x"></i>
+                            </div>
+                            <div class="col-xs-8" id="student-contact">
+                                <address>
+                                {{student.addr_line1}} {{student.addr_line2}}<br>
+                                {{student.city}}, {{student.st}}<br>
+                                {{student.zip}} {{student.ctry}}<br>
+                                <abbr title="Phone">P:</abbr>
+                                {{student.phone}}<br>
+                                </a>
+                                </address>
+                            </div>
+                        </div> <!-- /.row -->
+                    </div> <!--/.panel-heading -->
+                </div> <!-- /.panel-success -->
+            </div> <!-- /.col-lg-4 -->
+            {% for f in family2 %}
+            <div class="col-lg-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <pre>Name: {{f.name}} | Relation: {{f.relation}} | Is allowed to see: {{f.allow}}</pre>
+                        </h3>
+                        <input type="button" class="showhide" value="Show/hide info"/>
+                    </div><!-- /.panel-heading -->
+                    <div class="showinfo">
+                        <div style="float:left">
+                            <div class="panel-body">
+                                <div>
+                                    Phone<pre>{{f.phone}}</pre>
+                                </div>
+                            </div><!-- /.panel-body --> 
+                            <div class="panel-body">
+                                <div>
+                                    Email<pre>{{f.email}}</pre>
+                                </div>
+                            </div><!-- /.panel-body -->
                         </div>
-                        <div class="col-xs-8" id="student-contact">
-                            <address>
-                            {{student.addr_line1}} {{student.addr_line2}}<br>
-                            {{student.city}}, {{student.st}}<br>
-                            {{student.zip}} {{student.ctry}}<br>
-                            <abbr title="Phone">P:</abbr>
-                            {{student.phone}}<br>
-                            </a>
-                            </address>
+                        <div style="float:right">
+                            <div class="panel-body">
+                                <div>
+                                    Date Modified<pre>{{f.datemodified}}</pre>
+                                </div>
+                            </div><!-- /.panel-body -->
+                            <div class="panel-body">
+                                <div>
+                                    Modifier ID<pre>{{f.modified_id}}</pre>
+                                </div>
+                            </div><!-- /.panel-body -->
                         </div>
-                    </div> <!-- /.row -->
-                </div> <!--/.panel-heading -->
-            </div> <!-- /.panel-success -->
-        </div> <!-- /.col-lg-4 -->
-        {% for f in family %}
-        <div class="col-lg-6">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        <pre>Name: {{f.name}} | Relation: {{f.relation}} | Is allowed to see: {{f.allow}}</pre>
-                    </h3>
-                    <input type="button" class="showhide" value="Show/hide info"/>
-                </div><!-- /.panel-heading -->
-                <div class="showinfo">
-                    <div style="float:left">
-                        <div class="panel-body">
-                            <div>
-                                Phone<pre>{{f.phone}}</pre>
-                            </div>
-                        </div><!-- /.panel-body --> 
-                        <div class="panel-body">
-                            <div>
-                                Email<pre>{{f.email}}</pre>
-                            </div>
-                        </div><!-- /.panel-body -->
-                    </div>
-                    <div style="float:right">
-                        <div class="panel-body">
-                            <div>
-                                Date Modified<pre>{{f.datemodified}}</pre>
-                            </div>
-                        </div><!-- /.panel-body -->
-                        <div class="panel-body">
-                            <div>
-                                Modifier ID<pre>{{f.modified_id}}</pre>
-                            </div>
-                        </div><!-- /.panel-body -->
                     </div>
                 </div>
-            </div>
-            <!-- /.panel-info -->
-        </div> <!-- /.col-lg-6 -->
-        {% endfor %}
-    </div><!-- /.row -->
-</div> <!-- /#student-container -->
+                <!-- /.panel-info -->
+            </div> <!-- /.col-lg-6 -->
+            {% endfor %}
+        </div><!-- /.row -->
+    </div> <!-- /#student-container -->
+</div> <!-- /.web -->
 <div class="loader"><!-- for loading icon --></div>
 {% endblock content %}

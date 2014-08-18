@@ -188,12 +188,12 @@
                     <div class="input-group custom-search-form">
                         <form action="{% url 'searchcf' %}" method="post" />
                         {% csrf_token %}
-                        <input type="text" name="cid" class="form-control"
-                            placeholder="Search by ID or Name...">
-                        <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
+                            <input type="text" name="cid" class="form-control"
+                                placeholder="Search by ID or Name...">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
                         </form>
                     </span>
                     </div>

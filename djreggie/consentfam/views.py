@@ -7,6 +7,7 @@ from djreggie.consentfam.models import ConsentModel, ParentForm
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
 from django.forms.formsets import formset_factory, BaseFormSet #For formsets
+from django.core.mail import send_mail
 from django.core.context_processors import csrf
 from django.template import RequestContext  # For CSRF
 from django.views.decorators.csrf import csrf_exempt
@@ -25,6 +26,12 @@ def create(request):
         Parent_formset = ParentFormSet(request.POST, prefix='Parent_or_Third_Party_Name')
            
         if form.is_valid() and Parent_formset.is_valid(): #If the forms are valid
+            send_mail("FERPA Family Thank You",
+                      "Thank you for submitting your selections regarding individuals who are allowed access to your financial and/or academic records.  This information has been received and documented.  You can view your preferences within my.carthage.edu.  Should you wish to change the approved access for any or all individuals, please update accordingly using the electronic form.",
+                      'confirmation.carthage.edu',
+                      ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
+                      fail_silently=False)
+            
             form.save()        #Save the form data to the datbase table            
             engine = create_engine(INFORMIX_EARL_TEST)
             connection = engine.connect()
@@ -148,15 +155,59 @@ def student(request, student_id): #admin details page
             ON ff_rec.ferpafamily_no = ff.ferpafamily_no
             WHERE ff.student_id = %s''' % (student_id)
     family = connection.execute(sql2)
+    family2 = connection.execute(sql2)
     return render(request, 'consentfam/details.html', {
         'student': student.first(),
         'family': family,
+        'family2': family2,
         'full_student_list': get_all_students(),
+    })
+@csrf_exempt
+def advisor_results(request, student_id):
+    engine = create_engine(INFORMIX_EARL_TEST)
+    connection = engine.connect()
+    #get entry's info
+    sql = '''SELECT ff.*,
+                    id_rec.firstname,
+                    id_rec.lastname,
+                    id_rec.addr_line1,
+                    id_rec.addr_line2,
+                    id_rec.city,
+                    id_rec.st,
+                    id_rec.zip,
+                    id_rec.ctry,
+                    id_rec.phone
+            FROM cc_stg_ferpafamily AS ff
+            INNER JOIN id_rec
+            ON ff.student_id = id_rec.id
+            WHERE ff.student_id = %s''' % (student_id)
+    student = connection.execute(sql)
+    sql2 = '''SELECT ff_rec.*
+            FROM cc_stg_ferpafamily_rec AS ff_rec
+            INNER JOIN cc_stg_ferpafamily AS ff
+            ON ff_rec.ferpafamily_no = ff.ferpafamily_no
+            WHERE ff.student_id = %s''' % (student_id)
+    family = connection.execute(sql2)
+    return render(request, 'consentfam/mresults.html', {
+        'student': student.first(),
+        'family': family,
+        'submitted': True,
     })
 
 @csrf_exempt
 def search(request): #admin details page accessed through search bar
     return student(request, request.POST['cid'])
+
+@csrf_exempt
+def msearch(request):
+    return advisor_results(request, request.POST['cid'])
+
+@csrf_exempt
+def advisor_search(request):
+    #return advisor_results(request, request.POST['cid'])
+    return render(request, 'consentfam/advisorsearch.html', {
+        'full_student_list': get_all_students(),
+    })
 
 @csrf_exempt
 def set_approved(request):
@@ -178,8 +229,3 @@ def family_set_approved(request):
             WHERE ferpafamilyrec_no = %(id)s''' % (request.POST)
     connection.execute(sql)
     return HttpResponse('update successful')
-
-def advisor_search(request):
-    return render(request, 'consentfam/advisorsearch.html', {
-        'full_student_list': get_all_students(),
-    })

@@ -27,7 +27,9 @@
 {% endblock %}
 {% block content %}
 {% if submitted %}
-<h3>Your form has been submitted</h3>
+<script type="text/javascript">
+    alert("Thank you for submitting your directory information preferences!  Your information has been submitted and will remain on file with the Registrar's Office.")
+</script>
 {% endif %}
 <form action='' enctype="multipart/form-data" method='post' class = "form">{% csrf_token %}
     {{ form.non_field_errors }}

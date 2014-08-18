@@ -85,7 +85,9 @@ $(document).ready(function () {
 {% endblock %}
 {% block content %}
 {% if submitted %}
-<h3>Your form has been submitted</h3>
+<script type="text/javascript">
+    alert("Thank you!  Your form has been submitted.  Please keep an eye on your Carthage email for additional information.")
+</script>
 {% endif %}
 <form action='' method='post' class = "form">{% csrf_token %}        
     {{ Parent_formset.management_form }}
