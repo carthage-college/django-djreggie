@@ -1,8 +1,8 @@
-{% extends "consentfam/home.html" %}
+{% extends "/home/jsawyer/sandbox/djreggie/templates/consentfam/home.html" %}
 {% block extra_style %}
 {{block.super}}
-<style>
-    @media only screen and (min-device-width : 320px) and (max-device-width : 480px)
+<style>    
+    @media (max-width : 767px)
     {
         .mobile
         {
@@ -16,7 +16,7 @@
             margin: 1em;
         }
     }
-    @media only screen and (min-device-width: 768px)
+    @media (min-width: 768px)
     {
         .mobile
         {
@@ -67,15 +67,15 @@
         .col-lg-6 {
             float: left;
         }
-    }   
+    }
 </style>
 {% endblock %}
 {% block extra_javascript %}
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <script type="text/javascript">
-    $(".approveone").change(function(){
+    jQuery(".approveone").change(function(){
         var checked;
-        if($(this).prop('checked'))
+        if(jQuery(this).prop('checked'))
         {
             checked = 'Y';
         }
@@ -83,17 +83,17 @@
         {
             checked = 'N';
         } 
-        $body = $("body");
-        $(document).on({
+        $body = jQuery("body");
+        jQuery(document).on({
             ajaxStart: function() { $body.addClass("loading");    },
             ajaxStop: function() { $body.removeClass("loading"); }    
         });
-        $.ajax({
+        jQuery.ajax({
             type: 'POST',
             url: "{% url 'cf_family_set_approved' %}",
             data: {
                 'approved': checked,
-                'id': $(this).val()
+                'id': jQuery(this).val()
             },
             cache: false,
             success: function(data){
@@ -101,16 +101,16 @@
             },
             });
     });
-    $(".showhide").click(function() {
-        $(this).parent().parent().find(".showinfo").toggle()
+    jQuery(".showhide").click(function() {
+        jQuery(this).parent().parent().find(".showinfo").toggle()
     });
     var list = new Array();
     {% for stud in full_student_list %}
         list.push({label: '{{stud.lastname}}, {{stud.firstname}} {{stud.student_id}}',
                     value: {{stud.student_id}}})
     {% endfor %}
-    $('[name=cid]').autocomplete({source: list});
-    $('[name=cid]').autocomplete("enable");
+    jQuery('[name=cid]').autocomplete({source: list});
+    jQuery('[name=cid]').autocomplete("enable");
 </script>
 {% endblock %}
 {% block content %}
@@ -142,21 +142,33 @@
                 </div> <!-- /.panel-success -->
             </div> <!-- /.col-lg-4 -->
             {% for f in family %}
-                <b><h3><pre>Name: {{f.name}} | Relation: {{f.relation}}
-Is allowed to see: {{f.allow}}</pre></h3></b>
-                <div>
-                    Phone<pre>{{f.phone}}</pre>
-                </div>
-                <div>
-                    Email<pre>{{f.email}}</pre>
-                </div>
-                <div>
-                    Date Modified<pre>{{f.datemodified}}</pre>
-                </div>
-                <div>
-                    Modifier ID<pre>{{f.modified_id}}</pre>
-                </div>
-            <br>
+            <h3 class="panel-title" ><b>
+                <pre>Name: {{f.name}} | Relation: {{f.relation}}
+                <br>Is allowed to see: {{f.allow}}</pre>
+            </b></h3>
+            <input type="button" class="showhide" value="Show/hide info"/>
+            <div class="showinfo">
+                <div class="panel-body">
+                    <div>
+                        Phone<pre>{{f.phone}}</pre>
+                    </div>
+                </div><!-- /.panel-body --> 
+                <div class="panel-body">
+                    <div>
+                        Email<pre>{{f.email}}</pre>
+                    </div>
+                </div><!-- /.panel-body -->
+                <div class="panel-body">
+                    <div>
+                        Date Modified<pre>{{f.datemodified}}</pre>
+                    </div>
+                </div><!-- /.panel-body -->
+                <div class="panel-body">
+                    <div>
+                        Modifier ID<pre>{{f.modified_id}}</pre>
+                    </div>
+                </div><!-- /.panel-body -->
+            </div>
             {% endfor %}
         </div><!-- /.row -->
     </div><!-- /.student-container -->
