@@ -213,69 +213,74 @@ your radar:\n\n
 http://www.carthage.edu/commencement/information-graduates/  ''',
         'bpatterson@carthage.edu',
             ['zorpixfang@gmail.com', 'mkauth@carthage.edu'])
-        email.attach_file("static/files/Degree Audit Instructions.pdf")
+        email.attach_file("/home/mkauth/sandbox/djreggie/static/files/Degree_Audit_Instructions.pdf")
         email.send()
-    sql2 = '''SELECT COUNT(*) AS count
-            FROM gradwalk_rec
-            WHERE id = %s ''' % (request.POST['student_id'])
-    record = connection.execute(sql2)
-    record_exists = record.first()['count']
-    sql3 = '''SELECT *
-            FROM cc_stg_undergradcandidacy
-            WHERE undergradcandidacy_no = %s''' % (request.POST['id'])
-    student = connection.execute(sql3)
-    if record_exists:
-        sql4 = '''UPDATE gradwalk_rec
-                SET grad_sess = "%(grad_sess)s",
-                    grad_yr = "%(grad_yr)s",
-                    name_on_diploma = "%(first_name)s %(middle_initial)s %(last_name)s",
-                    fname_pronounce = "%(first_name_pronounce)s",
-                    lname_pronounce = "%(last_name_pronounce)s",
-                    addr = "%(address)s %(city)s, %(state)s %(zip)s",
-                    plan2walk = "%(plan_to_walk)s",
-                    major1 = "%(major1)s",
-                    major2 = "%(major2)s",
-                    major3 = "%(major3)s",
-                    minor1 = "%(minor1)s",
-                    minor2 = "%(minor2)s",
-                    minor3 = "%(minor3)s"
-                WHERE id = %(student_id)s''' % (student.first())
-        connection.execute(sql4)
-    else:
-        sql5 = '''INSERT INTO gradwalk_rec
-                (id,
-                prog,
-                site,
-                degree,
-                grad_sess,
-                grad_yr,
-                name_on_diploma,
-                fname_pronounce,
-                lname_pronounce,
-                addr,
-                plan2walk,
-                major1,
-                major2,
-                major3,
-                minor1,
-                minor2,
-                minor3)
-                VALUES (%(student_id)s,
-                        "UNDG",
-                        "CART",
-                        "BA",
-                        "%(grad_sess)s",
-                        "%(grad_yr)s",
-                        "%(first_name)s %(middle_initial)s %(last_name)s",
-                        "%(first_name_pronounce)s",
-                        "%(last_name_pronounce)s",
-                        "%(address)s %(city)s, %(state)s %(zip)s",
-                        "%(plan_to_walk)s",
-                        "%(major1)s",
-                        "%(major2)s",
-                        "%(major3)s",
-                        "%(minor1)s",
-                        "%(minor2)s",
-                        "%(minor3)s")''' % (student.first())
-        connection.execute(sql5)
+        student_sql = '''SELECT student_id
+                        FROM cc_stg_undergrad_candidacy
+                        WHERE undergradcandidacy_no = %s''' % (request.POST['id'])
+        student_id = connection.execute(student_sql).first()['student_id']
+        sql2 = '''SELECT COUNT(*) AS entries
+                FROM gradwalk_rec
+                WHERE id = %s ''' % (student_id)
+        record = connection.execute(sql2)
+        record_exists = record.first()['entries']
+        sql3 = '''SELECT *
+                FROM cc_stg_undergrad_candidacy
+                WHERE undergradcandidacy_no = %s''' % (request.POST['id'])
+        student = connection.execute(sql3)
+        student_data = student.first()
+        if record_exists:
+            sql4 = '''UPDATE gradwalk_rec
+                    SET grad_sess = "%(grad_sess)s",
+                        grad_yr = "%(grad_yr)s",
+                        name_on_diploma = "%(first_name)s %(middle_initial)s %(last_name)s",
+                        fname_pronounce = "%(first_name_pronounce)s",
+                        lname_pronounce = "%(last_name_pronounce)s",
+                        addr = "%(address)s %(city)s, %(state)s %(zip)s",
+                        plan2walk = "%(plan_to_walk)s",
+                        major1 = "%(major1)s",
+                        major2 = "%(major2)s",
+                        major3 = "%(major3)s",
+                        minor1 = "%(minor1)s",
+                        minor2 = "%(minor2)s",
+                        minor3 = "%(minor3)s"
+                    WHERE id = %(student_id)s''' % (student_data)
+            connection.execute(sql4)
+        else:
+            sql5 = '''INSERT INTO gradwalk_rec
+                    (id,
+                    prog,
+                    site,
+                    degree,
+                    grad_sess,
+                    grad_yr,
+                    name_on_diploma,
+                    fname_pronounce,
+                    lname_pronounce,
+                    addr,
+                    plan2walk,
+                    major1,
+                    major2,
+                    major3,
+                    minor1,
+                    minor2,
+                    minor3)
+                    VALUES (%(student_id)s,
+                            "UNDG",
+                            "CART",
+                            "BA",
+                            "%(grad_sess)s",
+                            "%(grad_yr)s",
+                            "%(first_name)s %(middle_initial)s %(last_name)s",
+                            "%(first_name_pronounce)s",
+                            "%(last_name_pronounce)s",
+                            "%(address)s %(city)s, %(state)s %(zip)s",
+                            "%(plan_to_walk)s",
+                            "%(major1)s",
+                            "%(major2)s",
+                            "%(major3)s",
+                            "%(minor1)s",
+                            "%(minor2)s",
+                            "%(minor3)s")''' % (student_data)
+            connection.execute(sql5)
     return HttpResponse('update successful')
