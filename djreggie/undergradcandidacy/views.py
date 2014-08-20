@@ -24,12 +24,11 @@ def index(request):
         if form.is_valid(): #If the form is valid
             form.save()
             #email on valid submit
-            email = EmailMessage("Candidacy Received and Pending Approval",
-				 "Thank you for submitting your Candidacy Form for potential graduation this school year. Your submission has been received and is pending acceptance. Please keep an eye on your Carthage email for further correspondence regarding your eligibility for graduation.",
-				 'bpatterson@carthage.edu',
-				['zorpixfang@gmail.com', 'mkauth@carthage.edu'])
-	    email.attach_file("static/files/Degree Audit Instructions.pdf")
-            email.send()
+            send_mail("Candidacy Received and Pending Approval",
+                "Thank you for submitting your Candidacy Form for potential graduation this school year. Your submission has been received and is pending acceptance. Please keep an eye on your Carthage email for further correspondence regarding your eligibility for graduation.",
+                'bpatterson@carthage.edu',
+                ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
+            
             form = UndergradForm()
             return render(request, 'undergradcandidacy/form.html', {
                 'form': form,
@@ -200,7 +199,7 @@ def set_approved(request): #for setting the approved column in database for entr
             WHERE undergradcandidacy_no = %(id)s''' % (request.POST)
     connection.execute(sql)
     if request.POST["approved"] == "Y":
-        send_mail("Congratulations  - Graduation Candidacy Accepted",
+        email = EmailMessage("Congratulations  - Graduation Candidacy Accepted",
                   '''Congratulations!  Your Candidacy Form for graduation has been accepted!\n\n
 Please be sure to keep an eye on your Carthage email, as this is where communications regarding your graduation
 requirements and graduating senior activities will be sent.  You will need to check your Degree Audit
@@ -212,8 +211,10 @@ Candidacy Form may change.\n\n
 As graduation preparations begin, you will want to keep these important dates, including Graduation Gear-Up on
 your radar:\n\n
 http://www.carthage.edu/commencement/information-graduates/  ''',
-	    'bpatterson@carthage.edu',
-            ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
+        'bpatterson@carthage.edu',
+            ['zorpixfang@gmail.com', 'mkauth@carthage.edu'])
+        email.attach_file("static/files/Degree Audit Instructions.pdf")
+        email.send()
     sql2 = '''SELECT COUNT(*) AS count
             FROM gradwalk_rec
             WHERE id = %s ''' % (request.POST['student_id'])
