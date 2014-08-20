@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from datetime import date
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.views.decorators.csrf import csrf_exempt
 #Including the form class
 from djreggie.undergradcandidacy.forms import UndergradForm
@@ -24,9 +24,10 @@ def index(request):
         if form.is_valid(): #If the form is valid
             form.save()
             #email on valid submit
-            send_mail("Undergraduate Candidacy Response", "Thank you for submitting your Candidacy Form for potential graduation this school year. Your submission has been received and is pending acceptance. Please keep an eye on your Carthage email for further correspondence regarding your eligibility for graduation.", 'confirmation.carthage.edu',
-            ['zorpixfang@gmail.com', 'mkauth@carthage.edu'], fail_silently=False)
-            
+            email = EmailMessage("Undergraduate Candidacy Response", "Thank you for submitting your Candidacy Form for potential graduation this school year. Your submission has been received and is pending acceptance. Please keep an eye on your Carthage email for further correspondence regarding your eligibility for graduation.", 'confirmation.carthage.edu',
+            ['zorpixfang@gmail.com', 'mkauth@carthage.edu'])
+            email.attach_file("static/files/Degree Audit Instructions.pdf")
+            email.send()
             form = UndergradForm()
             return render(request, 'undergradcandidacy/form.html', {
                 'form': form,
