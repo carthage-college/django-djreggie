@@ -32,7 +32,7 @@ def create(request):
               Student name: %s\n
               Student ID: %s''' %(form.cleaned_data['name'],
                   form.cleaned_data['student_id']),
-                  'confirmation.carthage.edu',
+                  'registrar@carthage.edu',
                   ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
                   fail_silently=False)
             form.save()        #Save the form data to the datbase table            
