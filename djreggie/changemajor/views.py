@@ -28,13 +28,13 @@ def create(request):
                 connection.close()
                 #email new advisor
                 send_mail("New Advisee Notification",
-			  '''Please accept this email as notification that the following student has selected you as their advisor.  Given this, you are now able to view their Degree Audit information through my.carthage.edu to assist in your advising of this student.\n
-			  Student name: %s\n
-			  Student ID: %s''' %(form.cleaned_data['name'],
-		          form.cleaned_data['student_id']),
-		          'confirmation.carthage.edu',
-		          ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
-		          fail_silently=False)
+              '''Please accept this email as notification that the following student has selected you as their advisor.  Given this, you are now able to view their Degree Audit information through my.carthage.edu to assist in your advising of this student.\n
+              Student name: %s\n
+              Student ID: %s''' %(form.cleaned_data['name'],
+                  form.cleaned_data['student_id']),
+                  'confirmation.carthage.edu',
+                  ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
+                  fail_silently=False)
             form.save()        #Save the form data to the datbase table            
             form = ChangeForm()
             return render(request, 'changemajor/form.html', {
@@ -52,13 +52,13 @@ def create(request):
                     major3.major AS major3code, TRIM(major3.txt) AS major3, minor1.minor AS minor1code,
                     TRIM(minor1.txt) AS minor1, minor2.minor AS minor2code, TRIM(minor2.txt) AS minor2,
                     minor3.minor AS minor3code, TRIM(minor3.txt) AS minor3
-FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
-					LEFT JOIN	major_table		major1	ON	PROGrec.major1	=	major1.major
-					LEFT JOIN	major_table		major2	ON	PROGrec.major2	=	major2.major
-					LEFT JOIN	major_table		major3	ON	PROGrec.major3	=	major3.major
-					LEFT JOIN	minor_table		minor1	ON	PROGrec.minor1	=	minor1.minor
-					LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
-					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
+FROM id_rec IDrec   INNER JOIN  prog_enr_rec    PROGrec ON  IDrec.id        =   PROGrec.id
+                    LEFT JOIN   major_table     major1  ON  PROGrec.major1  =   major1.major
+                    LEFT JOIN   major_table     major2  ON  PROGrec.major2  =   major2.major
+                    LEFT JOIN   major_table     major3  ON  PROGrec.major3  =   major3.major
+                    LEFT JOIN   minor_table     minor1  ON  PROGrec.minor1  =   minor1.minor
+                    LEFT JOIN   minor_table     minor2  ON  PROGrec.minor2  =   minor2.minor
+                    LEFT JOIN   minor_table     minor3  ON  PROGrec.minor3  =   minor3.minor
 WHERE IDrec.id = %d''' % (int(request.GET['student_id'])) #hvae to have ?student_id= in url for now
             student = connection.execute(sql)
             for thing in student: # set initial data based on student
@@ -183,13 +183,13 @@ def student(request, student_id): #admin details page
     #get current majors/minors full text
     sql2 = '''SELECT TRIM(major1.txt) AS major1, TRIM(major2.txt) AS major2, TRIM(major3.txt) AS major3,
                     TRIM(minor1.txt) AS minor1,TRIM(minor2.txt) AS minor2, TRIM(minor3.txt) AS minor3
-FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
-					LEFT JOIN	major_table		major1	ON	PROGrec.major1	=	major1.major
-					LEFT JOIN	major_table		major2	ON	PROGrec.major2	=	major2.major
-					LEFT JOIN	major_table		major3	ON	PROGrec.major3	=	major3.major
-					LEFT JOIN	minor_table		minor1	ON	PROGrec.minor1	=	minor1.minor
-					LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
-					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
+FROM id_rec IDrec   INNER JOIN  prog_enr_rec    PROGrec ON  IDrec.id        =   PROGrec.id
+                    LEFT JOIN   major_table     major1  ON  PROGrec.major1  =   major1.major
+                    LEFT JOIN   major_table     major2  ON  PROGrec.major2  =   major2.major
+                    LEFT JOIN   major_table     major3  ON  PROGrec.major3  =   major3.major
+                    LEFT JOIN   minor_table     minor1  ON  PROGrec.minor1  =   minor1.minor
+                    LEFT JOIN   minor_table     minor2  ON  PROGrec.minor2  =   minor2.minor
+                    LEFT JOIN   minor_table     minor3  ON  PROGrec.minor3  =   minor3.minor
 WHERE IDrec.id = %s''' % (student_id)
     #get requested majors/minors full text
     sql3 = '''SELECT TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3,
@@ -223,25 +223,26 @@ def set_approved(request): #for setting entry to be approved
             SET approved="%(approved)s", datemodified=CURRENT
             WHERE changemajor_no = %(id)s''' % (request.POST)
     connection.execute(sql)
-    send_mail("Congratulations - Major/Minor Change Accepted",
-	      "Please accept this email as notification that your change of Major/Minor has been accepted by the Registrar's Office and your record has been updated.  Given this approved change, you should be able to view your updated graduation requirements within your Degree Audit (which is accessible through my.carthage.edu).",	      
-              'registrar@carthage.edu',
-	      ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
-	      fail_silently=False)
-    sql2 = '''SELECT *
-            FROM cc_stg_changemajor
-            WHERE changemajor_no = %s''' % (request.POST['id'])
-    result = connection.execute(sql2)
-    student = result.first()
-    sql3 = '''UPDATE prog_enr_rec
-        SET major1 = "%(major1)s",
-            major2 = "%(major2)s",
-            major3 = "%(major3)s",
-            minor1 = "%(minor1)s",
-            minor2 = "%(minor2)s",
-            minor3 = "%(minor3)s"''' % (student)
-    if student['advisor_id']: #if advisor id exists then update that field in the database otherwise don't
-        sql3 += ', adv_id = %s' % (student['advisor_id'])
-    sql3 += 'WHERE id = %s' % (student['student_id'])
-    connection.execute(sql3)
+    if request.POST["approved"] == "Y":
+        send_mail("Congratulations - Major/Minor Change Accepted",
+              "Please accept this email as notification that your change of Major/Minor has been accepted by the Registrar's Office and your record has been updated.  Given this approved change, you should be able to view your updated graduation requirements within your Degree Audit (which is accessible through my.carthage.edu).",	      
+                  'registrar@carthage.edu',
+              ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
+              fail_silently=False)
+        sql2 = '''SELECT *
+                FROM cc_stg_changemajor
+                WHERE changemajor_no = %s''' % (request.POST['id'])
+        result = connection.execute(sql2)
+        student = result.first()
+        sql3 = '''UPDATE prog_enr_rec
+            SET major1 = "%(major1)s",
+                major2 = "%(major2)s",
+                major3 = "%(major3)s",
+                minor1 = "%(minor1)s",
+                minor2 = "%(minor2)s",
+                minor3 = "%(minor3)s"''' % (student)
+        if student['advisor_id']: #if advisor id exists then update that field in the database otherwise don't
+            sql3 += ', adv_id = %s' % (student['advisor_id'])
+        sql3 += 'WHERE id = %s' % (student['student_id'])
+        connection.execute(sql3)
     return HttpResponse('update successful')
