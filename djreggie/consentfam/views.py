@@ -26,9 +26,9 @@ def create(request):
         Parent_formset = ParentFormSet(request.POST, prefix='Parent_or_Third_Party_Name')
            
         if form.is_valid() and Parent_formset.is_valid(): #If the forms are valid
-            send_mail("FERPA Family Thank You",
+            send_mail("Authorized Users (FERPA)",
                       "Thank you for submitting your selections regarding individuals who are allowed access to your financial and/or academic records.  This information has been received and documented.  You can view your preferences within my.carthage.edu.  Should you wish to change the approved access for any or all individuals, please update accordingly using the electronic form.",
-                      'confirmation.carthage.edu',
+                      'registrar@carthage.edu',
                       ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
                       fail_silently=False)
             

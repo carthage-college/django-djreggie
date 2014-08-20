@@ -19,7 +19,9 @@ def create(request):
         
         if form.is_valid(): #If the form is valid
             if form.data['consent'] == 'NOCONSENT':
-                subject, from_email, to = 'FERPA Denial Information', 'confirmation@carthage.edu', 'zorpixfang@gmail.com'
+                subject, from_email, to = 'Subject: Directory Information Confirmation',
+                'registrar@carthage.edu',
+                'zorpixfang@gmail.com'
                 text_content = ''
                 html_content = '''Thank you for completing the form regarding your preferences for directory information, as required by FERPA.  Given that you have selected that you do not want directory information released, please note that Carthage will not be able to disclose information such as:
 <br><br><li>Dean's List accomplishments to your local newspaper</li>
