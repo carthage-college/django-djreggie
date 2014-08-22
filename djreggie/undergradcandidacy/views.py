@@ -231,17 +231,24 @@ http://www.carthage.edu/commencement/information-graduates/  ''',
             sql4 = '''UPDATE gradwalk_rec
                     SET grad_sess = "%(grad_sess)s",
                         grad_yr = "%(grad_yr)s",
-                        name_on_diploma = "%(first_name)s %(middle_initial)s %(last_name)s",
+                        name_on_diploma = (CASE WHEN "%(middle_initial)s" = "None" THEN "%(first_name)s %(last_name)s"
+                                            ELSE "%(first_name)s %(middle_initial)s %(last_name)s" END),
                         fname_pronounce = "%(first_name_pronounce)s",
                         lname_pronounce = "%(last_name_pronounce)s",
                         addr = "%(address)s %(city)s, %(state)s %(zip)s",
                         plan2walk = "%(plan_to_walk)s",
-                        major1 = "%(major1)s",
-                        major2 = "%(major2)s",
-                        major3 = "%(major3)s",
-                        minor1 = "%(minor1)s",
-                        minor2 = "%(minor2)s",
-                        minor3 = "%(minor3)s"
+                        major1 = (CASE WHEN "%(major1)s" = "None" THEN ""
+                                ELSE "%(major1)s" END),
+                        major2 = (CASE WHEN "%(major2)s" = "None" THEN ""
+                                ELSE "%(major2)s" END),
+                        major3 = (CASE WHEN "%(major3)s" = "None" THEN ""
+                                ELSE "%(major3)s" END),
+                        minor1 = (CASE WHEN "%(minor1)s" = "None" THEN ""
+                                ELSE "%(minor1)s" END),
+                        minor2 = (CASE WHEN "%(minor2)s" = "None" THEN ""
+                                ELSE "%(minor2)s" END),
+                        minor3 = (CASE WHEN "%(minor3)s" = "None" THEN ""
+                                ELSE "%(minor3)s" END)
                     WHERE id = %(student_id)s''' % (student_data)
             connection.execute(sql4)
         else:
@@ -269,16 +276,23 @@ http://www.carthage.edu/commencement/information-graduates/  ''',
                             "BA",
                             "%(grad_sess)s",
                             "%(grad_yr)s",
-                            "%(first_name)s %(middle_initial)s %(last_name)s",
+                            (CASE WHEN "%(middle_initial)s" = "None" THEN "%(first_name)s %(last_name)s"
+                            ELSE "%(first_name)s %(middle_initial)s %(last_name)s" END),
                             "%(first_name_pronounce)s",
                             "%(last_name_pronounce)s",
                             "%(address)s %(city)s, %(state)s %(zip)s",
                             "%(plan_to_walk)s",
-                            "%(major1)s",
-                            "%(major2)s",
-                            "%(major3)s",
-                            "%(minor1)s",
-                            "%(minor2)s",
-                            "%(minor3)s")''' % (student_data)
+                            (CASE WHEN "%(major1)s" = "None" THEN ""
+                            ELSE "%(major1)s" END),
+                            (CASE WHEN "%(major2)s" = "None" THEN ""
+                            ELSE "%(major2)s" END),
+                            (CASE WHEN "%(major3)s" = "None" THEN ""
+                            ELSE "%(major3)s" END),
+                            (CASE WHEN "%(minor1)s" = "None" THEN ""
+                            ELSE "%(minor1)s" END),
+                            (CASE WHEN "%(minor2)s" = "None" THEN ""
+                            ELSE "%(minor2)s" END),
+                            (CASE WHEN "%(minor3)s" = "None" THEN ""
+                            ELSE "%(minor3)s" END))''' % (student_data)
             connection.execute(sql5)
     return HttpResponse('update successful')

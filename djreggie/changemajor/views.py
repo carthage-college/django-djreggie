@@ -235,12 +235,18 @@ def set_approved(request): #for setting entry to be approved
         result = connection.execute(sql2)
         student = result.first()
         sql3 = '''UPDATE prog_enr_rec
-            SET major1 = "%(major1)s",
-                major2 = "%(major2)s",
-                major3 = "%(major3)s",
-                minor1 = "%(minor1)s",
-                minor2 = "%(minor2)s",
-                minor3 = "%(minor3)s"''' % (student)
+            SET major1 = (CASE WHEN "%(major1)s" = "None" THEN ""
+                        ELSE "%(major1)s" END),
+                major2 = (CASE WHEN "%(major2)s" = "None" THEN ""
+                        ELSE "%(major2)s" END),
+                major3 = (CASE WHEN "%(major3)s" = "None" THEN ""
+                        ELSE "%(major3)s" END),
+                minor1 = (CASE WHEN "%(minor1)s" = "None" THEN ""
+                        ELSE "%(minor1)s" END),
+                minor2 = (CASE WHEN "%(minor2)s" = "None" THEN ""
+                        ELSE "%(minor2)s" END),
+                minor3 = (CASE WHEN "%(minor3)s" = "None" THEN ""
+                        ELSE "%(minor3)s" END)''' % (student)
         if student['advisor_id']: #if advisor id exists then update that field in the database otherwise don't
             sql3 += ', adv_id = %s' % (student['advisor_id'])
         sql3 += 'WHERE id = %s' % (student['student_id'])
