@@ -102,7 +102,7 @@
             });
     });
     jQuery(".showhide").click(function() {
-        jQuery(this).parent().parent().find(".showinfo").toggle()
+        jQuery(this).parent().parent().parent().find(".showinfo").toggle()
     });
     var list = new Array();
     {% for stud in full_student_list %}
@@ -142,33 +142,35 @@
                 </div> <!-- /.panel-success -->
             </div> <!-- /.col-lg-4 -->
             {% for f in family %}
-            <h3 class="panel-title" ><b>
-                <pre>Name: {{f.name}} | Relation: {{f.relation}}
-                <br>Is allowed to see: {{f.allow}}</pre>
-            </b></h3>
-            <input type="button" class="showhide" value="Show/hide info"/>
-            <div class="showinfo">
-                <div class="panel-body">
-                    <div>
-                        Phone<pre>{{f.phone}}</pre>
-                    </div>
-                </div><!-- /.panel-body --> 
-                <div class="panel-body">
-                    <div>
-                        Email<pre>{{f.email}}</pre>
-                    </div>
-                </div><!-- /.panel-body -->
-                <div class="panel-body">
-                    <div>
-                        Date Modified<pre>{{f.datemodified}}</pre>
-                    </div>
-                </div><!-- /.panel-body -->
-                <div class="panel-body">
-                    <div>
-                        Modifier ID<pre>{{f.modified_id}}</pre>
-                    </div>
-                </div><!-- /.panel-body -->
-            </div>
+            <div><div> <!-- we need these and stuff -->
+                <h3 class="panel-title" ><b>
+                    <pre>Name: {{f.name}} | Relation: {{f.relation}}
+                    <br>Is allowed to see: {{f.allow}}</pre>
+                </b></h3>
+                <input type="button" class="showhide" value="Show/hide info"/>
+                <div class="showinfo">
+                    <div class="panel-body">
+                        <div>
+                            Phone<pre>{{f.phone}}</pre>
+                        </div>
+                    </div><!-- /.panel-body --> 
+                    <div class="panel-body">
+                        <div>
+                            Email<pre>{{f.email}}</pre>
+                        </div>
+                    </div><!-- /.panel-body -->
+                    <div class="panel-body">
+                        <div>
+                            Date Modified<pre>{{f.datemodified}}</pre>
+                        </div>
+                    </div><!-- /.panel-body -->
+                    <div class="panel-body">
+                        <div>
+                            Modifier ID<pre>{{f.modified_id}}</pre>
+                        </div>
+                    </div><!-- /.panel-body -->
+                </div>
+            </div></div>
             {% endfor %}
         </div><!-- /.row -->
     </div><!-- /.student-container -->
