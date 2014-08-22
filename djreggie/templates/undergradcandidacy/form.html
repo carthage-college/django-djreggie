@@ -65,6 +65,29 @@
             return patt.test(field.val());
         }
     }
+    
+    
+    var validate_id = create_validator('^(\\d{5,7})$');
+    var validate_name = create_validator('^([a-zA-Z]+)$');
+    var validate_mname = create_validator('^([a-zA-Z]+|[a-zA-Z]\\.?)$');
+    var validate_email = create_validator('^(?:[A-Za-z0-9\\.\\_\\%\\+\\-]+)@(?:[A-Za-z0-9\\.\\-]+)\\.(?:[A-Za-z]{2,4})$');
+    var validate_phone = create_validator('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
+    var validate_address = create_validator('^((?:[\\w+\\s\\.\\#\\,])+[\\w\\.]+)$');
+    var validate_city = create_validator('^((?:[a-zA-Z\\s?\\.?]+)[a-zA-Z]+)$');
+    var validate_state = create_validator('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
+    var validate_zip = create_validator('^([\\d]{5}|\\d{5}-?\\d{4})$');
+    
+    var validators = {"id_student_id": validate_id,
+                        "id_fname": validate_name,
+                        "id_mname": validate_mname,
+                        "id_lname": validate_name,
+                        "id_best_phone": validate_phone,
+                        "id_cell": validate_phone,
+                        "id_email": validate_email,
+                        "id_address": validate_address,
+                        "id_city": validate_city,
+                        "id_state": validate_state,
+                        "id_zipcode": validate_zip}               
     $(document).ready(function(){
         if ($("#id_best_contact").val() == "PHN")
         {
@@ -104,29 +127,6 @@
             $(".hideme").hide();
         }
     })
-    
-    var validate_id = create_validator('^(\\d{5,7})$');
-    var validate_name = create_validator('^([a-zA-Z]+)$');
-    var validate_mname = create_validator('^([a-zA-Z]+|[a-zA-Z]\\.?)$');
-    var validate_email = create_validator('^(?:[A-Za-z0-9\\.\\_\\%\\+\\-]+)@(?:[A-Za-z0-9\\.\\-]+)\\.(?:[A-Za-z]{2,4})$');
-    var validate_phone = create_validator('^((?:1?[\\s\\-\\.\\/]?\\(?(?:\\d{3})\\)?)?[\\s\\-\\.\\/]?\\d{3}[\\s\\-\\.\\/]?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
-    var validate_address = create_validator('^((?:[\\w+\\s\\.\\#\\,])+[\\w\\.]+)$');
-    var validate_city = create_validator('^((?:[a-zA-Z\\s?\\.?]+)[a-zA-Z]+)$');
-    var validate_state = create_validator('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
-    var validate_zip = create_validator('^([\\d]{5}|\\d{5}-?\\d{4})$');
-    
-    var validators = {"id_student_id": validate_id,
-                        "id_fname": validate_name,
-                        "id_mname": validate_mname,
-                        "id_lname": validate_name,
-                        "id_best_phone": validate_phone,
-                        "id_cell": validate_phone,
-                        "id_email": validate_email,
-                        "id_address": validate_address,
-                        "id_city": validate_city,
-                        "id_state": validate_state,
-                        "id_zipcode": validate_zip}               
-    
     $($.map($('[id$="yes"]'), function (thing) {return '#id_' + thing.id.replace('_yes','');}).join()).change(function() {
         if(!validators[$(this).attr('id')]($(this)))
         {
