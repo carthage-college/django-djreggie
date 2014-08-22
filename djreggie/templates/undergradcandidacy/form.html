@@ -66,6 +66,25 @@
         }
     }
     $(document).ready(function(){
+        if ($("#id_best_contact").val() == "PHN")
+        {
+            $(".contact").show();
+            $(".phonec").show();
+            $(".emailc").hide();
+            validators['id_best_contact_value'] = validate_phone;
+        }
+        else if ($("#id_best_contact").val() == "EML")
+        {
+            $(".contact").show();
+            $(".phonec").hide();
+            $(".emailc").show();
+            validators['id_best_contact_value'] = validate_email;
+        }
+        else
+        {
+            $(".contact").hide();
+            delete(validators['id_best_contact_value']);
+        }
         if($("[name = will_teach]:checked").val() == "Y")
             {
                 $(".hideme").show();
@@ -147,46 +166,7 @@
             $(".contact").hide();
             delete(validators['id_best_contact_value']);
         }
-        $.ajax({url: "{% url 'contact' %}",
-            data: {'id': $('#id_student_id').val(), 'aa': $('#id_best_contact :selected').val()},
-            success: function(data){
-                if(data != "")
-                {
-                    var data_dict = {};
-                    var splitdict = data.split(",");
-                    for (thing in splitdict)
-                    {
-                        var pair = splitdict[thing].split(":");
-                        data_dict[pair[0]] = ""+pair[1];
-                    }
-                    if ($("#id_best_contact :selected").val() == "EML2")
-                    {
-                        $("#id_best_contact_value").val(data_dict['line1']);
-                    }
-                    else if ($("#id_best_contact :selected").val() == "PGDN")
-                    {
-                        $("#id_best_contact_value").val(data_dict['line2'] + data_dict['line3'] + data_dict['city'] + ',' + data_dict['st'] + data_dict['zip']);
-                        if ($("#id_best_contact_value").val() == ",")
-                        {
-                            $("#id_best_contact_value").val("");
-                        }
-                    }
-                    else if ($("#id_best_contact :selected").val() != "")
-                    {
-                        $("#id_best_contact_value").val(data_dict['line1'] + data_dict['line2'] + data_dict['city'] + ',' + data_dict['st'] + data_dict['zip']);
-                        if ($("#id_best_contact_value").val() == ",")
-                        {
-                            $("#id_best_contact_value").val("");
-                        }
-                    }
-                }
-                else
-                {
-                    $("#id_best_contact_value").val("")
-                }
-            }
-        });
-        });
+    });
     //{% if valid_class = 'N' %}
         alert('You are not a junior or senior');
     //{% endif %}

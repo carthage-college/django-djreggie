@@ -19,8 +19,6 @@ def index(request):
     if request.POST: #If we do a POST
         form = UndergradForm(request.POST) #Scrape the data from the form and save it in a variable
         
-        
-        
         if form.is_valid(): #If the form is valid
             form.save()
             #email on valid submit

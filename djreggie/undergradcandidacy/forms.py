@@ -32,17 +32,6 @@ class UndergradForm(forms.ModelForm):
             raise forms.ValidationError('Please enter just a last name.')
         return data
     
-    def clean_best_phone(self):
-        data = self.cleaned_data['best_phone']
-        if not re.match(r'^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4})$', data):
-            raise forms.ValidationError('Enter a valid phone number')
-        return data
-    
-    def clean_cell(self):
-        data = self.cleaned_data['cell']
-        if not re.match(r'^(\d{4}|\d{3}[\s\-\.]?\d{4}|1?[\s\-\.]?\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4})$', data):
-            raise forms.ValidationError('Enter a valid phone number')
-        return data
     
     def clean_state(self):
         data = self.cleaned_data['state']
@@ -69,6 +58,19 @@ class UndergradForm(forms.ModelForm):
                 self.errors['year_teach'] = self.error_class(['This field is required'])
             if not cleaned_data.get('term'):
                 self.errors['term'] = self.error_class(['This field is required'])
+                
+        if cleaned_data.get('best_contact') == 'EML':
+            if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', cleaned_data.get('best_contact_value')):
+                self.errors['best_contact_value'] = self.error_class(['You must enter a valid email address'])
+                del cleaned_data['best_contact_value']
+        elif cleaned_data.get('best_contact') == 'PHN':
+            if not re.match(r'^((?:1?[\s\-\.\/]?\(?(?:\d{3})\)?)?[\s\-\.\/]?\d{3}[\s\-\.\/]?\d{4}(?:\s?(?:x|ext|\.)?\s?\d{4})?)$',
+                            cleaned_data.get('best_contact_value')):
+                self._errors['best_contact_value'] = self.error_class(['You must enter a valid phone number'])
+                del cleaned_data['best_contact_value']
+        else:
+            self.errors['best_contact'] = self.error_class(['This field is required'])
+                
         return cleaned_data
     
     #Global options for the form    
