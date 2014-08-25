@@ -162,49 +162,13 @@ def student(request, student_id): #admin details page
         'family2': family2,
         'full_student_list': get_all_students(),
     })
-@csrf_exempt
-def advisor_results(request, student_id):
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
-    #get entry's info
-    sql = '''SELECT ff.*,
-                    id_rec.firstname,
-                    id_rec.lastname,
-                    id_rec.addr_line1,
-                    id_rec.addr_line2,
-                    id_rec.city,
-                    id_rec.st,
-                    id_rec.zip,
-                    id_rec.ctry,
-                    id_rec.phone
-            FROM cc_stg_ferpafamily AS ff
-            INNER JOIN id_rec
-            ON ff.student_id = id_rec.id
-            WHERE ff.student_id = %s''' % (student_id)
-    student = connection.execute(sql)
-    sql2 = '''SELECT ff_rec.*
-            FROM cc_stg_ferpafamily_rec AS ff_rec
-            INNER JOIN cc_stg_ferpafamily AS ff
-            ON ff_rec.ferpafamily_no = ff.ferpafamily_no
-            WHERE ff.student_id = %s''' % (student_id)
-    family = connection.execute(sql2)
-    return render(request, 'consentfam/mresults.html', {
-        'student': student.first(),
-        'family': family,
-        'submitted': True,
-    })
 
 @csrf_exempt
 def search(request): #admin details page accessed through search bar
     return student(request, request.POST['cid'])
 
 @csrf_exempt
-def msearch(request):
-    return advisor_results(request, request.POST['cid'])
-
-@csrf_exempt
 def advisor_search(request):
-    #return advisor_results(request, request.POST['cid'])
     return render(request, 'consentfam/advisorsearch.html', {
         'full_student_list': get_all_students(),
     })
