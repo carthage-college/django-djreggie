@@ -13,7 +13,7 @@ from django.core.mail import send_mail
 from django.core.context_processors import csrf
 from django.template import RequestContext  # For CSRF
 from django.views.decorators.csrf import csrf_exempt
-
+from djzbar.utils.mssql import get_userid
 
 def create(request):
     #For info on setting up formsets, see this link: http://goo.gl/Oz53K2
@@ -52,7 +52,7 @@ def create(request):
         form = ModelForm()
         
         if request.GET: #If we do a GET
-            sql = 'SELECT id_rec.id, id_rec.fullname FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_id']))
+            sql = 'SELECT id_rec.id, id_rec.fullname FROM id_rec WHERE id_rec.id = %d' % (int(get_userid(request.GET['student_id'])))
             student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             for thing in student: #Put in database values for the hidden fields
                 form.fields['student_id'].initial = thing['id']
@@ -62,7 +62,7 @@ def create(request):
                     FROM cc_stg_ferpafamily_rec AS ff_rec
                     INNER JOIN cc_stg_ferpafamily AS ff
                     ON ff_rec.ferpafamily_no = ff.ferpafamily_no
-                    WHERE ff.student_id = %s''' % (request.GET['student_id'])
+                    WHERE ff.student_id = %s''' % (get_userid(request.GET['student_id']))
             family = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             #making dict of data for setting formset's initial data
             data = {'Parent_or_Third_Party_Name-TOTAL_FORMS': '1',

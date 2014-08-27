@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt # For CSRF
 from django.template import RequestContext  # For CSRF
 from django.core.mail import send_mail
 from djzbar.utils.informix import do_sql
-
+from djzbar.utils.mssql import get_userid
 def create(request):
     if request.POST: #If we do a POST            
         #(a, created) = ChangeModel.objects.get_or_create(student_id=request.POST[student_id])
@@ -57,7 +57,7 @@ FROM id_rec IDrec   INNER JOIN  prog_enr_rec    PROGrec ON  IDrec.id        =   
                     LEFT JOIN   minor_table     minor1  ON  PROGrec.minor1  =   minor1.minor
                     LEFT JOIN   minor_table     minor2  ON  PROGrec.minor2  =   minor2.minor
                     LEFT JOIN   minor_table     minor3  ON  PROGrec.minor3  =   minor3.minor
-WHERE IDrec.id = %d''' % (int(request.GET['student_id'])) #hvae to have ?student_id= in url for now
+WHERE IDrec.id = %d''' % (int(get_userid(request.GET['student_id']))) #hvae to have ?student_id= in url for now
             student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             for thing in student: # set initial data based on student
                 form.fields['student_id'].initial = thing['id']

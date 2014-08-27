@@ -52,7 +52,7 @@ FROM id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
 					LEFT JOIN	minor_table		minor1	ON	PROGrec.minor1	=	minor1.minor
 					LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
 					LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
-WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
+WHERE IDrec.id = %d''' % (int(get_userid(request.GET['student_id'])))
             student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             
             for thing in student: #set student's initial data
@@ -74,7 +74,7 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id']))
                             ELSE 'N'
                         END AS valid_class
                     FROM prog_enr_rec
-                    WHERE prog_enr_rec.id = %s''' % (request.GET['student_id'])
+                    WHERE prog_enr_rec.id = %s''' % (get_userid(request.GET['student_id']))
             class_standing = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             valid_class = class_standing.first()['valid_class']
         

@@ -9,6 +9,7 @@ from django import forms
 from django.core.mail import EmailMultiAlternatives #We do this instead of send_mail because we need HTML (bullets)
 from django.views.decorators.csrf import csrf_exempt
 from djzbar.utils.informix import do_sql
+from djzbar.utils.mssql import get_userid
 #Need to include the form object
 from form import ModelForm
 from models import Form
@@ -41,11 +42,11 @@ def create(request):
             })
     else:
         form = ModelForm()
-        sql = 'SELECT id_rec.id FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_id']))
+        sql = 'SELECT id_rec.id FROM id_rec WHERE id_rec.id = %d' % (int(get_userid(request.GET['student_id'])))
         student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         for thing in student:
             form.fields['student_ID'].initial = thing['id']
-        sql2 = 'SELECT cc_stg_ferpadirectory.consent FROM cc_stg_ferpadirectory WHERE cc_stg_ferpadirectory.student_id = %d' % (int(request.GET['student_id']))
+        sql2 = 'SELECT cc_stg_ferpadirectory.consent FROM cc_stg_ferpadirectory WHERE cc_stg_ferpadirectory.student_id = %d' % (int(get_userid(request.GET['student_id'])))
         student2 = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         for thing in student2:
             if thing['consent'] == "N":
