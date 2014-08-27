@@ -1,12 +1,11 @@
 from django.db import models
 from datetime import date
-from djzbar.settings import INFORMIX_EARL_TEST
+from djzbar import settings
+from djreggie import settings
 from sqlalchemy import create_engine
+from djzbar.utils.informix import do_sql
 # Create your models here.
 # Each class will exist in a separate table in the database
-#SQL Alchemy
-engine = create_engine(INFORMIX_EARL_TEST)
-connection = engine.connect()
 
 #The main fields in the form are in this class listed below
 class UndergradModel(models.Model):
@@ -23,9 +22,6 @@ class UndergradModel(models.Model):
     lnamepro = models.CharField(max_length=200)
     student_id = models.PositiveIntegerField() #Only positive numbers are valid
     
-    #SQL Alchemy
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     
     #Majors
     sql1 = "SELECT txt, major from major_table \
@@ -33,7 +29,7 @@ class UndergradModel(models.Model):
            AND LENGTH(txt) > 0 \
            AND web_display = 'Y' \
            ORDER BY txt ASC"
-    major = connection.execute(sql1)
+    major = do_sql(sql1, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     CHOICES1 = tuple((row['major'], row['txt']) for row in major)
     
     #Minors
@@ -42,7 +38,7 @@ class UndergradModel(models.Model):
            AND LENGTH(txt) > 0 \
            AND web_display = 'Y' \
            ORDER BY txt ASC"
-    minor = connection.execute(sql2)
+    minor = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     CHOICES2 = tuple((row['minor'], row['txt']) for row in minor)
     
     major1 = models.CharField(max_length=200, choices=CHOICES1)
@@ -111,9 +107,8 @@ class UndergradModel(models.Model):
     city = models.CharField(max_length=200)
     
     sql3 = "SELECT * FROM st_table WHERE NVL(low_zone,1) > 1 AND NVL(high_zone,1) > 0 ORDER BY txt ASC"
-    state = connection.execute(sql3)  
+    state = do_sql(sql3, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)  
     CHOICESST = tuple((row['st'], row['txt']) for row in state)    
-    connection.close()   
     
     state = models.CharField(max_length=2, choices=CHOICESST)
     zipcode = models.PositiveIntegerField(max_length=5,
@@ -125,8 +120,6 @@ class UndergradModel(models.Model):
         return '%s, %s %d' % (self.lname, self.fname, self.student_id)
     
     def save(self): #put data into staging tables
-        engine = create_engine(INFORMIX_EARL_TEST)
-        connection = engine.connect()
         sql = '''INSERT INTO cc_stg_undergrad_candidacy (student_id, first_name, middle_initial, last_name, first_name_pronounce, last_name_pronounce, major1, major2, major3, minor1, minor2, minor3, plan_to_walk, grad_yr, grad_sess, prog, aa, aa_value, address, city, state, zip, datecreated)
         VALUES (%(student_id)s, "%(fname)s", "%(mname)s", "%(lname)s", "%(fnamepro)s", "%(lnamepro)s", "%(major1)s", "%(major2)s", "%(major3)s", "%(minor1)s", "%(minor2)s", "%(minor3)s", "%(participate_in_graduation)s", "%(grad_yr)s", "%(grad_session)s", "%(will_teach)s", "%(best_contact)s", "%(best_contact_value)s", "%(address)s", "%(city)s", "%(state)s", "%(zipcode)s", CURRENT)''' % (self.__dict__)
-        connection.execute(sql)
+        do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)

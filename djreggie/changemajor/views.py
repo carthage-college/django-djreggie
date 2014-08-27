@@ -4,11 +4,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from forms import ChangeForm
 from models import ChangeModel
 from djzbar.settings import INFORMIX_EARL_TEST
+from djreggie import settings
 from sqlalchemy import create_engine
 from django.core.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt # For CSRF
 from django.template import RequestContext  # For CSRF
 from django.core.mail import send_mail
+from djzbar.utils.informix import do_sql
 
 def create(request):
     if request.POST: #If we do a POST            
@@ -17,13 +19,11 @@ def create(request):
         
         if form.is_valid(): #If the form is valid
             if form.cleaned_data['advisor'] != '': #if they put in an new advisor
-                engine = create_engine(INFORMIX_EARL_TEST)
-                connection = engine.connect()
                 #get new advisor's email
                 advisor_sql = '''SELECT TRIM(aa_rec.line1) AS email
                                 FROM aa_rec
                                 WHERE id = %s''' % (form.cleaned_data['advisor'])
-                advisor = connection.execute(advisor_sql)
+                advisor = do_sql(advisor_sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
                 advisor_email = advisor.first()['email']
                 connection.close()
                 #email new advisor
@@ -44,8 +44,6 @@ def create(request):
     else: #This is for the first time you go to the page. It sets it all up
         form = ChangeForm()
         if request.GET:
-            engine = create_engine(INFORMIX_EARL_TEST)
-            connection = engine.connect()
             #gets student's id, name, and current majors/minors
             sql = '''SELECT IDrec.id, IDrec.fullname, major1.major AS major1code,
                     TRIM(major1.txt) AS major1, major2.major AS major2code, TRIM(major2.txt) AS major2,
@@ -60,7 +58,7 @@ FROM id_rec IDrec   INNER JOIN  prog_enr_rec    PROGrec ON  IDrec.id        =   
                     LEFT JOIN   minor_table     minor2  ON  PROGrec.minor2  =   minor2.minor
                     LEFT JOIN   minor_table     minor3  ON  PROGrec.minor3  =   minor3.minor
 WHERE IDrec.id = %d''' % (int(request.GET['student_id'])) #hvae to have ?student_id= in url for now
-            student = connection.execute(sql)
+            student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             for thing in student: # set initial data based on student
                 form.fields['student_id'].initial = thing['id']
                 form.fields['name'].initial = thing['fullname']
@@ -82,15 +80,12 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id'])) #hvae to have ?student
                 form.fields['minor1'].initial = thing['minor1code']
                 form.fields['minor2'].initial = thing['minor2code']
                 form.fields['minor3'].initial = thing['minor3code']
-            connection.close()
         
 
     form.fields['student_id'].widget = forms.HiddenInput()
     form.fields['name'].widget = forms.HiddenInput()
     form.fields['majorlist'].widget = forms.HiddenInput()
     form.fields['minorlist'].widget = forms.HiddenInput()
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     #get list of valid advisors for jquery autocomplete
     sql2 = '''SELECT UNIQUE id_rec.id, TRIM(id_rec.firstname) AS firstname, TRIM(id_rec.lastname) AS lastname
             FROM job_rec
@@ -98,7 +93,7 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id'])) #hvae to have ?student
             WHERE hrstat = 'FT'
             AND TODAY BETWEEN job_rec.beg_date AND NVL(job_rec.end_date, TODAY)
             ORDER BY lastname, firstname'''
-    advisor_list = connection.execute(sql2)
+    advisor_list = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     
     return render(request, 'changemajor/form.html', {
         'form': form,
@@ -107,22 +102,18 @@ WHERE IDrec.id = %d''' % (int(request.GET['student_id'])) #hvae to have ?student
     })
 
 def get_all_students(): #function to get a list of all entries in table for use in jquery autocomplete
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     sql = '''SELECT id_rec.firstname, id_rec.lastname, cm.student_id
             FROM cc_stg_changemajor AS cm
             INNER JOIN id_rec
             ON cm.student_id = id_rec.id'''
-    return connection.execute(sql)
+    return do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
 
 def admin(request): #the function for the main admin page
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     if request.POST: #if the delete button was clicked. remove entry from database
         sql2 = '''DELETE FROM cc_stg_changemajor
                 WHERE changemajor_no = %s''' % (request.POST['record'])
-        connection.execute(sql2)
+        do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     #get all entries in database along with advisor full name and major/minor full text
     sql = '''SELECT cm.*, 
                     id_rec.firstname,
@@ -153,15 +144,13 @@ def admin(request): #the function for the main admin page
             LEFT JOIN minor_table AS minors3
             ON cm.minor3 = minors3.minor
             ORDER BY cm.approved, cm.datecreated DESC'''
-    student = connection.execute(sql)
+    student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'changemajor/home.html', {
         'student': student,
         'full_student_list': get_all_students(),
     })
 
 def student(request, student_id): #admin details page
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     sql = '''SELECT cm.*,
                     id_rec.firstname,
                     id_rec.lastname,
@@ -202,9 +191,9 @@ FROM cc_stg_changemajor
     LEFT JOIN minor_table minor2 ON cc_stg_changemajor.minor2 = minor2.minor
     LEFT JOIN minor_table minor3 ON cc_stg_changemajor.minor3 = minor3.minor
 WHERE cc_stg_changemajor.student_id = %s'''  % (student_id)
-    student = connection.execute(sql)
-    majors = connection.execute(sql2)
-    reqmajors = connection.execute(sql3)
+    student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+    majors = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+    reqmajors = do_sql(sql3, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'changemajor/details.html', {
         'student': student.first(),
         'majors': majors.first(),
@@ -217,12 +206,10 @@ def search(request): #admin details page access through search bar
 
 @csrf_exempt
 def set_approved(request): #for setting entry to be approved
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     sql = '''UPDATE cc_stg_changemajor
             SET approved="%(approved)s", datemodified=CURRENT
             WHERE changemajor_no = %(id)s''' % (request.POST)
-    connection.execute(sql)
+    do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     if request.POST["approved"] == "Y":
         send_mail("Congratulations - Major/Minor Change Accepted",
               "Please accept this email as notification that your change of Major/Minor has been accepted by the Registrar's Office and your record has been updated.  Given this approved change, you should be able to view your updated graduation requirements within your Degree Audit (which is accessible through my.carthage.edu).",	      
@@ -232,7 +219,7 @@ def set_approved(request): #for setting entry to be approved
         sql2 = '''SELECT *
                 FROM cc_stg_changemajor
                 WHERE changemajor_no = %s''' % (request.POST['id'])
-        result = connection.execute(sql2)
+        result = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         student = result.first()
         sql3 = '''UPDATE prog_enr_rec
             SET major1 = (CASE WHEN "%(major1)s" = "None" THEN ""
@@ -250,5 +237,5 @@ def set_approved(request): #for setting entry to be approved
         if student['advisor_id']: #if advisor id exists then update that field in the database otherwise don't
             sql3 += ', adv_id = %s' % (student['advisor_id'])
         sql3 += 'WHERE id = %s' % (student['student_id'])
-        connection.execute(sql3)
+        do_sql(sql3, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return HttpResponse('update successful')

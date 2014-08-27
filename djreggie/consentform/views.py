@@ -2,12 +2,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from djzbar.settings import INFORMIX_EARL_TEST
+from djzbar import settings
+from djreggie import settings
 from sqlalchemy import create_engine
 from django import forms
 from django.core.mail import EmailMultiAlternatives #We do this instead of send_mail because we need HTML (bullets)
 from django.views.decorators.csrf import csrf_exempt
-
+from djzbar.utils.informix import do_sql
 #Need to include the form object
 from form import ModelForm
 from models import Form
@@ -19,9 +20,9 @@ def create(request):
         
         if form.is_valid(): #If the form is valid
             if form.data['consent'] == 'NOCONSENT':
-                subject, from_email, to = 'Subject: Directory Information Confirmation',
-                'registrar@carthage.edu',
-                'zorpixfang@gmail.com'
+                subject, from_email, to = 'Subject: Directory Information Confirmation',\
+                'registrar@carthage.edu',\
+                'mkauth@carthage.edu'
                 text_content = ''
                 html_content = '''Thank you for completing the form regarding your preferences for directory information, as required by FERPA.  Given that you have selected that you do not want directory information released, please note that Carthage will not be able to disclose information such as:
 <br><br><li>Dean's List accomplishments to your local newspaper</li>
@@ -40,20 +41,17 @@ def create(request):
             })
     else:
         form = ModelForm()
-        engine = create_engine(INFORMIX_EARL_TEST)
-        connection = engine.connect()
         sql = 'SELECT id_rec.id FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_id']))
-        student = connection.execute(sql)
+        student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         for thing in student:
             form.fields['student_ID'].initial = thing['id']
         sql2 = 'SELECT cc_stg_ferpadirectory.consent FROM cc_stg_ferpadirectory WHERE cc_stg_ferpadirectory.student_id = %d' % (int(request.GET['student_id']))
-        student2 = connection.execute(sql2)
+        student2 = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         for thing in student2:
             if thing['consent'] == "N":
                 form.fields['consent'].initial = "NOCONSENT"
             else:
                 form.fields['consent'].initial = "CONSENT"
-        connection.close()
         form.fields['student_ID'].widget = forms.HiddenInput()
 
     return render(request, 'consentform/form.html', {
@@ -88,20 +86,17 @@ def mobile(request):
             })
     else:
         form = ModelForm()
-        engine = create_engine(INFORMIX_EARL_TEST)
-        connection = engine.connect()
         sql = 'SELECT id_rec.id FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_id']))
-        student = connection.execute(sql)
+        student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         for thing in student:
             form.fields['student_ID'].initial = thing['id']
         sql2 = 'SELECT cc_stg_ferpadirectory.consent FROM cc_stg_ferpadirectory WHERE cc_stg_ferpadirectory.student_id = %d' % (int(request.GET['student_id']))
-        student2 = connection.execute(sql2)
+        student2 = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         for thing in student2:
             if thing['consent'] == "N":
                 form.fields['consent'].initial = "NOCONSENT"
             else:
                 form.fields['consent'].initial = "CONSENT"
-        connection.close()
         form.fields['student_ID'].widget = forms.HiddenInput()
 
     return render(request, 'consentform/mobile.html', {
@@ -110,35 +105,29 @@ def mobile(request):
     })
 
 def get_all_students():
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     sql = '''SELECT id_rec.firstname, id_rec.lastname, cf.student_id
             FROM cc_stg_ferpadirectory AS cf
             INNER JOIN id_rec
             ON cf.student_id = id_rec.id'''
-    return connection.execute(sql)
+    return do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
 def admin(request):
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     if request.POST:
         sql2 = '''DELETE FROM cc_stg_ferpadirectory
                 WHERE ferpadirectory_no = %s''' % (request.POST['record'])
-        connection.execute(sql2)
+        do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     sql = '''SELECT fd.*, id_rec.firstname, id_rec.lastname
             FROM cc_stg_ferpadirectory AS fd
             INNER JOIN id_rec
             ON fd.student_id = id_rec.id
             ORDER BY fd.datecreated DESC'''
-    student = connection.execute(sql)
+    student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'consentform/home.html', {
         'student': student,
         'full_student_list': get_all_students(),
     })
 
 def student(request, student_id):
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     sql = '''SELECT fd.*,
                     id_rec.firstname,
                     id_rec.lastname,
@@ -153,7 +142,7 @@ def student(request, student_id):
             INNER JOIN id_rec
             ON fd.student_id = id_rec.id
             WHERE fd.student_id = %s''' % (student_id)
-    student = connection.execute(sql)
+    student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'consentform/details.html', {
         'student': student.first(),
         'full_student_list': get_all_students(),

@@ -1,8 +1,9 @@
 #Need this
 from django.db import models
-from djzbar.settings import INFORMIX_EARL_TEST
+from djzbar import settings
+from djreggie import settings
 from sqlalchemy import create_engine
-
+from djzbar.utils.informix import do_sql
 
 
 class ChangeModel(models.Model):
@@ -12,9 +13,6 @@ class ChangeModel(models.Model):
     minorlist = models.CharField(max_length=1000,blank=True,null=True)
     advisor = models.CharField(max_length=200, null=True, blank=True)
        
-    #SQL Alchemy
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     
     #Majors
     sql1 = "SELECT txt, major from major_table \
@@ -22,7 +20,7 @@ class ChangeModel(models.Model):
            AND LENGTH(txt) > 0 \
            AND web_display = 'Y' \
            ORDER BY txt ASC"
-    major = connection.execute(sql1)
+    major = do_sql(sql1, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     CHOICES1 = tuple((row['major'], row['txt']) for row in major)
     
     #Minors
@@ -31,7 +29,7 @@ class ChangeModel(models.Model):
            AND LENGTH(txt) > 0 \
            AND web_display = 'Y' \
            ORDER BY txt ASC"
-    minor = connection.execute(sql2)
+    minor = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     CHOICES2 = tuple((row['minor'], row['txt']) for row in minor)
     major1 = models.CharField(max_length=200, choices=CHOICES1, db_column='major1')
     minor1 = models.CharField(max_length=200,
@@ -65,9 +63,7 @@ class ChangeModel(models.Model):
     
 
     def save(self):
-        engine = create_engine(INFORMIX_EARL_TEST)
-        connection = engine.connect()
         #put data in staging tables
         sql = '''INSERT INTO cc_stg_changemajor (student_id, major1, major2, major3, minor1, minor2, minor3, advisor_id, datecreated)
         VALUES (%(student_id)s, "%(major1)s", "%(major2)s", "%(major3)s", "%(minor1)s", "%(minor2)s", "%(minor3)s", "%(advisor)s", CURRENT)''' % (self.__dict__)
-        connection.execute(sql)
+        do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)

@@ -1,9 +1,9 @@
 from django.db import models
-from djzbar.settings import INFORMIX_EARL_TEST
+from djzbar import settings
+from djreggie import settings
+from djzbar.utils.informix import do_sql
 from sqlalchemy import create_engine
 
-engine = create_engine(INFORMIX_EARL_TEST)
-connection = engine.connect()
 
 #My model with the fields I will find in the form
 class Form(models.Model):
@@ -14,11 +14,9 @@ class Form(models.Model):
     consent = models.CharField(max_length = 9) #This renders as a select box
     
     def save(self):
-        engine = create_engine(INFORMIX_EARL_TEST) #This is how we save to the database
-        connection = engine.connect()
         sql = '''INSERT INTO cc_stg_ferpadirectory (student_id, consent, datecreated)
         VALUES (%(student_ID)s, "%(consent)s", CURRENT)''' % (self.__dict__)
-        connection.execute(sql)
+        do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         sql2 = '''UPDATE profile_rec
                 SET priv_code = '''
         if self.__dict__['consent'] == "NOCONSENT":
@@ -26,4 +24,4 @@ class Form(models.Model):
         else:
             sql2 += '""'
         sql2 += 'WHERE id = %s' % (self.__dict__['student_ID'])
-        connection.execute(sql2)
+        do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)

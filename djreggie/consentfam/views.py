@@ -4,7 +4,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from djreggie.consentfam.form import ModelForm, Parent
 from djreggie.consentfam.models import ConsentModel, ParentForm
-from djzbar.settings import INFORMIX_EARL_TEST
+from djzbar import settings
+from djreggie import settings
+from djzbar.utils.informix import do_sql
 from sqlalchemy import create_engine
 from django.forms.formsets import formset_factory, BaseFormSet #For formsets
 from django.core.mail import send_mail
@@ -33,10 +35,8 @@ def create(request):
                       fail_silently=False)
             
             form.save()        #Save the form data to the datbase table            
-            engine = create_engine(INFORMIX_EARL_TEST)
-            connection = engine.connect()
             sql1 = 'SELECT ferpafamily_no FROM cc_stg_ferpafamily WHERE student_id = %s ORDER BY ferpafamily_no DESC' % (form.cleaned_data['student_id'])
-            stud = connection.execute(sql1)
+            stud = do_sql(sql1, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             prim_key = stud.first()['ferpafamily_no']
             for f in Parent_formset:#This is how we save formset data, since there are multiple forms in a formset
                 f.cleaned_data['form'] = prim_key
@@ -52,10 +52,8 @@ def create(request):
         form = ModelForm()
         
         if request.GET: #If we do a GET
-            engine = create_engine(INFORMIX_EARL_TEST)
-            connection = engine.connect() #Set up to make a sql call where we get fields based on the ID in the url
             sql = 'SELECT id_rec.id, id_rec.fullname FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['student_id']))
-            student = connection.execute(sql)
+            student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             for thing in student: #Put in database values for the hidden fields
                 form.fields['student_id'].initial = thing['id']
                 form.fields['full_name'].initial = thing['fullname']
@@ -65,7 +63,7 @@ def create(request):
                     INNER JOIN cc_stg_ferpafamily AS ff
                     ON ff_rec.ferpafamily_no = ff.ferpafamily_no
                     WHERE ff.student_id = %s''' % (request.GET['student_id'])
-            family = connection.execute(sql2)
+            family = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             #making dict of data for setting formset's initial data
             data = {'Parent_or_Third_Party_Name-TOTAL_FORMS': '1',
                     'Parent_or_Third_Party_Name-INITIAL_FORMS': '0',
@@ -78,7 +76,6 @@ def create(request):
                 data['Parent_or_Third_Party_Name-'+str(count)+'-relation'] = person['relation']
                 data['Parent_or_Third_Party_Name-TOTAL_FORMS'] = count + 1
             Parent_formset = ParentFormSet(data, prefix='Parent_or_Third_Party_Name')
-            connection.close()
         form.fields['student_id'].widget = forms.HiddenInput()
         form.fields['full_name'].widget = forms.HiddenInput()
 
@@ -99,40 +96,34 @@ def submitted(request):
     return render(request, 'consentfam/form.html')
 
 def get_all_students(): #gets all entries in table for use by jquery autocomplete
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     sql = '''SELECT id_rec.firstname, id_rec.lastname, cf.student_id
             FROM cc_stg_ferpafamily AS cf
             INNER JOIN id_rec
             ON cf.student_id = id_rec.id'''
-    return connection.execute(sql)
+    return do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
 
 def admin(request): #main admin page
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     if  request.POST: #if delete button was clicked. removes entry from database and all other entries associated with it
         sql2 = '''DELETE FROM cc_stg_ferpafamily_rec
                 WHERE ferpafamily_no = %s''' % (request.POST['record'])
-        connection.execute(sql2)
+        do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         sql3 = '''DELETE FROM cc_stg_ferpafamily
                 WHERE ferpafamily_no = %s''' % (request.POST['record'])
-        connection.execute(sql3)
+        do_sql(sql3, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     #get all entries from database
     sql = '''SELECT ff.*, id_rec.firstname, id_rec.lastname
             FROM cc_stg_ferpafamily AS ff
             INNER JOIN id_rec
             ON ff.student_id = id_rec.id
             ORDER BY ff.approved, ff.datecreated DESC'''
-    student = connection.execute(sql)
+    student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'consentfam/home.html', {
         'student': student,
         'full_student_list': get_all_students(),
     })
 
 def student(request, student_id): #admin details page
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     #get entry's info
     sql = '''SELECT ff.*,
                     id_rec.firstname,
@@ -148,14 +139,14 @@ def student(request, student_id): #admin details page
             INNER JOIN id_rec
             ON ff.student_id = id_rec.id
             WHERE ff.student_id = %s''' % (student_id)
-    student = connection.execute(sql)
+    student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     sql2 = '''SELECT ff_rec.*
             FROM cc_stg_ferpafamily_rec AS ff_rec
             INNER JOIN cc_stg_ferpafamily AS ff
             ON ff_rec.ferpafamily_no = ff.ferpafamily_no
             WHERE ff.student_id = %s''' % (student_id)
-    family = connection.execute(sql2)
-    family2 = connection.execute(sql2)
+    family = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+    family2 = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'consentfam/details.html', {
         'student': student.first(),
         'family': family,
@@ -164,8 +155,6 @@ def student(request, student_id): #admin details page
     })
 @csrf_exempt
 def advisor_results(request, student_id):
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     #get entry's info
     sql = '''SELECT ff.*,
                     id_rec.firstname,
@@ -181,13 +170,13 @@ def advisor_results(request, student_id):
             INNER JOIN id_rec
             ON ff.student_id = id_rec.id
             WHERE ff.student_id = %s''' % (student_id)
-    student = connection.execute(sql)
+    student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     sql2 = '''SELECT ff_rec.*
             FROM cc_stg_ferpafamily_rec AS ff_rec
             INNER JOIN cc_stg_ferpafamily AS ff
             ON ff_rec.ferpafamily_no = ff.ferpafamily_no
             WHERE ff.student_id = %s''' % (student_id)
-    family = connection.execute(sql2)
+    family = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'consentfam/mresults.html', {
         'student': student.first(),
         'family': family,
@@ -211,21 +200,17 @@ def advisor_search(request):
 
 @csrf_exempt
 def set_approved(request):
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     sql = '''UPDATE cc_stg_ferpafamily
             SET approved="%(approved)s", datemodified=CURRENT
             WHERE ferpafamily_no = %(id)s''' % (request.POST)
-    connection.execute(sql)
+    do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return HttpResponse('update successful')
 
 
 @csrf_exempt
 def family_set_approved(request):
-    engine = create_engine(INFORMIX_EARL_TEST)
-    connection = engine.connect()
     sql = '''UPDATE cc_stg_ferpafamily_rec
             SET approved="%(approved)s", datemodified=CURRENT
             WHERE ferpafamilyrec_no = %(id)s''' % (request.POST)
-    connection.execute(sql)
+    do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return HttpResponse('update successful')

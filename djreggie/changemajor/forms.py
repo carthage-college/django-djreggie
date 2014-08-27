@@ -2,9 +2,10 @@
 from django import forms
 from django.core import validators #Need this for validation
 import re
-from djzbar.settings import INFORMIX_EARL_TEST
+from djzbar import settings
+from djreggie import settings
 from sqlalchemy import create_engine
-
+from djzbar.utils.informix import do_sql
 from djreggie.changemajor.models import ChangeModel
 
 class ChangeForm(forms.ModelForm):
@@ -29,8 +30,6 @@ class ChangeForm(forms.ModelForm):
         #make sure there is something in data so there wont be an error with the sql
         advisor_name = data.split(', ')
         if len(advisor_name) == 2:
-            engine = create_engine(INFORMIX_EARL_TEST)
-            connection = engine.connect()
             #try to find advisor id in database to see if this id is for a valid advisor
             sql = '''SELECT job_rec.id AS id
                     FROM job_rec
@@ -39,7 +38,7 @@ class ChangeForm(forms.ModelForm):
                     AND TODAY BETWEEN job_rec.beg_date AND NVL(job_rec.end_date, TODAY)
                     AND id_rec.firstname = "%s"
                     AND id_rec.lastname = "%s"''' % (advisor_name[1], advisor_name[0])
-            result = connection.execute(sql)
+            result = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             advisor = result.first()
             if not advisor:
                 raise forms.ValidationError('Please enter a valid advisor')

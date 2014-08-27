@@ -6,7 +6,9 @@ from djreggie.consentfam.models import ConsentModel, ParentForm  #Include the mo
 from django.core.exceptions import ValidationError
 from django.core import validators
 import re
-from djzbar.settings import INFORMIX_EARL_TEST
+from djzbar import settings
+from djreggie import settings
+from djzbar.utils.informix import do_sql
 from sqlalchemy import create_engine
 
 # Create your forms here.
@@ -57,9 +59,24 @@ class Parent(forms.Form):
                                 label='Relation')
     
     def save(self): #This is how we "save" data to the database
-        engine = create_engine(INFORMIX_EARL_TEST)
-        connection = engine.connect()
         #put data in staging tables
-        sql = '''INSERT INTO cc_stg_ferpafamily_rec (ferpafamily_no, name, relation, phone, email, allow)
-                VALUES (%(form)d, "%(name)s", "%(relation)s", "%(phone)s", "%(email)s", "%(share)s")''' % (self.cleaned_data)
-        connection.execute(sql)
+        #see if entry for this contact already exists in database. if so update instead of add new one
+        sql = '''SELECT COUNT(ferpafamilyrec_no) AS cnt
+                FROM cc_stg_ferpafamily_rec
+                WHERE ferpafamily_no = %(form)d
+                AND name = "%(name)s"
+                AND relation = "%(relation)s"''' % (self.cleaned_data)
+        entry = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL).first()['cnt']
+        if entry:
+            sql2 = '''UPDATE cc_stg_ferpafamily_rec
+                    SET phone = "%(phone)s",
+                        email = "%(email)s",
+                        allow = "%(share)s"
+                    WHERE ferpafamily_no = %(form)d
+                    AND name = "%(name)s"
+                    AND relation = "%(relation)s"''' % (self.cleaned_data)
+            do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+        else:
+            sql3 = '''INSERT INTO cc_stg_ferpafamily_rec (ferpafamily_no, name, relation, phone, email, allow)
+                    VALUES (%(form)d, "%(name)s", "%(relation)s", "%(phone)s", "%(email)s", "%(share)s")''' % (self.cleaned_data)
+            do_sql(sql3, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)

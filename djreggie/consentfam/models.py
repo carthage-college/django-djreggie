@@ -1,5 +1,7 @@
 from django.db import models
-from djzbar.settings import INFORMIX_EARL_TEST
+from djzbar import settings
+from djreggie import settings
+from djzbar.utils.informix import do_sql
 from sqlalchemy import create_engine
 #Each class is a model that will be turned into a form
 
@@ -10,11 +12,15 @@ class ConsentModel(models.Model):
     Date = models.DateField(auto_now_add=True) #Auto now add makes the date equal the time the form was submitted
     
     def save(self): #this is for putting data in the database
-        engine = create_engine(INFORMIX_EARL_TEST)
-        connection = engine.connect()
-        sql = '''INSERT INTO cc_stg_ferpafamily (student_id, datecreated)
-                VALUES (%s, CURRENT)''' % (self.__dict__['student_id'])
-        connection.execute(sql)
+        sql = '''SELECT COUNT(ferpafamily_no) AS cnt
+                FROM cc_stg_ferpafamily
+                WHERE student_id = %s''' % (self.__dict__['student_id'])
+        entry = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL).first()['cnt']
+        #check if an entry already exists in database. if it does then don't create a new one
+        if not entry:
+            sql2 = '''INSERT INTO cc_stg_ferpafamily (student_id, datecreated)
+                    VALUES (%s, CURRENT)''' % (self.__dict__['student_id'])
+            do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 #This is our separate formset. A form that appears multiple times for cases such as entering multiple family members
 
 class ParentForm(models.Model): 
