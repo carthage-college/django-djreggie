@@ -201,7 +201,7 @@ your radar:\n\n
 http://www.carthage.edu/commencement/information-graduates/  ''',
         'bpatterson@carthage.edu',
             ['zorpixfang@gmail.com', 'mkauth@carthage.edu'])
-        email.attach_file("/home/mkauth/sandbox/djreggie/static/files/Degree_Audit_Instructions.pdf")
+        email.attach_file("/d2/django_projects/djreggie/static/files/Degree_Audit_Instructions.pdf")
         email.send()
         student_sql = '''SELECT student_id
                         FROM cc_stg_undergrad_candidacy
