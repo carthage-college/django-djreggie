@@ -153,6 +153,7 @@ def student(request, student_id): #admin details page
         'family2': family2,
         'full_student_list': get_all_students(),
     })
+
 @csrf_exempt
 def advisor_results(request, student_id):
     #get entry's info
@@ -188,12 +189,7 @@ def search(request): #admin details page accessed through search bar
     return student(request, request.POST['cid'])
 
 @csrf_exempt
-def msearch(request):
-    return advisor_results(request, request.POST['cid'])
-
-@csrf_exempt
 def advisor_search(request):
-    #return advisor_results(request, request.POST['cid'])
     return render(request, 'consentfam/advisorsearch.html', {
         'full_student_list': get_all_students(),
     })

@@ -15,6 +15,10 @@
         .row {
             margin: 1em;
         }
+        .text {
+            font-family: 'Open Sans',verdana,arial,sans-serif;
+            font-size: 1em;
+        }
     }
     @media (min-width: 1281px)
     {
@@ -73,6 +77,7 @@
 {% block extra_javascript %}
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <script type="text/javascript">
+    jQuery(".showinfo").hide();
     jQuery(".approveone").change(function(){
         var checked;
         if(jQuery(this).prop('checked'))
@@ -124,49 +129,33 @@
             </div>
             <!-- /.col-lg-12 -->
             <div class="col-lg-4">
-                <div class="panel panel-success">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-xs-8" id="student-contact">
-                                <address>
                                 {{student.addr_line1}} {{student.addr_line2}}<br>
                                 {{student.city}}, {{student.st}}<br>
                                 {{student.zip}} {{student.ctry}}<br>
                                 <abbr title="Phone">P:</abbr>
                                 {{student.phone}}<br>
                                 </a>
-                                </address>
-                            </div>
                         </div> <!-- /.row -->
                     </div> <!--/.panel-heading -->
-                </div> <!-- /.panel-success -->
             </div> <!-- /.col-lg-4 -->
             {% for f in family %}
             <div><div> <!-- we need these and stuff -->
-                <h3 class="panel-title" ><b>
+                <h3 class="panel-title text" ><b>
                     <pre>Name: {{f.name}} | Relation: {{f.relation}}
                     <br>Is allowed to see: {{f.allow}}</pre>
                 </b></h3>
                 <input type="button" class="showhide" value="Show/hide info"/>
                 <div class="showinfo">
                     <div class="panel-body">
-                        <div>
+                        <div class="text">
                             Phone<pre>{{f.phone}}</pre>
                         </div>
                     </div><!-- /.panel-body --> 
                     <div class="panel-body">
-                        <div>
+                        <div class="text">
                             Email<pre>{{f.email}}</pre>
-                        </div>
-                    </div><!-- /.panel-body -->
-                    <div class="panel-body">
-                        <div>
-                            Date Modified<pre>{{f.datemodified}}</pre>
-                        </div>
-                    </div><!-- /.panel-body -->
-                    <div class="panel-body">
-                        <div>
-                            Modifier ID<pre>{{f.modified_id}}</pre>
                         </div>
                     </div><!-- /.panel-body -->
                 </div>
