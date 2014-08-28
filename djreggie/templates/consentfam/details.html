@@ -1,12 +1,10 @@
-{% extends "/home/mkauth/sandbox/djreggie/templates/consentfam/home.html" %}
 {% block extra_style %}
-{{block.super}}
 <style>    
     @media (max-width : 1280px)
     {
         .mobile
         {
-            display: block;
+            display: inline;
         }
         .web
         {
@@ -18,6 +16,9 @@
         .text {
             font-family: 'Open Sans',verdana,arial,sans-serif;
             font-size: 1em;
+        }
+        .bloated{
+            width: 100%;
         }
     }
     @media (min-width: 1281px)
@@ -65,11 +66,13 @@
         body.loading .loader {
             display: block;
         }
-        .showinfo {
-            display: none;
-        }
+        
         .col-lg-6 {
             float: left;
+        }
+        .bloated{
+            position: fixed;
+            width: 100%;
         }
     }
 </style>
@@ -135,26 +138,26 @@
                                 {{student.city}}, {{student.st}}<br>
                                 {{student.zip}} {{student.ctry}}<br>
                                 <abbr title="Phone">P:</abbr>
-                                {{student.phone}}<br>
+                                {{student.phone}}<br><hr>
                                 </a>
                         </div> <!-- /.row -->
                     </div> <!--/.panel-heading -->
             </div> <!-- /.col-lg-4 -->
             {% for f in family %}
             <div><div> <!-- we need these and stuff -->
-                <h3 class="panel-title text" ><b>
+                <h3 class="panel-title text bloated"><b>
                     <pre>Name: {{f.name}} | Relation: {{f.relation}}
                     <br>Is allowed to see: {{f.allow}}</pre>
                 </b></h3>
                 <input type="button" class="showhide" value="Show/hide info"/>
-                <div class="showinfo">
-                    <div class="panel-body">
-                        <div class="text">
+                <div class="showinfo bloated">
+                    <div class="panel-bod">
+                        <div class="text" style="float:left">
                             Phone<pre>{{f.phone}}</pre>
                         </div>
                     </div><!-- /.panel-body --> 
-                    <div class="panel-body">
-                        <div class="text">
+                    <div class="panel-bod">
+                        <div class="text" style="float:right">
                             Email<pre>{{f.email}}</pre>
                         </div>
                     </div><!-- /.panel-body -->
@@ -198,7 +201,7 @@
             <div class="col-lg-6">
                 <div class="panel panel-info">
                     <div class="panel-heading">
-                        <h3 class="panel-title">
+                        <h3 class="panel-title bloated">
                             <pre>Name: {{f.name}} | Relation: {{f.relation}} | Is allowed to see: {{f.allow}}</pre>
                         </h3>
                         <input type="button" class="showhide" value="Show/hide info"/>

@@ -4,7 +4,7 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('djreggie.consentfam.views', #Look in my 'views.py' file too
     url(r'^admin/?$', 'admin', name="admincf"),
     url(r'^admin/student/(?P<student_id>[0-9]{5,7})/?$', 'student', name="studentcf"),
-    url(r'^admin/search/?$', 'search', name="searchcf"),
+    url(r'^admin/search/$', 'search', name="searchcf"),
     url(r'^advisorsearch/$', 'advisor_search', name='advisorsearch'),
     url(r'^set_approved/$', 'set_approved', name='cf_set_approved'),
     url(r'^family_set_approved/$', 'family_set_approved', name='cf_family_set_approved'),
