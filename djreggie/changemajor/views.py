@@ -13,38 +13,52 @@ from django.core.mail import send_mail
 from djzbar.utils.informix import do_sql
 from djzbar.utils.mssql import get_userid
 def create(request):
-    if request.POST: #If we do a POST            
+    if request.POST: #If we do a POST
         #(a, created) = ChangeModel.objects.get_or_create(student_id=request.POST[student_id])
-        form = ChangeForm(request.POST) #Scrape the data from the form and save it in a variable
-        
-        if form.is_valid(): #If the form is valid
-            if form.cleaned_data['advisor'] != '': #if they put in an new advisor
-                #get new advisor's email
-                advisor_sql = '''SELECT TRIM(aa_rec.line1) AS email
-                                FROM aa_rec
-                                WHERE id = %s''' % (form.cleaned_data['advisor'])
-                advisor = do_sql(advisor_sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+        # Scrape the data from the form and save it in a variable
+        form = ChangeForm(request.POST)
+        # If the form is valid
+        if form.is_valid():
+            # if they put in an new advisor
+            if form.cleaned_data['advisor'] != '':
+                # get new advisor's email
+                advisor_sql = '''
+                    SELECT TRIM(aa_rec.line1) AS email
+                        FROM aa_rec
+                        WHERE id = %s
+                ''' % (
+                    form.cleaned_data['advisor']
+                )
+                advisor = do_sql(
+                    advisor_sql, key=settings.INFORMIX_DEBUG,
+                    earl=settings.INFORMIX_EARL
+                )
                 advisor_email = advisor.first()['email']
                 connection.close()
                 #email new advisor
                 send_mail("New Advisee Notification",
-              '''Please accept this email as notification that the following student has selected you as their advisor.  Given this, you are now able to view their Degree Audit information through my.carthage.edu to assist in your advising of this student.\n
+              '''Please accept this email as notification that thefollowing student has selected you as their advisor.  Given this, you are now able to view their Degree Audit information through my.carthage.edu to assist in your advising of this student.\n
               Student name: %s\n
               Student ID: %s''' %(form.cleaned_data['name'],
                   form.cleaned_data['student_id']),
                   'registrar@carthage.edu',
                   ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
                   fail_silently=False)
-            form.save()        #Save the form data to the datbase table            
+            # Save the form data to the datbase table
+            form.save()
             form = ChangeForm()
+            # This is the URL where users are redirected after
+            # submitting the form
             return render(request, 'changemajor/form.html', {
-                'form': form, 
+                'form': form,
                 'submitted': True
-            })#This is the URL where users are redirected after submitting the form
+            })
     else: #This is for the first time you go to the page. It sets it all up
         form = ChangeForm()
         if request.GET:
-            #gets student's id, name, and current majors/minors
+            # have to have ?student_id= in url for now
+            sid = get_userid(request.GET['student_id'])
+            # gets student's id, name, and current majors/minors
             sql = '''SELECT IDrec.id, IDrec.fullname, major1.major AS major1code,
                     TRIM(major1.txt) AS major1, major2.major AS major2code, TRIM(major2.txt) AS major2,
                     major3.major AS major3code, TRIM(major3.txt) AS major3, minor1.minor AS minor1code,
@@ -57,7 +71,7 @@ FROM id_rec IDrec   INNER JOIN  prog_enr_rec    PROGrec ON  IDrec.id        =   
                     LEFT JOIN   minor_table     minor1  ON  PROGrec.minor1  =   minor1.minor
                     LEFT JOIN   minor_table     minor2  ON  PROGrec.minor2  =   minor2.minor
                     LEFT JOIN   minor_table     minor3  ON  PROGrec.minor3  =   minor3.minor
-WHERE IDrec.id = %d''' % (int(get_userid(request.GET['student_id']))) #hvae to have ?student_id= in url for now
+WHERE IDrec.id = %d''' % (int(sid))
             student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             for thing in student: # set initial data based on student
                 form.fields['student_id'].initial = thing['id']

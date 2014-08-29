@@ -1,4 +1,4 @@
-#I need all the imports below
+# I need all the imports below
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -6,11 +6,13 @@ from djzbar import settings
 from djreggie import settings
 from sqlalchemy import create_engine
 from django import forms
-from django.core.mail import EmailMultiAlternatives #We do this instead of send_mail because we need HTML (bullets)
+# We do this instead of send_mail because we need HTML (bullets)
+# NOTE: you CAN send HTML with send_mail() method
+from django.core.mail import EmailMultiAlternatives
 from django.views.decorators.csrf import csrf_exempt
 from djzbar.utils.informix import do_sql
 from djzbar.utils.mssql import get_userid
-#Need to include the form object
+# Need to include the form object
 from form import ModelForm
 from models import Form
 
