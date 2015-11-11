@@ -1,0 +1,78 @@
+{% extends "blank.html" %}
+{% load static from staticfiles %}
+{% block title %}
+    Undergrad Candidacy
+{% endblock %}
+{% block content_head %}
+    <h1 id="page-title">Undergraduate Candidacy</h1>
+{% endblock %}
+{% block extra_style %}
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
+    <link href="//www.carthage.edu/themes/korra/assets/css/master.css" type="text/css" rel="stylesheet">
+    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet">
+    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css">
+    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        div.required img { width:auto; }
+        .readonly {
+            color: grey;
+            padding-left:2em;
+        }
+        fieldset.inlineLabels, li {
+            list-style:none;
+        }
+        .hidden {
+            display: inline;
+        }
+        ul.errorlist {
+            background-color: #FFFF00;
+            font-weight: bold;
+            color: #CC0000;
+            border: 2px dashed #CC0000;
+            width:17%;
+            padding-left: 10px;
+        }
+        input[type=checkbox]
+        {
+          -webkit-appearance:checkbox;
+        }
+        input[type=radio]
+        {
+          -webkit-appearance:radio;
+        }
+        .loader {
+            display:    none;
+            position:   fixed;
+            z-index:    1000;
+            top:        0;
+            left:       0;
+            height:     100%;
+            width:      100%;
+            background: rgba( 255, 255, 255, .8 ) 
+                        url('{% static 'img/loading.gif' %}')
+                        50% 50% 
+                        no-repeat;
+        }
+        
+        /* When the body has the loading class, we turn
+           the scrollbar off with overflow:hidden */
+        body.loading {
+            overflow: hidden;   
+        }
+        
+        /* Anytime the body has the loading class, our
+           modal element will be visible */
+        body.loading .loader {
+            display: block;
+        }
+    </style>
+{% endblock %}
+{% block javascript %}
+{% endblock %}
+{% block content %}
+    <h3>
+        We are sorry, but your portal account is not associated with a student record.
+        If you are a current student, please contact the Registrar's Office at 262-551-6100 or via email <a href="mailto:registrar@carthage.edu">registrar@carthage.edu</a>
+    </h3>
+{% endblock %}

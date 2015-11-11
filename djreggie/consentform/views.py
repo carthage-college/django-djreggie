@@ -23,15 +23,9 @@ def create(request):
         
         if form.is_valid(): #If the form is valid
             if form.data['consent'] == 'NOCONSENT':
-                subject, from_email, to = 'Subject: Directory Information Confirmation',\
-                'registrar@carthage.edu',\
-                'mkauth@carthage.edu'
+                subject, from_email, to = 'Subject: Directory Information Confirmation', 'registrar@carthage.edu', 'mkishline@carthage.edu'
                 text_content = ''
-                html_content = '''Thank you for completing the form regarding your preferences for directory information, as required by FERPA.  Given that you have selected that you do not want directory information released, please note that Carthage will not be able to disclose information such as:
-<br><br><li>Dean's List accomplishments to your local newspaper</li>
-<li>Verification of enrollment/degree completion for potential or current employers</li>
-<li>Your name will not be published in the program for graduation</li>
-<br>Please note that you can change your directory information selection at any time, should you wish that Carthage be able to release this type of information.  If you would like to update your preferences, this can be done by completing the electronic form again with your updated selection.'''
+                html_content = email_body()
                 msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
                 msg.attach_alternative(html_content, "text/html")
                 msg.send()
@@ -44,11 +38,9 @@ def create(request):
             })
     else:
         form = ModelForm()
-        sql = 'SELECT id_rec.id FROM id_rec WHERE id_rec.id = %d' % (int(get_userid(request.GET['student_id'])))
-        student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-        for thing in student:
-            form.fields['student_ID'].initial = thing['id']
-        sql2 = 'SELECT cc_stg_ferpadirectory.consent FROM cc_stg_ferpadirectory WHERE cc_stg_ferpadirectory.student_id = %d' % (int(get_userid(request.GET['student_id'])))
+        student_id = int(get_userid(request.GET['student_id']))
+        form.fields['student_ID'].initial = student_id
+        sql2 = 'SELECT cc_stg_ferpadirectory.consent FROM cc_stg_ferpadirectory WHERE cc_stg_ferpadirectory.student_id = %d' % (student_id)
         student2 = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         for thing in student2:
             if thing['consent'] == "N":
@@ -70,13 +62,9 @@ def mobile(request):
         
         if form.is_valid(): #If the form is valid
             if form.data['consent'] == 'NOCONSENT':
-                subject, from_email, to = 'FERPA Denial Information', 'confirmation@carthage.edu', 'zorpixfang@gmail.com'
+                subject, from_email, to = 'FERPA Denial Information', 'confirmation@carthage.edu', 'mkishline@gmail.com'
                 text_content = ''
-                html_content = '''Thank you for completing the form regarding your preferences for directory information, as required by FERPA.  Given that you have selected that you do not want directory information released, please note that Carthage will not be able to disclose information such as:
-<br><br><li>Dean's List accomplishments to your local newspaper</li>
-<li>Verification of enrollment/degree completion for potential or current employers</li>
-<li>Your name will not be published in the program for graduation</li>
-<br>Please note that you can change your directory information selection at any time, should you wish that Carthage be able to release this type of information.  If you would like to update your preferences, this can be done by completing the electronic form again with your updated selection.'''
+                html_content = email_body()
                 msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
                 msg.attach_alternative(html_content, "text/html")
                 msg.send()
@@ -131,21 +119,15 @@ def admin(request):
     })
 
 def student(request, student_id):
-    sql = '''SELECT fd.*,
-                    id_rec.firstname,
-                    id_rec.lastname,
-                    id_rec.addr_line1,
-                    id_rec.addr_line2,
-                    id_rec.city,
-                    id_rec.st,
-                    id_rec.zip,
-                    id_rec.ctry,
-                    id_rec.phone
-            FROM cc_stg_ferpadirectory AS fd
-            INNER JOIN id_rec
-            ON fd.student_id = id_rec.id
-            WHERE fd.student_id = %s''' % (student_id)
-    student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+    getStudentSQL = '''
+        SELECT
+            fd.*, TRIM(id_rec.firstname) AS firstname, TRIM(id_rec.lastname) AS lastname, TRIM(id_rec.addr_line1) AS addr_line1, TRIM(id_rec.addr_line2) AS addr_line2,
+            TRIM(id_rec.city) AS city, TRIM(id_rec.st) AS st, id_rec.zip, TRIM(id_rec.ctry) AS ctry, TRIM(id_rec.phone) AS phone
+        FROM
+            cc_stg_ferpadirectory   fd  INNER JOIN  id_rec  ON  fd.student_id   =   id_rec.id
+        WHERE
+            fd.student_id = %s''' % (student_id)
+    student = do_sql(getStudentSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'consentform/details.html', {
         'student': student.first(),
         'full_student_list': get_all_students(),
@@ -153,3 +135,18 @@ def student(request, student_id):
 
 def search(request):
     return student(request, request.POST['cid'])
+
+def email_body():
+    return '''
+        Thank you for completing the form regarding your preferences for directory information, as required by FERPA. Given that you have selected
+        that you do not want directory information released, please note that Carthage will not be able to disclose information such as:
+        <br /><br />
+        <ul>
+            <li>Dean's List accomplishments to your local newspaper</li>
+            <li>Verification of enrollment/degree completion for potential or current employers</li>
+            <li>Your name will not be published in the program for graduation</li>
+        </ul>
+        <br />Please note that you can change your directory information selection at any time, should you wish that Carthage be able to release this
+        type of information. If you would like to update your preferences, this can be done by completing the electronic form again with your updated
+        selection.
+    '''

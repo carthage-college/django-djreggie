@@ -12,6 +12,9 @@
     <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css">
     <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        .ctrlHolder p {margin:15px 0px;}
+    </style>
 {% endblock %}
 {% block javascript %}
 <script type='text/javascript'>
@@ -107,25 +110,25 @@ $(document).ready(function () {
         <legend>General Information</legend>
         <ol>
             <li class="ctrlHolder">
-                Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not
+                <p>Under the family Educational Rights and Privacy Act, (FERPA)(20 U.S.C. 1232g; 34 CFR Part 99), Carthage College will not
                 release student academic records to third parties involving non-directory information unless a valid Authorization to
-                Release Non-Directory Information form is on file. This form lists the record(s) to be released and to whom.<br><br>
-                By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified
+                Release Non-Directory Information form is on file. This form lists the record(s) to be released and to whom.</p>
+                <p>By signing this authorization the student understands that they are waiving their rights of non-disclosure of the specified
                 records to the person(s) listed below. This authorization will remain in effect until such time that it is revoked by the
                 student in writing and submitted to the Registrar's Office. The student understands that any such revocation shall not
-                affect disclosures previously made by the College prior to the receipt of said written revocation.<br><br>
-                I authorize the full verbal and written disclosure of my student record to the parent(s)
-                or third parties listed below in the following areas.<br><br>
-            <ul class="bullets">
-                <li>
-                    <b>Academic Records</b> including such items, but not limited to, Attendance, Academic Standing, Homework, Tests,
-                    Mid-Term Grades, Final Grades, Grade Point Averages, Progression Towards Graduation/Program Audit.
-                </li>
-                <li>
-                    <b>Student Financial Records</b> including such items, but not limited to, Business Office Account, Outstanding Balances,
-                    Financial Aid Packages, FAFSA Information, Scholarships.
-                </li>
-            </ul>
+                affect disclosures previously made by the College prior to the receipt of said written revocation.</p>
+                <p>I authorize the full verbal and written disclosure of my student record to the parent(s)
+                or third parties listed below in the following areas.</p>
+                <ul class="bullets">
+                    <li>
+                        <strong>Academic Records</strong> including such items, but not limited to, Attendance, Academic Standing, Homework, Tests,
+                        Mid-Term Grades, Final Grades, Grade Point Averages, Progression Towards Graduation/Program Audit.
+                    </li>
+                    <li>
+                        <strong>Student Financial Records</strong> including such items, but not limited to, Business Office Account, Outstanding Balances,
+                        Financial Aid Packages, FAFSA Information, Scholarships.
+                    </li>
+                </ul>
             </li>
         </ol>
     </fieldset>
@@ -135,16 +138,17 @@ $(document).ready(function () {
             <li class="ctrlHolder">
                Below, please indicate the names of the people who you will disclose information with, and their relation to you </li>      
                 {% for form in Parent_formset.forms %}
-                <div class = fam>
+                <div class="fam">
                     <li class="ctrlHolder"><h3>{{form}}{{form.errors}}</h3></li>
-                    <li style=""><a class="delete" href="#">Delete</a></li>
-                    <hr>
+                    <li><a class="delete" href="#">Delete</a></li>
+                    <hr />
                 </div>
                 {% endfor %}
+            </li>
                 <li><a id="add" href="#">Add Another Parent or Third Party</a></li>
             <li class="btnHolder">
                 <label for="submit">&nbsp;&nbsp;</label>
-                <input type="Submit" name="submit" value="Submit" class="button"/>
+                <input type="Submit" name="submit" value="Submit" class="button" />
             </li>
         </ol>
     </fieldset>

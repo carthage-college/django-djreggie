@@ -23,20 +23,20 @@ def create(request):
         form = ModelForm(request.POST)#Scrape the data from the form and save it in a variable
         form.fields['student_id'].widget = forms.HiddenInput() #This makes these fields hidden on the actual form
         form.fields['full_name'].widget = forms.HiddenInput()
-        
+
         #Scrape the data from the form and save it in a variable
         Parent_formset = ParentFormSet(request.POST, prefix='Parent_or_Third_Party_Name')
-           
+
         if form.is_valid() and Parent_formset.is_valid(): #If the forms are valid
             send_mail("Authorized Users (FERPA)",
-                      "Thank you for submitting your selections regarding individuals who are allowed access to your financial and/or academic records.  This information has been received and documented.  You can view your preferences within my.carthage.edu.  Should you wish to change the approved access for any or all individuals, please update accordingly using the electronic form.",
+                      "Thank you for submitting your selections regarding individuals who are allowed access to your financial and/or academic records. This information has been received and documented. You can view your preferences within my.carthage.edu. Should you wish to change the approved access for any or all individuals, please update accordingly using the electronic form.",
                       'registrar@carthage.edu',
-                      ['zorpixfang@gmail.com', 'mkauth@carthage.edu'],
+                      ['mkishline@carthage.edu'],
                       fail_silently=False)
-            
+
             form.save()        #Save the form data to the datbase table            
-            sql1 = 'SELECT ferpafamily_no FROM cc_stg_ferpafamily WHERE student_id = %s ORDER BY ferpafamily_no DESC' % (form.cleaned_data['student_id'])
-            stud = do_sql(sql1, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+            getKeySQL = 'SELECT ferpafamily_no FROM cc_stg_ferpafamily WHERE student_id = %s ORDER BY ferpafamily_no DESC' % (form.cleaned_data['student_id'])
+            stud = do_sql(getKeySQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             prim_key = stud.first()['ferpafamily_no']
             for f in Parent_formset:#This is how we save formset data, since there are multiple forms in a formset
                 f.cleaned_data['form'] = prim_key
@@ -52,18 +52,14 @@ def create(request):
         form = ModelForm()
         
         if request.GET: #If we do a GET
-            sql = 'SELECT id_rec.id, id_rec.fullname FROM id_rec WHERE id_rec.id = %d' % (int(get_userid(request.GET['student_id'])))
-            student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-            for thing in student: #Put in database values for the hidden fields
-                form.fields['student_id'].initial = thing['id']
-                form.fields['full_name'].initial = thing['fullname']
+            studentNameSQL = 'SELECT id_rec.id, id_rec.fullname FROM id_rec WHERE id_rec.id = %d' % (int(get_userid(request.GET['student_id'])))
+            student = do_sql(studentNameSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+            for row in student: #Put in database values for the hidden fields
+                form.fields['student_id'].initial = row['id']
+                form.fields['full_name'].initial = row['fullname']
             #getting info from database if form has already been submitted by student
-            sql2 = '''SELECT ff_rec.*
-                    FROM cc_stg_ferpafamily_rec AS ff_rec
-                    INNER JOIN cc_stg_ferpafamily AS ff
-                    ON ff_rec.ferpafamily_no = ff.ferpafamily_no
-                    WHERE ff.student_id = %s''' % (get_userid(request.GET['student_id']))
-            family = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+            family = get_family_ferpa(get_userid(request.GET['student_id']))
+
             #making dict of data for setting formset's initial data
             data = {'Parent_or_Third_Party_Name-TOTAL_FORMS': '1',
                     'Parent_or_Third_Party_Name-INITIAL_FORMS': '0',
@@ -97,9 +93,7 @@ def submitted(request):
 
 def get_all_students(): #gets all entries in table for use by jquery autocomplete
     sql = '''SELECT id_rec.firstname, id_rec.lastname, cf.student_id
-            FROM cc_stg_ferpafamily AS cf
-            INNER JOIN id_rec
-            ON cf.student_id = id_rec.id'''
+            FROM cc_stg_ferpafamily cf  INNER JOIN  id_rec  ON  cf.student_id   =   id_rec.id'''
     return do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
 
@@ -124,63 +118,18 @@ def admin(request): #main admin page
     })
 
 def student(request, student_id): #admin details page
-    #get entry's info
-    sql = '''SELECT ff.*,
-                    id_rec.firstname,
-                    id_rec.lastname,
-                    id_rec.addr_line1,
-                    id_rec.addr_line2,
-                    id_rec.city,
-                    id_rec.st,
-                    id_rec.zip,
-                    id_rec.ctry,
-                    id_rec.phone
-            FROM cc_stg_ferpafamily AS ff
-            INNER JOIN id_rec
-            ON ff.student_id = id_rec.id
-            WHERE ff.student_id = %s''' % (student_id)
-    student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-    sql2 = '''SELECT ff_rec.*
-            FROM cc_stg_ferpafamily_rec AS ff_rec
-            INNER JOIN cc_stg_ferpafamily AS ff
-            ON ff_rec.ferpafamily_no = ff.ferpafamily_no
-            WHERE ff.student_id = %s''' % (student_id)
-    family = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-    family2 = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'consentfam/details.html', {
-        'student': student.first(),
-        'family': family,
-        'family2': family2,
+        'student': get_student_info(student_id),
+        'family': get_family_ferpa(student_id),
+        'family2': get_family_ferpa(student_id),
         'full_student_list': get_all_students(),
     })
 
 @csrf_exempt
 def advisor_results(request, student_id):
-    #get entry's info
-    sql = '''SELECT ff.*,
-                    id_rec.firstname,
-                    id_rec.lastname,
-                    id_rec.addr_line1,
-                    id_rec.addr_line2,
-                    id_rec.city,
-                    id_rec.st,
-                    id_rec.zip,
-                    id_rec.ctry,
-                    id_rec.phone
-            FROM cc_stg_ferpafamily AS ff
-            INNER JOIN id_rec
-            ON ff.student_id = id_rec.id
-            WHERE ff.student_id = %s''' % (student_id)
-    student = do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-    sql2 = '''SELECT ff_rec.*
-            FROM cc_stg_ferpafamily_rec AS ff_rec
-            INNER JOIN cc_stg_ferpafamily AS ff
-            ON ff_rec.ferpafamily_no = ff.ferpafamily_no
-            WHERE ff.student_id = %s''' % (student_id)
-    family = do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'consentfam/mresults.html', {
-        'student': student.first(),
-        'family': family,
+        'student': get_student_info(student_id),
+        'family': get_family_ferpa(student_id),
         'submitted': True,
     })
 
@@ -202,7 +151,6 @@ def set_approved(request):
     do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return HttpResponse('update successful')
 
-
 @csrf_exempt
 def family_set_approved(request):
     sql = '''UPDATE cc_stg_ferpafamily_rec
@@ -210,3 +158,26 @@ def family_set_approved(request):
             WHERE ferpafamilyrec_no = %(id)s''' % (request.POST)
     do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return HttpResponse('update successful')
+
+def get_student_info(student_id):
+    getStudentInfoSQL = '''
+        SELECT
+            ff.*, TRIM(id_rec.firstname) AS firstname, TRIM(id_rec.lastname) AS lastname, TRIM(id_rec.addr_line1) AS addr_line1, TRIM(id_rec.addr_line2) AS addr_line2,
+            TRIM(id_rec.city) AS city, TRIM(id_rec.st) AS st, id_rec.zip, TRIM(id_rec.ctry) AS ctry, TRIM(id_rec.phone) AS phone
+        FROM
+            cc_stg_ferpafamily  ff  INNER JOIN  id_rec  ON  ff.student_id   =   id_rec.id
+        WHERE
+            ff.student_id = %s''' % (student_id)
+    student = do_sql(getStudentInfoSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+    return student.first()
+
+def get_family_ferpa(student_id):
+    ferpaFamilySQL = '''
+        SELECT
+            ff_rec.*
+        FROM
+            cc_stg_ferpafamily_rec  ff_rec  INNER JOIN  cc_stg_ferpafamily  ff  ON  ff_rec.ferpafamily_no   =   ff.ferpafamily_no
+        WHERE
+            ff.student_id = %s''' % (student_id)
+    family = do_sql(ferpaFamilySQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+    return family

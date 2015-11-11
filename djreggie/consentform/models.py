@@ -14,14 +14,14 @@ class Form(models.Model):
     consent = models.CharField(max_length = 9) #This renders as a select box
     
     def save(self):
-        sql = '''INSERT INTO cc_stg_ferpadirectory (student_id, consent, datecreated)
+        insertSQL = '''INSERT INTO cc_stg_ferpadirectory (student_id, consent, datecreated)
         VALUES (%(student_ID)s, "%(consent)s", CURRENT)''' % (self.__dict__)
-        do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-        sql2 = '''UPDATE profile_rec
+        do_sql(insertSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+        updateSQL = '''UPDATE profile_rec
                 SET priv_code = '''
         if self.__dict__['consent'] == "NOCONSENT":
-            sql2 += '"FERP"'
+            updateSQL += '"FERP"'
         else:
-            sql2 += '""'
-        sql2 += 'WHERE id = %s' % (self.__dict__['student_ID'])
-        do_sql(sql2, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+            updateSQL += '""'
+        updateSQL += 'WHERE id = %s' % (self.__dict__['student_ID'])
+        do_sql(updateSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)

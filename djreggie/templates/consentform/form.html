@@ -6,7 +6,7 @@
     <h1 id="page-title">FERPA Authorization</h1>
 {% endblock %}
 {% block extra_style %}
-<link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
     <link href="//www.carthage.edu/themes/korra/assets/css/master.css" type="text/css" rel="stylesheet">
     <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet">
     <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
@@ -14,31 +14,20 @@
     <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block javascript %}
-<script>
-    $(document).ready( function() {
-        if ("{{form.consent.value}}" == "NOCONSENT"){
-               $('#hidden').show();
-               }
-           else{
-               $('#hidden').hide();
-               }
+<script type="text/javascript">
+    $(function(){
+        $('.verifyPrivacy').toggle($('input[name="consent"]:checked').val() == 'NOCONSENT');
+        $('input[name="consent"]').click(function(){
+            $('.verifyPrivacy').toggle($(this).val() == 'NOCONSENT');
         });
-    $('[name="consent"]').click( function() {
-        if (this.value == "NOCONSENT"){
-               $('#hidden').show();
-               }
-           else{
-               $('#hidden').hide();
-               }
-        });
+    });
+    
+    {% if submitted %}
+        alert("Thank you for submitting your directory information preferences!  Your information has been submitted and will remain on file with the Registrar's Office.");
+    {% endif %}
 </script>
 {% endblock %}
 {% block content %}
-{% if submitted %}
-<script type="text/javascript">
-    alert("Thank you for submitting your directory information preferences!  Your information has been submitted and will remain on file with the Registrar's Office.")
-</script>
-{% endif %}
 <form action='' enctype="multipart/form-data" method='post' class = "form">{% csrf_token %}
     {{ form.non_field_errors }}
     {% for field in form.hidden_fields %}
@@ -48,37 +37,36 @@
     <fieldset class="blockLabels">
         <legend>General Information</legend>
         <ol>
-            <li class="ctrlHolder">The Family Educational Rights and Privacy Act ("FERPA" - 20 U.S.C.  1232g; 34 CFR Part 99) is a
+            <li class="ctrlHolder">
+                The Family Educational Rights and Privacy Act ("FERPA" - 20 U.S.C.  1232g; 34 CFR Part 99) is a
                 Federal law that protects the privacy of student education records. The following form is intended to
                 authorize the disclosure of directory information that is limited and generally found not to be harmful or invasive.
                 Carthage College considers the following types of information as directory information:
-                <li>                    
-                    <ul class="bullets">
-                            <li>Student's name</li>
-                            <li>Mailing and email address</li>
-                            <li>Telephone Listing</li>
-                            <li>Date and place of birth</li>
-                            <li>Photographs</li>
-                            <li>Dates of enrollment</li>
-                            <li>Major field of study</li>
-                            <li>Enrollment status (e.g., full-time or part-time)</li>
-                            <li>Classification (e.g., Freshman, Sophomore, Junior, Senior)</li>
-                            <li>Degrees earned and dates of graduation including anticipated graduation dates</li>
-                            <li>Awards and honors received</li>
-                            <li>Participation in officially recognized activities and sports</li>
-                            <li>Weight and height of members of athletic teams</li>
-                            <li>The most recent previous educational agency or institution attended</li>
-                    </ul>
-                </li>
+                <ul class="bullets">
+                    <li>Student's name</li>
+                    <li>Mailing and email address</li>
+                    <li>Telephone Listing</li>
+                    <li>Date and place of birth</li>
+                    <li>Photographs</li>
+                    <li>Dates of enrollment</li>
+                    <li>Major field of study</li>
+                    <li>Enrollment status (e.g., full-time or part-time)</li>
+                    <li>Classification (e.g., Freshman, Sophomore, Junior, Senior)</li>
+                    <li>Degrees earned and dates of graduation including anticipated graduation dates</li>
+                    <li>Awards and honors received</li>
+                    <li>Participation in officially recognized activities and sports</li>
+                    <li>Weight and height of members of athletic teams</li>
+                    <li>The most recent previous educational agency or institution attended</li>
+                </ul>
             </li>
-            <li class="ctrlHolder">At its discretion, the College may provide directory
-            information to the public in accordance with the provisions of FERPA.
+            <li class="ctrlHolder">At its discretion, the College may provide directory information to the public in accordance with the provisions of FERPA.</li>
+            <li class="ctrlHolder">
+                <h3><label for="id_consent"></label></h3>
+                {{ form.consent }}
+                {{ form.consent.errors }}
             </li>
-            <li class="ctrlHolder"><h3><label for="id_consent"></label></h3>
-                    {{ form.consent }}
-                    {{ form.consent.errors }}
-            </li>
-            <li id='hidden' style='display:none;'>
+            <!--- <li id='hidden' style='display:none;'> --->
+            <li class="ctrlHolder verifyPrivacy">
                 *I understand the implications of this decision to withold such directory information. Any requests for such information will be refused.
             </li>
             <li class="btnHolder">

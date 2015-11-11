@@ -1,95 +1,83 @@
 {% extends "changemajor/home.html" %}
 {% block extra_style %}
 {{block.super}}
-<link href="/static/djsani/css/print.css"
-    rel="stylesheet" type="text/css" media="print" />
-<style>
-.dl-horizontal dt.widus {
-    width: 300px;
-    margin-right:9px;
-}
-.dl-horizontal dd.yes {
-    margin-left: 0;
-}
-.center{text-align:center;}
-.red {color:#800;}
-.green {color:#008000;}
-.loader {
-    display:    none;
-    position:   fixed;
-    z-index:    1000;
-    top:        0;
-    left:       0;
-    height:     100%;
-    width:      100%;
-    background: rgba( 255, 255, 255, .8 ) 
-                url('http://i.imgur.com/VOYFJhg.gif') 
-                50% 50% 
-                no-repeat;
-}
-
-/* When the body has the loading class, we turn
-   the scrollbar off with overflow:hidden */
-body.loading {
-    overflow: hidden;   
-}
-
-/* Anytime the body has the loading class, our
-   modal element will be visible */
-body.loading .loader {
-    display: block;
-}
+<link href="/static/djsani/css/print.css" rel="stylesheet" type="text/css" media="print" />
+<style type="text/css">
+    .dl-horizontal dt.widus {
+        width: 300px;
+        margin-right:9px;
+    }
+    .dl-horizontal dd.yes {
+        margin-left: 0;
+    }
+    .center{text-align:center;}
+    .red {color:#800;}
+    .green {color:#008000;}
+    .loader {
+        display:    none;
+        position:   fixed;
+        z-index:    1000;
+        top:        0;
+        left:       0;
+        height:     100%;
+        width:      100%;
+        background: rgba( 255, 255, 255, .8 ) 
+                    url('http://i.imgur.com/VOYFJhg.gif') 
+                    50% 50% 
+                    no-repeat;
+    }
+    
+    /* When the body has the loading class, we turn
+       the scrollbar off with overflow:hidden */
+    body.loading {
+        overflow: hidden;   
+    }
+    
+    /* Anytime the body has the loading class, our
+       modal element will be visible */
+    body.loading .loader {
+        display: block;
+    }
 </style>
 {% endblock %}
 {% block extra_javascript %}
-    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-<script>
-    $(".approved").change(function(){
-        var checked;
-        if($(this).prop('checked'))
-        {
-            checked = 'Y';
-        }
-        else
-        {
-            checked = 'N';
-        }
-        $body = $("body");
-        $(document).on({
-            ajaxStart: function() { $body.addClass("loading");    },
-            ajaxStop: function() { $body.removeClass("loading"); }    
-        });
-        $.ajax({
-            type: 'POST',
-            url: "{% url 'cm_set_approved' %}",
-            data: {
-                'approved': checked,
-                'id': $(this).val()
-            },
-            cache: false,
-            success: function(data){
-                alert(data);
-            },
+    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(".approved").change(function(){
+            var checked = $(this).prop('checked') ? 'Y' : 'N';
+            $body = $("body");
+            $(document).on({
+                ajaxStart: function() { $body.addClass("loading");    },
+                ajaxStop: function() { $body.removeClass("loading"); }    
             });
-    });
-    var list = new Array();
-    {% for stud in full_student_list %}
-        list.push({label: '{{stud.lastname}}, {{stud.firstname}} {{stud.student_id}}',
-                    value: {{stud.student_id}}})
-    {% endfor %}
-    $('[name=cid]').autocomplete({source: list});
-    $('[name=cid]').autocomplete("enable");
-</script>
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'cm_set_approved' %}",
+                data: {
+                    'approved': checked,
+                    'id': $(this).val()
+                },
+                cache: false,
+                success: function(data){
+                    alert(data);
+                },
+            });
+        });
+        var list = new Array();
+        {% for stud in full_student_list %}
+            list.push({label: '{{stud.lastname}}, {{stud.firstname}} {{stud.student_id}}',
+                        value: {{stud.student_id}}})
+        {% endfor %}
+        $('[name=cid]').autocomplete({source: list});
+        $('[name=cid]').autocomplete("enable");
+    </script>
 {% endblock %}
 {% block content %}
 <div id="student-container">
     <div class="row">
         <div class="col-lg-8">
-            <h1 class="page-header">
-                {{student.firstname}} {{student.lastname}}
-            </h1>
+            <h1 class="page-header">{{student.firstname}} {{student.lastname}}</h1>
         </div>
-        <!-- /.col-lg-12 -->
         <div class="col-lg-4">
             <div class="panel panel-success">
                 <div class="panel-heading">
@@ -99,12 +87,11 @@ body.loading .loader {
                         </div>
                         <div class="col-xs-8" id="student-contact">
                             <address>
-                            {{student.addr_line1}} {{student.addr_line2}}<br>
-                            {{student.city}}, {{student.st}}<br>
-                            {{student.zip}} {{student.ctry}}<br>
-                            <abbr title="Phone">P:</abbr>
-                            {{student.phone}}<br>
-                            </a>
+                                {{student.addr_line1}} {{student.addr_line2}}<br>
+                                {{student.city}}, {{student.st}}<br>
+                                {{student.zip}} {{student.ctry}}<br>
+                                <abbr title="Phone">P:</abbr>
+                                {{student.phone}}<br>
                             </address>
                         </div>
                     </div> <!-- /.row -->
@@ -118,138 +105,116 @@ body.loading .loader {
                         Student Information
                     </h3>
                 </div>
-                <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div>
                         Student ID<pre>{{student.student_id}}</pre>
                     </div>
                 </div>
-                <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div>
-                        Current Major(s)<pre>{{majors.major1}}</pre>
+                        {% comment %}Current Major(s)<pre>{{majors.major1}}</pre>{% endcomment %}
+                        Current Major(s)<pre>{{student.major1}}</pre>
                     </div>
                 </div>                
-                <!-- /.panel-heading -->
-                {% if majors.major2 %}
+                {% comment %}{% if majors.major2 %}{% endcomment %}
+                {% if student.majors2 %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{majors.major2}}</pre>
+                            <pre>{% comment %}{{majors.major2}}{% endcomment %}{{student.major2}}</pre>
                         </div>
                     </div>                
-                <!-- /.panel-heading -->
                 {% endif %}
-                {% if majors.major3 %}
+                {% comment %}{% if majors.major3 %}{% endcomment %}
+                {% if student.majors3 %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{majors.major3}}</pre>
+                            <pre>{% comment %}{{majors.major3}}{% endcomment %}{{student.major3}}</pre>
                         </div>
-                    </div>                
-                <!-- /.panel-heading -->
+                    </div>
                 {% endif %}
-                {% if majors.minor1 %}
+                {% comment %}{% if majors.minor1 %}{% endcomment %}
+                {% if student.minor1 %}
                     <div class="panel-body">
                         <div>
-                            Current Minor(s)<pre>{{majors.minor1}}</pre>
+                            Current Minor(s)<pre>{% comment %}{{majors.minor1}}{% endcomment %}{{student.minor1}}</pre>
                         </div>
-                    </div>                
-                <!-- /.panel-heading -->
+                    </div>
                 {% endif %}
-                {% if majors.minor2 %}
+                {% comment %}{% if majors.minor2 %}{% endcomment %}
+                {% if student.minor2 %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{majors.minor2}}</pre>
+                            <pre>{% comment %}{{majors.minor2}}{% endcomment %}{{student.minor2}}</pre>
                         </div>
-                    </div>                
-                <!-- /.panel-heading -->
+                    </div>
                 {% endif %}
-                {% if majors.minor3 %}
+                {% comment %}{% if majors.minor3 %}{% endcomment %}
+                {% if student.minor3 %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{majors.minor3}}</pre>
+                            <pre>{% comment %}{{majors.minor3}}{% endcomment %}{{student.minor3}}</pre>
                         </div>
-                    </div>                
-                <!-- /.panel-heading -->
+                    </div>
                 {% endif %}
                 <div class="panel-body">
-                    <div>
-                        Date Created:<pre>{{student.datecreated}}</pre>
-                    </div>
+                    <div>Date Created:<pre>{{student.datecreated}}</pre></div>
                 </div>
             </div><!-- /.panel-info -->            
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        Approval
-                    </h3>
-                </div>                
-                <div class="panel-body">
-                    <div>
-                    <div>
-                        Approved<pre><input type='checkbox' class='approved'
-                        id='approved_{{student.changemajor_no}}'
-                        {% if student.approved = 'Y' %}checked{% endif %} value='{{student.changemajor_no}}'></pre>
-                    </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="col-lg-6">
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <h3 class="panel-title">
-                        Majors and Minors Requested
-                    </h3>
+                    <h3 class="panel-title">Majors and Minors Requested</h3>
                 </div>
-                <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div>
-                        Requested Major(s)<pre>{{reqmajors.major_txt1}}</pre>
+                        Requested Major(s)<pre>{% comment %}{{reqmajors.major_txt1}}{% endcomment %}{{student.major_txt1}}</pre>
                     </div>
                 </div>
-                <!-- /.panel-heading -->
                 {% if student.major2 != "None" %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{reqmajors.major_txt2}}</pre>
+                            <pre>{{student.major_txt2}}</pre>
                         </div>
-                    </div>                
-                <!-- /.panel-heading -->
+                    </div>
                 {% endif %}
                 {% if student.major3 != "None" %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{reqmajors.major_txt3}}</pre>
+                            <pre>{{student.major_txt3}}</pre>
                         </div>
-                    </div>                
-                <!-- /.panel-heading -->
+                    </div>
                 {% endif %}
                 {% if student.minor1 != "None" %}
                     <div class="panel-body">
                         <div>
-                            Requested Minor(s)<pre>{{reqmajors.minor_txt1}}</pre>
+                            Requested Minor(s)<pre>{{student.minor_txt1}}</pre>
                         </div>
                     </div>                
-                <!-- /.panel-heading -->
                 {% endif %}
                 {% if student.minor2 != "None" %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{reqmajors.minor_txt2}}</pre>
+                            <pre>{{student.minor_txt2}}</pre>
                         </div>
                     </div>                
-                <!-- /.panel-heading -->
                 {% endif %}
                 {% if student.minor3 != "None" %}
                     <div class="panel-body">
                         <div>
-                            <pre>{{reqmajors.minor_txt3}}</pre>
+                            <pre>{{student.minor_txt3}}</pre>
                         </div>
                     </div>                
                 {% endif %}
                 <div class="panel-body">
                     <div>
-                        Advisor ID<pre>{{student.advisor_id}}</pre>
+                        Advisor ID<pre>{{student.advisor_first}} {{student.advisor_last}} {% if student.advisor_id %}({{student.advisor_id}}){% endif %}</pre>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        Approved<pre><input type='checkbox' class='approved' id='approved_{{student.changemajor_no}}'
+                        {% if student.approved = 'Y' %}checked{% endif %} value='{{student.changemajor_no}}' /></pre>
                     </div>
                 </div>
             </div>

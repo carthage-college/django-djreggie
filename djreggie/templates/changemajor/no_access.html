@@ -1,0 +1,33 @@
+{% extends "blank.html" %}
+{% block title %}
+    Change Major/Minor
+{% endblock %}
+{% block content_head %}
+    <h1 id="page-title">Change Major/Minor</h1>
+{% endblock %}
+{% block extra_style %}
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
+    <link href="//www.carthage.edu/themes/korra/assets/css/master.css" type="text/css" rel="stylesheet">
+    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet">
+    <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css">
+    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+<style type="text/css">
+    .tabme{
+        color: grey;
+        padding-left:2em
+    }
+    .ui-autocomplete.ui-menu {
+        z-index: 10000;
+      }
+</style>
+{% endblock %}
+{% block extra_javascript %}
+{% endblock %}
+{% block content %}
+    <h3>
+        We are sorry, but your portal account is not associated with a student record.
+        If you are a current student, please contact the Registrar's Office at 262-551-6100 or via email <a href="mailto:registrar@carthage.edu">registrar@carthage.edu</a>
+    </h3>
+{% endblock %}

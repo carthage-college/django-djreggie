@@ -1,4 +1,5 @@
 {% extends "blank.html" %}
+{% load static from staticfiles %}
 {% block title %}
     Undergrad Candidacy
 {% endblock %}
@@ -12,67 +13,73 @@
     <link href="//www.carthage.edu/static/vendor/dashboard/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css">
     <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css">
-<style>
-    .readonly {
-        color: grey;
-        padding-left:2em;
-    }
-    fieldset.inlineLabels, li {
-        list-style:none;
-    }
-    .hidden {
-        display: inline;
-    }
-    input[type=checkbox]
-    {
-      -webkit-appearance:checkbox;
-    }
-    input[type=radio]
-    {
-      -webkit-appearance:radio;
-    }
-    .loader {
-        display:    none;
-        position:   fixed;
-        z-index:    1000;
-        top:        0;
-        left:       0;
-        height:     100%;
-        width:      100%;
-        background: rgba( 255, 255, 255, .8 ) 
-                    url('http://i.imgur.com/VOYFJhg.gif') 
-                    50% 50% 
-                    no-repeat;
-    }
-    
-    /* When the body has the loading class, we turn
-       the scrollbar off with overflow:hidden */
-    body.loading {
-        overflow: hidden;   
-    }
-    
-    /* Anytime the body has the loading class, our
-       modal element will be visible */
-    body.loading .loader {
-        display: block;
-    }
-</style>
+    <style type="text/css">
+        div.required img { width:auto; }
+        .readonly {
+            color: grey;
+            padding-left:2em;
+        }
+        fieldset.inlineLabels, li {
+            list-style:none;
+        }
+        .hidden {
+            display: inline;
+        }
+        ul.errorlist {
+            background-color: #FFFF00;
+            font-weight: bold;
+            color: #CC0000;
+            border: 2px dashed #CC0000;
+            width:17%;
+            padding-left: 10px;
+        }
+        input[type=checkbox]
+        {
+          -webkit-appearance:checkbox;
+        }
+        input[type=radio]
+        {
+          -webkit-appearance:radio;
+        }
+        .loader {
+            display:    none;
+            position:   fixed;
+            z-index:    1000;
+            top:        0;
+            left:       0;
+            height:     100%;
+            width:      100%;
+            background: rgba( 255, 255, 255, .8 ) 
+                        url('{% static 'img/loading.gif' %}')
+                        50% 50% 
+                        no-repeat;
+        }
+        
+        /* When the body has the loading class, we turn
+           the scrollbar off with overflow:hidden */
+        body.loading {
+            overflow: hidden;   
+        }
+        
+        /* Anytime the body has the loading class, our
+           modal element will be visible */
+        body.loading .loader {
+            display: block;
+        }
+    </style>
 {% endblock %}
 {% block javascript %}
 <script>
-    $(".hideme").hide();
-    $(".phonec").hide();
-    $(".emailc").hide();
-    $(".contact").hide();
-    $("img.hidden").hide();
+    //Between script tags started at 176 lines
+    $(".hideme, .phonec, .emailc, .contact, img.hidden").hide();
     function create_validator(regex) {
         return function (field) {
-            var patt = new RegExp(regex);
+            var patt = new RegExp(regex, 'i');
             return patt.test(field.val());
         }
     }
     
-    
+    /*
     var validate_id = create_validator('^(\\d{5,7})$');
     var validate_name = create_validator('^([a-zA-Z]+)$');
     var validate_mname = create_validator('^([a-zA-Z]+|[a-zA-Z]\\.?)$');
@@ -82,10 +89,21 @@
     var validate_city = create_validator('^((?:[a-zA-Z\\s?\\.?]+)[a-zA-Z]+)$');
     var validate_state = create_validator('^((?:[a-zA-Z]+\\s?)+[a-zA-Z]+)$');
     var validate_zip = create_validator('^([\\d]{5}|\\d{5}-?\\d{4})$');
+    */
+    var validate_id = create_validator('^\\d{5,7}$');
+    var validate_name = create_validator("^(([a-z]+[\\-']?)*([a-z]+)?\\s?)+\\.?$");
+    //var validate_mname = create_validator('^[a-z]+|[a-z]\\.?$');
+    var validate_email = create_validator('^(?:[\\w\\.\\%\\+\\-]+)@(?:[a-z0-9\\.\\-]+)\\.(?:[a-z]{2,4})$');
+    var phoneDelim = '[\\s\\-\\.\\/]';
+    var validate_phone = create_validator('^((?:1?' + phoneDelim + '?\\(?(?:\\d{3})\\)?)?' + phoneDelim + '?\\d{3}' + phoneDelim + '?\\d{4}(?:\\s?(?:x|ext|\\.)?\\s?\\d{4})?)$');
+    var validate_address = create_validator('^((?:[\\w+\\s\\.\\#\\,])+[\\w\\.]+)$');
+    var validate_city = create_validator('^((?:[a-z\\s?\\.?]+)[a-z]+)$');
+    var validate_state = create_validator('^((?:[a-z]+\\s?)+[a-z]+)$');
+    var validate_zip = create_validator('^([\\d]{5}|\\d{5}-?\\d{4})$');
     
     var validators = {"id_student_id": validate_id,
                         "id_fname": validate_name,
-                        "id_mname": validate_mname,
+                        "id_mname": validate_name,
                         "id_lname": validate_name,
                         "id_best_phone": validate_phone,
                         "id_cell": validate_phone,
@@ -94,56 +112,20 @@
                         "id_city": validate_city,
                         "id_state": validate_state,
                         "id_zipcode": validate_zip}               
+
     $(document).ready(function(){
-        if ($("#id_best_contact").val() == "PHN")
-        {
-            $(".contact").show();
-            $(".phonec").show();
-            $(".emailc").hide();
-            validators['id_best_contact_value'] = validate_phone;
-        }
-        else if ($("#id_best_contact").val() == "EML")
-        {
-            $(".contact").show();
-            $(".phonec").hide();
-            $(".emailc").show();
-            validators['id_best_contact_value'] = validate_email;
-        }
-        else
-        {
-            $(".contact").hide();
-            delete(validators['id_best_contact_value']);
-        }
-        if($("[name = will_teach]:checked").val() == "Y")
-            {
-                $(".hideme").show();
-            }
-            else
-            {
-                $(".hideme").hide();
-            }
+        $('input[name="will_teach"]').click(function(){
+            $('.hideme').toggle($(this).val() == 'Y');
+        });
+        //Set focus if error is found
+        $('ul.errorlist :first').parents('div.required').find('input, select').focus();
     });
-    $("[name = will_teach]").change(function () {
-        if($("[name = will_teach]:checked").val() == "Y")
-        {
-            $(".hideme").show();
-        }
-        else
-        {
-            $(".hideme").hide();
-        }
-    })
+
     $($.map($('[id$="yes"]'), function (thing) {return '#id_' + thing.id.replace('_yes','');}).join()).change(function() {
-        if(!validators[$(this).attr('id')]($(this)))
-        {
-            $('#' + $(this).attr('id').replace('id_','') + '_no').show();
-            $('#' + $(this).attr('id').replace('id_','') + '_yes').hide();
-        }
-        else
-        {
-            $('#' + $(this).attr('id').replace('id_','') + '_no').hide();
-            $('#' + $(this).attr('id').replace('id_','') + '_yes').show();
-        }
+        var field = $(this).attr('id').replace('id_',''),
+            isValid = validators[$(this).attr('id')]($(this));
+        $('#' + field + '_no').toggle(!isValid);
+        $('#' + field + '_yes').toggle(isValid);
     });
     $("#id_best_contact").change(function () {
         $body = $("body");
@@ -151,20 +133,17 @@
             ajaxStart: function() { $body.addClass("loading");    },
             ajaxStop: function() { $body.removeClass("loading"); }    
         });
-        $("#best_contact_value_yes").hide();
-        $("#best_contact_value_no").hide();
+        $("#best_contact_value_yes, #best_contact_value_no").hide();
         if ($("#id_best_contact").val() == "PHN")
         {
-            $(".contact").show();
-            $(".phonec").show();
+            $(".contact, .phonec").show();
             $(".emailc").hide();
             validators['id_best_contact_value'] = validate_phone;
         }
         else if ($("#id_best_contact").val() == "EML")
         {
-            $(".contact").show();
+            $(".contact, .emailc").show();
             $(".phonec").hide();
-            $(".emailc").show();
             validators['id_best_contact_value'] = validate_email;
         }
         else
@@ -172,16 +151,16 @@
             $(".contact").hide();
             delete(validators['id_best_contact_value']);
         }
-    });
-    //{% if valid_class = 'N' %}
+    }).change();
+    {% if valid_class = 'N' %}
         alert('You are not a junior or senior');
-    //{% endif %}
-    
+    {% endif %}
+
     $("[name*=major],[name*=minor]").change(function(){
         if ($(this).val() != ''){
-            for (var i=0; i<$("[name*=major],[name*=minor]").length; i++){
-                if ($("[name*=major],[name*=minor]")[i].id != $(this).attr("id")){
-                    if ($(this).find(":selected").prop("text") == $("[name*=major] :selected,[name*=minor] :selected")[i].text){
+            for (var ii=0; ii<$("[name*=major],[name*=minor]").length; ii++){
+                if ($("[name*=major],[name*=minor]")[ii].id != $(this).attr("id")){
+                    if ($(this).find(":selected").prop("text") == $("[name*=major] :selected,[name*=minor] :selected")[ii].text){
                         $(this).val('');
                         alert("You have already selected that as a major or minor. You cannot select it again.");
                         break;
@@ -190,105 +169,89 @@
             }
         }
     });
+
+    $('#id_diploma_aa_type').change(function(){
+        var objIsDiploma = $(this).val() == 'DIPL';
+        $('#permanent_address').toggle(!objIsDiploma);
+        $('#diploma_address').toggle(objIsDiploma);
+    }).change();
+
     $('.form').submit(function(){
-        //if majors aren't ordered right ie. major2 have a value and major1 doesn't, then reoreder the data
-        if ($("#id_major1").val() == '')
-        {
-            if ($("#id_major2").val() != '')
-            {
-                $("#id_major1").val($("#id_major2").val());
-                $("#id_major2").val("");
-            }
-            else if ($("#id_major3").val() != '')
-            {
-                $("#id_major1").val($("#id_major3").val());
-                $("#id_major3").val("");
-            }
-        }
-        if ($("#id_major2").val() == '')
-        {
-            if ($("#id_major3").val() != '')
-            {
-                $("#id_major2").val($("#id_major3").val());
-                $("#id_major3").val("");
-            }
-        }
-        //do the same thing for minors
-        if ($("#id_minor1").val() == '')
-        {
-            if ($("#id_minor2").val() != '')
-            {
-                $("#id_minor1").val($("#id_minor2").val());
-                $("#id_minor2").val("");
-            }
-            else if ($("#id_minor3").val() != '')
-            {
-                $("#id_minor1").val($("#id_minor3").val());
-                $("#id_minor3").val("");
-            }
-        }
-        if ($("#id_minor2").val() == '')
-        {
-            if ($("#id_minor3").val() != '')
-            {
-                $("#id_minor2").val($("#id_minor3").val());
-                $("#id_minor3").val("");
-            }
-        }
+        //The logic below cleans up the cases where an earlier major box is left empty and a successive major box has a value selected.
+        //(ie. Major 1: blank, Major 3: Computer Science should result in Major 1: Computer Science, Major 3: blank)
+        
+        //Create array of selected values
+        var majors = $.grep($.map($('#id_major1, #id_major2, #id_major3'), function(obj) { return obj.value; }), function(n){ return (n); });
+        //Clear the select boxes
+        $('#id_major1, #id_major2, #id_major3').val('');
+        //Loop through the selected values and place them in the boxes beginning with the first box
+        $.each(majors, function(index, item){ $('#id_major' + (index + 1)).val(item); });
+        
+        //Employ the same logic for minors
+        var minors = $.grep($.map($('#id_minor1, #id_minor2, #id_minor3'), function(obj) { return obj.value; }), function(n){ return (n); });
+        $('#id_minor1, #id_minor2, #id_minor3').val('');
+        $.each(minors, function(index, item){ $('#id_minor' + (index + 1)).val(item); });
     });
 </script>
 {% endblock %}
 {% block content %}
 {% if submitted %}
 <script type="text/javascript">
-    alert("Thank you!  Your Graduation Candidacy Form has been submitted and is pending acceptance.  Please keep an eye on your Carthage email for confirmation of approval.")
+    alert("Thank you! Your Graduation Candidacy Form has been submitted and is pending acceptance. Please keep an eye on your Carthage email for confirmation of approval.");
 </script>
 {% endif %}
-<form action='' method='post' class = "form">{% csrf_token %}
+<form action="" method="post" class="form">{% csrf_token %}
+    <input type="hidden" name="userid" value="{{userid}}" />
     <fieldset class="blockLabels">
         <legend>For Diploma</legend>
         <ol>
             <li>Type your name EXACTLY as you want it to appear on your diploma, which will also be how
                 your name will be read as you cross the stage at the graduation ceremony.</li>
             <li class="ctrlHolder"><h3><label for="id_student_id">Student ID</label></h3>
-                <div class='readonly'>
+                <div class="readonly">
                     {{form.student_id}}
                     {{form.student_id.value}}
                     {{form.student_id.errors}}
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_fname">First Name</label></h3>
-                <div class='required'>
+                <div class="required">
                     {{form.fname}}
                     {{form.fname.errors}}
-                    <img class='hidden' id='fname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='fname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <img class="hidden" id="fname_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="fname_no" src="{% static 'img/icons/invalid.png' %}" />
                 </div>
             </li>
-            <li class="ctrlHolder"><h3><label for="id_mname">Middle Initial</label></h3>
-                <div class='required'>
+            <li class="ctrlHolder"><h3><label for="id_mname">Middle Name or Initial</label></h3>
+                <div class="required">
                     {{form.mname}}
                     {{form.mname.errors}}
-                    <img class='hidden' id='mname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='mname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <img class="hidden" id="mname_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="mname_no" src="{% static 'img/icons/invalid.png' %}" />
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_lname">Last Name</label></h3>
-                <div class='required'>
+                <div class="required">
                     {{form.lname}}
                     {{form.lname.errors}}
-                    <img class='hidden' id='lname_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='lname_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <img class="hidden" id="lname_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="lname_no" src="{% static 'img/icons/invalid.png' %}" />
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_fnamepro">Tell us how to pronounce your first name (phonetically)</label></h3>
-                <div class='required'>
+                <div class="required">
                     {{form.fnamepro}}
                     {{form.fnamepro.errors}}
                 </div>
             </li>
+            <li class="ctrlHolder"><h3><label for="id_mnamepro">Tell us how to pronounce your middle name (phonetically)</label></h3>
+                <div class="required">
+                    {{form.mnamepro}}
+                    {{form.mnamepro.errors}}
+                </div>
+            </li>
             <li class="ctrlHolder"><h3><label for="id_lnamepro">Tell us how to pronounce your last name (phonetically)</label></h3>
-                <div class='required'>
+                <div class="required">
                     {{form.lnamepro}}
                     {{form.lnamepro.errors}}
                 </div>
@@ -386,20 +349,18 @@
         <legend>Contact Information</legend>
         <ol>
             <li class="ctrlHolder"><h3><label for="id_best_contact">Best way to reach you</label></h3>
-                <div class='required'>
+                <div class="required">
                     {{form.best_contact}}
                     {{form.best_contact.errors}}
-                    <!--<img class='hidden' id='best_contact_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='best_contact_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>-->
                 </div>
             </li>
             <li class="ctrlHolder contact"><h3><label for="id_best_contact_value" class='phonec'>Phone Number</label></h3>
                 <h3><label for="id_best_contact_value" class='emailc'>Email</label></h3>
-                <div class='required'>
+                <div class="required">
                     {{form.best_contact_value}}
                     {{form.best_contact_value.errors}}
-                    <img class='hidden' id='best_contact_value_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='best_contact_value_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <img class="hidden" id="best_contact_value_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="best_contact_value_no" src="{% static 'img/icons/invalid.png' %}" />
                 </div>
             </li>
         </ol>
@@ -407,40 +368,51 @@
     <fieldset class="blockLabels">
         <legend>Diploma Destination</legend>
         <ol>
-            <li>Where should we send your diploma?
-            Please list an address that will remain
-            current at least three months after you complete your degree:
-            </li>        
+            <li>Where should we send your diploma? Please list an address that will remain current at least three months after you complete your degree:</li>
+            <li class="ctrlHolder"><h3><label for="diploma_aa_type">Diploma Address</label></h3>
+                <div class="required">
+                    {{form.diploma_aa_type}}
+                    {{form.diploma_aa_type.errors}}
+                </div>
+            </li>
+        </ol>
+        <ol id="permanent_address">
+            <li class="ctrlHolder"><h3><label></label></h3>
+                {{perm.address}}<br />
+                {{perm.city}}, {{perm.st}} {{perm.zipcode}}
+            </li>
+        </ol>
+        <ol id="diploma_address">
             <li class="ctrlHolder"><h3><label for="id_address">Address</label></h3>
-                <div class='required'>
+                <div class="required">
                     {{form.address}}
                     {{form.address.errors}}
-                    <img class='hidden' id='address_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='address_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <img class="hidden" id="address_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="address_no" src="{% static 'img/icons/invalid.png' %}" />
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_city">City</label></h3>
-                <div class='required'>
+                <div class="required">
                     {{form.city}}
                     {{form.city.errors}}
-                    <img class='hidden' id='city_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='city_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <img class="hidden" id="city_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="city_no" src="{% static 'img/icons/invalid.png' %}" />
                 </div>
             </li>
             <li class="ctrlHolder"><h3><label for="id_state">State</label></h3>
-                <div class='required'>
+                <div class="required">
                     {{form.state}}
                     {{form.state.errors}}
-                    <img class='hidden' id='state_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='state_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <img class="hidden" id="state_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="state_no" src="{% static 'img/icons/invalid.png' %}" />
                 </div>
             </li>         
             <li class="ctrlHolder"><h3><label for="id_zipcode">Zip Code</label></h3>
-                <div class='required'>
+                <div class="required">
                     {{form.zipcode}}
                     {{form.zipcode.errors}}
-                    <img class='hidden' id='zipcode_yes' src='http://imageshack.us/a/img716/1391/htj.png'></img>
-                    <img class='hidden' id='zipcode_no' src='http://imageshack.us/a/img855/1123/ytjo.png'></img>
+                    <img class="hidden" id="zipcode_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="zipcode_no" src="{% static 'img/icons/invalid.png' %}" />
                 </div>
             </li>
         </ol>
