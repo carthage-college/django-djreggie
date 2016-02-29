@@ -52,20 +52,20 @@ def index(request):
             """
             #get student's id, name, and majors/minors
             getStudentSQL = '''
-				SELECT
-					IDrec.id, TRIM(IDrec.firstname) AS firstname, TRIM(IDrec.middlename) AS middlename, TRIM(IDrec.lastname) AS lastname,
-					TRIM(major1.major) AS major1code, TRIM(major2.major) AS major2code, TRIM(major3.major) AS major3code,
-					TRIM(minor1.minor) AS minor1code, TRIM(minor2.minor) AS minor2code, TRIM(minor3.minor) AS minor3code
-				FROM
-					id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
-									LEFT JOIN	major_table		major1	ON	PROGrec.major1	=	major1.major
-									LEFT JOIN	major_table		major2	ON	PROGrec.major2	=	major2.major
-									LEFT JOIN	major_table		major3	ON	PROGrec.major3	=	major3.major
-									LEFT JOIN	minor_table		minor1	ON	PROGrec.minor1	=	minor1.minor
-									LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
-									LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
-				WHERE
-					IDrec.id = %d''' % (cxID)
+                SELECT
+                    IDrec.id, TRIM(IDrec.firstname) AS firstname, TRIM(IDrec.middlename) AS middlename, TRIM(IDrec.lastname) AS lastname,
+                    TRIM(major1.major) AS major1code, TRIM(major2.major) AS major2code, TRIM(major3.major) AS major3code,
+                    TRIM(minor1.minor) AS minor1code, TRIM(minor2.minor) AS minor2code, TRIM(minor3.minor) AS minor3code
+                FROM
+                    id_rec    IDrec    INNER JOIN    prog_enr_rec    PROGrec    ON    IDrec.id        =    PROGrec.id
+                                    LEFT JOIN    major_table        major1    ON    PROGrec.major1    =    major1.major
+                                    LEFT JOIN    major_table        major2    ON    PROGrec.major2    =    major2.major
+                                    LEFT JOIN    major_table        major3    ON    PROGrec.major3    =    major3.major
+                                    LEFT JOIN    minor_table        minor1    ON    PROGrec.minor1    =    minor1.minor
+                                    LEFT JOIN    minor_table        minor2    ON    PROGrec.minor2    =    minor2.minor
+                                    LEFT JOIN    minor_table        minor3    ON    PROGrec.minor3    =    minor3.minor
+                WHERE
+                    IDrec.id = %d''' % (cxID)
             student = do_sql(getStudentSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
             for row in student: #set student's initial data
@@ -85,9 +85,9 @@ def index(request):
             #check if student is a junior/senior or not
             getClassStandingSQL = '''SELECT
                         CASE prog_enr_rec.cl
-                            WHEN	'JR'	THEN 'Y'
-                            WHEN	'SR'	THEN 'Y'
-											ELSE 'N'
+                            WHEN    'JR'    THEN 'Y'
+                            WHEN    'SR'    THEN 'Y'
+                                            ELSE 'N'
                         END AS valid_class
                     FROM prog_enr_rec
                     WHERE prog_enr_rec.id = %s''' % (cxID)
@@ -112,19 +112,19 @@ def populateForm(student_id):
     #get student's id, name, and majors/minors
     getStudentSQL = '''
         SELECT
-			IDrec.id, TRIM(IDrec.firstname) AS firstname, TRIM(IDrec.middlename) AS middlename, TRIM(IDrec.lastname) AS lastname,
-			TRIM(major1.major) AS major1code, TRIM(major2.major) AS major2code, TRIM(major3.major) AS major3code,
-			TRIM(minor1.minor) AS minor1code, TRIM(minor2.minor) AS minor2code, TRIM(minor3.minor) AS minor3code
-		FROM
-			id_rec	IDrec	INNER JOIN	prog_enr_rec	PROGrec	ON	IDrec.id		=	PROGrec.id
-							LEFT JOIN	major_table		major1	ON	PROGrec.major1	=	major1.major
-							LEFT JOIN	major_table		major2	ON	PROGrec.major2	=	major2.major
-							LEFT JOIN	major_table		major3	ON	PROGrec.major3	=	major3.major
-							LEFT JOIN	minor_table		minor1	ON	PROGrec.minor1	=	minor1.minor
-							LEFT JOIN	minor_table		minor2	ON	PROGrec.minor2	=	minor2.minor
-							LEFT JOIN	minor_table		minor3	ON	PROGrec.minor3	=	minor3.minor
-		WHERE
-			IDrec.id = %d''' % (student_id)
+            IDrec.id, TRIM(IDrec.firstname) AS firstname, TRIM(IDrec.middlename) AS middlename, TRIM(IDrec.lastname) AS lastname,
+            TRIM(major1.major) AS major1code, TRIM(major2.major) AS major2code, TRIM(major3.major) AS major3code,
+            TRIM(minor1.minor) AS minor1code, TRIM(minor2.minor) AS minor2code, TRIM(minor3.minor) AS minor3code
+        FROM
+            id_rec    IDrec    INNER JOIN    prog_enr_rec    PROGrec    ON    IDrec.id        =    PROGrec.id
+                            LEFT JOIN    major_table        major1    ON    PROGrec.major1    =    major1.major
+                            LEFT JOIN    major_table        major2    ON    PROGrec.major2    =    major2.major
+                            LEFT JOIN    major_table        major3    ON    PROGrec.major3    =    major3.major
+                            LEFT JOIN    minor_table        minor1    ON    PROGrec.minor1    =    minor1.minor
+                            LEFT JOIN    minor_table        minor2    ON    PROGrec.minor2    =    minor2.minor
+                            LEFT JOIN    minor_table        minor3    ON    PROGrec.minor3    =    minor3.minor
+        WHERE
+            IDrec.id = %d''' % (student_id)
     student = do_sql(getStudentSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
     for row in student: #set student's initial data
@@ -139,15 +139,15 @@ def populateForm(student_id):
         form.fields['minor2'].initial = row['minor2code']
         form.fields['minor3'].initial = row['minor3code']
 
-	return form
+    return form
 
 def isValidClass(student_id):
     #check if student is a junior/senior or not
     getClassStandingSQL = '''
         SELECT
             CASE prog_enr_rec.cl
-                WHEN	'JR'	THEN 'Y'
-                WHEN	'SR'	THEN 'Y'
+                WHEN    'JR'    THEN 'Y'
+                WHEN    'SR'    THEN 'Y'
                                 ELSE 'N'
             END AS valid_class
         FROM prog_enr_rec
@@ -173,11 +173,11 @@ def contact(request): #gets student's contact info from form through ajax call
 
 def get_all_students(): #get all entries in table for use by jquery autocomplete
     sql = '''
-		SELECT
-			first_name, last_name, middle_initial, student_id
+        SELECT
+            first_name, last_name, middle_initial, student_id
         FROM
-			cc_stg_undergrad_candidacy
-	'''
+            cc_stg_undergrad_candidacy
+    '''
     return do_sql(sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
 
@@ -188,23 +188,23 @@ def admin(request): #main admin page
         do_sql(deleteRowSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     #gets all entries along with majors/minors full text 
     getMajorMinorSQL = '''
-		SELECT uc.*,
-			CASE
-				WHEN	uc.aa	==	'PHN'	AND	LENGTH(uc.aa_value)	=	10	THEN	uc.aa_value[1,3] || '-' || uc.aa_value[4,6] || '-' || uc.aa_value[7,10]
-																			ELSE	uc.aa_value
-			END AS formatted_contact,
-			TRIM(majors1.txt) AS major1_txt, TRIM(majors2.txt) AS major2_txt, TRIM(majors3.txt) AS major3_txt,
-			TRIM(minors1.txt) AS minor1_txt, TRIM(minors2.txt) AS minor2_txt, TRIM(minors3.txt) AS minor3_txt
-		FROM
-			cc_stg_undergrad_candidacy	uc	LEFT JOIN	major_table	majors1	ON	uc.major1	=	majors1.major
-											LEFT JOIN	major_table	majors2	ON	uc.major2	=	majors2.major
-											LEFT JOIN	major_table	majors3	ON	uc.major3	=	majors3.major
-											LEFT JOIN	minor_table	minors1	ON	uc.minor1	=	minors1.minor
-											LEFT JOIN	minor_table	minors2	ON	uc.minor2	=	minors2.minor
-											LEFT JOIN	minor_table	minors3	ON	uc.minor3	=	minors3.minor
-		ORDER BY
-			uc.approved, uc.datecreated DESC
-	'''
+        SELECT uc.*,
+            CASE
+                WHEN    uc.aa    ==    'PHN'    AND    LENGTH(uc.aa_value)    =    10    THEN    uc.aa_value[1,3] || '-' || uc.aa_value[4,6] || '-' || uc.aa_value[7,10]
+                                                                            ELSE    uc.aa_value
+            END AS formatted_contact,
+            TRIM(majors1.txt) AS major1_txt, TRIM(majors2.txt) AS major2_txt, TRIM(majors3.txt) AS major3_txt,
+            TRIM(minors1.txt) AS minor1_txt, TRIM(minors2.txt) AS minor2_txt, TRIM(minors3.txt) AS minor3_txt
+        FROM
+            cc_stg_undergrad_candidacy    uc    LEFT JOIN    major_table    majors1    ON    uc.major1    =    majors1.major
+                                            LEFT JOIN    major_table    majors2    ON    uc.major2    =    majors2.major
+                                            LEFT JOIN    major_table    majors3    ON    uc.major3    =    majors3.major
+                                            LEFT JOIN    minor_table    minors1    ON    uc.minor1    =    minors1.minor
+                                            LEFT JOIN    minor_table    minors2    ON    uc.minor2    =    minors2.minor
+                                            LEFT JOIN    minor_table    minors3    ON    uc.minor3    =    minors3.minor
+        ORDER BY
+            uc.approved, uc.datecreated DESC
+    '''
     student = do_sql(getMajorMinorSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
     return render(request, 'undergradcandidacy/home.html', {
@@ -215,45 +215,45 @@ def admin(request): #main admin page
 def student(request, student_id): #admin details page
     #gets entry's info
     getStudentSQL = '''
-		SELECT uc.*,
-			TRIM(id_rec.addr_line1) AS addr_line1, TRIM(id_rec.addr_line2) AS addr_line2, TRIM(id_rec.city) AS rec_city, TRIM(id_rec.st) AS st, TRIM(id_rec.zip) AS rec_zip,
-			TRIM(id_rec.ctry) AS ctry, TRIM(id_rec.phone) AS phone, uc.diploma_aa_type AS diploma_type,
-			CASE uc.diploma_aa_type
-				WHEN	'DIPL'	THEN	uc.address
-								ELSE	TRIM(id_rec.addr_line1 || ' ' || id_rec.addr_line2)
-			END AS dipl_addr,
-			CASE uc.diploma_aa_type
-				WHEN	'DIPL'	THEN	uc.city
-								ELSE	TRIM(id_rec.city)
-			END AS dipl_city,
-			CASE uc.diploma_aa_type
-				WHEN	'DIPL'	THEN	uc.state
-								ELSE	TRIM(id_rec.st)
-			END AS dipl_st,
-			CASE uc.diploma_aa_type
-				WHEN	'DIPL'	THEN	uc.zip
-								ELSE	TRIM(id_rec.zip)
-			END AS dipl_zip
+        SELECT uc.*,
+            TRIM(id_rec.addr_line1) AS addr_line1, TRIM(id_rec.addr_line2) AS addr_line2, TRIM(id_rec.city) AS rec_city, TRIM(id_rec.st) AS st, TRIM(id_rec.zip) AS rec_zip,
+            TRIM(id_rec.ctry) AS ctry, TRIM(id_rec.phone) AS phone, uc.diploma_aa_type AS diploma_type,
+            CASE uc.diploma_aa_type
+                WHEN    'DIPL'    THEN    uc.address
+                                ELSE    TRIM(id_rec.addr_line1 || ' ' || id_rec.addr_line2)
+            END AS dipl_addr,
+            CASE uc.diploma_aa_type
+                WHEN    'DIPL'    THEN    uc.city
+                                ELSE    TRIM(id_rec.city)
+            END AS dipl_city,
+            CASE uc.diploma_aa_type
+                WHEN    'DIPL'    THEN    uc.state
+                                ELSE    TRIM(id_rec.st)
+            END AS dipl_st,
+            CASE uc.diploma_aa_type
+                WHEN    'DIPL'    THEN    uc.zip
+                                ELSE    TRIM(id_rec.zip)
+            END AS dipl_zip
         FROM
-			cc_stg_undergrad_candidacy	uc	INNER JOIN	id_rec	ON	uc.student_id	=	id_rec.id
+            cc_stg_undergrad_candidacy    uc    INNER JOIN    id_rec    ON    uc.student_id    =    id_rec.id
         WHERE
-			uc.student_id	=	%s
-	''' % (student_id)
+            uc.student_id    =    %s
+    ''' % (student_id)
     student = do_sql(getStudentSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     #gets majors/minors full text
     getMajorMinorSQL = '''
-		SELECT
-			TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3,
-			TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
+        SELECT
+            TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3,
+            TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
         FROM
-			cc_stg_undergrad_candidacy	uc	LEFT JOIN	major_table	major1	ON	uc.major1	=	major1.major
-											LEFT JOIN	major_table	major2	ON	uc.major2	=	major2.major
-											LEFT JOIN	major_table	major3	ON	uc.major3	=	major3.major
-											LEFT JOIN	minor_table	minor1	ON	uc.minor1	=	minor1.minor
-											LEFT JOIN	minor_table	minor2	ON	uc.minor2	=	minor2.minor
-											LEFT JOIN	minor_table	minor3	ON	uc.minor3	=	minor3.minor
-		WHERE
-			uc.student_id = %s''' % (student_id)
+            cc_stg_undergrad_candidacy    uc    LEFT JOIN    major_table    major1    ON    uc.major1    =    major1.major
+                                            LEFT JOIN    major_table    major2    ON    uc.major2    =    major2.major
+                                            LEFT JOIN    major_table    major3    ON    uc.major3    =    major3.major
+                                            LEFT JOIN    minor_table    minor1    ON    uc.minor1    =    minor1.minor
+                                            LEFT JOIN    minor_table    minor2    ON    uc.minor2    =    minor2.minor
+                                            LEFT JOIN    minor_table    minor3    ON    uc.minor3    =    minor3.minor
+        WHERE
+            uc.student_id = %s''' % (student_id)
     reqmajors = do_sql(getMajorMinorSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
     return render(request, 'undergradcandidacy/details.html', {
@@ -264,18 +264,18 @@ def student(request, student_id): #admin details page
 
 def search(request): #admin details page accessed through search bar
     return student(request, request.POST['cid'])
-    
-    
+
+
 @csrf_exempt
 def set_approved(request): #for setting the approved column in database for entry
     updateCandidacySQL = '''
-		UPDATE
-			cc_stg_undergrad_candidacy
+        UPDATE
+            cc_stg_undergrad_candidacy
         SET
-			approved="%(approved)s", datemodified=CURRENT
-		WHERE
-			undergradcandidacy_no = %(id)s
-	''' % (request.POST)
+            approved="%(approved)s", datemodified=CURRENT
+        WHERE
+            undergradcandidacy_no = %(id)s
+    ''' % (request.POST)
     do_sql(updateCandidacySQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
     student_sql = '''SELECT student_id
@@ -285,6 +285,7 @@ def set_approved(request): #for setting the approved column in database for entr
 
     if request.POST["approved"] == "Y":
         studentEmail = getEmailById(student_id)
+        headers = {'Reply-To':'bpatterson@carthage.edu','From':'Brigid Patterson <bpatterson@carthage.edu>',}
         email = EmailMessage("Congratulations - Graduation Candidacy Accepted",
                   '''Congratulations! Your Candidacy Form for graduation has been accepted!\n\n
 Please be sure to keep an eye on your Carthage email, as this is where communications regarding your graduation requirements and graduating senior
@@ -294,8 +295,8 @@ for meeting all degree requirements. If you have any questions about your Degree
 immediately and acceptance of the Candidacy Form may change.\n\n
 As graduation preparations begin, you will want to keep these important dates, including Graduation Gear-Up on your radar:\n\n
 http://www.carthage.edu/commencement/information-graduates/''',
-				'Brigid Patterson <bpatterson@carthage.edu>',
-				[studentEmail])
+                'Brigid Patterson <bpatterson@carthage.edu>',
+                [studentEmail],None,headers=headers)
         email.attach_file("/d2/django_projects/djreggie/static/files/Degree_Audit_Instructions.pdf")
         email.send()
         gradwalkExistsSQL = '''SELECT COUNT(*) AS entries
@@ -316,7 +317,7 @@ http://www.carthage.edu/commencement/information-graduates/''',
             if hasDiplAddress:
                 diplSQL = '''
                     UPDATE
-						aa_rec
+                        aa_rec
                     SET
                         line1 = "%(address)s",
                         city = "%(city)s",
@@ -325,26 +326,26 @@ http://www.carthage.edu/commencement/information-graduates/''',
                         beg_date = TODAY
                     WHERE
                         aa_no = %s
-				''' % (student_data, hasDiplAddress["aa_no"])
+                ''' % (student_data, hasDiplAddress["aa_no"])
             else:
-				diplSQL = '''
-					INSERT INTO aa_rec (id, aa, beg_date, peren, line1, city, st, zip, ctry)
-					VALUES (
-						%s, 'DIPL', TODAY, 'N', '%s', '%s', '%s', '%s', 'USA'
-					)
-				''' % (student_id, student_data['address'], student_data['city'], student_data['state'], student_data['zip'])
+                diplSQL = '''
+                    INSERT INTO aa_rec (id, aa, beg_date, peren, line1, city, st, zip, ctry)
+                    VALUES (
+                        %s, 'DIPL', TODAY, 'N', '%s', '%s', '%s', '%s', 'USA'
+                    )
+                ''' % (student_id, student_data['address'], student_data['city'], student_data['state'], student_data['zip'])
             do_sql(diplSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
         if record_exists:
             updateGradWalkSQL = '''
-				UPDATE
-					gradwalk_rec
+                UPDATE
+                    gradwalk_rec
                 SET grad_sess = "%(grad_sess)s",
                         grad_yr = "%(grad_yr)s",
                         name_on_diploma = (CASE WHEN "%(middle_initial)s" = "None" THEN "%(first_name)s %(last_name)s"
                                             ELSE "%(first_name)s %(middle_initial)s %(last_name)s" END),
                         fname_pronounce = "%(first_name_pronounce)s",
-						mname_pronounce = "%(middle_name_pronounce)s",
+                        mname_pronounce = "%(middle_name_pronounce)s",
                         lname_pronounce = "%(last_name_pronounce)s",
                         addr = "%(diploma_aa_type)s",
                         plan2walk = (CASE WHEN "%(plan_to_walk)s" = "T" THEN "Y" ELSE "N" END),
@@ -358,22 +359,22 @@ http://www.carthage.edu/commencement/information-graduates/''',
             do_sql(updateGradWalkSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
         else:
             insertGradWalkSQL = '''
-				INSERT INTO gradwalk_rec
-					(id, prog, site, degree, grad_sess, grad_yr, name_on_diploma, fname_pronounce, mname_pronounce, lname_pronounce, addr,
-					plan2walk, major1, major2, major3, minor1, minor2, minor3)
+                INSERT INTO gradwalk_rec
+                    (id, prog, site, degree, grad_sess, grad_yr, name_on_diploma, fname_pronounce, mname_pronounce, lname_pronounce, addr,
+                    plan2walk, major1, major2, major3, minor1, minor2, minor3)
                 VALUES
-					(
-						%(student_id)s, "", "CART", "BA", "%(grad_sess)s", "%(grad_yr)s",
-						(CASE WHEN "%(middle_initial)s" = "None" THEN "%(first_name)s %(last_name)s" ELSE "%(first_name)s %(middle_initial)s %(last_name)s" END),
-						"%(first_name_pronounce)s", "%(middle_name_pronounce)s", "%(last_name_pronounce)s", "%(diploma_aa_type)s",
-							(CASE WHEN "%(plan_to_walk)s" = "T" THEN "Y" ELSE "N" END),
+                    (
+                        %(student_id)s, "", "CART", "BA", "%(grad_sess)s", "%(grad_yr)s",
+                        (CASE WHEN "%(middle_initial)s" = "None" THEN "%(first_name)s %(last_name)s" ELSE "%(first_name)s %(middle_initial)s %(last_name)s" END),
+                        "%(first_name_pronounce)s", "%(middle_name_pronounce)s", "%(last_name_pronounce)s", "%(diploma_aa_type)s",
+                            (CASE WHEN "%(plan_to_walk)s" = "T" THEN "Y" ELSE "N" END),
                             (CASE WHEN "%(major1)s" = "None" THEN "" ELSE "%(major1)s" END),
                             (CASE WHEN "%(major2)s" = "None" THEN "" ELSE "%(major2)s" END),
                             (CASE WHEN "%(major3)s" = "None" THEN "" ELSE "%(major3)s" END),
                             (CASE WHEN "%(minor1)s" = "None" THEN "" ELSE "%(minor1)s" END),
                             (CASE WHEN "%(minor2)s" = "None" THEN "" ELSE "%(minor2)s" END),
                             (CASE WHEN "%(minor3)s" = "None" THEN "" ELSE "%(minor3)s" END)
-					)''' % (student_data)
+                    )''' % (student_data)
             do_sql(insertGradWalkSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
     #addr = "%(address)s %(city)s, %(state)s %(zip)s",
@@ -396,13 +397,13 @@ def getEmailById(cx_id):
     return email.first()['email']
 
 def getPermAddress(cx_id):
-	getPermAddressSQL = '''
-		SELECT
-			TRIM(addr_line1 || ' ' || addr_line2 || ' ' || addr_line3) AS address, TRIM(city) AS city, TRIM(st) AS st, TRIM(zip) AS zipcode
-		FROM
-			id_rec
-		WHERE
-			id = %s
-	''' % (cx_id)
-	permAddress = do_sql(getPermAddressSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-	return permAddress.first()
+    getPermAddressSQL = '''
+        SELECT
+            TRIM(addr_line1 || ' ' || addr_line2 || ' ' || addr_line3) AS address, TRIM(city) AS city, TRIM(st) AS st, TRIM(zip) AS zipcode
+        FROM
+            id_rec
+        WHERE
+            id = %s
+    ''' % (cx_id)
+    permAddress = do_sql(getPermAddressSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+    return permAddress.first()

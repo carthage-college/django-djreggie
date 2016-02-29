@@ -1,9 +1,9 @@
 {% extends "blank.html" %}
 {% block title %}
-    Change Major/Minor
+    Change Major/Minor/Advisor
 {% endblock %}
 {% block content_head %}
-    <h1 id="page-title">Change Major/Minor</h1>
+    <h1 id="page-title">Change Major/Minor/Advisor</h1>
 {% endblock %}
 {% block extra_style %}
 <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
@@ -71,6 +71,7 @@
     alert("Thank you for your submission!  If you have submitted a request to change your Major and/or Minor, please note that this change is pending approval by the Registrar's Office.  Keep an eye on your Carthage email for further communication.  If you have submitted a request to change your Advisor, this change is in process and your requested Advisor will receive an email notification.")
 </script>
 {% endif %}
+<h2>Change of Major/Minor/Advisor Form</h2>
 <form action="" method="post" class = "form">{% csrf_token %}
     {{ mmformset.management_form }}
     {% for field in form.hidden_fields %}
@@ -95,7 +96,7 @@
         </ol>
     </fieldset>
     <fieldset class="blockLabels">
-        <legend>Majors and Minors</legend>
+        <legend>Change majors/minors to:</legend>
         <ol>
             <li class="ctrlHolder" id="major1"><h3><label for="id_major1">Majors</label></h3>
                 <div class="required">
@@ -121,10 +122,10 @@
         </ol>
     </fieldset>
     <fieldset class="blockLabels">
-        <legend>Advisor</legend>
+        <legend>Change advisor to:</legend>
         <ol>
             <li class="ctrlHolder"><h3><label for="id_advisor">
-            Who would you like to be your new advisor? (If no change, leave blank)</label></h3>
+            Who would you like to be your new advisor? (<span style="text-decoration:underline;">If no change, leave blank</span>)</label></h3>
                 {{form.advisor}}
                 {{form.advisor.errors}}
             </li>

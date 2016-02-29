@@ -20,21 +20,6 @@ def create(request):
         form = ChangeForm(request.POST)
         # If the form is valid
         if form.is_valid():
-            # if they put in an new advisor
-            if form.cleaned_data['advisor'] != '':
-                # get new advisor's email
-                advisor_email = getEmailById(form.cleaned_data['advisor'])
-                #TODO: replace ['mkishline@carthage.edu','bpatterson@carthage.edu'] with [advisor_email]
-
-                #email new advisor
-                send_mail("New Advisee Notification",
-              '''Please accept this email as notification that the following student has selected you as their advisor. Given this, you are now able to view their Degree Audit information through my.carthage.edu to assist in your advising of this student.\n
-              Student name: %s\n
-              Student ID: %s
-              ''' % (form.cleaned_data['name'], form.cleaned_data['student_id']),
-                  'Kathy Oldani <koldani@carthage.edu>',
-                  ['mkishline@carthage.edu','bpatterson@carthage.edu'],
-                  fail_silently=False)
             # Save the form data to the datbase table
             form.save()
             form = ChangeForm()
@@ -52,9 +37,10 @@ def create(request):
             # have to have ?student_id= in url for now
             sid = get_userid(request.GET['student_id'])
             # selects student's id, name, and current majors/minors
+            #REPLACE(IDrec.fullname,"'","") AS fullname,
             getStudentDetailSQL = '''
                 SELECT
-                    IDrec.id, IDrec.fullname,
+                    IDrec.id, REPLACE(IDrec.fullname,"'","") AS fullname,
                     major1.major AS major1code, TRIM(major1.txt) AS major1, major2.major AS major2code, TRIM(NVL(major2.txt,"")) AS major2, major3.major AS major3code, TRIM(NVL(major3.txt,"")) AS major3,
                     minor1.minor AS minor1code, TRIM(minor1.txt) AS minor1, minor2.minor AS minor2code, TRIM(NVL(minor2.txt,"")) AS minor2, minor3.minor AS minor3code, TRIM(NVL(minor3.txt,"")) AS minor3
                 FROM
@@ -99,11 +85,11 @@ def create(request):
         SELECT
             id_rec.id, TRIM(id_rec.firstname) AS firstname, TRIM(id_rec.lastname) AS lastname
         FROM
-            job_rec	INNER JOIN	id_rec	ON	job_rec.id	=	id_rec.id
+            job_rec INNER JOIN id_rec ON job_rec.id = id_rec.id
         WHERE
-            hrstat		=	'FT'
+            hrstat = 'FT'
         AND
-            TODAY	BETWEEN	job_rec.beg_date	AND	NVL(job_rec.end_date, TODAY)
+            TODAY BETWEEN job_rec.beg_date AND NVL(job_rec.end_date, TODAY)
         GROUP BY
             id_rec.id, firstname, lastname
         ORDER BY
@@ -126,14 +112,17 @@ def get_all_students(): #function to get a list of all entries in table for use 
     '''
     return do_sql(allStudentSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
 
-def admin(request): #the function for the main admin page
-    if request.POST: #if the delete button was clicked. remove entry from database
+#the function for the main admin page
+def admin(request):
+    #if the delete button was clicked. remove entry from database
+    if request.POST:
         deleteMajorSQL = '''
             DELETE FROM
                 cc_stg_changemajor
             WHERE
                 changemajor_no = %s''' % (request.POST['record'])
         do_sql(deleteMajorSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+
     #get all entries in database along with advisor full name and major/minor full text
     getListSQL = '''
         SELECT
@@ -154,89 +143,52 @@ def admin(request): #the function for the main admin page
             cm.approved, cm.datecreated DESC
     '''
     student = do_sql(getListSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+    all_students = get_all_students()
     return render(request, 'changemajor/home.html', {
-        'student': student,
-        'full_student_list': get_all_students(),
+        'student':student,
+        'full_student_list':all_students
     })
 
 def student(request, changemajor_no): #admin details page
-    """
-    getStudentSQL = '''
-        SELECT
-            cm.*,
-            TRIM(id_rec.firstname) AS firstname, TRIM(id_rec.lastname) AS lastname, TRIM(id_rec.addr_line1) AS addr_line1, TRIM(id_rec.addr_line2) AS addr_line2,
-            TRIM(id_rec.city) AS city, TRIM(id_rec.st) AS st, id_rec.zip, TRIM(id_rec.ctry) AS ctry, TRIM(id_rec.phone) AS phone, TRIM(advisor.firstname) AS advisor_first,
-            TRIM(advisor.lastname) AS advisor_last
-        FROM
-            cc_stg_changemajor  cm  INNER JOIN  id_rec          ON  cm.student_id   =   id_rec.id
-                                    LEFT JOIN   id_rec  advisor ON  advisor.id      =   cm.advisor_id
-        WHERE
-            cm.student_id   =   %s
-    ''' % (student_id)
-    #get current majors/minors full text
-    getMajorMinorSQL = '''
-        SELECT
-            TRIM(major1.txt) AS major1, TRIM(major2.txt) AS major2, TRIM(major3.txt) AS major3,
-            TRIM(minor1.txt) AS minor1,TRIM(minor2.txt) AS minor2, TRIM(minor3.txt) AS minor3
-        FROM
-            id_rec  IDrec   INNER JOIN  prog_enr_rec    PROGrec ON  IDrec.id        =   PROGrec.id
-                            LEFT JOIN   major_table     major1  ON  PROGrec.major1  =   major1.major
-                            LEFT JOIN   major_table     major2  ON  PROGrec.major2  =   major2.major
-                            LEFT JOIN   major_table     major3  ON  PROGrec.major3  =   major3.major
-                            LEFT JOIN   minor_table     minor1  ON  PROGrec.minor1  =   minor1.minor
-                            LEFT JOIN   minor_table     minor2  ON  PROGrec.minor2  =   minor2.minor
-                            LEFT JOIN   minor_table     minor3  ON  PROGrec.minor3  =   minor3.minor
-        WHERE
-            IDrec.id = %s''' % (student_id)
-    #get requested majors/minors full text
-    getChangeSQL = '''
-        SELECT
-            TRIM(major1.txt) AS major_txt1, TRIM(major2.txt) AS major_txt2, TRIM(major3.txt) AS major_txt3,
-            TRIM(minor1.txt) AS minor_txt1, TRIM(minor2.txt) AS minor_txt2, TRIM(minor3.txt) AS minor_txt3
-        FROM
-            cc_stg_changemajor  cm  LEFT JOIN   major_table major1  ON  cm.major1   =   major1.major
-                                    LEFT JOIN   major_table major2  ON  cm.major2   =   major2.major
-                                    LEFT JOIN   major_table major3  ON  cm.major3   =   major3.major
-                                    LEFT JOIN   minor_table minor1  ON  cm.minor1   =   minor1.minor
-                                    LEFT JOIN   minor_table minor2  ON  cm.minor2   =   minor2.minor
-                                    LEFT JOIN   minor_table minor3  ON  cm.minor3   =   minor3.minor
-        WHERE
-            cm.student_id = %s'''  % (student_id)
-    student = do_sql(getStudentSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-    majors = do_sql(getMajorMinorSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-    reqmajors = do_sql(getChangeSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-    """
     getStudentSQL = '''
         SELECT
             cm.changemajor_no, cm.student_id, cm.datecreated, cm.datemodified, cm.modified_id, cm.approved, cm.advisor_id,
             TRIM(IDrec.firstname) AS firstname, TRIM(IDrec.lastname) AS lastname, TRIM(IDrec.addr_line1) AS addr_line1, TRIM(IDrec.addr_line2) AS addr_line2,
             TRIM(IDrec.city) AS city, TRIM(IDrec.st) AS st, IDrec.zip, TRIM(IDrec.ctry) AS ctry, TRIM(IDrec.phone) AS phone, TRIM(advisor.firstname) AS advisor_first,
             TRIM(advisor.lastname) AS advisor_last,
+            CASE TRIM(PROGrec.cl)
+                WHEN    'FF'    THEN    'Freshman'
+                WHEN    'FR'    THEN    'Freshman'
+                WHEN    'SO'    THEN    'Sophomore'
+                WHEN    'JR'    THEN    'Junior'
+                WHEN    'SR'    THEN    'Senior'
+                                ELSE    TRIM(PROGrec.cl)
+            END AS classyear,
             TRIM(major1.txt) AS major1, TRIM(major2.txt) AS major2, TRIM(major3.txt) AS major3, TRIM(minor1.txt) AS minor1,TRIM(minor2.txt) AS minor2, TRIM(minor3.txt) AS minor3,
             TRIM(rmajor1.txt) AS major_txt1, TRIM(rmajor2.txt) AS major_txt2, TRIM(rmajor3.txt) AS major_txt3,
             TRIM(rminor1.txt) AS minor_txt1, TRIM(rminor2.txt) AS minor_txt2, TRIM(rminor3.txt) AS minor_txt3
         FROM
-            cc_stg_changemajor  cm  INNER JOIN  id_rec          IDrec	ON  cm.student_id   =   IDrec.id
-                                    LEFT JOIN   id_rec  		advisor ON  advisor.id      =   cm.advisor_id
-                                    INNER JOIN  prog_enr_rec    PROGrec ON  IDrec.id        =   PROGrec.id
-                                    LEFT JOIN   major_table     major1  ON  PROGrec.major1  =   major1.major
-                                    LEFT JOIN   major_table     major2  ON  PROGrec.major2  =   major2.major
-                                    LEFT JOIN   major_table     major3  ON  PROGrec.major3  =   major3.major
-                                    LEFT JOIN   minor_table     minor1  ON  PROGrec.minor1  =   minor1.minor
-                                    LEFT JOIN   minor_table     minor2  ON  PROGrec.minor2  =   minor2.minor
-                                    LEFT JOIN   minor_table     minor3  ON  PROGrec.minor3  =   minor3.minor
-                                    LEFT JOIN   major_table 	rmajor1  ON  cm.major1   =   rmajor1.major
-                                    LEFT JOIN   major_table 	rmajor2  ON  cm.major2   =   rmajor2.major
-                                    LEFT JOIN   major_table 	rmajor3  ON  cm.major3   =   rmajor3.major
-                                    LEFT JOIN   minor_table		rminor1  ON  cm.minor1   =   rminor1.minor
-                                    LEFT JOIN   minor_table 	rminor2  ON  cm.minor2   =   rminor2.minor
-                                    LEFT JOIN   minor_table 	rminor3  ON  cm.minor3   =   rminor3.minor
+            cc_stg_changemajor  cm  INNER JOIN  id_rec        IDrec   ON  cm.student_id   =   IDrec.id
+                                    LEFT JOIN   id_rec        advisor ON  advisor.id      =   cm.advisor_id
+                                    INNER JOIN  prog_enr_rec  PROGrec ON  IDrec.id        =   PROGrec.id
+                                    LEFT JOIN   major_table   major1  ON  PROGrec.major1  =   major1.major
+                                    LEFT JOIN   major_table   major2  ON  PROGrec.major2  =   major2.major
+                                    LEFT JOIN   major_table   major3  ON  PROGrec.major3  =   major3.major
+                                    LEFT JOIN   minor_table   minor1  ON  PROGrec.minor1  =   minor1.minor
+                                    LEFT JOIN   minor_table   minor2  ON  PROGrec.minor2  =   minor2.minor
+                                    LEFT JOIN   minor_table   minor3  ON  PROGrec.minor3  =   minor3.minor
+                                    LEFT JOIN   major_table   rmajor1 ON  cm.major1   =   rmajor1.major
+                                    LEFT JOIN   major_table   rmajor2 ON  cm.major2   =   rmajor2.major
+                                    LEFT JOIN   major_table   rmajor3 ON  cm.major3   =   rmajor3.major
+                                    LEFT JOIN   minor_table   rminor1 ON  cm.minor1   =   rminor1.minor
+                                    LEFT JOIN   minor_table   rminor2 ON  cm.minor2   =   rminor2.minor
+                                    LEFT JOIN   minor_table   rminor3 ON  cm.minor3   =   rminor3.minor
         WHERE
-            cm.changemajor_no	=	%s
+            cm.changemajor_no = %s
     ''' % changemajor_no
-    student = do_sql(getStudentSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+    student_info = do_sql(getStudentSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     return render(request, 'changemajor/details.html', {
-        'student': student.first(),
+        'student': student_info.first(),
         #'majors': majors.first(),
         #'reqmajors': reqmajors.first(),
         'full_student_list': get_all_students(),
@@ -249,9 +201,10 @@ def search(request): #admin details page access through search bar
 def set_approved(request): #for setting entry to be approved
     getMajorSQL = '''
         SELECT
-            *
+            CM.changemajor_no, CM.student_id, CM.major1, CM.major2, CM.major3, CM.minor1, CM.minor2, CM.minor3, NVL(CM.advisor_id,0) AS advisor_id, CM.datecreated, CM.datemodified,
+            NVL(CM.modified_id,0), CM.approved, TRIM(id_rec.firstname) || ' ' || TRIM(id_rec.lastname) AS name
         FROM
-            cc_stg_changemajor
+            cc_stg_changemajor CM INNER JOIN id_rec ON CM.student_id = id_rec.id
         WHERE
             changemajor_no = %s
     ''' % (request.POST['id'])
@@ -268,12 +221,26 @@ def set_approved(request): #for setting entry to be approved
     do_sql(updateMajorSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
     if request.POST["approved"] == "Y":
         student_email = getEmailById(student['student_id'])
-        send_mail("Congratulations - Major/Minor Change Accepted",
-                '''Please accept this email as notification that your change of Major/Minor has been accepted by the Registrar's Office and your record has been updated.
-                Given this approved change, you should be able to view your updated graduation requirements within your Degree Audit (which is accessible through my.carthage.edu).''',
+        send_mail("Congratulations - Major/Minor/Advisor Change Accepted",
+                '''Please accept this email as notification that your change of Major/Minor/Advisor has been accepted by the Registrar's Office and your record has been updated.
+                \n\nGiven this approved change, you should be able to view your updated graduation requirements within your Degree Audit (which is accessible through my.carthage.edu).''',
                 'Kathy Oldani <koldani@carthage.edu>',
-                [student_email]
-                )
+                [student_email])
+
+        # if they put in an new advisor
+        if student['advisor_id'] != 0:
+            # get new advisor's email
+            advisor_email = getEmailById(student['advisor_id'])
+            #TODO: replace ['mkishline@carthage.edu','bpatterson@carthage.edu'] with [advisor_email]
+            #email new advisor
+            send_mail("New Advisee Notification",
+          '''Please accept this email as notification that the following student has selected you as their advisor. Given this, you are now able to view their Degree Audit information through my.carthage.edu to assist in your advising of this student.\n
+          \nStudent name: %s
+          \nStudent ID: %s''' % (student['name'], student['student_id']),
+              'Kathy Oldani <koldani@carthage.edu>',
+              [advisor_email],
+              fail_silently=False)
+
         updateProgEnrRecSQL = '''
             UPDATE
                 prog_enr_rec
@@ -285,11 +252,11 @@ def set_approved(request): #for setting entry to be approved
                 minor2 = (CASE WHEN "%(minor2)s" = "None" THEN "" ELSE "%(minor2)s" END),
                 minor3 = (CASE WHEN "%(minor3)s" = "None" THEN "" ELSE "%(minor3)s" END)
         ''' % (student)
-        if student['advisor_id']: #if advisor id exists then update that field in the database otherwise don't
+        #if advisor id exists then update that field in the database otherwise don't
+        if student['advisor_id']:
             updateProgEnrRecSQL += ', adv_id = %s' % (student['advisor_id'])
         updateProgEnrRecSQL += ' WHERE id = %s' % (student['student_id'])
         do_sql(updateProgEnrRecSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
-        #return HttpResponse('sent email to %s' % (student_email))
     return HttpResponse('update successful')
 
 def getEmailById(cx_id):
