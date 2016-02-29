@@ -7,7 +7,7 @@ from djzbar.utils.informix import do_sql
 
 class ChangeModel(models.Model):
     student_id = models.CharField(max_length=7, blank=False, db_column='student_id')
-    name = models.CharField(max_length=200, blank=False) #'blank=False' means the field is required
+    name = models.CharField(max_length=200, blank=True) #'blank=False' means the field is required
     majorlist = models.CharField(max_length=1000)
     minorlist = models.CharField(max_length=1000, blank=True, null=True)
     advisor = models.CharField(max_length=200, null=True, blank=True)
