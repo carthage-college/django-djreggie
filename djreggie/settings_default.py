@@ -6,8 +6,8 @@ Django settings for djreggie project.
 import os
 
 # Debug
-#DEBUG = False
-DEBUG = True
+DEBUG = False
+#DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 ADMINS = (
     ('', ''),
@@ -30,10 +30,10 @@ SERVER_URL = "www.carthage.edu"
 API_URL = "%s/%s" % (SERVER_URL, "api")
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ROOT_DIR = os.path.dirname(__file__)
-ROOT_URL = "/jsawyer/djreggie/"
+ROOT_URL = "/djreggie/"
 ROOT_URLCONF = 'djreggie.urls'
 WSGI_APPLICATION = 'djreggie.wsgi.application'
-MEDIA_ROOT = 'home/jsawyer/sandbox/uploads/'
+MEDIA_ROOT = '/d2/django_projects/djreggie/static/uploads/'
 MEDIA_URL = '/uploads/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATIC_ROOT = ''
@@ -93,7 +93,7 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 TEMPLATE_DIRS = (
-    "/home/jsawyer/sandbox/djreggie/templates/",
+    "/data2/django_projects/djreggie/templates/",
     "/data2/django_templates/djkorra/",
     "/data2/django_templates/djcher/",
     "/data2/django_templates/",
@@ -165,10 +165,6 @@ LOGGING = {
         },
     },
     'handlers': {
-        'null': {
-            'level':'DEBUG',
-            'class':'django.utils.log.NullHandler',
-        },
         'logfile': {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
@@ -188,12 +184,12 @@ LOGGING = {
         }
     },
     'loggers': {
-        'mugshots.upload': {
+        'djreggie': {
             'handlers':['logfile'],
             'propagate': True,
             'level':'DEBUG',
         },
-        'core': {
+        'djreggie.core': {
             'handlers':['logfile'],
             'propagate': True,
             'level':'DEBUG',
