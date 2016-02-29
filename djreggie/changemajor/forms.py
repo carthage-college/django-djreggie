@@ -21,9 +21,9 @@ class ChangeForm(forms.ModelForm):
 
     def clean_name(self):
         data = self.cleaned_data['name']
-        #Find updated regex that allows for an apostrophe in the name
-        if not re.match(r'^((?:[a-zA-Z]+(?:\,?\s)?){1,2}[a-zA-Z]+\.?)$', data):
-            raise forms.ValidationError('Please enter a valid name')
+        #This regex does not account for apostrophes in the name. http://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
+        #if not re.match(r'^((?:[a-zA-Z]+(?:\,?\s)?){1,2}[a-zA-Z]+\.?)$', data):
+        #    raise forms.ValidationError('Please enter a valid name')
         return data
 
     def clean_advisor(self):

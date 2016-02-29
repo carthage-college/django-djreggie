@@ -88,7 +88,8 @@ class DependForm(forms.ModelForm):
         widgets = {
             'dob': forms.TextInput(attrs={'type':'date'})
             }
-            
+        fields = '__all__'
+
 class FamInfoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FamInfoForm, self).__init__(*args, **kwargs)

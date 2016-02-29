@@ -25,6 +25,7 @@ class ModelForm(forms.ModelForm):
 
     class Meta:
         model = ConsentModel
+        fields = '__all__'
 
 
 class Parent(forms.Form):

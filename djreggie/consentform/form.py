@@ -32,3 +32,4 @@ class ModelForm(forms.ModelForm):
     #Global options    
     class Meta:
         model = Form #The fields from the model 'Form' will be the same fields in this form
+        fields = '__all__'

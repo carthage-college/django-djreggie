@@ -102,6 +102,7 @@ class DependForm(forms.ModelForm):
         widgets = {
             'dob': forms.TextInput(attrs={'type':'date'}) #Changing the display of a field, here it's a datepicker
         }
+        fields = '__all__'
             
 class FamInfoForm(forms.ModelForm):
     
