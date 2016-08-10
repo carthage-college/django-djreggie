@@ -40,7 +40,7 @@ def create(request):
             #REPLACE(IDrec.fullname,"'","") AS fullname,
             getStudentDetailSQL = '''
                 SELECT
-                    IDrec.id, REPLACE(IDrec.fullname,"'","") AS fullname,
+                    IDrec.id, IDrec.fullname AS fullname,
                     major1.major AS major1code, TRIM(major1.txt) AS major1, major2.major AS major2code, TRIM(NVL(major2.txt,"")) AS major2, major3.major AS major3code, TRIM(NVL(major3.txt,"")) AS major3,
                     minor1.minor AS minor1code, TRIM(minor1.txt) AS minor1, minor2.minor AS minor2code, TRIM(NVL(minor2.txt,"")) AS minor2, minor3.minor AS minor3code, TRIM(NVL(minor3.txt,"")) AS minor3
                 FROM
