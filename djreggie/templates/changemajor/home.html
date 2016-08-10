@@ -1,12 +1,9 @@
 {% extends "djdash/base.html" %}
 {% block extra_style %}
     <!-- Page-Level Plugin CSS - Tables -->
-    <link href="//www.carthage.edu/static/vendor/dashboard/css/plugins/dataTables/jquery.dataTables.min.css"
-        rel="stylesheet">
-    <link href="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/css/dataTables.tableTools.min.css"
-        rel="stylesheet">
-    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css"
-        rel="stylesheet"/>
+    <link href="//www.carthage.edu/static/vendor/dashboard/css/plugins/dataTables/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
     <style>
     .ui-autocomplete.ui-menu {
@@ -130,7 +127,7 @@
     });
     var list = new Array();
     {% for stud in full_student_list %}
-        list.push({label: '{{stud.lastname}}, {{stud.firstname}} {{stud.student_id}}',
+        list.push({label: '{{stud.lastname|escapejs}}, {{stud.firstname|escapejs}} {{stud.student_id}}',
                     value: {{stud.student_id}}})
     {% endfor %}
     $('[name=cid]').autocomplete({source: list});
