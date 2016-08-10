@@ -136,7 +136,7 @@
     });
     var list = new Array();
     {% for stud in full_student_list %}
-        list.push({label: '{{stud.last_name}}, {{stud.first_name}} {{stud.middle_initial}} {{stud.student_id}}',
+        list.push({label: "{{stud.last_name|escapejs}}, {{stud.first_name|escapejs}} {{stud.middle_initial}} {{stud.student_id}}",
                     value: {{stud.student_id}}})
     {% endfor %}
     $('[name=cid]').autocomplete({source: list});
