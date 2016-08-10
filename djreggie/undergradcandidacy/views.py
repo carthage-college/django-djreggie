@@ -43,7 +43,6 @@ def index(request):
                 'valid_class': valid_class
             })
     else:
-        #form = UndergradForm()
         if request.GET:
             if get_userid(request.GET['student_id']) == None:
                 return render(request, 'undergradcandidacy/no_access.html')
@@ -96,6 +95,8 @@ def index(request):
             """
             valid_class = isValidClass(cxID)
             perm = getPermAddress(cxID)
+        else:
+            form = UndergradForm()
 
     return render(request, 'undergradcandidacy/form.html', {
         'form': form,

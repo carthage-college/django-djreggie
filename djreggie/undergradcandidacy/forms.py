@@ -25,27 +25,19 @@ class UndergradForm(forms.ModelForm):
         if not re.match(r'^(([a-z]+[\-\']?)*([a-z]+)?\s?)+\.?$', data, re.I):
             raise forms.ValidationError('Please enter just a first name.')
         return data
+
     def clean_mname(self):
         data = self.cleaned_data['mname']
         #if data and not re.match(r'^([a-zA-Z]+|[a-zA-Z]\.?)$', data):
         if not re.match(r'^(([a-z]+[\-\']?)*([a-z]+)?\s?)+\.?$', data, re.I):
             raise forms.ValidationError('Please enter just a middle name or initial.')
         return data
+
     def clean_lname(self):
         data = self.cleaned_data['lname']
         #if not re.match(r'^([a-zA-Z]+)$', data):
         if not re.match(r'^(([a-z]+[\-\']?)*([a-z]+)?\s?)+\.?$', data, re.I):
             raise forms.ValidationError('Please enter just a last name.')
-        return data
-
-    def clean_fnamepro(self):
-        data = str(self.cleaned_data['fnamepro']).replace('"', '')
-        return data
-    def clean_mnamepro(self):
-        data = str(self.cleaned_data['mnamepro']).replace('"', '')
-        return data
-    def clean_lnamepro(self):
-        data = str(self.cleaned_data['lnamepro']).replace('"', '')
         return data
 
     def clean_state(self):
