@@ -40,6 +40,27 @@ class UndergradForm(forms.ModelForm):
             raise forms.ValidationError('Please enter just a last name.')
         return data
 
+    def clean_fnamepro(self):
+        string = self.cleaned_data['fnamepro'].encode("utf-8")
+        for q in ['"',"'"]:
+            if q in string:
+                string = string.replace(ch, "")
+        return string.decode('utf-8')
+
+    def clean_mnamepro(self):
+        string = self.cleaned_data['mnamepro'].encode("utf-8")
+        for q in ['"',"'"]:
+            if q in string:
+                string = string.replace(ch, "")
+        return string.decode('utf-8')
+
+    def clean_lnamepro(self):
+        string = self.cleaned_data['lnamepro'].encode("utf-8")
+        for q in ['"',"'"]:
+            if q in string:
+                string = string.replace(ch, "")
+        return string.decode('utf-8')
+
     def clean_state(self):
         data = self.cleaned_data['state']
         if data != None and not re.match(r'^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$', data):
