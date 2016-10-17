@@ -56,7 +56,7 @@ def create(request):
             student = do_sql(getStudentDetailSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
             for row in student: # set initial data based on student
                 form.fields['student_id'].initial = row['id']
-                form.fields['name'].initial = row['fullname']
+                form.fields['name'].initial = row['fullname'].decode('ISO-8859-2').encode('utf-8')
                 if row['major2'] == '' and row['major3'] == '':
                     form.fields['majorlist'].initial = (row['major1'])
                 elif row['major3'] == '':
@@ -103,7 +103,11 @@ def create(request):
         'submitted': False,
     })
 
-def get_all_students(): #function to get a list of all entries in table for use in jquery autocomplete
+def get_all_students():
+    """
+    function to get a list of all entries in table
+    for use in jquery autocomplete
+    """
     allStudentSQL = '''
         SELECT
             id_rec.firstname, id_rec.lastname, cm.student_id
