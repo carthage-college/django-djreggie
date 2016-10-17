@@ -3,7 +3,7 @@ Django settings for djreggie project.
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+import os.path
 
 # Debug
 DEBUG = False
@@ -86,26 +86,33 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
-
 # template stuff
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-TEMPLATE_DIRS = (
-    "/data2/django_projects/djreggie/templates/",
-    "/data2/django_templates/djkorra/",
-    "/data2/django_templates/djcher/",
-    "/data2/django_templates/",
-)
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "djtools.context_processors.sitevars",
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.request",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.media",
-)
-
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(os.path.dirname(__file__), 'templates'),
+            "/data2/django_templates/djkorra/",
+            "/data2/django_templates/djcher/",
+            "/data2/django_templates/",
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                "djtools.context_processors.sitevars",
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.media',
+                'django.core.context_processors.request',
+                'django.template.context_processors.static',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            #'loaders': [
+            #    # insert your TEMPLATE_LOADERS here
+            #]
+        },
+    },
+]
 # caching
 CACHES = {
     'default': {
