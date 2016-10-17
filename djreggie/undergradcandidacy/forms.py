@@ -44,21 +44,21 @@ class UndergradForm(forms.ModelForm):
         string = self.cleaned_data['fnamepro'].encode("utf-8")
         for q in ['"',"'"]:
             if q in string:
-                string = string.replace(ch, "")
+                string = string.replace(q, "")
         return string.decode('utf-8')
 
     def clean_mnamepro(self):
         string = self.cleaned_data['mnamepro'].encode("utf-8")
         for q in ['"',"'"]:
             if q in string:
-                string = string.replace(ch, "")
+                string = string.replace(q, "")
         return string.decode('utf-8')
 
     def clean_lnamepro(self):
         string = self.cleaned_data['lnamepro'].encode("utf-8")
         for q in ['"',"'"]:
             if q in string:
-                string = string.replace(ch, "")
+                string = string.replace(q, "")
         return string.decode('utf-8')
 
     def clean_state(self):
