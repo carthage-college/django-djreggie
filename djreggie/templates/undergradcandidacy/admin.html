@@ -43,9 +43,9 @@
                     <br />{% if s.minor3 != "None" %}{{s.minor3_txt}}{% endif %}
                 </td> 
                 <td class="center">
-                    {% if s.plan_to_walk = 'T' %}
+                    {% if s.plan_to_walk == 't' or s.plan_to_walk == 'T' %}
                         Yes
-                    {% elif s.plan_to_walk = 'F' %}
+                    {% elif s.plan_to_walk == 'f' or s.plan_to_walk == 'F' %}
                         No
                     {% endif %}
                 </td>
@@ -56,7 +56,11 @@
                     {{s.grad_sess}}
                 </td>
                 <td class="center">
-                    {{s.prog}}
+                    {% if s.prog == 't' or s.prog == 'T' %}
+                        Yes
+                    {% elif s.prog == 'f' or s.prog == 'F' or s.prog == 'N' %}
+                        No
+                    {% endif %}
                 </td>
                 <td>
                     {% if s.aa = 'EML' %}<a href="mailto:{{s.aa_value}}">{{s.aa_value}}</a>{% else %}{{s.formatted_contact}}{% endif %}

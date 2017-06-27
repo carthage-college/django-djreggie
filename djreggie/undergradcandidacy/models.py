@@ -61,8 +61,8 @@ class UndergradModel(models.Model):
                                     verbose_name='Session Graduating')
     
     YESNOCHOICE = (
-        ('Y', 'Yes'),
-        ('N', 'No')
+        ('T', 'Yes'),
+        ('F', 'No')
     )
     will_teach = models.CharField(max_length=1, choices=YESNOCHOICE)
     
@@ -115,7 +115,7 @@ class UndergradModel(models.Model):
             VALUES
             (
                 %(student_id)s, "%(fname)s", "%(mname)s", "%(lname)s", "%(fnamepro)s", "%(mnamepro)s", "%(lnamepro)s", "%(major1)s", "%(major2)s", "%(major3)s", "%(minor1)s", "%(minor2)s", "%(minor3)s",
-                "%(participate_in_graduation)s", "%(grad_yr)s", "%(grad_session)s", "%(will_teach)s", "%(best_contact)s", "%(best_contact_value)s", "%(address)s", "%(city)s", "%(state)s",
+                "%(participate_in_graduation.lower())s", "%(grad_yr)s", "%(grad_session)s", "%(will_teach)s", "%(best_contact)s", "%(best_contact_value)s", "%(address)s", "%(city)s", "%(state)s",
                 "%(zipcode)s", "%(diploma_aa_type)s", CURRENT
             )
         ''' % (self.__dict__)

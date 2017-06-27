@@ -228,7 +228,7 @@ def set_approved(request): #for setting entry to be approved
         send_mail("Congratulations - Major/Minor/Advisor Change Accepted",
                 '''Please accept this email as notification that your change of Major/Minor/Advisor has been accepted by the Registrar's Office and your record has been updated.
                 \n\nGiven this approved change, you should be able to view your updated graduation requirements within your Degree Audit (which is accessible through my.carthage.edu).''',
-                'Kathy Oldani <koldani@carthage.edu>',
+                'Brigid Patterson <bpatterson@carthage.edu>',
                 [student_email])
 
         # if they put in an new advisor
@@ -241,7 +241,7 @@ def set_approved(request): #for setting entry to be approved
           '''Please accept this email as notification that the following student has selected you as their advisor. Given this, you are now able to view their Degree Audit information through my.carthage.edu to assist in your advising of this student.\n
           \nStudent name: %s
           \nStudent ID: %s''' % (student['name'], student['student_id']),
-              'Kathy Oldani <koldani@carthage.edu>',
+              'Brigid Patterson <bpatterson@carthage.edu>',
               [advisor_email],
               fail_silently=False)
 
