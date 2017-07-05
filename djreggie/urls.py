@@ -1,10 +1,10 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.views.generic import RedirectView
 from django.contrib import admin
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^systemaccess/', include('djreggie.systemaccess.urls')),
     url(r'^undergradcandidacy/', include('djreggie.undergradcandidacy.urls')),
@@ -14,5 +14,5 @@ urlpatterns = patterns('',
     url(r'^createemail/', include('djreggie.createemail.urls')),
     url(r'^depstudent/', include('djreggie.depstudent.urls')),
     url(r'^indepstudent/', include('djreggie.indepstudent.urls')),
-    #url(r'^$', RedirectView.as_view(url="/adult/")),
-)
+    url(r'^$', RedirectView.as_view(url="/continuing-studies/")),
+]

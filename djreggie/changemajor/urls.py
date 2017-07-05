@@ -1,9 +1,21 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
-urlpatterns = patterns('djreggie.changemajor.views',
-    url(r'^admin/?$', 'admin', name="admincm"),
-    url(r'^admin/student/(?P<changemajor_no>[0-9]+)/?$', 'student', name="studentcm"),
-    url(r'^admin/search/?$', 'search', name="searchcm"),
-    url(r'^set_approved/$', 'set_approved', name='cm_set_approved'),
-    url(r'^$', 'create'),
-)
+from djreggie.changemajor import views
+
+urlpatterns = [
+    url(
+        r'^admin/?$', views.admin, name='admincm'
+    ),
+    url(
+        r'^admin/student/(?P<changemajor_no>[0-9]+)/?$',
+        views.student, name='studentcm'),
+    url(
+        r'^admin/search/?$',
+        views.search, name='searchcm'
+    ),
+    url(
+        r'^set_approved/$',
+        views.set_approved, name='cm_set_approved'
+    ),
+    url(r'^$', views.create)
+]

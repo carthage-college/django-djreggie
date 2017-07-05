@@ -1,6 +1,8 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
 
-urlpatterns = patterns('djreggie.depstudent.views',
-    url(r'^$', 'create', name="create"),
-)
+from djreggie.depstudent import views
+
+urlpatterns = [
+    url(r'^$', views.create, name='create'),
+]
