@@ -10,11 +10,13 @@ from djzbar.utils.informix import do_sql
 from sqlalchemy import create_engine
 from django.forms.formsets import formset_factory, BaseFormSet #For formsets
 from django.core.mail import send_mail
-from django.core.context_processors import csrf
-from django.template import RequestContext  # For CSRF
+from django.template import RequestContext
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
 from djzbar.utils.mssql import get_userid
 
+
+@csrf_protect
 def create(request):
     #For info on setting up formsets, see this link: http://goo.gl/Oz53K2
     ParentFormSet = formset_factory(Parent)
@@ -75,19 +77,15 @@ def create(request):
         form.fields['student_id'].widget = forms.HiddenInput()
         form.fields['full_name'].widget = forms.HiddenInput()
 
-    # For CSRF protection
-    # See http://docs.djangoproject.com/en/dev/ref/contrib/csrf/ 
-    c = {'form': form,
-         'Parent_formset': Parent_formset,
-        }
-    c.update(csrf(request))
+    c = {'form': form, 'Parent_formset': Parent_formset }
+    c.update(request)
 
     return render(request, 'consentfam/form.html', {
-        'form': form, 
+        'form': form,
         'Parent_formset': Parent_formset,
         'submitted': False,
     })
-    
+
 def submitted(request):
     return render(request, 'consentfam/form.html')
 
