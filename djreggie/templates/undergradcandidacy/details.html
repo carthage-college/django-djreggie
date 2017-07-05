@@ -167,7 +167,7 @@ body.loading .loader {
                     <h3 class="panel-title">Graduation Information</h3>
                 </div>
                 <div class="panel-body">
-                    <div>Plan to Walk<pre>{% if student.plan_to_walk = 'T' %}Yes{% elif student.plan_to_walk = 'F' %}No{% endif %}</pre></div>
+                    <div>Plan to Walk<pre>{% if student.plan_to_walk == 't' or student.plant_to_walk == 'T' %}Yes{% elif student.plan_to_walk == 'f' or student.plant_to_walk == 'F' %}No{% endif %}</pre></div>
                 </div>
                 <div class="panel-body">
                     <div>Graduation Year<pre>{{student.grad_yr}}</pre></div>
@@ -176,7 +176,7 @@ body.loading .loader {
                     <div>Graduation Session<pre>{{student.grad_sess}}</pre></div>
                 </div>  
                 <div class="panel-body">
-                    <div>Plan to Teach<pre>{{student.prog}}</pre></div>
+                    <div>Plan to Teach<pre>{% if student.prog == 't' or student.prog == 'T' %}Yes{% elif student.prog == 'f' or student.prog == 'F' or student.prog == 'N' %}No{% endif %}</pre></div>
                 </div>
             </div> <!-- /.panel-info -->
         </div><!-- /.col-lg-6 -->
