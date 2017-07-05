@@ -105,7 +105,7 @@ class UndergradModel(models.Model):
         return '%s, %s %d' % (self.lname, self.fname, self.student_id)
     
     def save(self): #put data into staging tables
-        insertSQL = '''
+        sql = '''
             INSERT INTO cc_stg_undergrad_candidacy
             (
                 student_id, first_name, middle_initial, last_name, first_name_pronounce, middle_name_pronounce, last_name_pronounce, major1, major2, major3, minor1, minor2, minor3,
@@ -115,8 +115,9 @@ class UndergradModel(models.Model):
             VALUES
             (
                 %(student_id)s, "%(fname)s", "%(mname)s", "%(lname)s", "%(fnamepro)s", "%(mnamepro)s", "%(lnamepro)s", "%(major1)s", "%(major2)s", "%(major3)s", "%(minor1)s", "%(minor2)s", "%(minor3)s",
-                "%(participate_in_graduation.lower())s", "%(grad_yr)s", "%(grad_session)s", "%(will_teach)s", "%(best_contact)s", "%(best_contact_value)s", "%(address)s", "%(city)s", "%(state)s",
+                "%(participate_in_graduation)s", "%(grad_yr)s", "%(grad_session)s", "%(will_teach)s", "%(best_contact)s", "%(best_contact_value)s", "%(address)s", "%(city)s", "%(state)s",
                 "%(zipcode)s", "%(diploma_aa_type)s", CURRENT
             )
         ''' % (self.__dict__)
+        insertSQL = sql.replace('"True"','"t"').replace('"False"','"f"')
         do_sql(insertSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
