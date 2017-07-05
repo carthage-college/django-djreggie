@@ -6,9 +6,8 @@ from models import ChangeModel
 from djzbar.settings import INFORMIX_EARL_TEST
 from djreggie import settings
 from sqlalchemy import create_engine
-from django.core.context_processors import csrf
-from django.views.decorators.csrf import csrf_exempt # For CSRF
-from django.template import RequestContext  # For CSRF
+from django.views.decorators.csrf import csrf_exempt
+from django.template import RequestContext
 from django.core.mail import send_mail
 from djzbar.utils.informix import do_sql
 from djzbar.utils.mssql import get_userid
