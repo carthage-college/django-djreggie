@@ -1,0 +1,364 @@
+{% extends "blank.html" %}
+{% load static from staticfiles %}
+{% block title %}
+    Data Request Form
+{% endblock %}
+{% block content_head %}
+    <h1 id="page-title">Data Request Form</h1>
+{% endblock %}
+{% block extra_style %}
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
+    <link href="//www.carthage.edu/themes/korra/assets/css/master.css" type="text/css" rel="stylesheet">
+    <link href="//www.carthage.edu/themes/shared/css/icons.css" type="text/css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        type="text/css" rel="stylesheet">
+    <link href="//www.carthage.edu/themes/shared/css/forms.css" rel="stylesheet" type="text/css">
+    <link href="//www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        div.required img { width:auto; }
+        .readonly {
+            color: grey;
+            padding-left:2em;
+        }
+        fieldset.inlineLabels, li {
+            list-style:none;
+        }
+        .hidden {
+            display: inline;
+        }
+        ul.errorlist {
+            background-color: #FFFF00;
+            font-weight: bold;
+            color: #CC0000;
+            border: 2px dashed #CC0000;
+            width:17%;
+            padding-left: 10px;
+        }
+        input[type=checkbox]
+        {
+          -webkit-appearance:checkbox;
+        }
+        input[type=radio]
+        {
+          -webkit-appearance:radio;
+        }
+        .loader {
+            display:    none;
+            position:   fixed;
+            z-index:    1000;
+            top:        0;
+            left:       0;
+            height:     100%;
+            width:      100%;
+            background: rgba( 255, 255, 255, .8 ) 
+                        url('{% static 'img/loading.gif' %}')
+                        50% 50% 
+                        no-repeat;
+        }
+        
+        /* When the body has the loading class, we turn
+           the scrollbar off with overflow:hidden */
+        body.loading {
+            overflow: hidden;   
+        }
+        
+        /* Anytime the body has the loading class, our
+           modal element will be visible */
+        body.loading .loader {
+            display: block;
+        }
+    </style>
+{% endblock %}
+{% block javascript %}
+{% endblock %}
+{% block content %}
+{% if submitted %}
+<script type="text/javascript">
+    alert("Thank you! Your Graduation Candidacy Form has been submitted and is pending acceptance. Please keep an eye on your Carthage email for confirmation of approval.");
+</script>
+{% endif %}
+<form action="" method="post" class="form">{% csrf_token %}
+    <input type="hidden" name="userid" value="{{userid}}" />
+    <fieldset class="blockLabels">
+        <legend></legend>
+
+        <ol>
+            <li class="ctrlHolder"><h3><label for=""></label></h3>
+                <div class="required">
+                    {{form.deptorg}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for=""></label></h3>
+                <div class="required">
+                    {{form.deptorg}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for=""></label></h3>
+                <div class="required">
+                    {{form.deptorg}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for=""></label></h3>
+                <div class="required">
+                    {{form.deptorg}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for=""></label></h3>
+                <div class="required">
+                    {{form.deptorg}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for=""></label></h3>
+                <div class="required">
+                    {{form.deptorg}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for=""></label></h3>
+                <div class="required">
+                    {{form.deptorg}}
+                </div>
+            </li>
+            <li>I understand that this information is meant exclusively for the individuals for whom it has been approved. I understand
+            that it is my responsibility to protect the information as outlined by the Family Education Rights and Privacy Act (FERPA)
+            outlined in the Carthage College Catalog and Community Code. This policy states that records cannnot be disclosed to any
+            third party nor can they be used for any reason other than the original purpose. I understand that I must keep these records
+            confidential and I must destroy them appropriately after the completion of their intended use or returned to the Registrar's
+            Office for proper disposal.</li>
+            <li class="btnHolder">
+                <label for="submit">&nbsp;&nbsp;</label>
+                <input type="Submit" name="submit" value="Submit" class="button"/>
+            </li>
+        </ol>
+    </fieldset>
+    <!---
+    <fieldset class="blockLabels">
+        <legend>For Diploma</legend>
+        <ol>
+            <li>Type your name EXACTLY as you want it to appear on your diploma, which will also be how
+                your name will be read as you cross the stage at the graduation ceremony.</li>
+            <li class="ctrlHolder"><h3><label for="id_student_id">Student ID</label></h3>
+                <div class="readonly">
+                    {{form.student_id}}
+                    {{form.student_id.value}}
+                    {{form.student_id.errors}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_fname">First Name</label></h3>
+                <div class="required">
+                    {{form.fname}}
+                    {{form.fname.errors}}
+                    <img class="hidden" id="fname_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="fname_no" src="{% static 'img/icons/invalid.png' %}" />
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_mname">Middle Name or Initial</label></h3>
+                <div class="required">
+                    {{form.mname}}
+                    {{form.mname.errors}}
+                    <img class="hidden" id="mname_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="mname_no" src="{% static 'img/icons/invalid.png' %}" />
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_lname">Last Name</label></h3>
+                <div class="required">
+                    {{form.lname}}
+                    {{form.lname.errors}}
+                    <img class="hidden" id="lname_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="lname_no" src="{% static 'img/icons/invalid.png' %}" />
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_fnamepro">Tell us how to pronounce your first name (phonetically)</label></h3>
+                <div class="required">
+                    {{form.fnamepro}}
+                    {{form.fnamepro.errors}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_mnamepro">Tell us how to pronounce your middle name (phonetically)</label></h3>
+                <div class="required">
+                    {{form.mnamepro}}
+                    {{form.mnamepro.errors}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_lnamepro">Tell us how to pronounce your last name (phonetically)</label></h3>
+                <div class="required">
+                    {{form.lnamepro}}
+                    {{form.lnamepro.errors}}
+                </div>
+            </li>
+        </ol>
+    </fieldset>    
+    <fieldset class="blockLabels">
+        <legend>Majors and Minors</legend>
+        <ol>
+            <li>List all major(s) and minor(s) that you plan on completing. You will not be certified
+                for graduation until you complete all requirements for all listed majors and minors.<br><br>
+            </li>
+            <li class="ctrlHolder" id="major1"><h3><label for="id_major1">Majors</label></h3>
+                <div class="required">
+                    {{ form.major1 }}
+                    {{ form.major1.errors }}
+                </div>
+            </li>
+            <li class="ctrlHolder" id="major2"><h3><label for="id_major2"></label></h3>
+                {{ form.major2 }}
+                {{ form.major2.errors }}
+            </li>
+            <li class="ctrlHolder" id="major3"><h3><label for="id_major3"></label></h3>
+                {{ form.major3 }}
+                {{ form.major3.errors }}
+            </li>
+            <hr>
+            <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minors</label></h3>
+                {{ form.minor1 }}
+                {{ form.minor1.errors }}
+            </li>                
+            <li class="ctrlHolder" id="minor2"><h3><label for="id_minor2"></label></h3>
+                {{ form.minor2 }}
+                {{ form.minor2.errors }}
+            </li>                
+            <li class="ctrlHolder" id="minor3"><h3><label for="id_minor3"></label></h3>
+                {{ form.minor3 }}
+                {{ form.minor3.errors }}
+            </li>
+        </ol>
+    </fieldset>    
+    <fieldset class="blockLabels">
+        <legend>{{ year_up }} Ceremony</legend>
+        <ol>
+            <li>Check the box below if you intend to participate in the May {{ year_up }} Graduation Ceremony.
+            </li>
+            <li class="ctrlHolder">
+                <h3>
+                    {{form.participate_in_graduation}}
+                    {{form.participate_in_graduation.errors}}
+                </h3>
+            </li>
+        </ol>
+    </fieldset>    
+    <fieldset class="blockLabels">
+        <legend>Required Courses Status</legend>
+        <ol>
+            <li class="ctrlHolder"><h3><label for="id_grad_yr">Year Graduating</label></h3>
+                <div class="required">
+                    {{form.grad_yr}}
+                    {{form.grad_yr.errors}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_grad_session">Session Graduating</label></h3>
+                <div class="required">
+                    {{form.grad_session}}
+                    {{form.grad_session.errors}}
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_will_teach">Will you be student teaching?</label></h3>
+                <div class="required">
+                    {{form.will_teach}}
+                    {{form.will_teach.errors}}
+                </div>
+            </li>            
+            <li class="ctrlHolder hideme"><h3><label for="id_teach_year">In which year will you be teaching?</label></h3>
+                <div class="required">
+                    {{form.year_teach}}
+                    {{form.year_teach.errors}}
+                </div>
+            </li>         
+            <li class="ctrlHolder hideme"><h3><label for="id_teach_year">In which term will you be teaching?</label></h3>
+                <div class="required">
+                    {{form.term}}
+                    {{form.term.errors}}
+                </div>
+            </li>
+            <li>Note: Carthage allows you to participate in the May {{ year_up }} graduation ceremony if you can complete
+                all of your remaining graduation requirements by taking 12 or fewer credits in the Summer of {{ year_up }}. All
+                graduation requirements must be completed before the degree can be conferred
+            </li>
+        </ol>
+    </fieldset>      
+    <fieldset class="blockLabels">
+        <legend>Contact Information</legend>
+        <ol>
+            <li class="ctrlHolder"><h3><label for="id_best_contact">Best way to reach you</label></h3>
+                <div class="required">
+                    {{form.best_contact}}
+                    {{form.best_contact.errors}}
+                </div>
+            </li>
+            <li class="ctrlHolder contact"><h3><label for="id_best_contact_value" class='phonec'>Phone Number</label></h3>
+                <h3><label for="id_best_contact_value" class='emailc'>Email</label></h3>
+                <div class="required">
+                    {{form.best_contact_value}}
+                    {{form.best_contact_value.errors}}
+                    <img class="hidden" id="best_contact_value_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="best_contact_value_no" src="{% static 'img/icons/invalid.png' %}" />
+                </div>
+            </li>
+        </ol>
+    </fieldset>    
+    <fieldset class="blockLabels">
+        <legend>Diploma Destination</legend>
+        <ol>
+            <li>Where should we send your diploma? Please list an address that will remain current at least three months after you complete your degree:</li>
+            <li class="ctrlHolder"><h3><label for="diploma_aa_type">Diploma Address</label></h3>
+                <div class="required">
+                    {{form.diploma_aa_type}}
+                    {{form.diploma_aa_type.errors}}
+                </div>
+            </li>
+        </ol>
+        <ol id="permanent_address">
+            <li class="ctrlHolder"><h3><label></label></h3>
+                {{perm.address}}<br />
+                {{perm.city}}, {{perm.st}} {{perm.zipcode}}
+            </li>
+        </ol>
+        <ol id="diploma_address">
+            <li class="ctrlHolder"><h3><label for="id_address">Address</label></h3>
+                <div class="required">
+                    {{form.address}}
+                    {{form.address.errors}}
+                    <img class="hidden" id="address_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="address_no" src="{% static 'img/icons/invalid.png' %}" />
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_city">City</label></h3>
+                <div class="required">
+                    {{form.city}}
+                    {{form.city.errors}}
+                    <img class="hidden" id="city_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="city_no" src="{% static 'img/icons/invalid.png' %}" />
+                </div>
+            </li>
+            <li class="ctrlHolder"><h3><label for="id_state">State</label></h3>
+                <div class="required">
+                    {{form.state}}
+                    {{form.state.errors}}
+                    <img class="hidden" id="state_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="state_no" src="{% static 'img/icons/invalid.png' %}" />
+                </div>
+            </li>         
+            <li class="ctrlHolder"><h3><label for="id_zipcode">Zip Code</label></h3>
+                <div class="required">
+                    {{form.zipcode}}
+                    {{form.zipcode.errors}}
+                    <img class="hidden" id="zipcode_yes" src="{% static 'img/icons/valid.png' %}" />
+                    <img class="hidden" id="zipcode_no" src="{% static 'img/icons/invalid.png' %}" />
+                </div>
+            </li>
+        </ol>
+    </fieldset>    
+    <fieldset class="blockLabels">
+        <legend>Certify and Submit</legend>
+        <ol>
+            <li>I certify that the information that I have provided above is accurate. If any changes
+            are necessary I will notify the Registrar's Office immediately.
+            </li>
+            <li class="btnHolder">
+                <label for="submit">&nbsp;&nbsp;</label>
+                <input type="Submit" name="submit" value="Submit" class="button"/>
+            </li>
+        </ol>
+    </fieldset>
+    --->
+</form>
+<div class="loader"><!-- for loading icon --></div>
+{% endblock %}

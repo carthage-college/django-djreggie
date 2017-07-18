@@ -1,0 +1,79 @@
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover" id="students-data">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Approved</th>
+                <th>Major(s)</th>
+                <th>Minor(s)</th>
+                <th>Plan To Walk</th>
+                <th>Graduation Year</th>
+                <th>Graduation Session</th>
+                <th>Plan To Teach</th>
+                <th>Contact</th>
+                <th>Date Created</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for s in student %}
+            <tr value='{{s.undergradcandidacy_no}}'>
+                <td class="center">
+                    {{s.student_id}}
+                </td>
+                <td>
+                    <a href="{% url 'undergrad_student' s.student_id %}">
+                    {{s.last_name}}, {{s.first_name}} {{s.middle_initial}}
+                    </a>
+                </td>
+                <td class="center">
+                    <input type='checkbox' class='approved' id='approved_{{s.undergradcandidacy_no}}'
+                        {% if s.approved = 'Y' %}checked{% endif %} value='{{s.undergradcandidacy_no}}' />
+                        {% if s.approved = 'Y' %}<div style="display:none;">1</div>{% else %}<div style="display:none;">0</div>{% endif %}
+                </td>
+                <td class="center">
+                    {{s.major1_txt}}
+                    <br />{% if s.major2 != "None" %}{{s.major2_txt}}{% endif %}
+                    <br />{% if s.major3 != "None" %}{{s.major3_txt}}{% endif %}
+                </td>
+                <td class="center">
+                    {% if s.minor1 != "None" %}{{s.minor1_txt}}{% else %}None{% endif %}
+                    <br />{% if s.minor2 != "None" %}{{s.minor2_txt}}{% endif %}
+                    <br />{% if s.minor3 != "None" %}{{s.minor3_txt}}{% endif %}
+                </td> 
+                <td class="center">
+                    {% if s.plan_to_walk = 'T' %}
+                        Yes
+                    {% elif s.plan_to_walk = 'F' %}
+                        No
+                    {% endif %}
+                </td>
+                <td class="center">
+                    {{s.grad_yr}}
+                </td>
+                <td class="center">
+                    {{s.grad_sess}}
+                </td>
+                <td class="center">
+                    {{s.prog}}
+                </td>
+                <td>
+                    {% if s.aa = 'EML' %}<a href="mailto:{{s.aa_value}}">{{s.aa_value}}</a>{% else %}{{s.formatted_contact}}{% endif %}
+                </td>
+                <td class="center">
+                    {{s.datecreated}}
+                </td>
+                <td>
+                    <form name='delete_form' action='' method='post'>
+                        {% csrf_token %}
+                        <input type='hidden' id='record' name='record' value='{{s.undergradcandidacy_no}}'/>
+                        <input type='submit' value='Delete'/>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- /.table-responsive -->
