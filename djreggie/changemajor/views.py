@@ -14,7 +14,9 @@ from djzbar.utils.mssql import get_userid
 
 def create(request):
     if request.POST: #If we do a POST
-        #(a, created) = ChangeModel.objects.get_or_create(student_id=request.POST[student_id])
+        # (a, created) = ChangeModel.objects.get_or_create(
+        #    student_id=request.POST[student_id]
+        # )
         # Scrape the data from the form and save it in a variable
         form = ChangeForm(request.POST)
         # If the form is valid
@@ -22,7 +24,8 @@ def create(request):
             # Save the form data to the datbase table
             form.save()
             form = ChangeForm()
-            # This is the URL where users are redirected after submitting the form
+            # This is the URL where users are redirected after
+            # submitting the form
             return render(request, 'changemajor/form.html', {
                 'form': form,
                 'submitted': True
@@ -40,22 +43,63 @@ def create(request):
             getStudentDetailSQL = '''
                 SELECT
                     IDrec.id, IDrec.fullname AS fullname,
-                    major1.major AS major1code, TRIM(major1.txt) AS major1, major2.major AS major2code, TRIM(NVL(major2.txt,"")) AS major2, major3.major AS major3code, TRIM(NVL(major3.txt,"")) AS major3,
-                    minor1.minor AS minor1code, TRIM(minor1.txt) AS minor1, minor2.minor AS minor2code, TRIM(NVL(minor2.txt,"")) AS minor2, minor3.minor AS minor3code, TRIM(NVL(minor3.txt,"")) AS minor3
+                    major1.major AS major1code,
+                    TRIM(major1.txt) AS major1,
+                    major2.major AS major2code,
+                    TRIM(NVL(major2.txt,"")) AS major2,
+                    major3.major AS major3code,
+                    TRIM(NVL(major3.txt,"")) AS major3,
+                    minor1.minor AS minor1code,
+                    TRIM(minor1.txt) AS minor1,
+                    minor2.minor AS minor2code,
+                    TRIM(NVL(minor2.txt,"")) AS minor2,
+                    minor3.minor AS minor3code,
+                    TRIM(NVL(minor3.txt,"")) AS minor3
                 FROM
-                    id_rec  IDrec   INNER JOIN  prog_enr_rec    PROGrec ON  IDrec.id        =   PROGrec.id
-                                    LEFT JOIN   major_table     major1  ON  PROGrec.major1  =   major1.major
-                                    LEFT JOIN   major_table     major2  ON  PROGrec.major2  =   major2.major
-                                    LEFT JOIN   major_table     major3  ON  PROGrec.major3  =   major3.major
-                                    LEFT JOIN   minor_table     minor1  ON  PROGrec.minor1  =   minor1.minor
-                                    LEFT JOIN   minor_table     minor2  ON  PROGrec.minor2  =   minor2.minor
-                                    LEFT JOIN   minor_table     minor3  ON  PROGrec.minor3  =   minor3.minor
+                    id_rec IDrec
+                INNER JOIN
+                    prog_enr_rec PROGrec
+                ON
+                    IDrec.id = PROGrec.id
+                LEFT JOIN
+                    major_table major1
+                ON
+                    PROGrec.major1 = major1.major
+                LEFT JOIN
+                    major_table major2
+                ON
+                    PROGrec.major2 = major2.major
+                LEFT JOIN
+                    major_table major3
+                ON
+                    PROGrec.major3 = major3.major
+                LEFT JOIN
+                    minor_table minor1
+                ON
+                    PROGrec.minor1 = minor1.minor
+                LEFT JOIN
+                    minor_table minor2
+                ON
+                    PROGrec.minor2 = minor2.minor
+                LEFT JOIN
+                    minor_table minor3
+                ON
+                    PROGrec.minor3 = minor3.minor
                 WHERE
-                    IDrec.id = %d''' % (int(sid))
-            student = do_sql(getStudentDetailSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+                    IDrec.id = {}
+            '''.format(int(sid))
+
+            student = do_sql(
+                getStudentDetailSQL,
+                key=settings.INFORMIX_DEBUG,
+                earl=settings.INFORMIX_EARL
+            )
+
             for row in student: # set initial data based on student
                 form.fields['student_id'].initial = row['id']
-                form.fields['name'].initial = row['fullname'].decode('ISO-8859-2').encode('utf-8')
+                form.fields['name'].initial = row['fullname'].decode(
+                    'ISO-8859-2'
+                ).encode('utf-8')
                 if row['major2'] == '' and row['major3'] == '':
                     form.fields['majorlist'].initial = (row['major1'])
                 elif row['major3'] == '':
@@ -82,7 +126,8 @@ def create(request):
     #get list of valid advisors for jquery autocomplete
     advisorSQL = '''
         SELECT
-            id_rec.id, TRIM(id_rec.firstname) AS firstname, TRIM(id_rec.lastname) AS lastname
+            id_rec.id, TRIM(id_rec.firstname) AS firstname,
+            TRIM(id_rec.lastname) AS lastname
         FROM
             job_rec INNER JOIN id_rec ON job_rec.id = id_rec.id
         WHERE
@@ -94,13 +139,16 @@ def create(request):
         ORDER BY
             lastname, firstname
     '''
-    advisor_list = do_sql(advisorSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL)
+    advisor_list = do_sql(
+        advisorSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+    )
 
     return render(request, 'changemajor/form.html', {
         'form': form,
         'advisor_list': advisor_list,
         'submitted': False,
     })
+
 
 def get_all_students():
     """
