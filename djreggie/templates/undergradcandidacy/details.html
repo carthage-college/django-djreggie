@@ -136,12 +136,12 @@ body.loading .loader {
                 </div>
                 {% endcomment %}
                 <div class="panel-body">
-                    <div>Best Contact ({% if student.aa = 'EML' %}Email{% else %}Phone{% endif %})
+                    <div>Best Contact ({% if student.aa == 'EML' %}Email{% else %}Phone{% endif %})
                         <pre>{{student.aa_value}}</pre>
                     </div>
                 </div>
                 <div class="panel-body">
-                    <div>Address - {% if student.diploma_type = 'DIPL' %}Diploma{% else %}Permanent{% endif %}
+                    <div>Address - {% if student.diploma_type == 'DIPL' %}Diploma{% else %}Permanent{% endif %}
                         <pre>{{student.dipl_addr}}<br />{{student.dipl_city}}, {{student.dipl_st}} {{student.dipl_zip}}</pre>
                         <!-- <pre>{{student.address}}</pre> -->
                     </div>
@@ -233,7 +233,7 @@ body.loading .loader {
                     <div>
                         Approved<pre><input type="checkbox" class="approved"
                         id="approved_{{student.undergradcandidacy_no}}"
-                        {% if student.approved = 'Y' %}checked{% endif %} value="{{student.undergradcandidacy_no}}" /></pre>
+                        {% if student.approved == 'Y' %}checked{% endif %} value="{{student.undergradcandidacy_no}}" /></pre>
                     </div>
                 </div>
             </div>

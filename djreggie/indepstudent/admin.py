@@ -1,9 +1,10 @@
 from django.contrib import admin
 from models import Independ, FamInfo, Studwork, CS
 
+
 class Admin(admin.ModelAdmin):
     list_display = ('fname', 'email', 'address',)
-    
+
 admin.site.register(Independ, Admin)
 admin.site.register(FamInfo)
 admin.site.register(Studwork)

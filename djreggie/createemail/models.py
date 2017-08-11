@@ -1,16 +1,13 @@
-#Need this import
 from django.db import models
 
-# Create your models here.
-class EmailModel(models.Model):
-    
-    #All of my fields in my form
 
-    #date = models.DateField(max_length=16,blank=False) #Keeping this commented out unless we need this field in the database
-    requested_by = models.CharField(max_length=64, blank=False) #'blank=False' means the field is required
-    
+class EmailModel(models.Model):
+
+    #Keeping this commented out unless we need this field in the database
+    #date = models.DateField(max_length=16,blank=False)
+    requested_by = models.CharField(max_length=64, blank=False)
     account_name = models.CharField(max_length=64, blank=False)
     purpose = models.EmailField(max_length=300, blank=False)
     users = models.CharField(max_length=300, blank=False)
     needed_until = models.DateField(max_length=16, blank=False)
-    unique_id = models.CharField("ID",max_length=7, blank=False)#'ID' sets the label of this field        
+    unique_id = models.CharField("ID",max_length=7, blank=False)

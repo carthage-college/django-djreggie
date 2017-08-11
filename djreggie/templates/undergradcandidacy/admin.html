@@ -29,8 +29,8 @@
                 </td>
                 <td class="center">
                     <input type='checkbox' class='approved' id='approved_{{s.undergradcandidacy_no}}'
-                        {% if s.approved = 'Y' %}checked{% endif %} value='{{s.undergradcandidacy_no}}' />
-                        {% if s.approved = 'Y' %}<div style="display:none;">1</div>{% else %}<div style="display:none;">0</div>{% endif %}
+                        {% if s.approved == 'Y' %}checked{% endif %} value='{{s.undergradcandidacy_no}}' />
+                        {% if s.approved == 'Y' %}<div style="display:none;">1</div>{% else %}<div style="display:none;">0</div>{% endif %}
                 </td>
                 <td class="center">
                     {{s.major1_txt}}
@@ -63,7 +63,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if s.aa = 'EML' %}<a href="mailto:{{s.aa_value}}">{{s.aa_value}}</a>{% else %}{{s.formatted_contact}}{% endif %}
+                    {% if s.aa == 'EML' %}<a href="mailto:{{s.aa_value}}">{{s.aa_value}}</a>{% else %}{{s.formatted_contact}}{% endif %}
                 </td>
                 <td class="center">
                     {{s.datecreated}}
