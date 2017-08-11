@@ -18,7 +18,9 @@ class AccessFormForm(forms.ModelForm):
     def clean_full_name(self):
         data = self.cleaned_data['full_name']
         if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
-            raise forms.ValidationError('Invalid name. Letters and spaces only, please.')
+            raise forms.ValidationError(
+                'Invalid name. Letters and spaces only, please.'
+            )
         return data
 
     def clean_carthage_id(self):
@@ -30,13 +32,17 @@ class AccessFormForm(forms.ModelForm):
     def clean_department(self):
         data = self.cleaned_data['department']
         if not re.match(r'^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$', data):
-            raise forms.ValidationError('Please enter a department with just letters and spaces.')
+            raise forms.ValidationError(
+                'Please enter a department with just letters and spaces.'
+            )
         return data
 
     def clean_position(self):
         data = self.cleaned_data['position']
         if not re.match(r'^((?:[a-zA-Z]+\s?)+[a-zA-Z]+)$', data):
-            raise forms.ValidationError('Please enter a position with just letters and spaces.')
+            raise forms.ValidationError(
+                'Please enter a position with just letters and spaces.'
+            )
         return data
 
     def clean_work_phone(self):
@@ -48,22 +54,25 @@ class AccessFormForm(forms.ModelForm):
     def clean_supervisor_name(self):
         data = self.cleaned_data['supervisor_name']
         if not re.match(r'^((?:[a-zA-Z]+\s?){1,2}[a-zA-Z]+)$', data):
-            raise forms.ValidationError('Invalid name. Letters and spaces only, please.')
+            raise forms.ValidationError(
+                'Invalid name. Letters and spaces only, please.'
+            )
         return data
 
     #Another option to include validation
     def clean(self):
-        cleaned_data = super(AccessFormForm, self).clean() #Grabs the clean data
+        cleaned_data = super(AccessFormForm, self).clean()
 
         reason = cleaned_data.get("reason_for_change")
         other = cleaned_data.get("other_textbox")
 
         if reason == "OTH" and other == "":
             msg = u"Please fill in the 'other' textbox"
-            self._errors['reason_for_change'] = self.error_class([msg]) #Adds the error message to the field
+            self._errors['reason_for_change'] = self.error_class([msg])
             self._errors['other_textbox'] = self.error_class([msg])
 
-            del cleaned_data['reason_for_change'] #Django told me to do this
+            # Django told me to do this
+            del cleaned_data['reason_for_change']
             del cleaned_data['other_textbox']
 
         return cleaned_data
