@@ -1,13 +1,13 @@
+from django.conf import settings
 from django.db import models
 from django import forms
 from django.forms.models import modelformset_factory
 from django.utils.safestring import mark_safe
-from djzbar.settings import INFORMIX_EARL_TEST
+
 from sqlalchemy import create_engine
-# Create your models here.
-# Each class will exist in a separate table in the database
-#SQL Alchemy
-'''engine = create_engine(INFORMIX_EARL_TEST)
+
+'''
+engine = create_engine(settings.INFORMIX_EARL)
 connection = engine.connect()
 
 
@@ -15,8 +15,10 @@ sql1 = "select * from st_table"
 state = connection.execute(sql1)
 array1 = []
 for row in state:
-    array1.append((row['st'],row['txt']))   
-CHOICES1 = tuple(array1)'''
+    array1.append((row['st'],row['txt']))
+CHOICES1 = tuple(array1)
+'''
+
 class Depend(models.Model):
 
     PHONES= (
@@ -44,78 +46,93 @@ class Depend(models.Model):
     IRSDRT= (
         ("HAS",""),
         ("HASN", ""),
-        ("WONT", ""),        
+        ("WONT", "")
     )
-    
     TACHED= (
         ("IS", ""),
-        ("ISNT", ""),    
+        ("ISNT", "")
     )
-    
     PLOY= (
         ("WASNT", ""),
-        ("WAS", ""),    
+        ("WAS", "")
     )
-    
     useddata = models.CharField(choices=IRSDRT, max_length=500, default="HAS")
     attached = models.CharField(choices=TACHED, max_length=500, default="IS")
     employed = models.CharField(choices=PLOY, max_length=500, default="WAS")
     IRSDRT2= (
         ("HAS", ""),
         ("HASN", ""),
-        ("WONT", ""),
-        )
-    
+        ("WONT", "")
+    )
     TACHED2= (
         ("IS", ""),
-        ("ISNT", ""),
-        )
-    
+        ("ISNT", "")
+    )
     PLOY2= (
         ("WAS", ""),
-        ("WSNT", ""),             
+        ("WSNT", "")
     )
-    useddata2 = models.CharField(choices=IRSDRT2, max_length=500, default="HAS")
+    useddata2 = models.CharField(
+        choices=IRSDRT2, max_length=500, default="HAS"
+    )
     attached2 = models.CharField(choices=TACHED2, max_length=500, default="IS")
     employed2 = models.CharField(choices=PLOY2, max_length=500, default="WAS")
     snapbenefits = models.BooleanField()
     childsupport = models.BooleanField()
     confirm = models.BooleanField()
     date = models.DateField(auto_now_add=True)
-    
+
+
 class FamInfo(models.Model):
     name = models.CharField(max_length=100, verbose_name="Full Name")
     age = models.IntegerField(max_length=3, verbose_name="Age")
-    relationship = models.CharField(max_length=100, verbose_name="Relationship")
+    relationship = models.CharField(
+        max_length=100, verbose_name="Relationship"
+    )
     college = models.CharField(max_length=200, verbose_name="College")
     halftimeenroll = models.BooleanField(verbose_name="Enrolled half time")
     student = models.ForeignKey(Depend)
-    
+
+
 class Studwork(models.Model):
     empname = models.CharField(max_length=250, verbose_name="Employer's Name")
-    money = models.IntegerField(max_length=10, verbose_name="2012 Amount Earned")
+    money = models.IntegerField(
+        max_length=10, verbose_name="2012 Amount Earned"
+    )
     w2attach = models.BooleanField(verbose_name="IRS W-2 Attached?")
     student = models.ForeignKey(Depend)
 
 
 class Parwork(models.Model):
-    empname = models.CharField(max_length=250, verbose_name="Employer's Name")
-    money = models.IntegerField(max_length=10, verbose_name="2012 Amount Earned")
+    empname = models.CharField(
+        max_length=250, verbose_name="Employer's Name"
+    )
+    money = models.IntegerField(
+        max_length=10, verbose_name="2012 Amount Earned"
+    )
     w2attach = models.BooleanField(verbose_name="IRS W-2 Attached?")
     student = models.ForeignKey(Depend)
-    
-class CS(models.Model):
-    namepaid = models.CharField(max_length=200,
-                                blank=True,
-                                verbose_name="Name of Person who Paid Child Support")
-    namepaidto = models.CharField(max_length=200,
-                                  blank=True,
-                                  verbose_name="Name of Person to Whom Child Support was Paid")
-    namechild = models.CharField(max_length=200,
-                                 blank=True,
-                                 verbose_name="Name of Child for Whom Support Was Paid")
-    amntpaid = models.IntegerField(max_length=10,
-                                   blank=True,
-                                   verbose_name="Amount of Child Support Paid in 2012")
-    student = models.ForeignKey(Depend)
 
+
+class CS(models.Model):
+    namepaid = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name="Name of Person who Paid Child Support"
+    )
+    namepaidto = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name="Name of Person to Whom Child Support was Paid"
+    )
+    namechild = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name="Name of Child for Whom Support Was Paid"
+    )
+    amntpaid = models.IntegerField(
+        max_length=10,
+        blank=True,
+        verbose_name="Amount of Child Support Paid in 2012"
+    )
+    student = models.ForeignKey(Depend)
