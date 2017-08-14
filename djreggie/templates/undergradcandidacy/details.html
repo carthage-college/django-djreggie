@@ -23,16 +23,16 @@
     left:       0;
     height:     100%;
     width:      100%;
-    background: rgba( 255, 255, 255, .8 ) 
+    background: rgba( 255, 255, 255, .8 )
                 url('{% static 'img/loading.gif' %}')
-                50% 50% 
+                50% 50%
                 no-repeat;
 }
 
 /* When the body has the loading class, we turn
    the scrollbar off with overflow:hidden */
 body.loading {
-    overflow: hidden;   
+    overflow: hidden;
 }
 
 /* Anytime the body has the loading class, our
@@ -50,7 +50,7 @@ body.loading .loader {
 
             $(document).on({
                 ajaxStart: function() { $('body').addClass("loading"); },
-                ajaxStop: function() { $('body').removeClass("loading"); }    
+                ajaxStop: function() { $('body').removeClass("loading"); }
             });
             $.ajax({
                 type: 'POST',
@@ -152,7 +152,7 @@ body.loading .loader {
                 </div>
                 <div class="panel-body">
                     <div>State<pre>{{student.state}}</pre></div>
-                </div>  
+                </div>
                 <div class="panel-body">
                     <div>Zipcode<pre>{{student.zip}}</pre></div>
                 </div>
@@ -174,7 +174,7 @@ body.loading .loader {
                 </div>
                 <div class="panel-body">
                     <div>Graduation Session<pre>{{student.grad_sess}}</pre></div>
-                </div>  
+                </div>
                 <div class="panel-body">
                     <div>Plan to Teach<pre>{% if student.prog == 't' or student.prog == 'T' %}Yes{% elif student.prog == 'f' or student.prog == 'F' or student.prog == 'N' %}No{% endif %}</pre></div>
                 </div>
@@ -191,7 +191,7 @@ body.loading .loader {
                 {% if student.major2 != "None" %}
                     <div class="panel-body">
                         <div><pre>{{reqmajors.major_txt2}}</pre></div>
-                    </div>                
+                    </div>
                 {% endif %}
                 {% if student.major3 != "None" %}
                     <div class="panel-body">
