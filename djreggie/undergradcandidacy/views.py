@@ -11,6 +11,8 @@ from djzbar.utils.mssql import get_userid
 from djzbar.utils.informix import do_sql
 
 import re
+import logging
+logger = logging.getLogger(__name__)
 
 
 def index(request):
@@ -427,14 +429,15 @@ def set_approved(request):
     set the approved column in database for entry
     '''
 
+    logger.debug("post = {}".format(request.POST))
     updateCandidacySQL = '''
         UPDATE
             cc_stg_undergrad_candidacy
         SET
-            approved="{approved}", datemodified=CURRENT
+            approved="{}", datemodified=CURRENT
         WHERE
-            undergradcandidacy_no = {id}
-    '''.format(request.POST)
+            undergradcandidacy_no = {}
+    '''.format(request.POST['approved'],request.POST['id'])
 
     do_sql(
         updateCandidacySQL,
