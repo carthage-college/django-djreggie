@@ -380,6 +380,16 @@ def student(request, student_id): #admin details page
         key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
     )
 
+    # deal with funky characters
+    stu = {}
+    student = student.first()
+    for key, value in student.items():
+        try:
+            stu[key] = value.decode('ISO-8859-2').encode('utf-8')
+        except:
+            stu[key] = value
+    student = stu
+
     # retrieves majors/minors full text
     getMajorMinorSQL = '''
         SELECT
@@ -410,7 +420,7 @@ def student(request, student_id): #admin details page
     )
 
     return render(request, 'undergradcandidacy/details.html', {
-        'student': student.first(),
+        'student': student,
         'reqmajors': reqmajors.first(),
         'full_student_list': get_all_students(),
     })
