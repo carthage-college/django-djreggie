@@ -117,9 +117,9 @@ class ChangeModel(models.Model):
                     minor2, minor3, advisor_id, datecreated
                 )
             VALUES (
-                "{'student_id'}", "{'major1'}", "{'major2'}",
-                "{'major3'}", "{'minor1'}", "{'minor2'}", "{'minor3'}",
-                "{'advisor'}", CURRENT
+                "{student_id}", "{major1}", "{major2}",
+                "{major3}", "{minor1}", "{minor2}", "{minor3}",
+                "{advisor}", CURRENT
             )
         '''.format(self.__dict__)
 

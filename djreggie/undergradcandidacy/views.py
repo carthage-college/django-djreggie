@@ -232,9 +232,9 @@ def contact(request):
         FROM
             aa_rec
         WHERE
-            id = {'id'}
+            id = {id}
         AND
-            aa = "{'aa'}"
+            aa = "{aa}"
         AND
             TODAY BETWEEN beg_date AND NVL(end_date, TODAY)
     '''.format(request.GET)
@@ -431,9 +431,9 @@ def set_approved(request):
         UPDATE
             cc_stg_undergrad_candidacy
         SET
-            approved="{'approved'}", datemodified=CURRENT
+            approved="{approved}", datemodified=CURRENT
         WHERE
-            undergradcandidacy_no = {'id'}
+            undergradcandidacy_no = {id}
     '''.format(request.POST)
 
     do_sql(
@@ -540,10 +540,10 @@ def set_approved(request):
                     UPDATE
                         aa_rec
                     SET
-                        line1 = "{'address'}",
-                        city = "{'city'}",
-                        st = "{'state'}",
-                        zip = "{'zip'}",
+                        line1 = "{address}",
+                        city = "{city}",
+                        st = "{state}",
+                        zip = "{zip}",
                         beg_date = TODAY
                     WHERE
                         aa_no = {}
@@ -570,24 +570,24 @@ def set_approved(request):
                 UPDATE
                     gradwalk_rec
                 SET
-                    grad_sess = "{'grad_sess'}",
-                    grad_yr = "{'grad_yr'}",
+                    grad_sess = "{grad_sess}",
+                    grad_yr = "{grad_yr}",
                     name_on_diploma = (
                         CASE WHEN
-                            "{'middle_initial'}" = "None"
+                            "{middle_initial}" = "None"
                         THEN
-                            "{'first_name'} {'last_name'}"
+                            "{first_name} {last_name}"
                         ELSE
-                            "{'first_name'} {'middle_initial'} {'last_name'}"
+                            "{first_name} {middle_initial} {last_name}"
                         END
                     ),
-                    fname_pronounce = "{'first_name_pronounce'}",
-                    mname_pronounce = "{'middle_name_pronounce'}",
-                    lname_pronounce = "{'last_name_pronounce'}",
-                    addr = "{'diploma_aa_type'}",
+                    fname_pronounce = "{first_name_pronounce}",
+                    mname_pronounce = "{middle_name_pronounce}",
+                    lname_pronounce = "{last_name_pronounce}",
+                    addr = "{diploma_aa_type}",
                     plan2walk = (
                         CASE WHEN
-                            "{'plan_to_walk'}" = "t"
+                            "{plan_to_walk}" = "t"
                         THEN
                             "Y"
                         ELSE
@@ -596,36 +596,36 @@ def set_approved(request):
                     ),
                     major1 = (
                         CASE WHEN
-                            "{'major1'}" = "None" THEN "" ELSE "{'major1'}"
+                            "{major1}" = "None" THEN "" ELSE "{major1}"
                         END
                         ),
                     major2 = (
                         CASE WHEN
-                            "{'major2'}" = "None" THEN "" ELSE "{'major2'}"
+                            "{major2}" = "None" THEN "" ELSE "{major2}"
                         END
                     ),
                     major3 = (
                         CASE WHEN
-                            "{'major3'}" = "None" THEN "" ELSE "{'major3'}"
+                            "{major3}" = "None" THEN "" ELSE "{major3}"
                         END
                     ),
                     minor1 = (
                         CASE WHEN
-                            "{'minor1'}" = "None" THEN "" ELSE "{'minor1'}"
+                            "{minor1}" = "None" THEN "" ELSE "{minor1}"
                         END
                     ),
                     minor2 = (
                         CASE WHEN
-                            "{'minor2'}" = "None" THEN "" ELSE "{'minor2'}"
+                            "{minor2}" = "None" THEN "" ELSE "{minor2}"
                         END
                     ),
                     minor3 = (
                         CASE WHEN
-                            "{'minor3'}" = "None" THEN "" ELSE "{'minor3'}"
+                            "{minor3}" = "None" THEN "" ELSE "{minor3}"
                         END
                     )
                 WHERE
-                    id = {'student_id'}
+                    id = {student_id}
             '''.format(student_data)
             do_sql(
                 updateGradWalkSQL,
@@ -640,25 +640,25 @@ def set_approved(request):
                   major3, minor1, minor2, minor3
               )
               VALUES (
-                {'student_id'}, "", "CART", "BA", "'{grad_sess'}",
-                "{'grad_yr'}", (
+                {student_id}, "", "CART", "BA", "'{grad_sess}",
+                "{grad_yr}", (
                     CASE WHEN
-                      "'{middle_initial'}" = "None"
+                      "'{middle_initial}" = "None"
                     THEN
-                      "{'first_name'} {'last_name'}"
+                      "{first_name} {last_name}"
                     ELSE
-                      "{'first_name'} {'middle_initial'} {'last_name'}"
+                      "{first_name} {middle_initial} {last_name}"
                     END
                 ),
-                "{'first_name_pronounce'}", "{'middle_name_pronounce'}",
-                "{'last_name_pronounce'}", "{'diploma_aa_type'}",
-                (CASE WHEN "{'plan_to_walk'}" = "t" THEN "Y" ELSE "N" END),
-                (CASE WHEN "{'major1'}" = "None" THEN "" ELSE "{'major1'}" END),
-                (CASE WHEN "{'major2'}" = "None" THEN "" ELSE "{'major2'}" END),
-                (CASE WHEN "{'major3'}" = "None" THEN "" ELSE "{'major3'}" END),
-                (CASE WHEN "{'minor1'}" = "None" THEN "" ELSE "{'minor1'}" END),
-                (CASE WHEN "{'minor2'}" = "None" THEN "" ELSE "{'minor2'}" END),
-                (CASE WHEN "{'minor3'}" = "None" THEN "" ELSE "{'minor3'}" END)
+                "{first_name_pronounce}", "{middle_name_pronounce}",
+                "{last_name_pronounce}", "{diploma_aa_type}",
+                (CASE WHEN "{plan_to_walk}" = "t" THEN "Y" ELSE "N" END),
+                (CASE WHEN "{major1}" = "None" THEN "" ELSE "{major1}" END),
+                (CASE WHEN "{major2}" = "None" THEN "" ELSE "{major2}" END),
+                (CASE WHEN "{major3}" = "None" THEN "" ELSE "{major3}" END),
+                (CASE WHEN "{minor1}" = "None" THEN "" ELSE "{minor1}" END),
+                (CASE WHEN "{minor2}" = "None" THEN "" ELSE "{minor2}" END),
+                (CASE WHEN "{minor3}" = "None" THEN "" ELSE "{minor3}" END)
               )
             '''.format(student_data)
             do_sql(
