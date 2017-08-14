@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from form import DependForm, FamInfoForm, SincomeForm, StudworkForm, ParincomeForm, ParworkForm, OtherinfoForm, CSForm, CertificationForm
-from models import Depend, FamInfo, Studwork, Parwork, CS
 from django.http import HttpResponseRedirect
 from django.forms.formsets import formset_factory
+
+from form import DependForm, FamInfoForm, SincomeForm, StudworkForm, CSForm
+from form import ParincomeForm, ParworkForm, OtherinfoForm, CertificationForm
+from models import Depend, FamInfo, Studwork, Parwork, CS
+
 import datetime
+
 
 def create(request):
 
@@ -23,7 +27,11 @@ def create(request):
         formparincome = ParincomeForm(request.POST)
         formotherinformation = OtherinfoForm(request.POST)
         formcertification = CertificationForm(request.POST)
-        if formdepend.is_valid() and formsetcs.is_valid() and formsetpar.is_valid() and formsetstud.is_valid() and formsetfam.is_valid() and formsincome.is_valid() and formparincome.is_valid() and formotherinformation.is_valid() and formcertification.is_valid():
+        if formdepend.is_valid() and formsetcs.is_valid() and \
+          formsetpar.is_valid() and formsetstud.is_valid() and \
+          formsetfam.is_valid() and formsincome.is_valid() and \
+          formparincome.is_valid() and formotherinformation.is_valid() and \
+          formcertification.is_valid():
             instance = formdepend.save(commit=False)
             instance.useddata = formsincome.cleaned_data['useddata']
             instance.attached = formsincome.cleaned_data['attached']
@@ -65,7 +73,17 @@ def create(request):
             formotherinformation = OtherinfoForm()
             formcertification = CertificationForm()
             submitted = True
-            return render(request, 'depstudent/design.html', {'formsetfam': formsetfam, 'formsetstud': formsetstud, 'formsetpar': formsetpar, 'formsetcs': formsetcs, 'formdepend': formdepend, 'formsincome': formsincome, 'formparincome': formparincome, 'formotherinformation': formotherinformation, 'formcertification': formcertification, 'submitted': submitted, 'year': datetime.datetime.now().year, 'year2': datetime.datetime.now().year + 1})
+            return render(request, 'depstudent/design.html', {
+                'formsetfam': formsetfam, 'formsetstud': formsetstud,
+                'formsetpar': formsetpar, 'formsetcs': formsetcs,
+                'formdepend': formdepend, 'formsincome': formsincome,
+                'formparincome': formparincome,
+                'formotherinformation': formotherinformation,
+                'formcertification': formcertification,
+                'submitted': submitted,
+                'year': datetime.datetime.now().year,
+                'year2': datetime.datetime.now().year + 1
+            })
     else:
         formsetfam = FamInfoFormset(prefix='fam')
         formsetstud = StudWorkFormset(prefix='stud')
