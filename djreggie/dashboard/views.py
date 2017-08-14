@@ -1,13 +1,17 @@
-import re #For regular expressions
+from django.conf import settings
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from datetime import date
-from djzbar.settings import INFORMIX_EARL_TEST
-from sqlalchemy import create_engine
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
-#Including the form class
+from django.http import HttpResponse, HttpResponseRedirect
+
 from djreggie.undergradcandidacy.forms import UndergradForm
+
+from sqlalchemy import create_engine
+from datetime import date
+
+import re
+
+INFORMIX_EARL = settings.INFORMIX_EARL
 
 
 def admin(request):
