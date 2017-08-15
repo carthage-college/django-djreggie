@@ -148,7 +148,7 @@ def index(request):
         'valid_class': valid_class,
         'submitted': False,
         'perm': perm,
-        'userid': request.GET['student_id'],
+        'userid': request.GET.get('student_id')
     })
 
 def populateForm(student_id):
@@ -239,7 +239,7 @@ def contact(request):
             aa = "{aa}"
         AND
             TODAY BETWEEN beg_date AND NVL(end_date, TODAY)
-    '''.format(request.GET)
+    '''.format(**request.GET)
     contactinfo = do_sql(
         getContactSQL,
         key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
@@ -439,7 +439,6 @@ def set_approved(request):
     set the approved column in database for entry
     '''
 
-    logger.debug("post = {}".format(request.POST))
     updateCandidacySQL = '''
         UPDATE
             cc_stg_undergrad_candidacy
@@ -447,7 +446,7 @@ def set_approved(request):
             approved="{}", datemodified=CURRENT
         WHERE
             undergradcandidacy_no = {}
-    '''.format(request.POST['approved'],request.POST['id'])
+    '''.format(request.POST['approved'], request.POST['id'])
 
     do_sql(
         updateCandidacySQL,
@@ -548,6 +547,7 @@ def set_approved(request):
                 key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
             ).first()
 
+            student_data['hasDiplAddress'] = hasDiplAddress["aa_no"]
             if hasDiplAddress:
                 diplSQL = '''
                     UPDATE
@@ -559,8 +559,8 @@ def set_approved(request):
                         zip = "{zip}",
                         beg_date = TODAY
                     WHERE
-                        aa_no = {}
-                '''.format(student_data, hasDiplAddress["aa_no"])
+                        aa_no = {hasDiplAddress}
+                '''.format(**student_data)
             else:
                 diplSQL = '''
                     INSERT INTO aa_rec
@@ -639,7 +639,7 @@ def set_approved(request):
                     )
                 WHERE
                     id = {student_id}
-            '''.format(student_data)
+            '''.format(**student_data)
             do_sql(
                 updateGradWalkSQL,
                 key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
@@ -673,7 +673,7 @@ def set_approved(request):
                 (CASE WHEN "{minor2}" = "None" THEN "" ELSE "{minor2}" END),
                 (CASE WHEN "{minor3}" = "None" THEN "" ELSE "{minor3}" END)
               )
-            '''.format(student_data)
+            '''.format(**student_data)
             do_sql(
                 insertGradWalkSQL,
                 key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
