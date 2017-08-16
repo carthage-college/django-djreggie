@@ -1,8 +1,7 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from datetime import date
-from djzbar import settings
-from djreggie import settings
 from sqlalchemy import create_engine
 from django.core.mail import send_mail, EmailMessage
 from django.views.decorators.csrf import csrf_exempt
@@ -11,8 +10,9 @@ from djzbar.utils.mssql import get_userid
 from djzbar.utils.informix import do_sql
 
 import re
-import logging
-logger = logging.getLogger(__name__)
+
+DEBUG=settings.INFORMIX_DEBUG
+EARL=settings.INFORMIX_EARL
 
 
 def index(request):
@@ -96,10 +96,7 @@ def index(request):
                 WHERE
                     IDrec.id = {}
             '''.format(cxID)
-            student = do_sql(
-                getStudentSQL,
-                key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-            )
+            student = do_sql(getStudentSQL, key=DEBUG, earl=EARL)
 
             for row in student: #set student's initial data
                 form.fields['student_id'].initial = row['id']
@@ -131,10 +128,7 @@ def index(request):
             WHERE
                 prog_enr_rec.id = {}
             '''.format(cxID)
-            class_standing = do_sql(
-                getClassStandingSQL,
-                key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-            )
+            class_standing = do_sql(getClassStandingSQL, key=DEBUG, earl=EARL)
             valid_class = class_standing.first()['valid_class']
             """
             valid_class = isValidClass(cxID)
@@ -183,10 +177,7 @@ def populateForm(student_id):
             IDrec.id = {}
     '''.format(student_id)
 
-    student = do_sql(
-        getStudentSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-    )
+    student = do_sql(getStudentSQL, key=DEBUG, earl=EARL)
 
     # set student's initial data
     for row in student:
@@ -215,10 +206,7 @@ def isValidClass(student_id):
         FROM prog_enr_rec
         WHERE prog_enr_rec.id = {}
     '''.format(student_id)
-    class_standing = do_sql(
-        getClassStandingSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-    )
+    class_standing = do_sql(getClassStandingSQL, key=DEBUG, earl=EARL)
     return class_standing.first()['valid_class']
 
 def submitted(request):
@@ -241,10 +229,7 @@ def contact(request):
         AND
             TODAY BETWEEN beg_date AND NVL(end_date, TODAY)
     '''.format(**request.GET)
-    contactinfo = do_sql(
-        getContactSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-    )
+    contactinfo = do_sql(getContactSQL, key=DEBUG, earl=EARL)
     data = ''
     for row in contactinfo:
         # we order the data this way so we can put it into a dict
@@ -264,10 +249,7 @@ def get_all_students():
         FROM
             cc_stg_undergrad_candidacy
     '''
-    return do_sql(
-        sql,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-    )
+    return do_sql(sql, key=DEBUG, earl=EARL)
 
 
 def admin(request):
@@ -281,10 +263,7 @@ def admin(request):
             DELETE FROM cc_stg_undergrad_candidacy
             WHERE undergradcandidacy_no = {}
         '''.format(request.POST.get('record'))
-        do_sql(
-            deleteRowSQL,
-            key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-        )
+        do_sql(deleteRowSQL, key=DEBUG, earl=EARL)
     # retrieves all entries along with majors/minors full text
     getMajorMinorSQL = '''
         SELECT
@@ -310,10 +289,7 @@ def admin(request):
         ORDER BY
             uc.approved, uc.datecreated DESC
     '''
-    student = do_sql(
-        getMajorMinorSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-    )
+    student = do_sql(getMajorMinorSQL, key=DEBUG, earl=EARL)
 
     return render(request, 'undergradcandidacy/home.html', {
         'student': student,
@@ -376,10 +352,7 @@ def student(request, student_id): #admin details page
             uc.student_id = {}
     '''.format(student_id)
 
-    student = do_sql(
-        getStudentSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-    )
+    student = do_sql(getStudentSQL, key=DEBUG, earl=EARL)
 
     # deal with funky characters
     stu = {}
@@ -415,10 +388,7 @@ def student(request, student_id): #admin details page
             uc.student_id = {}
     '''.format(student_id)
 
-    reqmajors = do_sql(
-        getMajorMinorSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-    )
+    reqmajors = do_sql(getMajorMinorSQL, key=DEBUG, earl=EARL)
 
     return render(request, 'undergradcandidacy/details.html', {
         'student': student,
@@ -449,10 +419,7 @@ def set_approved(request):
             undergradcandidacy_no = {}
     '''.format(request.POST['approved'], request.POST['id'])
 
-    do_sql(
-        updateCandidacySQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-    )
+    do_sql(updateCandidacySQL, key=DEBUG, earl=EARL)
 
     student_sql = '''
         SELECT
@@ -464,8 +431,7 @@ def set_approved(request):
         '''.format(request.POST.get('id'))
 
     student_id = do_sql(
-        student_sql,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+        student_sql, key=DEBUG, earl=EARL
     ).first()['student_id']
 
     if request.POST.get('approved') == "Y":
@@ -506,10 +472,7 @@ def set_approved(request):
             WHERE
                 id = {}
         '''.format(student_id)
-        record = do_sql(
-            gradwalkExistsSQL,
-            key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-        )
+        record = do_sql(gradwalkExistsSQL, key=DEBUG, earl=EARL)
         record_exists = record.first()['entries']
         getCandidacyInfoSQL = '''
             SELECT
@@ -519,10 +482,7 @@ def set_approved(request):
             WHERE
                 undergradcandidacy_no = {}
         '''.format(request.POST.get('id'))
-        student = do_sql(
-            getCandidacyInfoSQL,
-            key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-        )
+        student = do_sql(getCandidacyInfoSQL, key=DEBUG, earl=EARL)
         student_data = student.first()
 
         # If the aa type is DIPL, determine whether to insert or update
@@ -544,12 +504,10 @@ def set_approved(request):
             """.format(student_id)
 
             hasDiplAddress = do_sql(
-                hasDiplAddressSQL,
-                key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+                hasDiplAddressSQL, key=DEBUG, earl=EARL
             ).first()
-
-            student_data['hasDiplAddress'] = hasDiplAddress["aa_no"]
             if hasDiplAddress:
+                student_data['hasDiplAddress'] = hasDiplAddress["aa_no"]
                 diplSQL = '''
                     UPDATE
                         aa_rec
@@ -574,10 +532,7 @@ def set_approved(request):
                     student_data['city'], student_data['state'],
                     student_data['zip']
                 )
-            do_sql(
-                diplSQL,
-                key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-            )
+            do_sql(diplSQL, key=DEBUG, earl=EARL)
 
         if record_exists:
             updateGradWalkSQL = '''
@@ -641,10 +596,7 @@ def set_approved(request):
                 WHERE
                     id = {student_id}
             '''.format(**student_data)
-            do_sql(
-                updateGradWalkSQL,
-                key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-            )
+            do_sql(updateGradWalkSQL, key=DEBUG, earl=EARL)
         else:
             insertGradWalkSQL = '''
               INSERT INTO gradwalk_rec (
@@ -675,10 +627,7 @@ def set_approved(request):
                 (CASE WHEN "{minor3}" = "None" THEN "" ELSE "{minor3}" END)
               )
             '''.format(**student_data)
-            do_sql(
-                insertGradWalkSQL,
-                key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-            )
+            do_sql(insertGradWalkSQL, key=DEBUG, earl=EARL)
 
     return HttpResponse('update successful')
 
@@ -696,10 +645,9 @@ def getEmailById(cx_id):
         AND
             TODAY BETWEEN beg_date AND NVL(end_date, TODAY)
     '''.format(cx_id)
-    email = do_sql(
-        email_sql,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-    )
+
+    email = do_sql(email_sql, key=DEBUG, earl=EARL)
+
     return email.first()['email']
 
 
@@ -713,8 +661,6 @@ def getPermAddress(cx_id):
       WHERE
         id = {}
     '''.format(cx_id)
-    permAddress = do_sql(
-        getPermAddressSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
-    )
+    permAddress = do_sql(getPermAddressSQL, key=DEBUG, earl=EARL)
+
     return permAddress.first()
