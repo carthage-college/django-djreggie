@@ -20,19 +20,19 @@
                 <td><a href="{% url 'studentcm' s.changemajor_no %}">{{s.firstname}} {{s.lastname}}</a></td>
                 <td class='center'>
                     <input type="checkbox" name="approve" class="approved"
-                        id="approve_{{s.changemajor_no}}" value="{{s.changemajor_no}}" {% if s.approved = 'Y' %}checked="checked"{% endif %} />
-                    {% if s.approved = 'Y' %}<div style="display:none;">1</div>{% else %}<div style="display:none;">0</div>{% endif %}
+                        id="approve_{{s.changemajor_no}}" value="{{s.changemajor_no}}" {% if s.approved == 'Y' %}checked="checked"{% endif %} />
+                    {% if s.approved == 'Y' %}<div style="display:none;">1</div>{% else %}<div style="display:none;">0</div>{% endif %}
                 </td>
                 <td class='center'>
                     {{s.major1_txt}}
                     <br />{% if s.major2 != "None" %}{{s.major2_txt}}{% endif %}
                     <br />{% if s.major3 != "None" %}{{s.major3_txt}}{% endif %}
-                </td>     
+                </td>
                 <td class='center'>
                     {% if s.minor1 != "None" %}{{s.minor1_txt}}{% else %}None{% endif %}
                     <br />{% if s.minor2 != "None" %}{{s.minor2_txt}}{% endif %}
                     <br />{% if s.minor3 != "None" %}{{s.minor3_txt}}{% endif %}
-                </td>                
+                </td>
                 <td class='center'>{{s.advisor_first}}</td>
                 <td class='center'>{{s.advisor_last}}</td>
                 <td class='center'>{{s.datecreated}}</td>
