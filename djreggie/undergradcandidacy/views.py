@@ -29,14 +29,15 @@ def index(request):
             form.save()
             #email on valid submit
             studentEmail = getEmailById(request.POST['student_id'])
-            body = '''
-                Thank you for submitting your Candidacy Form for
-                potential graduation this school year. Your submission
-                has been received and is pending acceptance.
-                Please keep an eye on your Carthage email for
-                further correspondence regarding your eligibility
-                for graduation.
-            ''',
+            # has to be in the this format otherwise python mail complains
+            # about multiple lines or some such nonsense. should be a
+            # django template anyways.
+            body = ('Thank you for submitting your Candidacy Form for'
+            'potential graduation this school year. Your submission'
+            'has been received and is pending acceptance.\n\n'
+            'Please keep an eye on your Carthage email for'
+            'further correspondence regarding your eligibility'
+            'for graduation.')
             send_mail(
                 "Candidacy Received and Pending Approval",
                 body, 'Brigid Patterson <bpatterson@carthage.edu>',
