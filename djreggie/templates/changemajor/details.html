@@ -21,18 +21,18 @@
         left:       0;
         height:     100%;
         width:      100%;
-        background: rgba( 255, 255, 255, .8 ) 
-                    url('http://i.imgur.com/VOYFJhg.gif') 
+        background: rgba( 255, 255, 255, .8 )
+                    url('http://i.imgur.com/VOYFJhg.gif')
                     50% 50% 
                     no-repeat;
     }
-    
+
     /* When the body has the loading class, we turn
        the scrollbar off with overflow:hidden */
     body.loading {
-        overflow: hidden;   
+        overflow: hidden;
     }
-    
+
     /* Anytime the body has the loading class, our
        modal element will be visible */
     body.loading .loader {
@@ -48,7 +48,7 @@
             $body = $("body");
             $(document).on({
                 ajaxStart: function() { $body.addClass("loading");    },
-                ajaxStop: function() { $body.removeClass("loading"); }    
+                ajaxStop: function() { $body.removeClass("loading"); }
             });
             $.ajax({
                 type: 'POST',
@@ -219,7 +219,7 @@
                 <div class="panel-body">
                     <div>
                         Approved<pre><input type='checkbox' class='approved' id='approved_{{student.changemajor_no}}'
-                        {% if student.approved = 'Y' %}checked{% endif %} value='{{student.changemajor_no}}' /></pre>
+                        {% if student.approved == 'Y' %}checked{% endif %} value='{{student.changemajor_no}}' /></pre>
                     </div>
                 </div>
             </div>
