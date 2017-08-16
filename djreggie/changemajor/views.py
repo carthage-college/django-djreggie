@@ -266,7 +266,7 @@ def student(request, changemajor_no): #admin details page
             TRIM(rminor1.txt) AS minor_txt1, TRIM(rminor2.txt) AS minor_txt2,
             TRIM(rminor3.txt) AS minor_txt3
         FROM
-            cc_stg_changemajorcm
+            cc_stg_changemajor cm
         INNER JOIN
             id_rec        IDrec   ON  cm.student_id   =   IDrec.id
         LEFT JOIN
