@@ -55,13 +55,13 @@
                         50% 50% 
                         no-repeat;
         }
-        
+
         /* When the body has the loading class, we turn
            the scrollbar off with overflow:hidden */
         body.loading {
-            overflow: hidden;   
+            overflow: hidden;
         }
-        
+
         /* Anytime the body has the loading class, our
            modal element will be visible */
         body.loading .loader {
@@ -79,7 +79,7 @@
             return patt.test(field.val());
         }
     }
-    
+
     /*
     var validate_id = create_validator('^(\\d{5,7})$');
     var validate_name = create_validator('^([a-zA-Z]+)$');
@@ -101,7 +101,7 @@
     var validate_city = create_validator('^((?:[a-z\\s?\\.?]+)[a-z]+)$');
     var validate_state = create_validator('^((?:[a-z]+\\s?)+[a-z]+)$');
     var validate_zip = create_validator('^([\\d]{5}|\\d{5}-?\\d{4})$');
-    
+
     var validators = {"id_student_id": validate_id,
                         "id_fname": validate_name,
                         "id_mname": validate_name,
@@ -112,7 +112,7 @@
                         "id_address": validate_address,
                         "id_city": validate_city,
                         "id_state": validate_state,
-                        "id_zipcode": validate_zip}               
+                        "id_zipcode": validate_zip}
 
     $(document).ready(function(){
         $('input[name="will_teach"]').click(function(){
@@ -180,14 +180,12 @@
     $('.form').submit(function(){
         //The logic below cleans up the cases where an earlier major box is left empty and a successive major box has a value selected.
         //(ie. Major 1: blank, Major 3: Computer Science should result in Major 1: Computer Science, Major 3: blank)
-        
         //Create array of selected values
         var majors = $.grep($.map($('#id_major1, #id_major2, #id_major3'), function(obj) { return obj.value; }), function(n){ return (n); });
         //Clear the select boxes
         $('#id_major1, #id_major2, #id_major3').val('');
         //Loop through the selected values and place them in the boxes beginning with the first box
         $.each(majors, function(index, item){ $('#id_major' + (index + 1)).val(item); });
-        
         //Employ the same logic for minors
         var minors = $.grep($.map($('#id_minor1, #id_minor2, #id_minor3'), function(obj) { return obj.value; }), function(n){ return (n); });
         $('#id_minor1, #id_minor2, #id_minor3').val('');
@@ -258,7 +256,7 @@
                 </div>
             </li>
         </ol>
-    </fieldset>    
+    </fieldset>
     <fieldset class="blockLabels">
         <legend>Majors and Minors</legend>
         <ol>
@@ -283,17 +281,17 @@
             <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minors</label></h3>
                 {{ form.minor1 }}
                 {{ form.minor1.errors }}
-            </li>                
+            </li>
             <li class="ctrlHolder" id="minor2"><h3><label for="id_minor2"></label></h3>
                 {{ form.minor2 }}
                 {{ form.minor2.errors }}
-            </li>                
+            </li>
             <li class="ctrlHolder" id="minor3"><h3><label for="id_minor3"></label></h3>
                 {{ form.minor3 }}
                 {{ form.minor3.errors }}
             </li>
         </ol>
-    </fieldset>    
+    </fieldset>
     <fieldset class="blockLabels">
         <legend>{{ year_up }} Ceremony</legend>
         <ol>
@@ -306,7 +304,7 @@
                 </h3>
             </li>
         </ol>
-    </fieldset>    
+    </fieldset>
     <fieldset class="blockLabels">
         <legend>Required Courses Status</legend>
         <ol>
@@ -327,13 +325,13 @@
                     {{form.will_teach}}
                     {{form.will_teach.errors}}
                 </div>
-            </li>            
+            </li>
             <li class="ctrlHolder hideme"><h3><label for="id_teach_year">In which year will you be teaching?</label></h3>
                 <div class="required">
                     {{form.year_teach}}
                     {{form.year_teach.errors}}
                 </div>
-            </li>         
+            </li>
             <li class="ctrlHolder hideme"><h3><label for="id_teach_year">In which term will you be teaching?</label></h3>
                 <div class="required">
                     {{form.term}}
@@ -345,7 +343,7 @@
                 graduation requirements must be completed before the degree can be conferred
             </li>
         </ol>
-    </fieldset>      
+    </fieldset>
     <fieldset class="blockLabels">
         <legend>Contact Information</legend>
         <ol>
@@ -365,7 +363,7 @@
                 </div>
             </li>
         </ol>
-    </fieldset>    
+    </fieldset>
     <fieldset class="blockLabels">
         <legend>Diploma Destination</legend>
         <ol>
@@ -407,7 +405,7 @@
                     <img class="hidden" id="state_yes" src="{% static 'img/icons/valid.png' %}" />
                     <img class="hidden" id="state_no" src="{% static 'img/icons/invalid.png' %}" />
                 </div>
-            </li>         
+            </li>
             <li class="ctrlHolder"><h3><label for="id_zipcode">Zip Code</label></h3>
                 <div class="required">
                     {{form.zipcode}}
@@ -417,7 +415,7 @@
                 </div>
             </li>
         </ol>
-    </fieldset>    
+    </fieldset>
     <fieldset class="blockLabels">
         <legend>Certify and Submit</legend>
         <ol>
