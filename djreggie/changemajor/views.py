@@ -344,7 +344,10 @@ def set_approved(request): #for setting entry to be approved
         SET
             approved="{approved}", datemodified=CURRENT
         WHERE
-            changemajor_no = {id}'''.format(**request.POST)
+            changemajor_no = {id}'''.format(
+            request.POST['approved'],
+            request.POST['id']
+        )
     do_sql(
         updateMajorSQL,
         key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
