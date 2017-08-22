@@ -1,28 +1,33 @@
-#I need all the imports below
 from django import forms
-from djreggie.createemail.forms import EmailForm
-from djreggie.createemail.models import EmailModel
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_protect
-from django.core.urlresolvers import reverse
-from django.core.mail import send_mail #Need this to send email
+from django.core.mail import send_mail
 from django.shortcuts import render
-from djzbar.settings import INFORMIX_EARL_TEST
-from sqlalchemy import create_engine
-from django.views import generic
 from django.template import RequestContext
+
+from djreggie.createemail.forms import EmailForm
+from djreggie.createemail.models import EmailModel
+
+from sqlalchemy import create_engine
+
 
 @csrf_protect
 def index(request):
-    if request.POST: #If we do a POST
-        (a, created) = EmailModel.objects.get_or_create(unique_id=request.POST['unique_id'])
-        form = EmailForm(request.POST) #Scrape the data from the form and save it in a variable
+    if request.POST:
+        (a, created) = EmailModel.objects.get_or_create(
+            unique_id=request.POST['unique_id']
+        )
+        form = EmailForm(request.POST)
         form.fields['unique_id'].widget = forms.HiddenInput()
         form.fields['requested_by'].widget = forms.HiddenInput()
 
-        if form.is_valid(): #If the form is valid
-            #syntax: 'subject'      'data to send', 'sender address', 'addresses to send to'
-            send_mail("A new email request form is ready to view!",form.as_string(),"Django_Admin", ['zwenta@carthage.edu'])
+        if form.is_valid():
+            send_mail(
+                "A new email request form is ready to view!",
+                form.as_string(), settings.SERVER_MAIL,
+                [settings.SERVER_EMAIL]
+            )
             form.save()
             form = EmailForm()
             submitted = True
@@ -31,11 +36,18 @@ def index(request):
                 'submitted': submitted
             })
     else:
-        form = EmailForm() #an unbound form
+        form = EmailForm()
         if request.GET:
             engine = create_engine(INFORMIX_EARL_TEST)
             connection = engine.connect()
-            sql = 'SELECT id_rec.id, id_rec.fullname FROM id_rec WHERE id_rec.id = %d' % (int(request.GET['unique_id']))
+            sql = '''
+                SELECT
+                    id_rec.id, id_rec.fullname
+                FROM
+                    id_rec WHERE id_rec.id = {}
+            '''.format(
+                int(request.GET['unique_id'])
+            )
             student = connection.execute(sql)
             for thing in student:
                 form.fields['unique_id'].initial = thing['id']
