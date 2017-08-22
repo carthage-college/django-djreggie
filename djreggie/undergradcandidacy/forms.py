@@ -1,16 +1,12 @@
-# Include django.forms
 from django import forms
-from django.db import models
-# Need this to have custom validation in this file
-from django.core import validators
-# Used for 'must_be_true' method
 from django.core.exceptions import ValidationError
-import re
 
-# Also be sure to include the model
+
 from djreggie.undergradcandidacy.models import UndergradModel
 
-# My class with all of my fields are in here
+import re
+
+
 class UndergradForm(forms.ModelForm):
 
     # This is needed if you want to add error messages,
@@ -41,24 +37,38 @@ class UndergradForm(forms.ModelForm):
         return data
 
     def clean_fnamepro(self):
-        string = self.cleaned_data['fnamepro'].encode("utf-8")
+        string = self.cleaned_data['fnamepro'].encode('utf-8')
         for q in ['"',"'"]:
             if q in string:
                 string = string.replace(q, "")
         return string.decode('utf-8')
 
     def clean_mnamepro(self):
-        string = self.cleaned_data['mnamepro'].encode("utf-8")
+        string = self.cleaned_data['mnamepro'].encode('utf-8')
         for q in ['"',"'"]:
             if q in string:
                 string = string.replace(q, "")
         return string.decode('utf-8')
 
     def clean_lnamepro(self):
-        string = self.cleaned_data['lnamepro'].encode("utf-8")
+        string = self.cleaned_data['lnamepro'].encode('utf-8')
         for q in ['"',"'"]:
             if q in string:
-                string = string.replace(q, "")
+                string = string.replace(q, '')
+        return string.decode('utf-8')
+
+    def clean_city(self):
+        string = self.cleaned_data['city'].encode('utf-8')
+        for q in ['"',"'"]:
+            if q in string:
+                string = string.replace(q, '')
+        return string.decode('utf-8')
+
+    def clean_address(self):
+        string = self.cleaned_data['address'].encode('utf-8')
+        for q in ['"',"'"]:
+            if q in string:
+                string = string.replace(q, '')
         return string.decode('utf-8')
 
     def clean_state(self):
@@ -81,7 +91,8 @@ class UndergradForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(UndergradForm, self).clean()
-        if cleaned_data.get('will_teach') == 'Y': # if said yes to will teach have year_teach and term be required
+        # if said yes to will teach have year_teach and term be required
+        if cleaned_data.get('will_teach') == 'Y':
             if not cleaned_data.get('year_teach'):
                 self.errors['year_teach'] = self.error_class(['This field is required'])
             if not cleaned_data.get('term'):
@@ -90,7 +101,9 @@ class UndergradForm(forms.ModelForm):
         if cleaned_data.get('best_contact_value') != None:
             if cleaned_data.get('best_contact') == 'EML':
                 if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', cleaned_data.get('best_contact_value')):
-                    self.errors['best_contact_value'] = self.error_class(['You must enter a valid email address'])
+                    self.errors['best_contact_value'] = self.error_class(
+                        ['You must enter a valid email address']
+                    )
                     del cleaned_data['best_contact_value']
             elif cleaned_data.get('best_contact') == 'PHN':
                 if not re.match(r'^((?:1?[\s\-\.\/]?\(?(?:\d{3})\)?)?[\s\-\.\/]?\d{3}[\s\-\.\/]?\d{4}(?:\s?(?:x|ext|\.)?\s?\d{4})?)$',
