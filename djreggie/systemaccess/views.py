@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
@@ -13,7 +14,7 @@ def index(request):
         if form.is_valid():
             form.save()
             #send_mail(
-            #    "email_form",form.as_string(),"this",['zwenta@carthage.edu']
+            #    "email_form",form.as_string(),"this",[settings.SERVER_EMAIL,]
             #)
             form = AccessFormForm()
             submitted = True
