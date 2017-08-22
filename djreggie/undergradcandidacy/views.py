@@ -1,14 +1,16 @@
 from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from datetime import date
-from sqlalchemy import create_engine
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import EmailMessage
 from django.views.decorators.csrf import csrf_exempt
+
 from djreggie.undergradcandidacy.forms import UndergradForm
+
 from djzbar.utils.mssql import get_userid
 from djzbar.utils.informix import do_sql
+from djtools.utils.mail import send_mail
 
+from datetime import date
 import re
 
 DEBUG=settings.INFORMIX_DEBUG
@@ -25,26 +27,24 @@ def index(request):
         form = UndergradForm(request.POST)
 
         perm = getPermAddress(int(request.POST['student_id']))
-        if form.is_valid(): #If the form is valid
-            form.save()
-            #email on valid submit
+        if form.is_valid():
+            data = form.save()
+            # email on valid submit
             studentEmail = getEmailById(request.POST['student_id'])
-            # has to be in the this format otherwise python mail complains
-            # about multiple lines or some such nonsense. should be a
-            # django template anyways.
-            body = ('Thank you for submitting your Candidacy Form for'
-            'potential graduation this school year. Your submission'
-            'has been received and is pending acceptance.\n\n'
-            'Please keep an eye on your Carthage email for'
-            'further correspondence regarding your eligibility'
-            'for graduation.')
+
+            if settings.DEBUG:
+                to_list = [settings.SERVER_EMAIL]
+            else:
+                to_list = [studentEmail]
+
             send_mail(
+                request, to_list,
                 "Candidacy Received and Pending Approval",
-                body, 'Brigid Patterson <bpatterson@carthage.edu>',
-                [studentEmail], fail_silently=False
+                settings.REGISTRAR_EMAIL, 'undergradcandidacy/email.html',
+                {'data':data,}, settings.MANAGERS
             )
 
-            #form = UndergradForm()
+
             form = populateForm(int(request.POST['student_id']))
             valid_class = isValidClass(int(request.POST['student_id']))
             return render(request, 'undergradcandidacy/form.html', {
@@ -146,6 +146,7 @@ def index(request):
         'userid': request.GET.get('student_id')
     })
 
+
 def populateForm(student_id):
     form = UndergradForm()
     # get student's id, name, and majors/minors
@@ -194,6 +195,7 @@ def populateForm(student_id):
 
     return form
 
+
 def isValidClass(student_id):
     # check if student is a junior/senior or not
     getClassStandingSQL = '''
@@ -209,8 +211,10 @@ def isValidClass(student_id):
     class_standing = do_sql(getClassStandingSQL, key=DEBUG, earl=EARL)
     return class_standing.first()['valid_class']
 
+
 def submitted(request):
     return render(request, 'undergradcandidacy/form.html')
+
 
 def contact(request):
     '''
@@ -237,6 +241,7 @@ def contact(request):
         for key in contactinfo.keys():
             data = data + key + ':' + str(row[key]) + ','
     return HttpResponse(data)
+
 
 def get_all_students():
     '''
@@ -437,8 +442,8 @@ def set_approved(request):
     if request.POST.get('approved') == "Y":
         studentEmail = getEmailById(student_id)
         headers = {
-            'Reply-To':'bpatterson@carthage.edu',
-            'From':'Brigid Patterson <bpatterson@carthage.edu>'
+            'Reply-To':'{}'.format(settings.REGISTRAR_EMAIL),
+            'From':'{}'.format(settings.REGISTRAR_EMAIL)
         }
         body = '''
             Congratulations!
@@ -458,8 +463,8 @@ def set_approved(request):
         '''
         email = EmailMessage(
             "Congratulations - Graduation Candidacy Accepted", body,
-            'Brigid Patterson <bpatterson@carthage.edu>',
-             [studentEmail], [settings.SERVER_EMAIL], headers=headers
+            settings.REGISTRAR_EMAIL,
+            [studentEmail], [settings.SERVER_EMAIL], headers=headers
         )
         email.attach_file(
             "{}Degree_Audit_Instructions.pdf".format(settings.MEDIA_ROOT)
@@ -484,6 +489,8 @@ def set_approved(request):
         '''.format(request.POST.get('id'))
         student = do_sql(getCandidacyInfoSQL, key=DEBUG, earl=EARL)
         student_data = student.first()
+
+        # clean some data
 
         # If the aa type is DIPL, determine whether to insert or update
         # the address information
