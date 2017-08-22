@@ -379,8 +379,9 @@ def set_approved(request): #for setting entry to be approved
 
             send_mail(
                 request, to_list,
-                "New Advisee Notification",
-                settings.REGISTRAR_EMAIL, 'changemajor/email_advisor.html',
+                "New Advisee Notification: {} ({})".format(
+                    student['name'], student['student_id']
+                ), settings.REGISTRAR_EMAIL, 'changemajor/email_advisor.html',
                 {'student':student,}, settings.MANAGERS
             )
 

@@ -232,7 +232,9 @@ def contact(request):
             aa = "{aa}"
         AND
             TODAY BETWEEN beg_date AND NVL(end_date, TODAY)
-    '''.format(**request.GET)
+    '''.format(
+        request.GET['id'], request.GET['aa']
+    )
     contactinfo = do_sql(getContactSQL, key=DEBUG, earl=EARL)
     data = ''
     for row in contactinfo:
