@@ -5,8 +5,8 @@ from djzbar.utils.informix import do_sql
 
 from datetime import date
 
-INFORMIX_EARL = settings.INFORMIX_EARL
-INFORMIX_DEBUG = settings.INFORMIX_DEBUG
+EARL = settings.INFORMIX_EARL
+DEBUG = settings.INFORMIX_DEBUG
 
 
 class UndergradModel(models.Model):
@@ -33,7 +33,7 @@ class UndergradModel(models.Model):
            AND LENGTH(txt) > 0 \
            AND (web_display = 'Y' OR major = 'SELF') \
            ORDER BY txt ASC"
-    major = do_sql(getMajorSQL, key=INFORMIX_DEBUG, earl=INFORMIX_EARL)
+    major = do_sql(getMajorSQL, key=DEBUG, earl=EARL)
     MAJORS_TUPLE = tuple((row['major'], row['txt']) for row in major)
 
     # Minors
@@ -41,7 +41,7 @@ class UndergradModel(models.Model):
            WHERE sysdate BETWEEN active_date AND NVL(inactive_date, sysdate) \
            AND LENGTH(txt) > 0 \
            ORDER BY txt ASC"
-    minor = do_sql(getMinorSQL, key=INFORMIX_DEBUG, earl=INFORMIX_EARL)
+    minor = do_sql(getMinorSQL, key=DEBUG, earl=EARL)
     MINORS_TUPLE = tuple((row['minor'], row['txt']) for row in minor)
 
     major1 = models.CharField(max_length=200, choices=MAJORS_TUPLE)
@@ -121,7 +121,7 @@ class UndergradModel(models.Model):
         ORDER BY
             txt ASC
     '''
-    state = do_sql(getStateSQL, key=INFORMIX_DEBUG, earl=INFORMIX_EARL)
+    state = do_sql(getStateSQL, key=DEBUG, earl=EARL)
     CHOICESST = tuple((row['st'], row['txt']) for row in state)
 
     state = models.CharField(
@@ -168,4 +168,4 @@ class UndergradModel(models.Model):
             )
         '''.format(**self.__dict__)
         insertSQL = sql.replace('"True"','"t"').replace('"False"','"f"')
-        do_sql(insertSQL, key=INFORMIX_DEBUG, earl=INFORMIX_EARL)
+        do_sql(insertSQL, key=DEBUG, earl=EARL)
