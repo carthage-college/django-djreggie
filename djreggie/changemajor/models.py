@@ -121,7 +121,7 @@ class ChangeModel(models.Model):
                 "{major3}", "{minor1}", "{minor2}", "{minor3}",
                 "{advisor}", CURRENT
             )
-        '''.format(self.__dict__)
+        '''.format(**self.__dict__)
 
         do_sql(
             insertSQL,
