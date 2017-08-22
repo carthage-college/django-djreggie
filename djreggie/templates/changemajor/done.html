@@ -1,0 +1,23 @@
+{% extends "changemajor/form.html" %}
+{% block extra_javascript %}{% endblock %}
+{% block content %}
+<div id="page-content-wrap" class="large-6 medium-12 small-12">
+  <div class="content">
+    <h3>Change of Major/Minor/Advisor Form Success</h3>
+    <p>
+    Thank you for your submission! If you have submitted a request
+    to change your Major and/or Minor, please note that this change
+    is pending approval by the Registrar's Office.
+    </p>
+    <p>
+    Keep an eye on your Carthage email for further communication.
+    If you have submitted a request to change your Advisor, this change is in
+    process and your requested Advisor will receive an email notification.
+    </p>
+    <p>
+      <a href="{% url 'change_major_form' %}?student_id={{request.GET.student_id}}">
+        Return to Change Major/Minor Form</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

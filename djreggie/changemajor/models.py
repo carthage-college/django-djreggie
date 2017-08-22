@@ -1,7 +1,8 @@
-from django.conf import settings
 from django.db import models
+from django.conf import settings
 
 from djzbar.utils.informix import do_sql
+
 
 class ChangeModel(models.Model):
     student_id = models.CharField(

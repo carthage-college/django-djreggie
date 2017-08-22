@@ -48,17 +48,20 @@
     });
 
     $('.form').submit(function(){
-        //The logic below cleans up the cases where an earlier major box is left empty and a successive major box has a value selected.
-        //(ie. Major 1: blank, Major 3: Computer Science should result in Major 1: Computer Science, Major 3: blank)
+        // The logic below cleans up the cases where an earlier major box is
+        // left empty and a successive major box has a value selected.
+        // (ie. Major 1: blank, Major 3: Computer Science should result in
+        // Major 1: Computer Science, Major 3: blank)
 
-        //Create array of selected values
+        // Create array of selected values
         var majors = $.grep($.map($('#id_major1, #id_major2, #id_major3'), function(obj) { return obj.value; }), function(n){ return (n); });
-        //Clear the select boxes
+        // Clear the select boxes
         $('#id_major1, #id_major2, #id_major3').val('');
-        //Loop through the selected values and place them in the boxes beginning with the first box
+        // Loop through the selected values and place them in the boxes
+        // beginning with the first box
         $.each(majors, function(index, item){ $('#id_major' + (index + 1)).val(item); });
 
-        //Employ the same logic for minors
+        // Employ the same logic for minors
         var minors = $.grep($.map($('#id_minor1, #id_minor2, #id_minor3'), function(obj) { return obj.value; }), function(n){ return (n); });
         $('#id_minor1, #id_minor2, #id_minor3').val('');
         $.each(minors, function(index, item){ $('#id_minor' + (index + 1)).val(item); });
@@ -67,11 +70,6 @@
 {% endblock %}
 {% block content %}
 {{ form.non_field_errors }}
-{% if submitted %}
-<script type="text/javascript">
-    alert("Thank you for your submission!  If you have submitted a request to change your Major and/or Minor, please note that this change is pending approval by the Registrar's Office.  Keep an eye on your Carthage email for further communication.  If you have submitted a request to change your Advisor, this change is in process and your requested Advisor will receive an email notification.")
-</script>
-{% endif %}
 <h2>Change of Major/Minor/Advisor Form</h2>
 <form action="" method="post" class = "form">{% csrf_token %}
     {{ mmformset.management_form }}
@@ -113,10 +111,10 @@
             </li>
             <li class="ctrlHolder" id="minor1"><h3><label for="id_minor1">Minors</label></h3>
                 {{ form.minor1 }}
-            </li>                
+            </li>
             <li class="ctrlHolder" id="minor2"><h3><label for="id_minor2"></label></h3>
                 {{ form.minor2 }}
-            </li>                
+            </li>
             <li class="ctrlHolder" id="minor3"><h3><label for="id_minor3"></label></h3>
                 {{ form.minor3 }}
             </li>

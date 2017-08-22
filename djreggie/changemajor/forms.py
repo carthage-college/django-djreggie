@@ -1,9 +1,10 @@
+from django import forms
 from django.conf import settings
 from django.core import validators
-from django import forms
+
+from djreggie.changemajor.models import ChangeModel
 
 from djzbar.utils.informix import do_sql
-from djreggie.changemajor.models import ChangeModel
 
 import re
 
@@ -17,13 +18,6 @@ class ChangeForm(forms.ModelForm):
         data = self.cleaned_data['student_id']
         if not re.match(r'^(\d{5,7})$', data):
             raise forms.ValidationError('Must be 5-7 digits long')
-        return data
-
-    def clean_name(self):
-        data = self.cleaned_data['name']
-        # This regex does not account for apostrophes in the name.
-        # if not re.match(r'^((?:[a-zA-Z]+(?:\,?\s)?){1,2}[a-zA-Z]+\.?)$',data):
-        #    raise forms.ValidationError('Please enter a valid name')
         return data
 
     def clean_advisor(self):
@@ -51,7 +45,7 @@ class ChangeForm(forms.ModelForm):
                     AND
                         NVL(job_rec.end_date, TODAY)
                 AND
-                    id_rec.firstname = "%s"
+                    id_rec.firstname = "{}"
                 AND
                     id_rec.lastname = "{}"
                 '''.format(advisor_name[1], advisor_name[0])

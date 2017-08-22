@@ -1,50 +1,41 @@
-from django.conf import settings
 from django import forms
+from django.conf import settings
 from django.shortcuts import render
+from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from django.template import RequestContext
-from django.core.mail import send_mail
-
 
 from djreggie.changemajor.forms import ChangeForm
-from djreggie.changemajor.models import ChangeModel
 
 from djzbar.utils.informix import do_sql
 from djzbar.utils.mssql import get_userid
+from djtools.utils.mail import send_mail
 
-from sqlalchemy import create_engine
+DEBUG=settings.INFORMIX_DEBUG
+EARL=settings.INFORMIX_EARL
 
 
 def create(request):
     if request.POST:
-        # (a, created) = ChangeModel.objects.get_or_create(
-        #    student_id=request.POST[student_id]
-        # )
-        # Scrape the data from the form and save it in a variable
         form = ChangeForm(request.POST)
-        # If the form is valid
         if form.is_valid():
-            # Save the form data to the datbase table
             form.save()
-            form = ChangeForm()
-            # This is the URL where users are redirected after
-            # submitting the form
-            return render(request, 'changemajor/form.html', {
-                'form': form,
-                'submitted': True
-            })
+            # redirect to form home
+            url = "{}?student_id={}&".format(
+                reverse_lazy('change_major_success'),
+                request.GET.get('student_id')
+            )
+            return HttpResponseRedirect(url)
     else:
-        # This is for the first time you go to the page. It sets it all up
-        form = ChangeForm()
-        if request.GET:
-            if get_userid(request.GET['student_id']) == None:
+        student_id = request.GET.get('student_id')
+        if request.GET and student_id:
+            sid = get_userid(student_id)
+            # return error message view and done.
+            if not sid:
                 return render(request, 'changemajor/no_access.html')
 
-            # have to have ?student_id= in url for now
-            sid = get_userid(request.GET['student_id'])
+            form = ChangeForm()
             # selects student's id, name, and current majors/minors
-            #REPLACE(IDrec.fullname,"'","") AS fullname,
             getStudentDetailSQL = '''
                 SELECT
                     IDrec.id, IDrec.fullname AS fullname,
@@ -95,12 +86,11 @@ def create(request):
             '''.format(int(sid))
 
             student = do_sql(
-                getStudentDetailSQL,
-                key=settings.INFORMIX_DEBUG,
-                earl=settings.INFORMIX_EARL
+                getStudentDetailSQL, key=DEBUG, earl=EARL
             )
 
-            for row in student: # set initial data based on student
+            # set initial data based on student
+            for row in student:
                 form.fields['student_id'].initial = row['id']
                 form.fields['name'].initial = row['fullname'].decode(
                     'ISO-8859-2'
@@ -131,11 +121,14 @@ def create(request):
                 form.fields['minor1'].initial = row['minor1code']
                 form.fields['minor2'].initial = row['minor2code']
                 form.fields['minor3'].initial = row['minor3code']
+        else:
+            return render(request, 'changemajor/no_access.html')
 
     form.fields['student_id'].widget = forms.HiddenInput()
     form.fields['name'].widget = forms.HiddenInput()
     form.fields['majorlist'].widget = forms.HiddenInput()
     form.fields['minorlist'].widget = forms.HiddenInput()
+
     # get list of valid advisors for jquery autocomplete
     advisorSQL = '''
         SELECT
@@ -152,8 +145,9 @@ def create(request):
         ORDER BY
             lastname, firstname
     '''
+
     advisor_list = do_sql(
-        advisorSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+        advisorSQL, key=DEBUG, earl=EARL
     )
 
     return render(request, 'changemajor/form.html', {
@@ -179,8 +173,7 @@ def get_all_students():
             cm.student_id = id_rec.id
     '''
     return do_sql(
-        allStudentSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+        allStudentSQL, key=DEBUG, earl=EARL
     )
 
 
@@ -196,8 +189,7 @@ def admin(request):
             WHERE
                 changemajor_no = {}'''.format(request.POST['record'])
         do_sql(
-            deleteMajorSQL,
-            key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+            deleteMajorSQL, key=DEBUG, earl=EARL
         )
 
     # get all entries in database along with advisor full name
@@ -228,8 +220,7 @@ def admin(request):
             cm.approved, cm.datecreated DESC
     '''
     student = do_sql(
-        getListSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+        getListSQL, key=DEBUG, earl=EARL
     )
     all_students = get_all_students()
     return render(request, 'changemajor/home.html', {
@@ -238,7 +229,11 @@ def admin(request):
     })
 
 
-def student(request, changemajor_no): #admin details page
+def student(request, changemajor_no):
+    '''
+    admin details page
+    '''
+
     getStudentSQL = '''
         SELECT
             cm.changemajor_no, cm.student_id, cm.datecreated, cm.datemodified,
@@ -301,18 +296,23 @@ def student(request, changemajor_no): #admin details page
             cm.changemajor_no = {}
     '''.format(changemajor_no)
     student_info = do_sql(
-        getStudentSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+        getStudentSQL, key=DEBUG, earl=EARL
     )
-    return render(request, 'changemajor/details.html', {
-        'student': student_info.first(),
-        #'majors': majors.first(),
-        #'reqmajors': reqmajors.first(),
-        'full_student_list': get_all_students(),
-    })
+
+    return render(
+        request, 'changemajor/details.html', {
+            'student': student_info.first(),
+            #'majors': majors.first(),
+            #'reqmajors': reqmajors.first(),
+            'full_student_list': get_all_students(),
+        }
+    )
 
 
-def search(request): #admin details page access through search bar
+def search(request):
+    '''
+    admin details page access through search bar
+    '''
     return student(request, request.POST['cid'])
 
 
@@ -320,9 +320,11 @@ def search(request): #admin details page access through search bar
 def set_approved(request): #for setting entry to be approved
     getMajorSQL = '''
         SELECT
-            CM.changemajor_no, CM.student_id, CM.major1, CM.major2, CM.major3,
-            CM.minor1, CM.minor2, CM.minor3, NVL(CM.advisor_id,0) AS advisor_id,
-            CM.datecreated, CM.datemodified, NVL(CM.modified_id,0), CM.approved,
+            CM.approved, CM.changemajor_no, CM.student_id,
+            CM.major1, CM.major2, CM.major3,
+            CM.minor1, CM.minor2, CM.minor3,
+            NVL(CM.advisor_id,0) AS advisor_id,
+            CM.datecreated, CM.datemodified, NVL(CM.modified_id,0),
             TRIM(id_rec.firstname) || ' ' || TRIM(id_rec.lastname) AS name
         FROM
             cc_stg_changemajor CM
@@ -334,7 +336,7 @@ def set_approved(request): #for setting entry to be approved
             changemajor_no = {}
     '''.format(request.POST['id'])
     result = do_sql(
-        getMajorSQL, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+        getMajorSQL, key=DEBUG, earl=EARL
     )
     student = result.first()
 
@@ -342,39 +344,44 @@ def set_approved(request): #for setting entry to be approved
         UPDATE
             cc_stg_changemajor
         SET
-            approved="{approved}", datemodified=CURRENT
+            approved="{}", datemodified=CURRENT
         WHERE
-            changemajor_no = {id}'''.format(
-            request.POST['approved'],
-            request.POST['id']
-        )
-    do_sql(
-        updateMajorSQL,
-        key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+            changemajor_no = {}
+    '''.format(
+        request.POST['approved'], request.POST['id']
     )
-    if request.POST["approved"] == "Y":
-        student_email = getEmailById(student['student_id'])
+
+    do_sql(
+        updateMajorSQL, key=DEBUG, earl=EARL
+    )
+
+    if request.POST.get('approved') == 'Y':
+
+        if settings.DEBUG:
+            to_list = [settings.SERVER_EMAIL]
+        else:
+            to_list = [getEmailById(student['student_id'])]
+
         send_mail(
-            "Congratulations - Major/Minor/Advisor Change Accepted",
-            '''Please accept this email as notification that your change of Major/Minor/Advisor has been accepted by the Registrar's Office and your record has been updated.
-            \n\nGiven this approved change, you should be able to view your updated graduation requirements within your Degree Audit (which is accessible through my.carthage.edu).''',
-            settings.REGISTRAR_EMAIL, [student_email]
+            request, to_list,
+            "Congratulations: Major/Minor/Advisor Change Accepted",
+            settings.REGISTRAR_EMAIL, 'changemajor/email_student.html',
+            {'student':student,}, settings.MANAGERS
         )
 
-        # if they put in an new advisor
+        # if they have chosen a new advisor
         if student['advisor_id'] != 0:
-            # get new advisor's email
-            advisor_email = getEmailById(student['advisor_id'])
-            # TODO: replace hard-coded emails with [advisor_email]
-            # and put into template using djtool's send_mail
-            # email new advisor
+
+            if settings.DEBUG:
+                to_list = [settings.SERVER_EMAIL]
+            else:
+                to_list = [getEmailById(student['advisor_id'])]
+
             send_mail(
+                request, to_list,
                 "New Advisee Notification",
-                '''Please accept this email as notification that the following student has selected you as their advisor. Given this, you are now able to view their Degree Audit information through my.carthage.edu to assist in your advising of this student.\n
-                \nStudent name:{}
-                \nStudent ID: {}'''.format(student['name'], student['student_id']),
-                settings.REGISTRAR_EMAIL,
-                [advisor_email], fail_silently=False
+                settings.REGISTRAR_EMAIL, 'changemajor/email_advisor.html',
+                {'student':student,}, settings.MANAGERS
             )
 
         updateProgEnrRecSQL = '''
@@ -391,12 +398,14 @@ def set_approved(request): #for setting entry to be approved
         # if advisor id exists then update that field in the database
         # otherwise don't
         if student['advisor_id']:
-            updateProgEnrRecSQL += ', adv_id = %s' % (student['advisor_id'])
-        updateProgEnrRecSQL += ' WHERE id = %s' % (student['student_id'])
+            updateProgEnrRecSQL += ', adv_id = {}'.format(
+                student['advisor_id']
+            )
+        updateProgEnrRecSQL += ' WHERE id = {}'.format(student['student_id'])
         do_sql(
-            updateProgEnrRecSQL,
-            key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+            updateProgEnrRecSQL, key=DEBUG, earl=EARL
         )
+
     return HttpResponse('update successful')
 
 
@@ -414,7 +423,7 @@ def getEmailById(cx_id):
             TODAY BETWEEN beg_date AND NVL(end_date, TODAY)
     '''.format(cx_id)
     email = do_sql(
-        email_sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
+        email_sql, key=DEBUG, earl=EARL
     )
 
     return email.first()['email']
