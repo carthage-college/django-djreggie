@@ -625,8 +625,8 @@ def set_approved(request):
                       "{first_name} {middle_initial} {last_name}"
                     END
                 ),
-                "{first_name_pronounce}", "{middle_name_pronounce}",
-                "{last_name_pronounce}", "{diploma_aa_type}",
+                '{first_name_pronounce}', '{middle_name_pronounce}',
+                '{last_name_pronounce}', '{diploma_aa_type}',
                 (CASE WHEN "{plan_to_walk}" = "t" THEN "Y" ELSE "N" END),
                 (CASE WHEN "{major1}" = "None" THEN "" ELSE "{major1}" END),
                 (CASE WHEN "{major2}" = "None" THEN "" ELSE "{major2}" END),
