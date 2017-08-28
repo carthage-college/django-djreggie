@@ -364,12 +364,13 @@ def student(request, student_id): #admin details page
     # deal with funky characters
     stu = {}
     student = student.first()
-    for key, value in student.items():
-        try:
-            stu[key] = value.decode('ISO-8859-2').encode('utf-8')
-        except:
-            stu[key] = value
-    student = stu
+    if student:
+        for key, value in student.items():
+            try:
+                stu[key] = value.decode('ISO-8859-2').encode('utf-8')
+            except:
+                stu[key] = value
+        student = stu
 
     # retrieves majors/minors full text
     getMajorMinorSQL = '''
