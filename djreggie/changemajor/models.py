@@ -109,8 +109,9 @@ class ChangeModel(models.Model):
 
     def save(self):
 
+        # convert None to ''
+        xstr = lambda s: '' if not s else str(s)
         # put data in staging tables
-
         insertSQL = '''
             INSERT INTO
                 cc_stg_changemajor (
@@ -118,11 +119,18 @@ class ChangeModel(models.Model):
                     minor2, minor3, advisor_id, datecreated
                 )
             VALUES (
-                "{student_id}", "{major1}", "{major2}",
-                "{major3}", "{minor1}", "{minor2}", "{minor3}",
-                "{advisor}", CURRENT
+                {},"{}","{}","{}","{}","{}","{}","{}", CURRENT
             )
-        '''.format(**self.__dict__)
+        '''.format(
+            self.__dict__['student_id'],
+            xstr(self.__dict__['major1']),
+            xstr(self.__dict__['major2']),
+            xstr(self.__dict__['major3']),
+            xstr(self.__dict__['minor1']),
+            xstr(self.__dict__['minor2']),
+            xstr(self.__dict__['minor3']),
+            xstr(self.__dict__['advisor']),
+        )
 
         do_sql(
             insertSQL,

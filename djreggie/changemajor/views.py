@@ -9,35 +9,57 @@ from djreggie.changemajor.forms import ChangeForm
 
 from djzbar.utils.informix import do_sql
 from djzbar.utils.mssql import get_userid
+from djzbar.decorators.auth import portal_auth_required
+
 from djtools.utils.mail import send_mail
+from djtools.utils.users import in_group
 
 DEBUG=settings.INFORMIX_DEBUG
 EARL=settings.INFORMIX_EARL
 
 
 def create(request):
+    '''
+    create a change major request
+    '''
+
+    # faculty and staff can submit the form for a student
+    facstaff = in_group(
+        request.user,'carthageStaffStatus','carthageFacultyStatus'
+    )
+
+    sid = None
+    sql = None
+
     if request.POST:
         form = ChangeForm(request.POST)
+        sid = request.GET.get('student_id')
         if form.is_valid():
             form.save()
             # redirect to form home
             url = "{}?student_id={}&".format(
-                reverse_lazy('change_major_success'),
-                request.GET.get('student_id')
+                reverse_lazy('change_major_success'), sid
             )
             return HttpResponseRedirect(url)
     else:
         student_id = request.GET.get('student_id')
-        if request.GET and student_id:
-            sid = get_userid(student_id)
-            # return error message view and done.
-            if not sid:
-                return render(request, 'changemajor/no_access.html')
+        form = ChangeForm()
+        if student_id:
+            try:
+                sid = int(student_id)
+                # prevent unauthorized users from using this form
+                if not facstaff:
+                    return render(request, 'changemajor/no_access.html')
+            except:
+                sid = get_userid(student_id)
 
-            form = ChangeForm()
-            # selects student's id, name, and current majors/minors
-            getStudentDetailSQL = '''
-                SELECT
+            if not sid:
+                if not facstaff:
+                    return render(request, 'changemajor/no_access.html')
+            else:
+                # selects student's id, name, and current majors/minors
+                sql = '''
+                  SELECT
                     IDrec.id, IDrec.fullname AS fullname,
                     major1.major AS major1code,
                     TRIM(major1.txt) AS major1,
@@ -51,109 +73,113 @@ def create(request):
                     TRIM(NVL(minor2.txt,"")) AS minor2,
                     minor3.minor AS minor3code,
                     TRIM(NVL(minor3.txt,"")) AS minor3
-                FROM
+                  FROM
                     id_rec IDrec
-                INNER JOIN
+                  INNER JOIN
                     prog_enr_rec PROGrec
-                ON
+                  ON
                     IDrec.id = PROGrec.id
-                LEFT JOIN
+                  LEFT JOIN
                     major_table major1
-                ON
+                  ON
                     PROGrec.major1 = major1.major
-                LEFT JOIN
+                  LEFT JOIN
                     major_table major2
-                ON
+                  ON
                     PROGrec.major2 = major2.major
-                LEFT JOIN
+                  LEFT JOIN
                     major_table major3
-                ON
+                  ON
                     PROGrec.major3 = major3.major
-                LEFT JOIN
+                  LEFT JOIN
                     minor_table minor1
-                ON
+                  ON
                     PROGrec.minor1 = minor1.minor
-                LEFT JOIN
+                  LEFT JOIN
                     minor_table minor2
-                ON
+                  ON
                     PROGrec.minor2 = minor2.minor
-                LEFT JOIN
+                  LEFT JOIN
                     minor_table minor3
-                ON
+                  ON
                     PROGrec.minor3 = minor3.minor
-                WHERE
+                  WHERE
                     IDrec.id = {}
-            '''.format(int(sid))
+                '''.format(int(sid))
 
-            student = do_sql(
-                getStudentDetailSQL, key=DEBUG, earl=EARL
-            )
+                student = do_sql(sql, key=DEBUG, earl=EARL).fetchall()
 
-            # set initial data based on student
-            for row in student:
-                form.fields['student_id'].initial = row['id']
-                form.fields['name'].initial = row['fullname'].decode(
-                    'ISO-8859-2'
-                ).encode('utf-8')
-                if row['major2'] == '' and row['major3'] == '':
-                    form.fields['majorlist'].initial = (row['major1'])
-                elif row['major3'] == '':
-                    form.fields['majorlist'].initial = "{} and {}".format(
-                        row['major1'], row['major2']
-                    )
+                if student:
+                    # set initial data based on student
+                    for row in student:
+                        form.fields['student_id'].initial = row['id']
+                        form.fields['name'].initial = row['fullname'].decode(
+                            'ISO-8859-2'
+                        ).encode('utf-8')
+                        if row['major2'] == '' and row['major3'] == '':
+                            form.fields['majorlist'].initial = (row['major1'])
+                        elif row['major3'] == '':
+                            form.fields['majorlist'].initial = "{} and {}".format(
+                                row['major1'], row['major2']
+                            )
+                        else:
+                            form.fields['majorlist'].initial = "{}, {}, and {}".format(
+                                row['major1'], row['major2'], row['major3']
+                            )
+                        if row['minor2'] == '' and row['minor3'] == '':
+                            form.fields['minorlist'].initial = (row['minor1'])
+                        elif row['minor3'] == '':
+                            form.fields['minorlist'].initial = "{} and {}".format(
+                                row['minor1'], row['minor2']
+                            )
+                        else:
+                            form.fields['minorlist'].initial = "{}, {}, and {}".format(
+                                row['minor1'], row['minor2'], row['minor3']
+                            )
+                        form.fields['major1'].initial = row['major1code']
+                        form.fields['major2'].initial = row['major2code']
+                        form.fields['major3'].initial = row['major3code']
+                        form.fields['minor1'].initial = row['minor1code']
+                        form.fields['minor2'].initial = row['minor2code']
+                        form.fields['minor3'].initial = row['minor3code']
                 else:
-                    form.fields['majorlist'].initial = "{}, {}, and {}".format(
-                        row['major1'], row['major2'], row['major3']
-                    )
-                if row['minor2'] == '' and row['minor3'] == '':
-                    form.fields['minorlist'].initial = (row['minor1'])
-                elif row['minor3'] == '':
-                    form.fields['minorlist'].initial = "{} and {}".format(
-                        row['minor1'], row['minor2']
-                    )
-                else:
-                    form.fields['minorlist'].initial = "{}, {}, and {}".format(
-                        row['minor1'], row['minor2'], row['minor3']
-                    )
-                form.fields['major1'].initial = row['major1code']
-                form.fields['major2'].initial = row['major2code']
-                form.fields['major3'].initial = row['major3code']
-                form.fields['minor1'].initial = row['minor1code']
-                form.fields['minor2'].initial = row['minor2code']
-                form.fields['minor3'].initial = row['minor3code']
+                    sid = None
         else:
-            return render(request, 'changemajor/no_access.html')
+            if not facstaff:
+                return render(request, 'changemajor/no_access.html')
 
-    form.fields['student_id'].widget = forms.HiddenInput()
-    form.fields['name'].widget = forms.HiddenInput()
-    form.fields['majorlist'].widget = forms.HiddenInput()
-    form.fields['minorlist'].widget = forms.HiddenInput()
+    # set up the advisor autocomplete field
+    advisor_list = None
+    if sid:
+        form.fields['student_id'].widget = forms.HiddenInput()
+        form.fields['name'].widget = forms.HiddenInput()
+        form.fields['majorlist'].widget = forms.HiddenInput()
+        form.fields['minorlist'].widget = forms.HiddenInput()
 
-    # get list of valid advisors for jquery autocomplete
-    advisorSQL = '''
-        SELECT
-            id_rec.id, TRIM(id_rec.firstname) AS firstname,
-            TRIM(id_rec.lastname) AS lastname
-        FROM
-            job_rec INNER JOIN id_rec ON job_rec.id = id_rec.id
-        WHERE
-            hrstat = 'FT'
-        AND
-            TODAY BETWEEN job_rec.beg_date AND NVL(job_rec.end_date, TODAY)
-        GROUP BY
-            id_rec.id, firstname, lastname
-        ORDER BY
-            lastname, firstname
-    '''
+        # get list of valid advisors for jquery autocomplete
+        advisorSQL = '''
+            SELECT
+                id_rec.id, TRIM(id_rec.firstname) AS firstname,
+                TRIM(id_rec.lastname) AS lastname
+            FROM
+                job_rec INNER JOIN id_rec ON job_rec.id = id_rec.id
+            WHERE
+                hrstat = 'FT'
+            AND
+                TODAY BETWEEN job_rec.beg_date AND NVL(job_rec.end_date, TODAY)
+            GROUP BY
+                id_rec.id, firstname, lastname
+            ORDER BY
+                lastname, firstname
+        '''
 
-    advisor_list = do_sql(
-        advisorSQL, key=DEBUG, earl=EARL
-    )
+        advisor_list = do_sql(
+            advisorSQL, key=DEBUG, earl=EARL
+        )
 
     return render(request, 'changemajor/form.html', {
-        'form': form,
-        'advisor_list': advisor_list,
-        'submitted': False,
+        'form':form, 'facstaff':facstaff, 'sql':sql,
+        'advisor_list':advisor_list, 'student_id':sid
     })
 
 
@@ -177,9 +203,14 @@ def get_all_students():
     )
 
 
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    group='Registrar',
+    redirect_url=reverse_lazy('access_denied')
+)
 def admin(request):
     """
-    the function for the main admin page
+    main admin page
     """
     # if the delete button was clicked. remove entry from database
     if request.POST:
@@ -397,7 +428,7 @@ def set_approved(request): #for setting entry to be approved
                 minor3 = (CASE WHEN "{minor3}" = "None" THEN "" ELSE "{minor3}" END)
         '''.format(**student)
         # if advisor id exists then update that field in the database
-        # otherwise don't
+        # otherwise don't.
         if student['advisor_id']:
             updateProgEnrRecSQL += ', adv_id = {}'.format(
                 student['advisor_id']

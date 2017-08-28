@@ -21,11 +21,12 @@
     }
     .ui-autocomplete.ui-menu {
         z-index: 10000;
-      }
+    }
 </style>
 {% endblock %}
 {% block extra_javascript %}
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+{% if student_id %}
 <script>
     var list = new Array();
     {% for advisor in advisor_list %}
@@ -46,8 +47,7 @@
             }
         }
     });
-
-    $('.form').submit(function(){
+    $('#student').submit(function(){
         // The logic below cleans up the cases where an earlier major box is
         // left empty and a successive major box has a value selected.
         // (ie. Major 1: blank, Major 3: Computer Science should result in
@@ -67,11 +67,35 @@
         $.each(minors, function(index, item){ $('#id_minor' + (index + 1)).val(item); });
     });
 </script>
+{% endif %}
 {% endblock %}
 {% block content %}
 {{ form.non_field_errors }}
 <h2>Change of Major/Minor/Advisor Form</h2>
-<form action="" method="post" class = "form">{% csrf_token %}
+{% if sql and not student_id %}
+<div class="error"><p>No student by that ID</p></div>
+{% endif %}
+{% if not student_id %}
+<form action="." method="GET" class="form">{% csrf_token %}
+    <fieldset class="blockLabels">
+        <legend>Enter a Student's ID</legend>
+        <ol>
+            <li>
+                <input type="text" name="student_id">
+            </li>
+        </ol>
+    </fieldset>
+    <fieldset class="blockLabels">
+        <ol>
+            <li class="btnHolder">
+              <label for="submit">&nbsp;&nbsp;</label>
+              <input type="Submit" name="submit" value="Submit" class="button">
+            </li>
+        </ol>
+    </fieldset>
+</form>
+{% else %}
+<form action="." method="POST" class="form" id="student">{% csrf_token %}
     {{ mmformset.management_form }}
     {% for field in form.hidden_fields %}
         {{ field }}
@@ -129,10 +153,11 @@
                 {{form.advisor.errors}}
             </li>
             <li class="btnHolder">
-                <label for="submit">&nbsp;&nbsp;</label>
-                <input type="Submit" name="submit" value="Submit" class="button"/>
+              <label for="submit">&nbsp;&nbsp;</label>
+              <input type="Submit" name="submit" value="Submit" class="button">
             </li>
         </ol>
     </fieldset>
 </form>
+{% endif %}
 {% endblock %}
