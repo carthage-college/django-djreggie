@@ -1,14 +1,7 @@
-#admin.py is where we create 'actions' that users can do to entries
-#within this app, changemajor, as well as settings to change how
-#we view entries within 'changemajor'
-
-#'admin' - necessary to change view settings when viewing an 'changemajor' object
-#'messages' - necessary to change success/fail messages when performing an action to an 'changemajor' object
 from django.contrib import admin, messages
 from djreggie.changemajor.models import ChangeModel
 from djzbar.settings import INFORMIX_EARL_TEST
 from sqlalchemy import create_engine
-#from Production.models import AaRec, AcadRec, IdRec, ProgramEnrollRec
 
 '''This is an 'action' a user can perform to a 'changemajor' object
 def push_to_production(modeladmin, request, queryset):
@@ -97,7 +90,7 @@ def push_to_production(modeladmin, request, queryset):
     #    if len(item_minors) >= 3:
     #        obj.minor3=item_minors[2]
     #    obj.save()
-        
+
     #    (obj, created) = ProgramEnrollRec.objects.using('default2').get_or_create(id=item.student_id)
     #    if item.advisor != '':
     #        obj.adv_id=1
