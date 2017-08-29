@@ -56,6 +56,8 @@ def create(request):
             if not sid:
                 if not facstaff:
                     return render(request, 'changemajor/no_access.html')
+            elif sid and facstaff:
+                return render(request, 'changemajor/form.html')
             else:
                 # selects student's id, name, and current majors/minors
                 sql = '''
@@ -203,11 +205,11 @@ def get_all_students():
     )
 
 
-@portal_auth_required(
-    session_var='DJREGGIE_AUTH',
-    group='Registrar',
-    redirect_url=reverse_lazy('access_denied')
-)
+#@portal_auth_required(
+    #session_var='DJREGGIE_AUTH',
+    #group='Registrar',
+    #redirect_url=reverse_lazy('access_denied')
+#)
 def admin(request):
     """
     main admin page
