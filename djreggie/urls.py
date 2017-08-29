@@ -1,7 +1,11 @@
+from django.contrib import admin
 from django.conf.urls import include, url
 from django.views.generic import RedirectView
 from django.views.generic import TemplateView
-from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from django.core.urlresolvers import reverse_lazy
+
+from djauth.views import loggedout
 
 admin.autodiscover()
 
@@ -35,14 +39,34 @@ urlpatterns = [
         r'^indepstudent/',
         include('djreggie.indepstudent.urls')
     ),
-    # redirect for portal decorator
+    # auth
+    url(
+        r'^accounts/login/$',auth_views.login,
+        {'template_name': 'accounts/login.html'},
+        name='auth_login'
+    ),
+    url(
+        r'^accounts/logout/$',auth_views.logout,
+        {'next_page': reverse_lazy('auth_loggedout')},
+        name='auth_logout'
+    ),
+    url(
+        r'^accounts/loggedout/$', loggedout,
+        {'template_name': 'accounts/logged_out.html'},
+        name='auth_loggedout'
+    ),
+    url(
+        r'^accounts/$',
+        RedirectView.as_view(url=reverse_lazy('auth_login'))
+    ),
     url(
         r'^denied/$',
         TemplateView.as_view(
             template_name='denied.html'
         ), name='access_denied'
     ),
+    # everything goes to registrar page
     url(
-        r'^$', RedirectView.as_view(url="/registrar/")
+        r'^$', RedirectView.as_view(url=reverse_lazy('undergrad_admin'))
     ),
 ]
