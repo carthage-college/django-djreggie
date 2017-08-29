@@ -159,8 +159,8 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand"
-            href="http://www.carthage.edu/campus-life/health-counseling/">
-            Carthage Health &amp; Counseling Center
+            href="http://www.carthage.edu/registrar/">
+            Carthage Registrar
         </a>
     </div>
 {% endblock %}
@@ -178,7 +178,7 @@
                 <li class="divider"></li>
                 <li>
                     <a href="{% url 'auth_logout' %}">
-                        <i class="fa fa-power-off"></i> Log Out
+                        <i class="fa fa-power-off"></i> Sign Out
                     </a>
                 </li>
             </ul>
@@ -211,8 +211,9 @@
                 </li>
                 {% if user.is_superuser %}
                 <li>
-                    <a href="/campus-life/medical/forms/admin/">
-                        <i class="fa fa-gears"></i> Administration
+                    <a href="{% url 'admin:index' %}" title="Administration">
+                      <i class="fa fa-tachometer fa-fw" aria-hidden="true"></i>
+                      Administration
                     </a>
                 </li>
                 {% endif %}

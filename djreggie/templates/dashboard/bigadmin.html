@@ -88,8 +88,9 @@
                 </li>
                 {% if user.is_superuser %}
                 <li>
-                    <a href="/campus-life/medical/forms/admin/">
-                        <i class="fa fa-gears"></i> Administration
+                    <a href="{% url 'admin:index' %}" title="Administration">
+                      <i class="fa fa-tachometer fa-fw" aria-hidden="true"></i>
+                      Administration
                     </a>
                 </li>
                 {% endif %}

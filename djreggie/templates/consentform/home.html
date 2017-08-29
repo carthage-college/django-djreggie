@@ -118,7 +118,9 @@
             <ul class="dropdown-menu">
                 <li class="divider"></li>
                 <li>
-                    <i class="fa fa-power-off"></i> Log Out
+                    <a href="{% url 'auth_logout' %}">
+                        <i class="fa fa-power-off"></i> Sign Out
+                    </a>
                 </li>
             </ul>
         </li>
@@ -150,8 +152,9 @@
                 </li>
                 {% if user.is_superuser %}
                 <li>
-                    <a href="/campus-life/medical/forms/admin/">
-                        <i class="fa fa-gears"></i> Administration
+                    <a href="{% url 'admin:index' %}" title="Administration">
+                      <i class="fa fa-tachometer fa-fw" aria-hidden="true"></i>
+                      Administration
                     </a>
                 </li>
                 {% endif %}
