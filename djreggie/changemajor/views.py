@@ -18,6 +18,10 @@ DEBUG=settings.INFORMIX_DEBUG
 EARL=settings.INFORMIX_EARL
 
 
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
 def create(request):
     '''
     create a change major request
@@ -33,7 +37,7 @@ def create(request):
 
     if request.POST:
         form = ChangeForm(request.POST)
-        sid = request.GET.get('student_id')
+        sid = request.GET.get('uid')
         if form.is_valid():
             form.save()
             # redirect to form home
@@ -42,7 +46,10 @@ def create(request):
             )
             return HttpResponseRedirect(url)
     else:
-        student_id = request.GET.get('student_id')
+        if request.method == "GET":
+            student_id = request.GET.get('student_id')
+        else:
+            student_id = request.GET.get('uid')
         form = ChangeForm()
         if student_id:
             try:
@@ -56,8 +63,6 @@ def create(request):
             if not sid:
                 if not facstaff:
                     return render(request, 'changemajor/no_access.html')
-            elif sid and facstaff:
-                return render(request, 'changemajor/form.html')
             else:
                 # selects student's id, name, and current majors/minors
                 sql = '''
