@@ -1,13 +1,17 @@
 from django.conf import settings
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
 from django.core.mail import EmailMessage
+from django.core.urlresolvers import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, HttpResponseRedirect
 
 from djreggie.undergradcandidacy.forms import UndergradForm
+from djreggie.core.utils import get_email
 
-from djzbar.utils.mssql import get_userid
 from djzbar.utils.informix import do_sql
+from djzbar.utils.mssql import get_userid
+from djzbar.decorators.auth import portal_auth_required
+
 from djtools.utils.mail import send_mail
 
 from datetime import date
@@ -30,7 +34,7 @@ def index(request):
         if form.is_valid():
             data = form.save()
             # email on valid submit
-            studentEmail = getEmailById(request.POST['student_id'])
+            studentEmail = get_email(request.POST['student_id'])
 
             if settings.DEBUG:
                 to_list = [settings.SERVER_EMAIL]
@@ -40,7 +44,8 @@ def index(request):
             send_mail(
                 request, to_list,
                 "Candidacy Received and Pending Approval",
-                settings.REGISTRAR_EMAIL, 'undergradcandidacy/email.html',
+                settings.REGISTRAR_EMAIL,
+                'undergradcandidacy/email_submitted.html',
                 {'data':data,}, settings.MANAGERS
             )
 
@@ -212,6 +217,11 @@ def isValidClass(student_id):
     return class_standing.first()['valid_class']
 
 
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    group='Registrar',
+    redirect_url=reverse_lazy('access_denied')
+)
 def contact(request):
     '''
     retriews student's contact info from form through ajax call
@@ -255,6 +265,11 @@ def get_all_students():
     return do_sql(sql, key=DEBUG, earl=EARL)
 
 
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    group='Registrar',
+    redirect_url=reverse_lazy('access_denied')
+)
 def admin(request):
     '''
     main admin page
@@ -300,6 +315,11 @@ def admin(request):
     })
 
 
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    group='Registrar',
+    redirect_url=reverse_lazy('access_denied')
+)
 def student(request, student_id): #admin details page
     # retrieves entry's info
     getStudentSQL = '''
@@ -401,6 +421,11 @@ def student(request, student_id): #admin details page
     })
 
 
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    group='Registrar',
+    redirect_url=reverse_lazy('access_denied')
+)
 def search(request):
     '''
     admin details page accessed through search bar
@@ -409,6 +434,11 @@ def search(request):
 
 
 @csrf_exempt
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    group='Registrar',
+    redirect_url=reverse_lazy('access_denied')
+)
 def set_approved(request):
     '''
     set the approved column in database for entry
@@ -438,37 +468,8 @@ def set_approved(request):
         student_sql, key=DEBUG, earl=EARL
     ).first()['student_id']
 
-    if request.POST.get('approved') == "Y":
-        studentEmail = getEmailById(student_id)
-        headers = {
-            'Reply-To':'{}'.format(settings.REGISTRAR_EMAIL),
-            'From':'{}'.format(settings.REGISTRAR_EMAIL)
-        }
-        body = '''
-            Congratulations!
-            Your Candidacy Form for graduation has been accepted!\n\n
-            Please be sure to keep an eye on your Carthage email,
-            as this is where communications regarding your graduation
-            requirements and graduating senior activities will be sent.
-            You will need to check your Degree Audit
-            (available on the Carthage Portal - my.carthage.edu)
-            to ensure that you are on track for meeting all degree
-            requirements. If you have any questions about your Degree Audit,
-            please contact the Associate Registrar, Brigid Patterson.\n\n
-            ** Note:  Acceptance of your Candidacy Form is based upon
-            current information. If there are any changes,
-            the Registrar's Office will need to be notified immediately
-            and acceptance of the Candidacy Form may change.
-        '''
-        email = EmailMessage(
-            "Congratulations - Graduation Candidacy Accepted", body,
-            settings.REGISTRAR_EMAIL,
-            [studentEmail], [settings.SERVER_EMAIL], headers=headers
-        )
-        email.attach_file(
-            "{}Degree_Audit_Instructions.pdf".format(settings.MEDIA_ROOT)
-        )
-        email.send()
+    if request.POST.get('approved') == 'Y':
+
         gradwalkExistsSQL = '''
             SELECT COUNT(*) AS entries
             FROM
@@ -493,8 +494,8 @@ def set_approved(request):
 
         # If the aa type is DIPL, determine whether to insert or update
         # the address information
-        if student_data["diploma_aa_type"] == "DIPL":
-            hasDiplAddressSQL = """
+        if student_data['diploma_aa_type'] == 'DIPL':
+            hasDiplAddressSQL = '''
                 SELECT
                     aa_no
                 FROM
@@ -507,13 +508,13 @@ def set_approved(request):
                     TODAY BETWEEN aa_rec.beg_date
                 AND
                     NVL(aa_rec.end_date, TODAY)
-            """.format(student_id)
+            '''.format(student_id)
 
             hasDiplAddress = do_sql(
                 hasDiplAddressSQL, key=DEBUG, earl=EARL
             ).first()
             if hasDiplAddress:
-                student_data['hasDiplAddress'] = hasDiplAddress["aa_no"]
+                student_data['hasDiplAddress'] = hasDiplAddress['aa_no']
                 diplSQL = '''
                     UPDATE
                         aa_rec
@@ -635,26 +636,22 @@ def set_approved(request):
             '''.format(**student_data)
             do_sql(insertGradWalkSQL, key=DEBUG, earl=EARL)
 
+        # send an email to the student
+        if settings.DEBUG:
+            to_list = [settings.SERVER_EMAIL]
+        else:
+            to_list = [get_email(student_id)]
+
+        phile = '{}Degree_Audit_Instructions.pdf'.format(settings.MEDIA_ROOT)
+
+        send_mail(
+            request, to_list,
+            "Congratulations: Graduation Candidacy Accepted",
+            settings.REGISTRAR_EMAIL, 'undergradcandidacy/email_accepted.html',
+            {'student':student_data,}, settings.MANAGERS, attach=phile
+        )
+
     return HttpResponse('update successful')
-
-
-def getEmailById(cx_id):
-    email_sql = '''
-        SELECT
-            TRIM(aa_rec.line1) AS email
-        FROM
-            aa_rec
-        WHERE
-            id = {}
-        AND
-            aa = "EML1"
-        AND
-            TODAY BETWEEN beg_date AND NVL(end_date, TODAY)
-    '''.format(cx_id)
-
-    email = do_sql(email_sql, key=DEBUG, earl=EARL)
-
-    return email.first()['email']
 
 
 def getPermAddress(cx_id):

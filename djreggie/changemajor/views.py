@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 
 from djreggie.changemajor.forms import ChangeForm
+from djreggie.core.utils import get_email
 
 from djzbar.utils.informix import do_sql
 from djzbar.utils.mssql import get_userid
@@ -413,7 +414,7 @@ def set_approved(request): #for setting entry to be approved
         if settings.DEBUG:
             to_list = [settings.SERVER_EMAIL]
         else:
-            to_list = [getEmailById(student['student_id'])]
+            to_list = [get_email(student['student_id'])]
 
         send_mail(
             request, to_list,
@@ -428,7 +429,7 @@ def set_approved(request): #for setting entry to be approved
             if settings.DEBUG:
                 to_list = [settings.SERVER_EMAIL]
             else:
-                to_list = [getEmailById(student['advisor_id'])]
+                to_list = [get_email(student['advisor_id'])]
 
             send_mail(
                 request, to_list,
@@ -461,24 +462,4 @@ def set_approved(request): #for setting entry to be approved
         )
 
     return HttpResponse('update successful')
-
-
-def getEmailById(cx_id):
-    email_sql = '''
-        SELECT
-            TRIM(aa_rec.line1) AS email
-        FROM
-            aa_rec
-        WHERE
-            id = {}
-        AND
-            aa = "EML1"
-        AND
-            TODAY BETWEEN beg_date AND NVL(end_date, TODAY)
-    '''.format(cx_id)
-    email = do_sql(
-        email_sql, key=DEBUG, earl=EARL
-    )
-
-    return email.first()['email']
 

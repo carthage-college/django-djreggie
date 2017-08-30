@@ -1,11 +1,8 @@
-<h2>New Advisee Notification</h2>
-<p>
-  Please accept this email as notification that the following student
-  has selected you as their advisor. Given this, you are now able to view
-  their Degree Audit information through
-  <a href="https://my.carthage.edu/">my.carthage.edu</a>
-  to assist in your advising of this student.
-</p>
+{% autoescape off %}
+{% load livewhale_api %}
+{% get_lw_content as email blurbs 2572 %}
+{{email.body}}
+{% endautoescape %}
 <pre>
   Student name....................... {{data.student.name}}
   Student ID......................... {{data.student.student_id}}
