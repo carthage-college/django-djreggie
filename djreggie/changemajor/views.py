@@ -18,6 +18,9 @@ from djtools.utils.users import in_group
 DEBUG=settings.INFORMIX_DEBUG
 EARL=settings.INFORMIX_EARL
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
@@ -47,11 +50,9 @@ def create(request):
             )
             return HttpResponseRedirect(url)
     else:
-        if request.method == "GET":
-            student_id = request.GET.get('student_id')
-        else:
-            student_id = request.GET.get('uid')
+        student_id = request.GET.get('uid')
         form = ChangeForm()
+        logger.debug("student_id = {}".format(student_id))
         if student_id:
             try:
                 sid = int(student_id)
@@ -61,6 +62,7 @@ def create(request):
             except:
                 sid = get_userid(student_id)
 
+            logger.debug("sid = {}".format(student_id))
             if not sid:
                 if not facstaff:
                     return render(request, 'changemajor/no_access.html')
