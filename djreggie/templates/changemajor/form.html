@@ -71,8 +71,10 @@
 {% endblock %}
 {% block content %}
 {{ form.non_field_errors }}
-<h2>Change of Major/Minor/Advisor Form</h2>
-{% if sql and not student_id %}
+<h2 title="{{user.last_name}}, {{user.first_name}}">
+  Change of Major/Minor/Advisor Form
+</h2>
+{% if search and not student_id %}
 <div class="error"><p>No student by that ID</p></div>
 {% endif %}
 {% if not student_id %}
@@ -81,7 +83,7 @@
         <legend>Enter a Student's ID</legend>
         <ol>
             <li>
-                <input type="text" name="student_id">
+                <input type="text" name="uid">
             </li>
         </ol>
     </fieldset>

@@ -38,31 +38,31 @@ def create(request):
 
     sid = None
     sql = None
+    search = False
 
     if request.POST:
         form = ChangeForm(request.POST)
-        sid = request.GET.get('uid')
         if form.is_valid():
-            form.save()
+            data = form.save()
             # redirect to form home
-            url = "{}?student_id={}&".format(
-                reverse_lazy('change_major_success'), sid
+            url = "{}?uid={}".format(
+                reverse_lazy('change_major_success'), data.student_id
             )
             return HttpResponseRedirect(url)
     else:
-        student_id = request.GET.get('uid')
+        uid = request.GET.get('uid')
         form = ChangeForm()
-        logger.debug("student_id = {}".format(student_id))
-        if student_id:
+        if uid:
+            logger.debug("uid = {}".format(uid))
             try:
-                sid = int(student_id)
+                sid = int(uid)
+                search = True
                 # prevent unauthorized users from using this form
                 if not facstaff:
                     return render(request, 'changemajor/no_access.html')
             except:
-                sid = get_userid(student_id)
+                sid = get_userid(uid)
 
-            logger.debug("sid = {}".format(student_id))
             if not sid:
                 if not facstaff:
                     return render(request, 'changemajor/no_access.html')
@@ -189,7 +189,7 @@ def create(request):
 
     return render(request, 'changemajor/form.html', {
         'form':form, 'facstaff':facstaff, 'sql':sql,
-        'advisor_list':advisor_list, 'student_id':sid
+        'advisor_list':advisor_list, 'student_id':sid,'search':search
     })
 
 
