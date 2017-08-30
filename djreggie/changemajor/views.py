@@ -210,11 +210,11 @@ def get_all_students():
     )
 
 
-#@portal_auth_required(
-    #session_var='DJREGGIE_AUTH',
-    #group='Registrar',
-    #redirect_url=reverse_lazy('access_denied')
-#)
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    group='Registrar',
+    redirect_url=reverse_lazy('access_denied')
+)
 def admin(request):
     """
     main admin page
@@ -267,6 +267,11 @@ def admin(request):
     })
 
 
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    group='Registrar',
+    redirect_url=reverse_lazy('access_denied')
+)
 def student(request, changemajor_no):
     '''
     admin details page
@@ -347,6 +352,11 @@ def student(request, changemajor_no):
     )
 
 
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    group='Registrar',
+    redirect_url=reverse_lazy('access_denied')
+)
 def search(request):
     '''
     admin details page access through search bar
@@ -355,6 +365,11 @@ def search(request):
 
 
 @csrf_exempt
+@portal_auth_required(
+    session_var='DJREGGIE_AUTH',
+    group='Registrar',
+    redirect_url=reverse_lazy('access_denied')
+)
 def set_approved(request): #for setting entry to be approved
     getMajorSQL = '''
         SELECT
