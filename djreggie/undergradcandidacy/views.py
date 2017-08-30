@@ -212,10 +212,6 @@ def isValidClass(student_id):
     return class_standing.first()['valid_class']
 
 
-def submitted(request):
-    return render(request, 'undergradcandidacy/form.html')
-
-
 def contact(request):
     '''
     retriews student's contact info from form through ajax call
