@@ -26,5 +26,7 @@ urlpatterns = [
         ),
         name='change_major_success'
     ),
-    url(r'^$', views.create, name='change_major_form')
+    url(
+        r'^$', views.create, name='change_major_form'
+    )
 ]
