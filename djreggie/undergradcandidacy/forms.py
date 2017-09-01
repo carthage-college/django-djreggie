@@ -23,10 +23,10 @@ class UndergradForm(forms.ModelForm):
         return data
 
     def clean_mname(self):
-        data = self.cleaned_data['mname']
-        #if data and not re.match(r'^([a-zA-Z]+|[a-zA-Z]\.?)$', data):
-        if not re.match(r'^(([a-z]+[\-\']?)*([a-z]+)?\s?)+\.?$', data, re.I):
-            raise forms.ValidationError('Please enter just a middle name or initial.')
+        data = self.cleaned_data.get('mname')
+        if data:
+            if not re.match(r'^(([a-z]+[\-\']?)*([a-z]+)?\s?)+\.?$', data, re.I):
+                raise forms.ValidationError('Please enter just a middle name or initial.')
         return data
 
     def clean_lname(self):
@@ -37,17 +37,21 @@ class UndergradForm(forms.ModelForm):
         return data
 
     def clean_fnamepro(self):
-        string = self.cleaned_data['fnamepro'].encode('utf-8')
-        for q in ['"',"'"]:
-            if q in string:
-                string = string.replace(q, "")
+        cd = self.cleaned_data
+        if cd.get('fnamepro')
+            string = cd['fnamepro'].encode('utf-8')
+            for q in ['"',"'"]:
+                if q in string:
+                    string = string.replace(q, "")
         return string.decode('utf-8')
 
     def clean_mnamepro(self):
-        string = self.cleaned_data['mnamepro'].encode('utf-8')
-        for q in ['"',"'"]:
-            if q in string:
-                string = string.replace(q, "")
+        cd = self.cleaned_data
+        if cd.get('mnamepro')
+            string = self.cleaned_data['mnamepro'].encode('utf-8')
+            for q in ['"',"'"]:
+                if q in string:
+                    string = string.replace(q, "")
         return string.decode('utf-8')
 
     def clean_lnamepro(self):
@@ -65,10 +69,12 @@ class UndergradForm(forms.ModelForm):
         return string.decode('utf-8')
 
     def clean_address(self):
-        string = self.cleaned_data['address'].encode('utf-8')
-        for q in ['"',"'"]:
-            if q in string:
-                string = string.replace(q, '')
+        cd = self.cleaned_data
+        if cd.get('address'):
+            string = cd['address'].encode('utf-8')
+            for q in ['"',"'"]:
+                if q in string:
+                    string = string.replace(q, '')
         return string.decode('utf-8')
 
     def clean_state(self):
