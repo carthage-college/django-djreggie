@@ -38,7 +38,7 @@ class UndergradForm(forms.ModelForm):
 
     def clean_fnamepro(self):
         cd = self.cleaned_data
-        if cd.get('fnamepro')
+        if cd.get('fnamepro'):
             string = cd['fnamepro'].encode('utf-8')
             for q in ['"',"'"]:
                 if q in string:
@@ -47,7 +47,7 @@ class UndergradForm(forms.ModelForm):
 
     def clean_mnamepro(self):
         cd = self.cleaned_data
-        if cd.get('mnamepro')
+        if cd.get('mnamepro'):
             string = self.cleaned_data['mnamepro'].encode('utf-8')
             for q in ['"',"'"]:
                 if q in string:
