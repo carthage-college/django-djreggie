@@ -320,7 +320,11 @@ def admin(request):
     group='Registrar',
     redirect_url=reverse_lazy('access_denied')
 )
-def student(request, student_id): #admin details page
+def student(request, student_id):
+    """
+    admin details page
+    """
+
     # retrieves entry's info
     getStudentSQL = '''
         SELECT uc.*,
