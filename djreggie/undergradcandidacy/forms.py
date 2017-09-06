@@ -37,45 +37,59 @@ class UndergradForm(forms.ModelForm):
         return data
 
     def clean_fnamepro(self):
-        cd = self.cleaned_data
-        if cd.get('fnamepro'):
-            string = cd['fnamepro'].encode('utf-8')
+        cd = self.cleaned_data.get('fnamepro')
+        if cd:
+            string = cd.encode('utf-8')
             for q in ['"',"'"]:
                 if q in string:
                     string = string.replace(q, "")
-        return string.decode('utf-8')
+            return string.decode('utf-8')
+        else:
+            return cd
 
     def clean_mnamepro(self):
-        cd = self.cleaned_data
-        if cd.get('mnamepro'):
-            string = self.cleaned_data['mnamepro'].encode('utf-8')
+        cd = self.cleaned_data.get('mnamepro')
+        if cd:
+            string = cd.encode('utf-8')
             for q in ['"',"'"]:
                 if q in string:
                     string = string.replace(q, "")
-        return string.decode('utf-8')
+            return string.decode('utf-8')
+        else:
+            return cd
 
     def clean_lnamepro(self):
-        string = self.cleaned_data['lnamepro'].encode('utf-8')
-        for q in ['"',"'"]:
-            if q in string:
-                string = string.replace(q, '')
-        return string.decode('utf-8')
-
-    def clean_city(self):
-        string = self.cleaned_data['city'].encode('utf-8')
-        for q in ['"',"'"]:
-            if q in string:
-                string = string.replace(q, '')
-        return string.decode('utf-8')
-
-    def clean_address(self):
-        cd = self.cleaned_data
-        if cd.get('address'):
-            string = cd['address'].encode('utf-8')
+        cd = self.cleaned_data.get('lnamepro')
+        if cd:
+            string = cd.encode('utf-8')
             for q in ['"',"'"]:
                 if q in string:
-                    string = string.replace(q, '')
-        return string.decode('utf-8')
+                    string = string.replace(q, "")
+            return string.decode('utf-8')
+        else:
+            return cd
+
+    def clean_city(self):
+        cd = self.cleaned_data.get('city')
+        if cd:
+            string = cd.encode('utf-8')
+            for q in ['"',"'"]:
+                if q in string:
+                    string = string.replace(q, "")
+            return string.decode('utf-8')
+        else:
+            return cd
+
+    def clean_address(self):
+        cd = self.cleaned_data.get('address')
+        if cd:
+            string = cd.encode('utf-8')
+            for q in ['"',"'"]:
+                if q in string:
+                    string = string.replace(q, "")
+            return string.decode('utf-8')
+        else:
+            return cd
 
     def clean_state(self):
         data = self.cleaned_data['state']
