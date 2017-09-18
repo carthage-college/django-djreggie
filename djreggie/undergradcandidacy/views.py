@@ -62,80 +62,15 @@ def index(request):
             })
     else:
         if request.GET:
-            if get_userid(request.GET['student_id']) == None:
+            suid = request.GET.get('student_id')
+            guid = get_userid(suid)
+            if not suid or guid == None:
                 return render(
                     request, 'undergradcandidacy/no_access.html'
                 )
 
-            cxID = int(get_userid(request.GET['student_id']))
-            """
-            # student's id, name, and majors/minors
-            getStudentSQL = '''
-                SELECT
-                    IDrec.id, TRIM(IDrec.firstname) AS firstname,
-                    TRIM(IDrec.middlename) AS middlename,
-                    TRIM(IDrec.lastname) AS lastname,
-                    TRIM(major1.major) AS major1code,
-                    TRIM(major2.major) AS major2code,
-                    TRIM(major3.major) AS major3code,
-                    TRIM(minor1.minor) AS minor1code,
-                    TRIM(minor2.minor) AS minor2code,
-                    TRIM(minor3.minor) AS minor3code
-                FROM
-                    id_rec IDrec
-
-                INNER JOIN
-                    prog_enr_rec PROGrec ON IDrec.id = PROGrec.id
-                LEFT JOIN
-                    major_table major1 ON PROGrec.major1 = major1.major
-                LEFT JOIN
-                    major_table major2 ON PROGrec.major2 = major2.major
-                LEFT JOIN
-                    major_table major3 ON PROGrec.major3 = major3.major
-                LEFT JOIN
-                    minor_table minor1 ON PROGrec.minor1 = minor1.minor
-                LEFT JOIN
-                    minor_table minor2 ON PROGrec.minor2 = minor2.minor
-                LEFT JOIN
-                    minor_table minor3 ON PROGrec.minor3 = minor3.minor
-                WHERE
-                    IDrec.id = {}
-            '''.format(cxID)
-            student = do_sql(getStudentSQL, key=DEBUG, earl=EARL)
-
-            for row in student: #set student's initial data
-                form.fields['student_id'].initial = row['id']
-                form.fields['fname'].initial = row['firstname']
-                form.fields['mname'].initial = row['middlename']
-                form.fields['lname'].initial = row['lastname']
-                form.fields['major1'].initial = row['major1code']
-                form.fields['major2'].initial = row['major2code']
-                form.fields['major3'].initial = row['major3code']
-                form.fields['minor1'].initial = row['minor1code']
-                form.fields['minor2'].initial = row['minor2code']
-                form.fields['minor3'].initial = row['minor3code']
-            """
-
+            cxID = int(guid)
             form = populateForm(cxID)
-
-            """
-            #check if student is a junior/senior or not
-            getClassStandingSQL = '''
-            SELECT
-                CASE
-                    prog_enr_rec.cl
-                WHEN 'JR' THEN 'Y'
-                WHEN 'SR' THEN 'Y'
-                ELSE 'N'
-                END AS valid_class
-            FROM
-                prog_enr_rec
-            WHERE
-                prog_enr_rec.id = {}
-            '''.format(cxID)
-            class_standing = do_sql(getClassStandingSQL, key=DEBUG, earl=EARL)
-            valid_class = class_standing.first()['valid_class']
-            """
             valid_class = isValidClass(cxID)
             perm = getPermAddress(cxID)
         else:
@@ -387,7 +322,7 @@ def student(request, student_id):
     if student:
         for key, value in student.items():
             try:
-                stu[key] = value.decode('ISO-8859-2').encode('utf-8')
+                stu[key] = u'{}'.format(value.decode('utf-8').encode('cp1252'))
             except:
                 stu[key] = value
         student = stu

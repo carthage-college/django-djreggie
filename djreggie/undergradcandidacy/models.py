@@ -145,8 +145,29 @@ class UndergradModel(models.Model):
         return '{}, {} {}'.format(self.lname, self.fname, str(self.student_id))
 
     def save(self):
+        '''
+        # deal with funky characters
+        dic = {}
+        include = [
+            'fname','mname','lname','fnamepro','mnamepro',
+            'lnamepro','address','city','state'
+        ]
+        for n,v in self.__dict__.items():
+            if n in include and v:
+                #dic[n] = u'{}'.format(v.encode('cp1252'))
+                #dic[n] = u'{}'.format(v.encode('ISO-8859-2'))
+                #dic[n] = u'{}'.format(v.encode('ISO-8859-1'))
+                #dic[n] = u'{}'.format(v.encode('utf-8'))
+                #dic[n] = u'{}'.format(v.decode('ISO-8859-2').encode('utf-8'))
+                #dic[n] = u'{}'.format(v.decode('utf-8').encode('cp1252'))
+                #dic[n] = u'{}'.format(v.decode('cp1252').encode('utf-8'))
+                #dic[n] = u'{}'.format(v.decode('utf-8'))
+                #dic[n] = u'{}'.format(v.decode('ISO-8859-2'))
+            else:
+                dic[n] = v
+        '''
         # put data into staging tables
-        sql = '''
+        sql = u'''
             INSERT INTO cc_stg_undergrad_candidacy
             (
                 student_id, first_name, middle_initial, last_name,
@@ -167,5 +188,6 @@ class UndergradModel(models.Model):
                 "{diploma_aa_type}", CURRENT
             )
         '''.format(**self.__dict__)
+        #'''.format(**dic)
         insertSQL = sql.replace('"True"','"t"').replace('"False"','"f"')
         do_sql(insertSQL, key=DEBUG, earl=EARL)
