@@ -79,7 +79,21 @@
 
         //Initialise the DataTables
         $('#students-data').dataTable({
+            "sDom": 'T<"clear">lfrtip',
             "order": [[ 2, "asc" ]],
+            "aoColumnDefs": [{
+                "bSortable": false,
+                "aTargets": [-1]
+            }],
+            "oTableTools": {
+                "sSwfPath": "//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                    "print", "xls", {
+                        "sExtends": "pdf",
+                        "sPdfOrientation": "landscape"
+                    },
+                ],
+            },
             "lengthMenu": [
                 [100, 250, 500, 1000, 2000, -1],
                 [100, 250, 500, 1000, 2000, "All"]
