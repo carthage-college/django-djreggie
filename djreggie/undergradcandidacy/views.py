@@ -453,19 +453,24 @@ def set_approved(request):
                 hasDiplAddressSQL, key=DEBUG, earl=EARL
             ).first()
             if hasDiplAddress:
-                student_data['hasDiplAddress'] = hasDiplAddress['aa_no']
                 diplSQL = '''
                     UPDATE
                         aa_rec
                     SET
-                        line1 = "{address}",
-                        city = "{city}",
-                        st = "{state}",
-                        zip = "{zip}",
+                        line1 = "{}",
+                        city = "{}",
+                        st = "{}",
+                        zip = "{}",
                         beg_date = TODAY
                     WHERE
-                        aa_no = {hasDiplAddress}
-                '''.format(**student_data)
+                        aa_no = {}
+                '''.format(
+                    student_data['address'],
+                    student_data['city'],
+                    student_data['state'],
+                    student_data['zip'],
+                    hasDiplAddress['aa_no']
+                )
             else:
                 diplSQL = '''
                     INSERT INTO aa_rec
