@@ -149,7 +149,12 @@ def isValidClass(student_id):
         WHERE prog_enr_rec.id = {}
     '''.format(student_id)
     class_standing = do_sql(getClassStandingSQL, key=DEBUG, earl=EARL)
-    return class_standing.first()['valid_class']
+
+    try:
+        cs = class_standing.first()['valid_class']
+    except:
+        cs = None
+    return cs
 
 
 @portal_auth_required(
