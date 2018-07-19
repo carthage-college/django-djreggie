@@ -21,9 +21,14 @@ def get_email(cx_id):
         AND
             TODAY BETWEEN beg_date AND NVL(end_date, TODAY)
     '''.format(cx_id)
-    email = do_sql(
+
+    obj = do_sql(
         email_sql, key=settings.INFORMIX_DEBUG, earl=settings.INFORMIX_EARL
     )
 
-    return email.first()['email']
+    try:
+        email = obj.first()['email']
+    except:
+        email = None
 
+    return email
