@@ -43,9 +43,9 @@
                     <br />{% if s.minor3 != "None" %}{{s.minor3_txt}}{% endif %}
                 </td> 
                 <td class="center">
-                    {% if s.plan_to_walk == 't' or s.plan_to_walk == 'T' %}
+                    {% if s.plan_to_walk == 't' or s.plan_to_walk == 'T' or s.plan_to_walk == 'Y' %}
                         Yes
-                    {% elif s.plan_to_walk == 'f' or s.plan_to_walk == 'F' %}
+                    {% elif s.plan_to_walk == 'f' or s.plan_to_walk == 'F' or s.plan_to_walk == 'N' %}
                         No
                     {% endif %}
                 </td>
