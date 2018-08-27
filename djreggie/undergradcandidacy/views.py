@@ -164,7 +164,7 @@ def isValidClass(student_id):
 )
 def contact(request):
     '''
-    retriews student's contact info from form through ajax call
+    retrieves student's contact info from form through ajax call
     '''
 
     getContactSQL = '''
@@ -511,10 +511,9 @@ def set_approved(request):
                     lname_pronounce = "{last_name_pronounce}",
                     addr = "{diploma_aa_type}",
                     plan2walk = (
-                        CASE WHEN
-                            "{plan_to_walk}" = "t"
-                        THEN
-                            "Y"
+                        CASE
+                             WHEN "{plan_to_walk}" = "t" THEN "Y"
+                             WHEN "{plan_to_walk}" = "Y" THEN "Y"
                         ELSE
                             "N"
                         END
@@ -574,7 +573,14 @@ def set_approved(request):
                 ),
                 '{first_name_pronounce}', '{middle_name_pronounce}',
                 '{last_name_pronounce}', '{diploma_aa_type}',
-                (CASE WHEN "{plan_to_walk}" = "t" THEN "Y" ELSE "N" END),
+                (
+                    CASE
+                        WHEN "{plan_to_walk}" = "t" THEN "Y"
+                        WHEN "{plan_to_walk}" = "Y" THEN "Y"
+                    ELSE
+                        "N"
+                    END
+                ),
                 (CASE WHEN "{major1}" = "None" THEN "" ELSE "{major1}" END),
                 (CASE WHEN "{major2}" = "None" THEN "" ELSE "{major2}" END),
                 (CASE WHEN "{major3}" = "None" THEN "" ELSE "{major3}" END),
