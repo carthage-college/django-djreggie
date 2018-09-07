@@ -316,10 +316,15 @@ def student(request, student_id):
         ON
             uc.student_id = id_rec.id
         WHERE
-            uc.student_id = {}
     '''.format(student_id)
 
-    student = do_sql(getStudentSQL, key=DEBUG, earl=EARL)
+    try:
+        sid = int(student_id)
+        where = 'uc.student_id = {}'.format(student_id)
+    except:
+        where = 'uc.last_name = "{}"'.format(student_id)
+    sql = '{} {}'.format(getStudentSQL, where)
+    student = do_sql(sql, key=DEBUG, earl=EARL)
 
     # deal with funky characters
     stu = {}
@@ -353,10 +358,16 @@ def student(request, student_id):
         LEFT JOIN
             minor_table minor3 ON uc.minor3 = minor3.minor
         WHERE
-            uc.student_id = {}
     '''.format(student_id)
 
-    reqmajors = do_sql(getMajorMinorSQL, key=DEBUG, earl=EARL)
+    try:
+        sid = int(student_id)
+        where = 'uc.student_id = {}'.format(student_id)
+    except:
+        where = 'uc.last_name = "{}"'.format(student_id)
+    sql = '{} {}'.format(getStudentSQL, where)
+
+    reqmajors = do_sql(sql, key=DEBUG, earl=EARL)
 
     return render(request, 'undergradcandidacy/details.html', {
         'student': student,
@@ -374,7 +385,7 @@ def search(request):
     '''
     admin details page accessed through search bar
     '''
-    return student(request, request.POST['cid'])
+    return student(request, request.POST.get('cid'))
 
 
 @csrf_exempt
