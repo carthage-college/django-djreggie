@@ -572,18 +572,18 @@ def set_approved(request):
                   major3, minor1, minor2, minor3
               )
               VALUES (
-                {student_id}, "", "CART", "BA", "'{grad_sess}",
+                {student_id}, "", "CART", "BA", "{grad_sess}",
                 "{grad_yr}", (
                     CASE WHEN
-                      "'{middle_initial}" = "None"
+                      "{middle_initial}" = "None"
                     THEN
                       "{first_name} {last_name}"
                     ELSE
                       "{first_name} {middle_initial} {last_name}"
                     END
                 ),
-                '{first_name_pronounce}', '{middle_name_pronounce}',
-                '{last_name_pronounce}', '{diploma_aa_type}',
+                "{first_name_pronounce}", "{middle_name_pronounce}",
+                "{last_name_pronounce}", "{diploma_aa_type}",
                 (
                     CASE
                         WHEN "{plan_to_walk}" = "t" THEN "Y"
