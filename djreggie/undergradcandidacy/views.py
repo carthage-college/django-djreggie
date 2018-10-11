@@ -334,7 +334,10 @@ def student(request, student_id):
             try:
                 stu[key] = u'{}'.format(value.decode('utf-8').encode('cp1252'))
             except:
-                stu[key] = value
+                try:
+                    stu[key] = u'{}'.format(value.decode('latin-1'))
+                except:
+                    stu[key] = value
         student = stu
 
     # retrieves majors/minors full text
