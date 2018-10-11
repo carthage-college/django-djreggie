@@ -43,6 +43,7 @@ class UndergradForm(forms.ModelForm):
             for q in ['"',"'"]:
                 if q in string:
                     string = string.replace(q, "")
+            self.cleaned_data['fnamepro'] = string
             return string.decode('utf-8')
         else:
             return cd
@@ -54,6 +55,7 @@ class UndergradForm(forms.ModelForm):
             for q in ['"',"'"]:
                 if q in string:
                     string = string.replace(q, "")
+            self.cleaned_data['mnamepro'] = string
             return string.decode('utf-8')
         else:
             return cd
@@ -65,6 +67,7 @@ class UndergradForm(forms.ModelForm):
             for q in ['"',"'"]:
                 if q in string:
                     string = string.replace(q, "")
+            self.cleaned_data['lnamepro'] = string
             return string.decode('utf-8')
         else:
             return cd
@@ -76,6 +79,7 @@ class UndergradForm(forms.ModelForm):
             for q in ['"',"'"]:
                 if q in string:
                     string = string.replace(q, "")
+            self.cleaned_data['city'] = string
             return string.decode('utf-8')
         else:
             return cd
@@ -87,6 +91,7 @@ class UndergradForm(forms.ModelForm):
             for q in ['"',"'"]:
                 if q in string:
                     string = string.replace(q, "")
+            self.cleaned_data['address'] = string
             return string.decode('utf-8')
         else:
             return cd
