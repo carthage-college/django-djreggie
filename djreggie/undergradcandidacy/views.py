@@ -446,9 +446,12 @@ def set_approved(request):
                 undergradcandidacy_no = {}
         '''.format(request.POST.get('id'))
         student = do_sql(getCandidacyInfoSQL, key=DEBUG, earl=EARL)
-        student_data = student.first()
+        data = student.first()
 
-        # clean some data
+        # clean the data
+        student_data = {}
+        for n,v in data:
+            student_data[n] = v.replace('"','').replace("'",'')
 
         # If the aa type is DIPL, determine whether to insert or update
         # the address information
@@ -613,13 +616,14 @@ def set_approved(request):
 
         phile = '{}Degree_Audit_Instructions.pdf'.format(settings.MEDIA_ROOT)
 
+        '''
         send_mail(
             request, to_list,
             "Congratulations: Graduation Candidacy Accepted",
             settings.REGISTRAR_EMAIL, 'undergradcandidacy/email_accepted.html',
             {'student':student_data,}, settings.MANAGERS, attach=phile
         )
-
+        '''
     return HttpResponse('update successful')
 
 
