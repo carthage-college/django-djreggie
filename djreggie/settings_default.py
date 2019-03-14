@@ -26,18 +26,18 @@ USE_TZ = False
 DEFAULT_CHARSET = 'utf-8'
 FILE_CHARSET = 'utf-8'
 
-SERVER_URL = "www.carthage.edu"
-API_URL = "%s/%s" % (SERVER_URL, "api")
+SERVER_URL = 'www.carthage.edu'
+API_URL = '{}/{}'.format(SERVER_URL, 'api')
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ROOT_DIR = os.path.dirname(__file__)
-ROOT_URL = "/djreggie/"
+ROOT_URL = '/djreggie/'
 ROOT_URLCONF = 'djreggie.urls'
 WSGI_APPLICATION = 'djreggie.wsgi.application'
 MEDIA_ROOT = '/d2/django_projects/djreggie/static/uploads/'
 MEDIA_URL = '/uploads/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATIC_ROOT = ''
-STATIC_URL = "/static/"
+STATIC_URL = '/static/'
 STATICFILES_DIRS = ()
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -76,7 +76,7 @@ INSTALLED_APPS = (
     'djreggie.systemaccess',
     'djreggie.undergradcandidacy',
 )
-LIVEWHALE_API_URL = "https://www.carthage.edu"
+LIVEWHALE_API_URL = 'https://www.carthage.edu'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -92,14 +92,14 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(os.path.dirname(__file__), 'templates'),
-            "/data2/django_templates/djkorra/",
-            "/data2/django_templates/djcher/",
-            "/data2/django_templates/",
+            '/data2/django_templates/djkorra/',
+            '/data2/django_templates/djcher/',
+            '/data2/django_templates/',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                "djtools.context_processors.sitevars",
+                'djtools.context_processors.sitevars',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.media',
@@ -122,7 +122,7 @@ CACHES = {
         #'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         #'LOCATION': '/var/tmp/django_directory_cache',
         #'TIMEOUT': 60*20,
-        #'KEY_PREFIX': "DIRECTORY_",
+        #'KEY_PREFIX': 'DIRECTORY_',
         #'OPTIONS': {
         #    'MAX_ENTRIES': 80000,
         #}
@@ -133,11 +133,11 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 # LDAP Constants
 LDAP_SERVER = ''
 LDAP_PORT = '636'
-LDAP_PROTOCOL = "ldaps"
-LDAP_BASE = ""
-LDAP_USER = ""
-LDAP_PASS = ""
-LDAP_EMAIL_DOMAIN = ""
+LDAP_PROTOCOL = 'ldaps'
+LDAP_BASE = ''
+LDAP_USER = ''
+LDAP_PASS = ''
+LDAP_EMAIL_DOMAIN = ''
 # auth backends
 AUTHENTICATION_BACKENDS = (
     'djauth.ldapBackend.LDAPBackend',
@@ -146,26 +146,26 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_URL = '/djreggie/accounts/login/'
 LOGIN_REDIRECT_URL = '/djreggie/'
 USE_X_FORWARDED_HOST = True
-#SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+#SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-SESSION_COOKIE_DOMAIN=".carthage.edu"
+SESSION_COOKIE_DOMAIN='.carthage.edu'
 SESSION_COOKIE_NAME ='django_carthage_cookie'
 SESSION_COOKIE_AGE = 86400
 
 # logging
-LOG_FILEPATH = os.path.join(os.path.dirname(__file__), "logs/")
-LOG_FILENAME = LOG_FILEPATH + "debug.log"
+LOG_FILEPATH = os.path.join(os.path.dirname(__file__), 'logs/')
+LOG_FILENAME = LOG_FILEPATH + 'debug.log'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
     'formatters': {
         'standard': {
-            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%Y/%b/%d %H:%M:%S"
+            'format' : '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
+            'datefmt' : '%Y/%b/%d %H:%M:%S'
         },
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s',
-            'datefmt' : "%Y/%b/%d %H:%M:%S"
+            'datefmt' : '%Y/%b/%d %H:%M:%S'
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
