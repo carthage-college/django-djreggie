@@ -18,9 +18,6 @@ from djtools.utils.users import in_group
 DEBUG=settings.INFORMIX_DEBUG
 EARL=settings.INFORMIX_EARL
 
-import logging
-logger = logging.getLogger(__name__)
-
 
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
@@ -53,7 +50,6 @@ def create(request):
         uid = request.GET.get('uid')
         form = ChangeForm()
         if uid:
-            logger.debug("uid = {}".format(uid))
             try:
                 sid = int(uid)
                 search = True
