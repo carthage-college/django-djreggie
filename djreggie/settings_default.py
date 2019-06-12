@@ -2,6 +2,10 @@
 Django settings for djreggie project.
 """
 
+from djzbar.settings import INFORMIX_EARL_TEST as INFORMIX_EARL
+# sqlserver connection string
+MSSQL_EARL = ''
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os.path
 
