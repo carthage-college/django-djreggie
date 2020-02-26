@@ -156,6 +156,7 @@ def create(request):
 
     # set up the advisor autocomplete field
     advisor_list = None
+    '''
     if sid:
         form.fields['student_id'].widget = forms.HiddenInput()
         form.fields['name'].widget = forms.HiddenInput()
@@ -163,7 +164,7 @@ def create(request):
         form.fields['minorlist'].widget = forms.HiddenInput()
 
         # get list of valid advisors for jquery autocomplete
-        advisorSQL = '''
+        advisorSQL = """
             SELECT
                 id_rec.id, TRIM(id_rec.firstname) AS firstname,
                 TRIM(id_rec.lastname) AS lastname
@@ -177,11 +178,12 @@ def create(request):
                 id_rec.id, firstname, lastname
             ORDER BY
                 lastname, firstname
-        '''
+        """
 
         advisor_list = do_sql(
             advisorSQL, key=DEBUG, earl=EARL
         )
+    '''
 
     return render(request, 'changemajor/form.html', {
         'form':form, 'facstaff':facstaff, 'sql':sql,
@@ -416,7 +418,7 @@ def set_approved(request): #for setting entry to be approved
 
         send_mail(
             request, to_list,
-            "Congratulations: Major/Minor/Advisor Change Accepted",
+            "Congratulations: Major/Minor Change Accepted",
             settings.REGISTRAR_EMAIL, 'changemajor/email_student.html',
             {'student':student,}, settings.MANAGERS
         )

@@ -1,9 +1,9 @@
 {% extends "blank.html" %}
 {% block title %}
-    Change Major/Minor/Advisor
+    Change Major/Minor
 {% endblock %}
 {% block content_head %}
-    <h1 id="page-title">Change Major/Minor/Advisor</h1>
+    <h1 id="page-title">Change Major/Minor</h1>
 {% endblock %}
 {% block extra_style %}
 <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
@@ -28,12 +28,14 @@
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 {% if student_id %}
 <script>
+    /*
     var list = new Array();
-    {% for advisor in advisor_list %}
-        list.push({label: "{{advisor.lastname}}, {{advisor.firstname}}",
-                    value: "{{advisor.lastname}}, {{advisor.firstname}}"})
-    {% endfor %}
+    {# for advisor in advisor_list #}
+        list.push({label: "{#advisor.lastname#}, {#advisor.firstname#}",
+                    value: "{#advisor.lastname#}, {#advisor.firstname#}"})
+    {# endfor #}
     $('#id_advisor').autocomplete({source: list});
+    */
     $("select").change(function(){
         if ($(this).val() != ''){
             for (var ii = 0; ii < $("select").length; ii++){
@@ -72,7 +74,7 @@
 {% block content %}
 {{ form.non_field_errors }}
 <h2 title="{{user.last_name}}, {{user.first_name}}">
-  Change of Major/Minor/Advisor Form
+  Change of Major/Minor Form
 </h2>
 {% if search and not student_id %}
 <div class="error"><p>No student by that ID</p></div>
@@ -146,13 +148,14 @@
             </li>
         </ol>
     </fieldset>
+    <!--
     <fieldset class="blockLabels">
         <legend>Change advisor to:</legend>
         <ol>
             <li class="ctrlHolder"><h3><label for="id_advisor">
             Who would you like to be your new advisor? (<span style="text-decoration:underline;">If no change, leave blank</span>)</label></h3>
-                {{form.advisor}}
-                {{form.advisor.errors}}
+                {#form.advisor#}
+                {#form.advisor.errors#}
             </li>
             <li class="btnHolder">
               <label for="submit">&nbsp;&nbsp;</label>
@@ -160,6 +163,7 @@
             </li>
         </ol>
     </fieldset>
+    -->
 </form>
 {% endif %}
 {% endblock %}
