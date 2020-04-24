@@ -6,18 +6,18 @@ class AccessFormModel(models.Model):
 
     #General Information
     full_name = models.CharField(max_length=64)
-    carthage_id = models.IntegerField(primary_key=True,max_length=7)
+    carthage_id = models.IntegerField(primary_key=True)
     department = models.CharField(max_length=64)
     date_submitted = models.DateField(auto_now_add=True)
     position = models.CharField(max_length=64)
     work_phone = models.CharField(max_length=16)
-    
+
     #Permissions
     CHOICES = (
         ('a', 'Add'),
         ('d', 'Delete'),
     )
-    
+
     email = models.CharField(max_length=2,blank=True,null=True,choices=CHOICES,default='a')
     novell_file_and_print_access = models.CharField(max_length=2,blank=True,null=True,choices=CHOICES,default='a')
     eracer = models.CharField(max_length=2,blank=True,null=True,choices=CHOICES,default='a')

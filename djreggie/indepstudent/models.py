@@ -66,7 +66,7 @@ class Independ(models.Model):
 
 class FamInfo(models.Model):
     name = models.CharField(max_length=100, verbose_name="Full Name")
-    age = models.IntegerField(max_length=3, verbose_name="Age")
+    age = models.IntegerField(verbose_name="Age")
     relationship = models.CharField(
         max_length=100, verbose_name="Relationship"
     )
@@ -79,9 +79,7 @@ class FamInfo(models.Model):
 
 class Studwork(models.Model):
     empname = models.CharField(max_length=250, verbose_name="Employer's Name")
-    money = models.IntegerField(
-        max_length=10, verbose_name="2012 Amount Earned"
-    )
+    money = models.IntegerField(verbose_name="2012 Amount Earned")
     w2attach = models.BooleanField(verbose_name="IRS W-2 Attached?")
     student = models.ForeignKey(Independ)
 
@@ -97,7 +95,5 @@ class CS(models.Model):
     namechild = models.CharField(
         max_length=200, verbose_name="Name of Child for Whom Support Was Paid"
     )
-    amntpaid = models.IntegerField(
-        max_length=10, verbose_name="Amount of Child Support Paid in 2012"
-    )
+    amntpaid = models.IntegerField(verbose_name="Amount of Child Support Paid in 2012")
     student = models.ForeignKey(Independ)

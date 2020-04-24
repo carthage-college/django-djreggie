@@ -128,7 +128,7 @@ class UndergradModel(models.Model):
         max_length=2, choices=CHOICESST, null=True, blank=True, default=""
     )
     zipcode = models.PositiveIntegerField(
-        max_length=5, verbose_name='Zip', null=True, blank=True
+        verbose_name='Zip', null=True, blank=True,
     )
 
     diploma_aa_type = models.CharField(

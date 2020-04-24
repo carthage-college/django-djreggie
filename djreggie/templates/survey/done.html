@@ -1,0 +1,6 @@
+{% extends "survey/form.html" %}
+{% load livewhale_api %}
+{% block content %}
+    {% get_lw_content as thank_you blurbs 2950 %}
+    {{thank_you.body}}
+{% endblock %}
