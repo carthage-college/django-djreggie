@@ -1,4 +1,4 @@
-Django==1.11.20
+Django==1.11.29
 sqlalchemy==0.8.7
 MySQL-python==1.2.5
 python-ldap==3.1.0
