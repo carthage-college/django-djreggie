@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load ifusergroup %}
+{% load livewhale_api %}
+{% load static %}
+{% block navbar-header %}
+<a href="/registrar/" class="mr-sm-3 mr-lg-3">
+  <img src="{% static 'img/clogo.png' %}" height="30" class="mr-2"></a>
+<a class="navbar-brand" href="/registrar/">Registrar</a>
+{% endblock %}
+{% block navbar-top-links %}
+  <ul class="navbar-nav ml-auto">
+    <li class="dropdown user-dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-user"></i> {{user.first_name|default:"Dashboard"}}
+        <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+        <li class="divider"></li>
+        <li>
+          {% if user.is_anonymous %}
+          <a href="{% url 'auth_login' %}">
+            <i class="fa fa-sign-in"></i> Sign In
+          </a>
+          {% else %}
+          <a href="{% url 'auth_logout' %}">
+            <i class="fa fa-sign-out"></i> Sign Out
+          </a>
+          {% endif %}
+        </li>
+      </ul>
+    </li>
+  </ul>
+{% endblock navbar-top-links %}
+{% block navbar-sidenav %}
+<ul class="navbar-nav navbar-sidenav">
+  <li class="nav-item">
+    <form class="form-inline my-2 my-lg-0 mr-lg-2" action="{% url 'undergrad_search' %}" method="post">
+      {% csrf_token %}
+      <div class="input-group">
+        <input class="form-control" name="cid" type="text" placeholder="Search by ID or Name...">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="submit">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+      </div>
+    </form>
+  </li>
+  {% block navbar-sidenav-home %}{% endblock %}
+  {% if user.is_superuser or user.profile.css %}
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Administration">
+    <a class="nav-link" href="{% url 'admin:index' %}">
+      <i class="fa fa-fw fa fa-cog" aria-hidden="true"></i>
+      <span class="nav-link-text">Administration</span>
+    </a>
+  </li>
+  {% endif %}
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Carthage Home">
+    <a class="nav-link" href="https://www.carthage.edu/">
+      <i class="fa fa-fw fa fa-home" aria-hidden="true"></i>
+      <span class="nav-link-text">Carthage Home</span>
+    </a>
+  </li>
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My.Carthage">
+    <a class="nav-link" href="https://my.carthage.edu/">
+      <i class="fa fa-fw fa fa-lemon-o" aria-hidden="true"></i>
+      <span class="nav-link-text">My.Carthage</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-center" data-toggle="tooltip" data-placement="right" title="Expand Menu" id="sidenavToggler">
+      <i class="fa fa-fw fa-angle-double-left" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+<ul class="navbar-nav sidenav-toggler">
+  <li class="nav-item">
+    <a class="nav-link text-center">
+      <i class="fa fa-fw"></i>
+    </a>
+  </li>
+</ul>
+{% endblock navbar-sidenav %}
+{% block content %}
+<div class="row">
+  {% if messages %}
+    {% for message in messages %}
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+      <div class=" alert {{message.tags}}">
+        <strong>{{ message }}</strong>
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+</div>
+<!-- /.row -->
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-body" id="students-data-panel">
+          {% block panel-header %}{% endblock %}
+      </div>
+    </div>
+  </div>
+  <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-body" id="proposals-data-panel">
+          {% block panel-data %}{% endblock %}
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+  <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="loader"><!-- for loading icon --></div>
+{% endblock content %}
+{% block modal %}
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog"
+  aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="deleteModalLabel">Confirm Delete</h4>
+          <button type="button" class="close" data-dismiss="modal"
+            aria-hidden="true">&times;</button>
+        </div>
+      <div class="modal-body">
+        <p>
+          You are about to delete a <strong class="object-title"></strong>.
+        </p>
+        <p>Would you like to proceed?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          Cancel
+        </button>
+        <a class="btn btn-danger btn-ok text-white">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

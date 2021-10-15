@@ -1,0 +1,77 @@
+{% extends "djbootmin/base.html" %}
+{% block title %}
+  Application &mdash;
+  Office of Programs &mdash;
+  Carthage College
+{% endblock title %}
+{% block extra_style %}
+<link href="//www.carthage.edu/static/vendor/jquery/plugins/trumbowyg/trumbowyg.min.css"
+  rel="stylesheet" type="text/css">
+<link href="//www.carthage.edu/static/vendor/jquery/ui/datepicker/css/smoothness/jquery-ui-1.10.4.custom.min.css"
+  rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/css/bootstrap-select.min.css"
+  rel="stylesheet" type="text/css">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+  rel="stylesheet" type="text/css">
+<link href="https://www.carthage.edu/themes/shared/css/tables.css"
+  rel="stylesheet" type="text/css">
+<link href="https://www.carthage.edu/static/djsani/css/dashboard.css"
+  rel="stylesheet" type="text/css">
+<link href="https://www.carthage.edu/static/djsani/css/main.css"
+  rel="stylesheet" type="text/css">
+<link href="//www.carthage.edu/themes/shared/css/forms.css"
+  rel="stylesheet" type="text/css">
+<link href="{{static_url}}css/main.css" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block javascript %}
+{{block.super}}
+<script src="//www.carthage.edu/static/vendor/jquery/ui/datepicker/js/jquery-ui-1.10.4.custom.min.js"
+  type="text/javascript" language="javascript"></script>
+<script src="//www.carthage.edu/static/vendor/jquery/plugins/trumbowyg/trumbowyg.min.js"
+  type="text/javascript" language="javascript"></script>
+<script src="//www.carthage.edu/static/vendor/jquery/plugins/multiselect/js/multiselect.min.js"
+  type="text/javascript" language="javascript"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/js/bootstrap-select.min.js"
+  type="text/javascript" language="javascript"></script>
+<script src="//www.carthage.edu/static/vendor/autoComplete.js/dist/js/autoComplete.min.js"
+  type="text/javascript" language="javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"
+  type="text/javascript" language="javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"
+  type="text/javascript" language="javascript"></script>
+<script src="https://malsup.github.io/min/jquery.blockUI.min.js"
+  type="text/javascript" language="javascript"></script>
+<script src="//www.carthage.edu/static/vendor/js/spin.min.js"
+  type="text/javascript" language="javascript"></script>
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+    //$("body").toggleClass("sidenav-toggled");
+  });
+</script>
+{% endblock %}
+{% block body_tag %}{% endblock %}
+{% block navbar-header %}{% endblock %}
+{% block navbar-top-links %}{% endblock %}
+{% block navbar-sidenav %}{% endblock %}
+{% block content-wrapper %} id="wrapper" class="content-wrapper"{% endblock %}
+{% block content %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block logout %}{% endblock %}
+{% block footer %}
+<footer class="sticky-footer">
+  <div class="container">
+    <div class="text-center">
+      <small>
+        Carthage College
+        {% if user.is_superuser or user.profile.css %}
+        <a id="copyright" href="{% url 'admin:index' %}">©</a>
+        {% else %}
+        <a id="copyright" href="#">©</a>
+        {% endif %}
+        |
+        <a href="https://www.carthage.edu/privacy/" target="_blank">Privacy Policy</a>
+      </small>
+    </div>
+  </div>
+</footer>
+{% endblock footer %}
