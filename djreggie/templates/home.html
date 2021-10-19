@@ -34,7 +34,7 @@
 {% block navbar-sidenav %}
 <ul class="navbar-nav navbar-sidenav">
   <li class="nav-item">
-    <form class="form-inline my-2 my-lg-0 mr-lg-2" action="{% url 'undergrad_search' %}" method="post">
+    <form class="form-inline my-2 my-lg-0 mr-lg-2" action="{% block navbar-sidenav-search %}{% endblock %}" method="post">
       {% csrf_token %}
       <div class="input-group">
         <input class="form-control" name="cid" type="text" placeholder="Search by ID or Name...">

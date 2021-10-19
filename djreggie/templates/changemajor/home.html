@@ -1,5 +1,6 @@
-{% extends "djdash/base.html" %}
+{% extends "home.html" %}
 {% block extra_style %}
+    {{block.super}}
     <!-- Page-Level Plugin CSS - Tables -->
     <link href="//www.carthage.edu/static/vendor/dashboard/css/plugins/dataTables/jquery.dataTables.min.css" rel="stylesheet">
     <link href="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
@@ -45,10 +46,16 @@
     </style>
 {% endblock %}
 {% block extra_javascript %}
-    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/jquery.dataTables.js" type="text/javascript"></script>
-    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/js/dataTables.tableTools.min.js" type="text/javascript"></script>
-    <script src="//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/dataTables.bootstrap.js" type="text/javascript"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js" type="text/javascript"></script>
+    {{block.super}}
+    <script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"
+      type="text/javascript" charset="utf-8" language="javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"
+      type="text/javascript" charset="utf-8" language="javascript"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"
+      type="text/javascript" charset="utf-8" language="javascript"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"
+      type="text/javascript" charset="utf-8" language="javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="//www.carthage.edu/static/vendor/js/spin.min.js" type="text/javascript"></script>
     <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js" type="text/javascript"></script>
     <script type="text/javascript">
@@ -75,28 +82,27 @@
         var target = document.getElementById("students-data-panel");
         var spinner = new Spinner(opts).spin(target);
         spinner.stop(target);
-
         <!-- Initialise the DataTables -->
-        $('#students-data').dataTable({
-            "sDom": 'T<"clear">lfrtip',
-            "aoColumnDefs": [{
-                "bSortable": false,
-                "aTargets": [-1]
-            }],
-            "order": [[ 2, "asc" ]],
-            "oTableTools": {
-                "sSwfPath": "//www.carthage.edu/static/vendor/dashboard/js/plugins/dataTables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
-                "aButtons": [
-                    "print", "xls", {
-                        "sExtends": "pdf",
-                        "sPdfOrientation": "landscape"
-                    },
-                ],
-            },
-            "lengthMenu": [
-                [100, 250, 500, 1000, 2000, -1],
-                [100, 250, 500, 1000, 2000, "All"]
-            ]
+        $('#students-data').DataTable({
+          'lengthMenu': [
+            [100, 250, 500, 1000, 2000, -1],
+            [100, 250, 500, 1000, 2000, "All"]
+          ],
+          'language': {
+            'search': 'Filter records:',
+            'lengthMenu': 'Display _MENU_'
+          },
+          order: [[2, 'asc']],
+          dom: 'lfrBtip',
+          responsive: true,
+          buttons: [
+            {
+              extend: 'excelHtml5',
+              exportOptions: {
+                columns: ':visible'
+              }
+            }
+          ]
         });
         /* x-editable jquery plugin */
         $.fn.editable.defaults.mode = 'inline';
@@ -104,7 +110,6 @@
             alert("There was a problem fetching the student data.\nPlease reload the page or try your search again.");
         {% endif %}
     });
-
     $(".approved").change(function(){
         var checked = $(this).prop('checked') ? 'Y' : 'N';
         $body = $("body");
@@ -134,97 +139,18 @@
     $('[name=cid]').autocomplete("enable");
     </script>
 {% endblock %}
-{% block navbar-header %}
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse"
-            data-target=".sidebar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="http://www.carthage.edu/registrar/">Carthage Registrar</a>
-    </div>
+{% block navbar-sidenav-search %}{% url 'searchcm' %}{% endblock %}
+{% block navbar-sidenav-home %}
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Carthage Home">
+    <a class="nav-link" href="{% url 'admincm' %}">
+      <i class="fa fa-fw fa fa-dashboard" aria-hidden="true"></i>
+      <span class="nav-link-text">Dashboard</span>
+    </a>
+  </li>
 {% endblock %}
-{% block navbar-top-links %}
-    <ul class="nav navbar-top-links navbar-right">
-        <li class="dropdown user-dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-user"></i> {{user.first_name}}
-                <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-                <li class="divider"></li>
-                <li>
-                    <a href="{% url 'auth_logout' %}">
-                        <i class="fa fa-power-off"></i> Sign Out
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <!-- /.dropdown-user -->
-    </ul>
+{% block panel-header %}
+  <h1 class="page-header">Student Change Major Request</h1>
 {% endblock %}
-{% block navbar-static-side %}
-    <div class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav" id="side-menu">
-                <li class="sidebar-search">
-                    <div class="input-group custom-search-form">
-                        <form action="{% url 'searchcm' %}" method="post" />
-                            {% csrf_token %}
-                            <input type="text" name="cid" class="form-control" placeholder="Search by ID or Name..." />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </form>
-                    </div>
-                </li>
-                <li>
-                    <a href="{% url 'admincm' %}">
-                        <i class="fa fa-dashboard fa-fw"></i> Dashboard
-                    </a>
-                </li>
-                {% if user.is_superuser %}
-                <li>
-                    <a href="{% url 'admin:index' %}" title="Administration">
-                      <i class="fa fa-tachometer fa-fw" aria-hidden="true"></i>
-                      Administration
-                    </a>
-                </li>
-                {% endif %}
-                <li>
-                    <a href="http://www.carthage.edu/">
-                        <i class="fa fa-home fa-fw"></i> Carthage Home
-                    </a>
-                </li>
-                <li>
-                    <a href="http://www.carthage.edu/my/">
-                        <i class="fa fa-lemon-o fa-fw"></i> My.Carthage
-                    </a>
-                </li>
-            </ul>
-            <!-- /#side-menu -->
-        </div>
-        <!-- /.sidebar-collapse -->
-    </div>
+{% block panel-data %}
+  {% include "changemajor/admin.html" %}
 {% endblock %}
-{% block content %}
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">Student Change Major Request</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-body" id="students-data-panel">
-                    {% include "changemajor/admin.html" %}
-                </div>
-            </div>
-        </div>
-    </div>
-<div class="loader"><!-- for loading icon --></div>
-{% endblock content %}

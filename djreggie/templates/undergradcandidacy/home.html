@@ -150,6 +150,7 @@
     $('[name=cid]').autocomplete("enable");
     </script>
 {% endblock %}
+{% block navbar-sidenav-search %}{% url 'undergrad_search' %}{% endblock %}
 {% block navbar-sidenav-home %}
   <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Carthage Home">
     <a class="nav-link" href="{% url 'undergrad_admin' %}">
