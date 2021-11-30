@@ -1,6 +1,7 @@
 Django==1.11.29
+informixdb==2.5
 sqlalchemy==0.8.7
 MySQL-python==1.2.5
-python-ldap==3.1.0
-pyodbc==4.0.26
-informixdb==2.5
+python-ldap==3.4.0
+pyodbc==4.0.32
+requests==2.26.0
