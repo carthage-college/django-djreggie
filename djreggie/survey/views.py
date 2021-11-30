@@ -4,9 +4,9 @@ from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from djauth.decorators import portal_auth_required
 from djreggie.survey.forms import OnlineCourseForm
 from djreggie.survey.sql import INSERT_CTC_REC
-from djzbar.decorators.auth import portal_auth_required
 from djzbar.utils.informix import do_sql
 
 
