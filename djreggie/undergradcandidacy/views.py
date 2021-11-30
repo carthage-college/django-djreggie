@@ -1,27 +1,29 @@
+# -*- coding: utf-8 -*-
+
+import re
+
+from datetime import date
+
 from django.conf import settings
 from django.shortcuts import render
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect
-
+from djauth.decorators import portal_auth_required
 from djreggie.undergradcandidacy.forms import UndergradForm
 from djreggie.core.utils import get_email
-
 from djzbar.utils.informix import do_sql
 from djzbar.utils.mssql import get_userid
-from djzbar.decorators.auth import portal_auth_required
-
 from djtools.utils.mail import send_mail
 
-from datetime import date
-import re
 
 DEBUG=settings.INFORMIX_DEBUG
 EARL=settings.INFORMIX_EARL
 
 
 def index(request):
+    """Display the home page view."""
     valid_class = 'Y'
     year = date.today().year
     if date.today().month <= 5:
@@ -52,23 +54,24 @@ def index(request):
 
             form = populateForm(int(request.POST['student_id']))
             valid_class = isValidClass(int(request.POST['student_id']))
-            return render(request, 'undergradcandidacy/form.html', {
-                'form': form,
-                'submitted': True,
-                'year_low': year,
-                'year_up': year+1,
-                'userid':request.GET['student_id'],
-                'valid_class': valid_class
-            })
+            return render(
+                request,
+                'undergradcandidacy/form.html',
+                {
+                    'form': form,
+                        'submitted': True,
+                    'year_low': year,
+                    'year_up': year+1,
+                    'userid':request.GET['student_id'],
+                    'valid_class': valid_class
+                },
+            )
     else:
         if request.GET:
             suid = request.GET.get('student_id')
             guid = get_userid(suid)
             if not suid or guid == None:
-                return render(
-                    request, 'undergradcandidacy/no_access.html'
-                )
-
+                return render(request, 'undergradcandidacy/no_access.html')
             cxID = int(guid)
             form = populateForm(cxID)
             valid_class = isValidClass(cxID)
@@ -76,18 +79,23 @@ def index(request):
         else:
             form = UndergradForm()
 
-    return render(request, 'undergradcandidacy/form.html', {
-        'form': form,
-        'year_low': year,
-        'year_up': year+1,
-        'valid_class': valid_class,
-        'submitted': False,
-        'perm': perm,
-        'userid': request.GET.get('student_id')
-    })
+    return render(
+        request,
+        'undergradcandidacy/form.html',
+        {
+            'form': form,
+            'year_low': year,
+            'year_up': year+1,
+            'valid_class': valid_class,
+            'submitted': False,
+            'perm': perm,
+            'userid': request.GET.get('student_id'),
+        },
+    )
 
 
 def populateForm(student_id):
+    """Populate the form with user data."""
     form = UndergradForm()
     # get student's id, name, and majors/minors
     getStudentSQL = '''
@@ -137,7 +145,7 @@ def populateForm(student_id):
 
 
 def isValidClass(student_id):
-    # check if student is a junior/senior or not
+    """Check if student is a junior/senior or not."""
     getClassStandingSQL = '''
         SELECT
             CASE prog_enr_rec.cl
@@ -160,13 +168,10 @@ def isValidClass(student_id):
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
     group='Registrar',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def contact(request):
-    '''
-    retrieves student's contact info from form through ajax call
-    '''
-
+    """Retrieves student's contact info from form through ajax call."""
     getContactSQL = '''
         SELECT
             *
@@ -192,10 +197,7 @@ def contact(request):
 
 
 def get_all_students():
-    '''
-    retrieve all entries in table for use by jquery autocomplete
-    '''
-
+    """Retrieve all entries in table for use by jquery autocomplete."""
     sql = '''
         SELECT
             first_name, last_name, middle_initial, student_id
@@ -208,13 +210,10 @@ def get_all_students():
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
     group='Registrar',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def admin(request):
-    '''
-    main admin page
-    '''
-
+    """Main admin page."""
     # if delete button was clicked. removes entry from database
     if request.POST:
         deleteRowSQL = '''
@@ -249,22 +248,23 @@ def admin(request):
     '''
     student = do_sql(getMajorMinorSQL, key=DEBUG, earl=EARL)
 
-    return render(request, 'undergradcandidacy/home.html', {
-        'student': student,
-        'full_student_list': get_all_students(),
-    })
+    return render(
+        request,
+        'undergradcandidacy/home.html',
+        {
+            'student': student,
+            'full_student_list': get_all_students(),
+        },
+    )
 
 
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
     group='Registrar',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def student(request, student_id):
-    """
-    admin details page
-    """
-
+    """Admin details page."""
     # retrieves entry's info
     getStudentSQL = '''
         SELECT uc.*,
@@ -372,22 +372,24 @@ def student(request, student_id):
 
     reqmajors = do_sql(sql, key=DEBUG, earl=EARL)
 
-    return render(request, 'undergradcandidacy/details.html', {
-        'student': student,
-        'reqmajors': reqmajors.first(),
-        'full_student_list': get_all_students(),
-    })
+    return render(
+        request,
+        'undergradcandidacy/details.html',
+        {
+            'student': student,
+            'reqmajors': reqmajors.first(),
+            'full_student_list': get_all_students(),
+        },
+    )
 
 
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
     group='Registrar',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def search(request):
-    '''
-    admin details page accessed through search bar
-    '''
+    """Admin details page accessed through search bar."""
     return student(request, request.POST.get('cid'))
 
 
@@ -395,13 +397,10 @@ def search(request):
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
     group='Registrar',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def set_approved(request):
-    '''
-    set the approved column in database for entry
-    '''
-
+    """Set the approved column in database for entry."""
     updateCandidacySQL = '''
         UPDATE
             cc_stg_undergrad_candidacy
@@ -630,6 +629,7 @@ def set_approved(request):
 
 
 def getPermAddress(cx_id):
+    """Obtain the permanent address."""
     getPermAddressSQL = '''
       SELECT
         TRIM(addr_line1 || ' ' || addr_line2 || ' ' || addr_line3) AS address,

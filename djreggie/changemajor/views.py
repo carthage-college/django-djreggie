@@ -1,17 +1,16 @@
+# -*- coding: utf-8 -*-
+
 from django import forms
 from django.conf import settings
-from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-
+from djauth.decorators import portal_auth_required
 from djreggie.changemajor.forms import ChangeForm
 from djreggie.core.utils import get_email
-
 from djzbar.utils.informix import do_sql
 from djzbar.utils.mssql import get_userid
-from djzbar.decorators.auth import portal_auth_required
-
 from djtools.utils.mail import send_mail
 from djtools.utils.users import in_group
 
@@ -21,7 +20,7 @@ EARL=settings.INFORMIX_EARL
 
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def create(request):
     '''
@@ -214,12 +213,10 @@ def get_all_students():
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
     group='Registrar',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def admin(request):
-    """
-    main admin page
-    """
+    """main admin page."""
     # if the delete button was clicked. remove entry from database
     if request.POST:
         deleteMajorSQL = '''
@@ -271,13 +268,10 @@ def admin(request):
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
     group='Registrar',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def student(request, changemajor_no):
-    '''
-    admin details page
-    '''
-
+    """Admin details page."""
     getStudentSQL = '''
         SELECT
             cm.changemajor_no, cm.student_id, cm.datecreated, cm.datemodified,
@@ -356,12 +350,10 @@ def student(request, changemajor_no):
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
     group='Registrar',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def search(request):
-    '''
-    admin details page access through search bar
-    '''
+    """Admin details page access through search bar."""
     return student(request, request.POST['cid'])
 
 
@@ -369,9 +361,10 @@ def search(request):
 @portal_auth_required(
     session_var='DJREGGIE_AUTH',
     group='Registrar',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
-def set_approved(request): #for setting entry to be approved
+def set_approved(request):
+    """Set entry to be approved."""
     getMajorSQL = '''
         SELECT
             CM.approved, CM.changemajor_no, CM.student_id,
