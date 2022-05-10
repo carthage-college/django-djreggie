@@ -1,5 +1,5 @@
 cryptography
-django==1.11.29
+django==2.2.28
 informixdb==2.5
 mysqlclient==1.4.6
 python-ldap==3.4.0
