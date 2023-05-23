@@ -4,5 +4,5 @@ informixdb==2.5
 mysqlclient==1.4.6
 python-ldap==3.4.0
 pyodbc==4.0.32
-requests==2.26.0
+requests==2.31.0
 sqlalchemy==0.8.7
